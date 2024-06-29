@@ -2,16 +2,16 @@
     "language": "简体中文",
     "flag": "https://osu.ppy.sh/images/flags/CN.png",
     "header": {
-        "welcomeBack": "欢迎回来",
-        "login": "登录",
-        "register": "注册",
-        "changeDiscord": "修改 Discord",
-        "logout": "退出登录"
+        "welcomeBack": "welcome back",
+        "login": "login",
+        "register": "register",
+        "changeDiscord": "change discord",
+        "logout": "logout"
     },
     "mca_ayim": {
         "banner": {
-            "merch": "官方周边商店",
-            "corsace": "活动中心"
+            "merch": "OFFICIAL MERCHANDISE STORE",
+            "corsace": "MAIN EVENT HUB"
         },
         "header": {
             "mca": "谱师之选奖 <br> (MCA)",
@@ -45,8 +45,7 @@
                 "2019": "<p>时间来到 2020 年。</p><p>做谱又一年：2019，回归！这里有当年做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>通过本网站，只要是我们能够获得的信息，我们想加多少就加多少！如果你有任何建议（或者发现了任何网站 Bug），请在 Corsace Discord 群联系 VINXIS（链接见左下方）！</p><p><b>我们目前还在公开征集评论！</b>这意味着只要你愿意，<b>你本人</b>可以为任意多的谱师撰写并发表评论！</p><p>在下方的图标中选择你关心的游戏模式以开始！</p>",
                 "2020": "<p>时间来到 2021 年...这下对了吧！</p><p>做谱又一年：2020，再次回归！这里有<b>今年</b>做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>并且同样地，我们依旧在公开征集评论！在下方的图标中选择你关心的游戏模式以开始！</p>",
                 "2021": "<p>现在是 2022 年！</p> <p>在做谱又一年：2021 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！</p>",
-                "2022": "<p>欢迎来到 2023 年！</p> <p>在做谱又一年：2022 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！这次总算（差不多）如期公布了！</p>",
-                "2023": "<p>现在是 2024 年！</p> <p>在做谱又一年：2023 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！</p>"
+                "2022": "<p>欢迎来到 2023 年！</p> <p>在做谱又一年：2022 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！这次总算（差不多）如期公布了！</p>"
             }
         },
         "mapsets": {
@@ -75,7 +74,7 @@
             "lowestSr": "最低星级"
         },
         "mappers": {
-            "name": "谱师",
+            "name": "谱师姓名",
             "mostRanked": "拥有最多上架（Ranked）谱面",
             "mostDiffs": "拥有最多难度",
             "mostFavs": "拥有最多收藏",
@@ -109,19 +108,19 @@
             "create": "新建",
             "login": "登录以创建评论！",
             "visible": "（暂不可见）",
-            "notice": "你好！这或许是你第一次来到评论页面！注意，我们公开征集所有评论！<br>包括你在内的任何人，在今年的谱师之选奖评选结束之前，都可以为其他任何谱师撰写评论！<br>评论你关注的谱师，描述他们在 [YEAR] 年内的成果和成就，来表达对他们对作图社区的感谢！"
+            "notice": "你好！这或许是你第一次来到评论页面（中的一张）！注意：所有的评论都是公开征集的！<br>任何人（包括你）在今年的谱师之选奖结束前，都可以为任何人撰写评论！<br>为你关注的谱师们撰写评论，描述他们在 [YEAR] 年的所作所为或获得的成就，以表达你对他们在做谱社群内活动的感谢！"
         }
     },
     "mca": {
         "main": {
-            "banner": "让我们一起 <br> 回顾",
-            "click": "点击加入",
-            "welcome": "欢迎来到 MCA",
+            "banner": "LET'S LOOK BACK <br> AT",
+            "click": "CLICK HERE TO ENTER",
+            "welcome": "WELCOME TO MCA",
             "voting": "投票",
             "nominating": "提名",
             "preparation": "准备",
             "results": "结果",
-            "timeline": "日程表",
+            "timeline": "timeline",
             "mapsetsLabel": "谱面",
             "mappersLabel": "谱师",
             "commentsLabel": "评论",
@@ -130,8 +129,8 @@
             "stage": {
                 "voting": "投票阶段",
                 "nominating": "提名阶段",
-                "preparation": "准备阶段",
-                "stage": "阶段"
+                "preparation": "preparation stage",
+                "stage": "stage"
             },
             "rankedSets": "上架（Ranked）谱面",
             "nominateNow": "现在提名！",
@@ -142,11 +141,10 @@
                 "2019": "<p>2019 年，第四届谱师之选奖（Mapper's Choice Awards），归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2019 年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>今年，我们尽全力制作了一个网站，以便符合要求的你能够尽可能轻松地立刻开始提名和投票！</p><p>所有 osu! 支持者（supporter）奖励将直接由 osu! 工作人员给出。每个大类下的获奖者将获得 2 个月的 supporter 奖励，而大奖获奖者将获得 6 个月的 supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！如果你对本网站有任何建议或发现了本网站的 Bug，请在 Corsace Discord 群内联系 VINXIS！</p>",
                 "2020": "<p>2020 年，第五届谱师之选奖（Mapper's Choice Awards），再次归来! 在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2020 年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>我们在 MCA 2019 的基础上网站进行了（希望是）彻底的 Debug，并对部分分类进行了更改，所以现在的网站应该如丝般顺滑！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
                 "2021": "<p>2021 年，第六届谱师之选奖（Mapper's Choice Awards），又一次归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
-                "2022": "<p>新一届谱师之选奖（Mapper's Choice Awards）再一次拉开了帷幕！（这一届基本可以说是如期而至！）在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
-                "2023": "新的一年，新的一轮谱师之选奖！<br>这是一个投票活动，所有谱师和摸图员都可以提名并投票选出他们认为每个类别中的最佳谱面/谱师！<br>所有支持者标签奖品均由 osu! 工作人员直接提供。每个类别的获奖者可获得 2 个月的支持者标签，大奖得主可获得 4 个月的支持者标签！<br>我们希望尽可能多的人来参加此次活动！"
+                "2022": "<p>新一届谱师之选奖（Mapper's Choice Awards）再一次拉开了帷幕！（这一届基本可以说是如期而至！）在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>"
             },
             "categories": {
-                "index": "类别",
+                "index": "categories",
                 "map": "谱面分类",
                 "user": "谱师分类"
             },
@@ -290,19 +288,19 @@
                 "description": "最佳 7K 谱面。"
             },
             "technical": {
-                "name": "最佳技术性故事版",
+                "name": "最高技术含量",
                 "description": "技术含量最高的故事板。"
             },
             "gameplay": {
-                "name": "最佳游戏性故事版",
+                "name": "最佳游玩体验",
                 "description": "能够提供最佳游玩体验的故事板。"
             },
             "minimalistic": {
-                "name": "最佳简约风格故事版",
+                "name": "最佳极简风格",
                 "description": "最能够由小见大的故事板。"
             },
             "narrative": {
-                "name": "最佳叙事性故事版",
+                "name": "最佳叙事性",
                 "description": "叙事性最强的故事板。"
             },
             "technicalTaiko": {
@@ -379,55 +377,7 @@
             },
             "diversity": {
                 "name": "最具有多样性的谱面",
-                "description": "风格多变、能够全面测试玩家各项技能的最佳谱面"
-            },
-            "altSwing": {
-                "name": "最佳强双 / 摇摆拍子谱面",
-                "description": "专注于强双 (Alt) 风格或摇摆拍子 (Swing) 风格的最佳谱面。"
-            },
-            "highDifficulty": {
-                "name": "最佳高难度谱面",
-                "description": "难度星级很高 (>= 8 星) 的最佳谱面。"
-            },
-            "complexOnly": {
-                "name": "最佳复杂拍子谱面",
-                "description": "大量使用非常规节拍的最佳谱面。"
-            },
-            "unorthodoxTaiko": {
-                "name": "最佳非常规谱面",
-                "description": "利用与众不同的梗或理念的最佳谱面"
-            },
-            "unorthodoxCatch": {
-                "name": "最佳非常规谱面",
-                "description": "强烈偏离常规作图规范的最佳谱面"
-            },
-            "mapper4K": {
-                "name": "最佳4K谱师",
-                "description": "创造了最佳4K谱面的那个人。"
-            },
-            "mapper7K": {
-                "name": "最佳7K谱师",
-                "description": "创造了最佳7K谱面的那个人。"
-            },
-            "mapperAntiMeta": {
-                "name": "最佳非主流谱师",
-                "description": "创造了最佳5K/6K/8K/9K谱面的那个人。"
-            },
-            "motionDesign": {
-                "name": "最佳动效设计 / 动画制作故事版",
-                "description": "具有最令人满意的动画和过渡效果的故事板。"
-            },
-            "lyrics": {
-                "name": "最佳歌词 / 文本故事版",
-                "description": "利用精心设计的文字效果来制作歌词的最佳故事板。"
-            },
-            "mostPromisingSB": {
-                "name": "最具潜力故事版作者",
-                "description": "在今年才上架故事版的故事版作者当中最厉害的那个人。"
-            },
-            "outContSB": {
-                "name": "突出贡献奖（故事版）",
-                "description": "为故事版领域的健康发展做出最积极贡献的那个人。"
+                "description": "风格多变、能够全面测试玩家各项技能的谱面当中最优秀的那一张"
             }
         },
         "nom_vote": {
@@ -475,32 +425,32 @@
     },
     "open": {
         "navbar": {
-            "home": "主页",
-            "info": "比赛信息",
-            "qualifiers": "资格赛",
-            "teams": "队伍",
-            "schedule": "排程",
-            "mappool": "图池",
-            "staff": "工作人员",
-            "createTeam": "创建队伍",
-            "invitations": "邀请",
-            "loginDiscord": "登录 Discord 来管理队伍或邀请",
-            "teamInvites": "队伍邀请",
-            "noInvites": "你目前没有收到任何邀请"
+            "home": "HOME",
+            "info": "INFO",
+            "qualifiers": "QUALIFIERS",
+            "teams": "TEAMS",
+            "schedule": "SCHEDULE",
+            "mappool": "MAPPOOL",
+            "staff": "STAFF",
+            "createTeam": "CREATE TEAM",
+            "invitations": "INVITATIONS",
+            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
+            "teamInvites": "TEAM INVITES",
+            "noInvites": "You currently have no invites"
         },
         "footer": {
             "corsace": "CORSACE",
-            "twitter": "推特",
+            "twitter": "TWITTER",
             "discord": "DISCORD",
             "twitch": "TWITCH",
             "youtube": "YOUTUBE"
         },
         "stages": {
-            "qualifiers": "资格赛",
-            "round robin": "循环赛",
-            "runoff bracket": "突围赛",
-            "knockout 1": "淘汰赛一轮",
-            "knockout 2": "淘汰赛二轮",
+            "qualifiers": "QUALIFIERS",
+            "round robin": "ROUND ROBIN",
+            "runoff bracket": "RUNOFF BRACKET",
+            "knockout 1": "KNOCKOUT 1",
+            "knockout 2": "KNOCKOUT 2",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
@@ -510,230 +460,230 @@
             }
         },
         "home": {
-            "description": "探索 Corsace 2023 公开赛——全世界 osu! 精英玩家一决高下的比赛。",
-            "timeline": "时间线",
-            "presentedBy": "CORSACE OPEN 23 是由",
-            "registrations": "注册",
+            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
+            "timeline": "TIMELINE",
+            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "registrations": "REGISTRATIONS",
             "button": {
-                "qualifiersMappool": "资格赛图池",
-                "mappoolDownload": "图池下载和数据",
-                "register": "创建和注册您的团队",
-                "registrationsEnd": "注册截止至"
+                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
+                "mappoolDownload": "Mappool download and statistics",
+                "register": "CREATE AND REGISTER YOUR TEAM",
+                "registrationsEnd": "Registrations end"
             }
         },
         "info": {
-            "title": "赛事信息",
-            "condensed": "简要赛事信息",
-            "error": "找不到锦标赛",
+            "title": "INFORMATION",
+            "condensed": "CONDENSED INFO",
+            "error": "Could not find tournament",
             "matchInfo": {
-                "matchSize": "比赛规模",
-                "minPlayers": "最少玩家人数",
-                "maxPlayers": "最多玩家人数",
-                "pickTimer": "谱面选择时长",
-                "readyTimer": "玩家准备时长",
-                "order": "顺序",
-                "scoringMethod": "计分方式",
-                "type": "比赛类型",
-                "startDate": "开始日期",
-                "endDate": "结束日期",
-                "rounds": "回合数",
-                "initialSize": "初始容量",
-                "finalSize": "最终容量"
+                "matchSize": "MATCH SIZE",
+                "minPlayers": "MIN. PLAYERS",
+                "maxPlayers": "MAX. PLAYERS",
+                "pickTimer": "MAP PICK TIMER",
+                "readyTimer": "READY TIMER",
+                "order": "ORDER",
+                "scoringMethod": "SCORING METHOD",
+                "type": "TYPE",
+                "startDate": "START DATE",
+                "endDate": "END DATE",
+                "rounds": "ROUNDS",
+                "initialSize": "INITIAL SIZE",
+                "finalSize": "FINAL SIZE"
             },
             "headings": {
-                "mappools": "图池",
-                "stage": "阶段"
+                "mappools": "MAPPOOLS",
+                "stage": "STAGE"
             },
             "status": {
-                "notStarted": "未开始",
-                "complete": "已结束",
-                "ongoing": "正在进行"
+                "notStarted": "NOT STARTED",
+                "complete": "COMPLETE",
+                "ongoing": "ONGOING"
             },
             "mappools": {
-                "info": "图池信息",
-                "notAvailable": "无信息",
-                "mappackDownload": "下载曲包",
-                "mappacknotAvailable": "曲包不可用"
+                "info": "MAPPOOL INFO",
+                "notAvailable": "INFO NOT AVAILABLE",
+                "mappackDownload": "DOWNLOAD MAP PACK",
+                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
             },
-            "prizes": "奖项",
-            "donateToCorsace": "为 Corsace 捐赠",
-            "supportViaSponsorship": "通过MOMOKAI赞助提供支持",
-            "generalInfo": "概况",
-            "teamStructure": "队伍结构",
-            "qualifiersProcedures": "资格赛流程",
-            "tournamentStructure": "锦标赛结构",
-            "infoGraphic": "信息图",
-            "matchProcedures": "比赛流程",
-            "reportTournament": "点击此处举报赛事",
-            "subjectToChange": "所有规则如有变更，将予以澄清和/或调整"
+            "prizes": "PRIZES",
+            "donateToCorsace": "DONATE TO CORSACE",
+            "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
+            "generalInfo": "GENERAL INFORMATION",
+            "teamStructure": "TEAM STRUCTURE",
+            "qualifiersProcedures": "QUALIFIERS PROCEDURES",
+            "tournamentStructure": "TOURNAMENT STRUCTURE",
+            "infoGraphic": "INFOGRAPHIC",
+            "matchProcedures": "MATCH PROCEDURES",
+            "reportTournament": "REPORT TOURNAMENTS HERE",
+            "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
         },
         "qualifiers": {
             "nav": {
-                "mappool": "图池",
-                "qualifiers": "资格赛",
-                "scores": "分数"
+                "mappool": "MAPPOOL",
+                "qualifiers": "QUALIFIERS",
+                "scores": "SCORES"
             },
             "mappool": {
-                "sheets": "表格",
-                "mappool": "图池",
-                "notAvailable": "图池尚未提供",
+                "sheets": "SHEETS",
+                "mappool": "MAPPOOL",
+                "notAvailable": "Mappool not available yet",
                 "banner": {
-                    "mapper": "谱师",
-                    "difficulty": "难度"
+                    "mapper": "MAPPER",
+                    "difficulty": "DIFFICULTY"
                 }
             },
             "scores": {
                 "nav": {
-                    "sort": "排序方式",
-                    "average": "平均",
-                    "sum": "总和",
-                    "percentAvg": "%平均",
-                    "relAvg": "相对平均",
-                    "percentMax": "%最大",
-                    "relMax": "相对最大",
-                    "zScore": "Z-分数",
-                    "placement": "排名",
-                    "player": "玩家",
-                    "team": "队伍",
-                    "best": "最佳",
-                    "worst": "最差"
+                    "sort": "SORT",
+                    "average": "AVERAGE",
+                    "sum": "SUM",
+                    "percentAvg": "%AVG",
+                    "relAvg": "REL. AVG",
+                    "percentMax": "%MAX",
+                    "relMax": "REL. MAX",
+                    "zScore": "Z-SCORE",
+                    "placement": "PLACE",
+                    "player": "PLAYER",
+                    "team": "TEAM",
+                    "best": "BEST",
+                    "worst": "WORST"
                 },
-                "categorySelect": "类别选择",
-                "players": "玩家",
-                "teams": "队伍"
+                "categorySelect": "CATEGORY SELECT",
+                "players": "PLAYERS",
+                "teams": "TEAMS"
             },
-            "create": "创建",
+            "create": "CREATE",
             "error": {
-                "message": "在拥有 {numPlayers} 名玩家之前，无法创建/加入资格赛！",
-                "pressToClose": "按任意位置关闭"
+                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
+                "pressToClose": "Press anywhere to close"
             }
         },
         "teams": {
-            "teamsList": "队伍列表",
-            "error": "无法获得队伍名单",
-            "searchPlaceholder": "搜索用户/队伍",
-            "editTeamInfo": "编辑队伍信息",
-            "qualifierId": "资格赛ID",
+            "teamsList": "TEAMS LIST",
+            "error": "COULD NOT GET TEAM LIST",
+            "searchPlaceholder": "search for user/team",
+            "editTeamInfo": "edit team info",
+            "qualifierId": "Qualifier ID",
             "placeholders": {
-                "searchUser": "osu! 用户名（必须有 Corsace 账号）",
-                "name": "队伍名",
-                "abbreviation": "队伍缩写"
+                "searchUser": "osu! username (must have corsace account)",
+                "name": "name",
+                "abbreviation": "abbreviation"
             },
             "edit": {
-                "teamName": "队伍名",
-                "teamAbbreviation": "队伍缩写",
-                "timezone": "时区",
-                "teamAvatar": "队伍图标",
+                "teamName": "TEAM NAME",
+                "teamAbbreviation": "TEAM ABBREVIATION",
+                "timezone": "TIMEZONE",
+                "teamAvatar": "TEAM AVATAR",
                 "errors": {
-                    "size": "图像太大。请确保图像小于 5MB。",
-                    "type": "图像文件无效。请确保图像是 PNG 或 JPG。",
-                    "invalidImage": "图像文件无效。请确保图像是 PNG 或 JPG，并且小于 5MB。",
-                    "invalidTimezone": "无效时区",
-                    "errorAddingTeamAvatar": "添加团队图标出错：\n{error}",
+                    "size": "Image is too large. Ensure the image is less than 5MB.",
+                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
+                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
+                    "invalidTimezone": "Invalid timezone.",
+                    "errorAddingTeamAvatar": "Error adding team avatar:\n{error}",
                     "invalidName": "",
-                    "contactVinxis": "请联系VINXIS因为这里出现了一个搜索错误。更多详情请通过 Ctrl + Shift + I 查看控制台。"
+                    "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
                 },
                 "confirm": {
-                    "deleteTeam": "你确定要删除这支队伍吗？",
-                    "deleteTeamFinal": "你真的确定要删除这支队伍吗？这是无法撤销的！",
-                    "removeMember": "您确定要将 {username} 从队伍中删除吗？",
-                    "transferManager": "您确定要将经理转到 {username}？",
-                    "invite": "您确定要邀请 {username} 加入您的队伍吗？",
-                    "removeInvite": "您确定要将 {username} 的入队申请删除吗？",
-                    "unregister": "您确定要从本次比赛中取消注册吗？如果仍有 6 名成员，您可以随时重新注册。"
+                    "deleteTeam": "Are you sure you want to delete this team?",
+                    "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
+                    "removeMember": "Are you sure you want to remove {username} from your team?",
+                    "transferManager": "Are you sure you want to transfer manager to {username}?",
+                    "invite": "Are you sure you want to invite {username} to your team?",
+                    "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
+                    "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
                 },
-                "save": "保存",
-                "deleteTeam": "删除队伍"
+                "save": "SAVE",
+                "deleteTeam": "DELETE TEAM"
             },
             "headers": {
-                "tournaments": "锦标赛",
-                "teamStats": "队伍数据",
-                "teamManager": "队伍管理者",
-                "teamMembers": "队伍成员",
-                "editTeamMembers": "编辑队伍成员",
-                "closeTeamMembers": "关闭队伍成员编辑",
-                "becomeMember": "成为队员并进行游戏",
-                "becomeManager": "仅为管理者",
-                "teamInvites": "队伍邀请",
-                "editTeamInvites": "编辑队伍邀请",
-                "closeTeamInvites": "关闭队伍邀请编辑",
-                "qualifier": "资格赛",
-                "requiredMessageExact": "您需要刚好{minTeamSize} 名队员来注册和参加资格赛",
-                "requiredMessageRange": "您需要{minTeamSize} 至{maxTeamSize} 名队员注册并参加预选赛"
+                "tournaments": "TOURNAMENTS",
+                "teamStats": "TEAM STATS",
+                "teamManager": "TEAM MANAGER",
+                "teamMembers": "TEAM MEMBERS",
+                "editTeamMembers": "edit team members",
+                "closeTeamMembers": "close team members edit",
+                "becomeMember": "become a member and play as well",
+                "becomeManager": "become manager only",
+                "teamInvites": "TEAM INVITES",
+                "editTeamInvites": "edit team invites",
+                "closeTeamInvites": "close team invites edit",
+                "qualifier": "QUALIFIER",
+                "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
+                "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
             },
             "registration": {
-                "noRegistration": "没有注册任何锦标赛",
-                "toPlay": "如要参加 Corsace Open，你需要 6 名队员并选择以下资格赛日期和时间"
+                "noRegistration": "Registered in no tournaments",
+                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
             },
-            "teamID": "队伍ID",
-            "member": "队员",
-            "members": "队员",
-            "averageBWS": "平均BWS",
-            "averageRank": "平均排名",
-            "averagePP": "平均表现分",
-            "editQualifierTime": "编辑资格赛时间",
-            "deleteTeam": "删除资格赛/未注册的队伍",
-            "createJoinQualifier": "创建/参加资格赛",
-            "notRegistered": "目前尚未报名 Corsace Open。"
+            "teamID": "TEAM ID",
+            "member": "member",
+            "members": "members",
+            "averageBWS": "Average BWS",
+            "averageRank": "Average Rank",
+            "averagePP": "Average PP",
+            "editQualifierTime": "edit qualifier time",
+            "deleteTeam": "delete qualifier/unregister team",
+            "createJoinQualifier": "create/join qualifier",
+            "notRegistered": "Currently not registered in Corsace Open."
         },
         "create": {
-            "title": "创建一个队伍",
-            "info1": "注册截止日期为",
-            "info2": "请确保所有信息准确无误后再进行最终确认。",
-            "teamName": "队伍名",
-            "teamLength": "5 - 20 个字符。请勿在名称中使用 \"team\"，它会被自动删除。违禁内容将会被审查。",
-            "teamAcronym": "队名缩写",
-            "acronymLength": "2 - 4 个字符。违禁内容将会被审查。",
-            "teamTimezone": "队伍时区",
-            "timezoneText": "我们假定您的队伍可以在所选时区的 <span class='bold'>10:00-22:00</span>之间进行比赛。",
-            "teamAvatar": "队伍图标",
-            "upload": "上传",
-            "fileSizeLimit": "接受的文件类型： .jpg .png",
-            "fileSizeError": "文件大小太大！ 请上传小一点的图片",
-            "fileTypeError": "文件类型错误！请上传 .jpg 或 .png 后缀的图片",
-            "preview": "预览",
-            "avatarInfo1": "建议使用 <span>3:1 宽高比</span>的头像。",
-            "avatarInfo2": "队长可在注册结束前修改队名和头像。",
-            "avatarInfo3": "所有名称和头像都将由工作人员批准。",
-            "avatarInfo4": "如果认为不合适，将通知您进行更改。",
-            "teamManagement": "队伍管理",
-            "teamManagers": "<div>队伍<span>管理者</span> （你）既可以参加比赛并履行队长职责</div> <div><span>也可以</span> 不参加比赛只履行队长职责。</div>",
-            "teamManagersFree": "如果你不想参加比赛只想担任管理者，那么你<span>不会</span>占用一个玩家名额。",
-            "selectManager": "如果你 <span>不想</span>和队伍一起参加比赛只想担任<span>管理者</span>，请选择此复选框。",
-            "confirmManager": "<div>勾选此项后，我将只会承担管理员职责，并已了解</div><div>我不能参加任何比赛。</div>",
-            "create": "创建队伍"
+            "title": "CREATE A TEAM",
+            "info1": "Registrations will end on",
+            "info2": "Please ensure all information is correct before finalizing.",
+            "teamName": "TEAM NAME",
+            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
+            "teamAcronym": "TEAM ACRONYM",
+            "acronymLength": "2 - 4 characters. Profanity will be checked.",
+            "teamTimezone": "TEAM TIMEZONE",
+            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
+            "teamAvatar": "TEAM AVATAR",
+            "upload": "UPLOAD",
+            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
+            "fileSizeError": "file size too big! please upload a smaller image",
+            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
+            "preview": "PREVIEW",
+            "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
+            "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
+            "avatarInfo3": "All names and avatars will be approved by staff.",
+            "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
+            "teamManagement": "TEAM MANAGEMENT",
+            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "create": "CREATE TEAM"
         },
         "components": {
             "openCardTeam": {
-                "rank": "排名",
-                "teambwsAverage": "队伍平均BWS",
-                "unregistered": "未注册",
+                "rank": "RANK",
+                "teambwsAverage": "TEAM BWS AVG",
+                "unregistered": "UNREGISTERED",
                 "bws": "BWS"
             },
-            "stageSelector": "选择阶段"
+            "stageSelector": "STAGE SELECT"
         },
         "staff": {
-            "title": "工作人员",
-            "notLoggedIn": "未登录"
+            "title": "STAFF",
+            "notLoggedIn": "NOT LOGGED IN"
         },
         "referee": {
-            "title": "裁判",
-            "loadMore": "加载更多",
-            "back": "回到匹配列表",
-            "createLobby": "创建大厅",
-            "roll": "摇点",
-            "reroll": "重新摇点",
+            "title": "REFEREE",
+            "loadMore": "LOAD MORE",
+            "back": "BACK TO MATCHUP LIST",
+            "createLobby": "CREATE LOBBY",
+            "roll": "ROLL",
+            "reroll": "RE-ROLL",
             "settings": "!MP SETTINGS",
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "关闭大厅"
+            "closeLobby": "CLOSE LOBBY"
         },
         "status": {
-            "loading": "加载中"
+            "loading": "LOADING"
         },
         "mappool": {
-            "title": "图池"
+            "title": "MAPPOOL"
         }
     },
     "main": {

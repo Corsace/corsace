@@ -45,8 +45,7 @@
                 "2019": "<p>Hallo 2020.</p><p>A Year in Mapping 2019 is terug om jou de records van dit jaar, en de verzamelde gedetailleerde statistieken te laten zien!</p><p>Met deze website kunnen we nu zo veel mogelijk informatie mogelijk toevoegen voor alle jaren! Als je suggesties (of website bugs) hebt, laat het VINXIS weten in de corsace server (link linksonder!)</p><p>WE CROWDFUNDEN OOK COMMENTS! Dat betekent dat JIJ comments kan schrijven en insturen voor zo veel mappers als je wil!</p><p>Selecteer de gamemode van jouw voorkeur met de icons hieronder om te starten!</p>",
                 "2020": "<p>Hallo 2021... het correcte jaar deze keer!</p><p>A Year in Mapping 2020 is back to back terug om jou de records en verzamelde gedetailleerde statistieken van DIT jaar te laten zien!</p><p>Comments zijn gesloten voor 2020. Hopelijk kunnen we ze in de toekomst weer activeren! Ondertussen, kijk naar alle records en stats!</p>",
                 "2021": "<p>2022 is hier!</p> <p>A Year in Mapping 2021 is hier om de records en stats te laten zien die gemaakt of zelfs gebroken zijn!</p>",
-                "2022": "<p>Welkom in 2023!</p> <p>A Year in Mapping 2022 is hier om de records en stats te laten zien die gemaakt of zelfs gebroken zijn! Deze keer (soortvan) wel op tijd!</p>",
-                "2023": "<p>2024 is now here!</p> <p>A Year in Mapping 2023 is here to provide the records and stats made or even broken!</p>"
+                "2022": "<p>Welkom in 2023!</p> <p>A Year in Mapping 2022 is hier om de records en stats te laten zien die gemaakt of zelfs gebroken zijn! Deze keer (soortvan) wel op tijd!</p>"
             }
         },
         "mapsets": {
@@ -142,8 +141,7 @@
                 "2019": "<p>Mapper's Choice Awards is terug voor ronde 4 in 2019! Dit is een stem event waar alle mappers/modders kunnen nomineren of stemmen voor wat zij denken dat de beste map/mapper voor elke categorie is!</p><p>Onze bedoeling is om een nieuw perspectief te bieden aan de beste maps van 2019 door de ogen van de mapping community!</p><p>Dit jaar, hebben we volledig de transitie naar de website gemaakt zodat we het zo makkelijk mogelijk kunnen maken voor stemmers die in aanmerking komen om te nomineren en stemmen!</p><p>Alle osu! supporter prijzen worden direct door de osu! staff aangeboden. 2 maanden supporter voor de winnaars van elke categorie, en 6 maanden voor de winnaars van de Grand Awards!</p><p>We hopen dat zo veel mogelijk mensen deelnemen aan dit event! Laat het VINXIS weten in de discord server als je bugs of problemen hebt met de website!</p>",
                 "2020": "<p>Back to back is mapper's choice awards terug om het af te maken met ronde 5 met 2020! Dit is een stem event waar alle mappers/modders kunnen nomineren of stemmen voor wat zij denken dat de beste map/mapper voor elke categorie is!</p><p>Onze bedoeling is om een nieuw perspectief te bieden aan de beste maps van 2020 door de ogen van de mapping community!</p><p>We hebben veel aanpassingen gedaan en hopelijk alle bugs verholpen die in MCA 2019 gevonden zijn, en ook de categoriëen veranderd dus deze editie zou veel beter moeten lopen!</p><p>Alle osu! supporter prijzen worden direct door de osu! staff aangeboden. 2 maanden supporter voor de winnaars van elke categorie, en 6 maanden voor de winnaars van de Grand Awards!</p><p>We hopen dat zo veel mogelijk mensen deelnemen aan dit event!</p>",
                 "2021": "<p>Mapper's Choice Awards is weer terug voor 2021! Dit is een stem event waar alle mappers/modders kunnen nomineren of stemmen voor wat zij denken dat de beste map/mapper voor elke categorie is!</p><p>Alle osu! supporter prijzen worden direct door de osu! staff aangeboden. 2 maanden supporter voor de winnaars van elke categorie, en 6 maanden voor de winnaars van de Grand Awards!</p><p>We hopen dat zo veel mogelijk mensen deelnemen aan dit event!</p>",
-                "2022": "We zijn weer terug voor nog een editie van Mapper's Choice Awards! (Deze keer bijna op tijd!)<br>Dit is een stem event waar alle mappers/modders kunnen nomineren of stemmen voor wat zij denken dat de beste map/mapper voor elke categorie is!<br>Alle osu! supporter prijzen worden direct door de osu! staff aangeboden. 2 maanden supporter voor de winnaars van elke categorie, en 6 maanden voor de winnaars van de Grand Awards!</p><p>We hopen dat zo veel mogelijk mensen deelnemen aan dit event!",
-                "2023": "New year, new iteration of Mapper's Choice Awards!<br>This is a voting event where all mappers and modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
+                "2022": "We zijn weer terug voor nog een editie van Mapper's Choice Awards! (Deze keer bijna op tijd!)<br>Dit is een stem event waar alle mappers/modders kunnen nomineren of stemmen voor wat zij denken dat de beste map/mapper voor elke categorie is!<br>Alle osu! supporter prijzen worden direct door de osu! staff aangeboden. 2 maanden supporter voor de winnaars van elke categorie, en 6 maanden voor de winnaars van de Grand Awards!</p><p>We hopen dat zo veel mogelijk mensen deelnemen aan dit event!"
             },
             "categories": {
                 "index": "categoriëen",
@@ -290,19 +288,19 @@
                 "description": "De beste beatmap van 7K."
             },
             "technical": {
-                "name": "Best Technical Storyboard",
+                "name": "Beste Technical",
                 "description": "Het beste storyboard met zijn technische aspecten."
             },
             "gameplay": {
-                "name": "Best Gameplay Storyboard",
+                "name": "Beste Gameplay",
                 "description": "Het beste storyboard in zijn gebruik van gameplay elementen."
             },
             "minimalistic": {
-                "name": "Best Minimalistic Storyboard",
+                "name": "Beste Minimalistic",
                 "description": "Het beste storyboard in veel zeggen met weinig."
             },
             "narrative": {
-                "name": "Best Narrative Storyboard",
+                "name": "Beste Narrative",
                 "description": "Het beste storyboard in het vertellen van een verhaal."
             },
             "technicalTaiko": {
@@ -380,54 +378,6 @@
             "diversity": {
                 "name": "Beste Diversity",
                 "description": "De beste beatmap met veel skillsets/categorieën."
-            },
-            "altSwing": {
-                "name": "Best Alternator / Swing",
-                "description": "The best beatmap focusing on alt-styled or swing-styled beatmaps."
-            },
-            "highDifficulty": {
-                "name": "Best High Difficulty",
-                "description": "The best difficult beatmap with a very high Star Rating (>=8 stars)."
-            },
-            "complexOnly": {
-                "name": "Best Complex",
-                "description": "The best beatmap with extensive usage of uncommon snappings."
-            },
-            "unorthodoxTaiko": {
-                "name": "Best Unorthodox",
-                "description": "The best beatmap that utilizes gimmicks and/or concepts."
-            },
-            "unorthodoxCatch": {
-                "name": "Best Unorthodox",
-                "description": "The best beatmap that strongly deviates from common norms."
-            },
-            "mapper4K": {
-                "name": "Best 4K Mapper",
-                "description": "The one who created the best 4K beatmaps."
-            },
-            "mapper7K": {
-                "name": "Best 7K Mapper",
-                "description": "The one who created the best 7K beatmaps."
-            },
-            "mapperAntiMeta": {
-                "name": "Best Anti Meta Mapper",
-                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
-            },
-            "motionDesign": {
-                "name": "Best Motion Design / Animation Storyboard",
-                "description": "The storyboard with the most satisfying animations and transitions."
-            },
-            "lyrics": {
-                "name": "Best Lyrics / Text Storyboard",
-                "description": "The best storyboard that utilizes well-designed text effects for lyrics."
-            },
-            "mostPromisingSB": {
-                "name": "Most Promising Storyboarder",
-                "description": "The best storyboarder who ranked their first storyboard this year."
-            },
-            "outContSB": {
-                "name": "Outstanding Contributor (Storyboard)",
-                "description": "The one who positively contributed to the health of the storyboarding scene the most."
             }
         },
         "nom_vote": {
