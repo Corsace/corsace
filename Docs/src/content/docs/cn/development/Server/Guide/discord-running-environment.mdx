@@ -1,0 +1,28 @@
+---
+title: Discord - Running Environment
+description: Starting and running the environment for the discord chat bot.
+lastUpdated: 2023-09-19
+sidebar:
+  order: 3300
+---
+
+## Pre-requisite Reading
+
+* [Development/Getting Started](../../..)
+
+## Relevant Config Values
+
+The majority of the setup should already be done based on the parent Getting Started page, but more information can be found from the [Config Reference](../config).
+
+Please ensure you have the primary roles added, as well as the other sibling properties to `roles`.
+
+## Running the Environment
+
+Run the following command to start the discord bot in development mode:
+
+```bash
+npm run discord-bot-dev
+```
+
+Discord does not have an HTTP server instance, but it will say `Logged into discord as [DISCORD BOT USERNAME]` in console.\
+You should be able to see the bot's slash commands when typing `/` in discord, and it should respond when sending a `!ping` message if you made sure to enable the `Message Content` privilege intent on the Discord application's page.
