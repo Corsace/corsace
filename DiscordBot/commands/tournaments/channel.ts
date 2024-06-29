@@ -197,11 +197,11 @@ const data = new SlashCommandBuilder()
             },
             {
                 name: "Referees",
-                value: "Referees",
+                value: "Referee",
             },
             {
                 name: "Streamers",
-                value: "Streamers",
+                value: "Stream",
             },
             {
                 name: "Rescheduling",
