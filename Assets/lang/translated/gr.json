@@ -1,0 +1,751 @@
+{
+    "language": "Ελληνικά",
+    "flag": "https://osu.ppy.sh/images/flags/GR.png",
+    "header": {
+        "welcomeBack": "Γειά σου",
+        "login": "Σύνδεση",
+        "register": "Εγγράψου",
+        "changeDiscord": "Αλλαγή του discord",
+        "logout": "Αποσύνδεση"
+    },
+    "mca_ayim": {
+        "banner": {
+            "merch": "ΕΠΙΣΗΜΟ ΚΑΤΑΣΤΗΜΑ ΕΜΠΟΡΕΥΜΑΤΩΝ",
+            "corsace": "ΚΕΝΤΡΙΚΟ ΣΗΜΕΙΟ ΕΚΔΗΛΩΣΕΩΝ"
+        },
+        "header": {
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "A YEAR <br> IN <br> MAPPING",
+            "login": "ΣΥΝΔΕΣΗ",
+            "welcomeBack": "καλώς όρισες",
+            "admin": "ΔΕΙΑΧΕΙΡΙΣΤΗΣ",
+            "staff": "ΠΡΟΣΩΠΙΚΟ",
+            "logout": "ΑΠΟΣΥΝΔΕΣΗ"
+        },
+        "login": {
+            "login": "Σύνδεση",
+            "message": {
+                "1": "Απ'οτι φαίνεται δεν είστε συνδεδεμένος!<br>Απλά συνδεθείτε με το osu! και μπορείτε να αρχίσετε να ψηφίζετε/προτείνετε!",
+                "2": "Επιπλέον, μπορείτε να συνδεθείτε στο discord, αλλά <b>δεν είναι απαραίτητο</b> για να ψηφίσετε/προτείνετε.<br>Η σύνδεση στο Discord <b>είναι απαραίτητη</b> για μέλη του προσωπικού τα οποία δουλεύουν πάνω στο MCA/AYIM.</span>"
+            },
+            "authOsu": "κάντε κλικ εδώ για έλεγχο ταυτότητας με το osu!",
+            "authOsuComp": "Η επαλήθευση με το osu! ολοκληρώθηκε. Γειά ",
+            "authDiscord": "κάντε κλικ εδώ για έλεγχο ταυτότητας με το discord",
+            "authDiscordComp": "Η επαλήθευση με το discord ολοκληρώθηκε. Γειά "
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "ΡΕΚΟΡ",
+            "statistics": "ΣΤΑΤΙΣΤΙΚΑ",
+            "search": "αναζήτησε ένα mapper",
+            "numberof": "αριθμός των",
+            "numberwith": "αριθμός των map με",
+            "message": {
+                "2019": "<p>Γειά σου 2020.</p><p>Το A Year in Mapping 2019 επέστρεψε για να σας φέρει τα ρεκόρ της χρονιάς, καθώς και τα λεπτομερή στατιστικά στοιχεία!</p><p>Με αυτόν τον ιστότοπο, μπορούμε πλέον να προσθέσουμε όσες πληροφορίες μπορούμε να ανακτήσουμε εφικτά για όλα τα χρόνια! Εάν έχετε οποιεσδήποτε προτάσεις (καθώς και τυχόν σφάλματα ιστότοπου), ενημερώστε το VINXIS στον διακομιστή corsace (σύνδεσμος κάτω αριστερά!)</p><p>Επίσης κάνουμε συλλογική χρηματοδότηση (crowdfunding)! Αυτό σημαίνει ότι μπορείτε να γράψετε και να υποβάλετε ένα σχόλιο για όσους mappers θέλετε!</p><p>Επιλέξτε τη λειτουργία που προτιμάτε με τα παρακάτω εικονίδια για να ξεκινήσετε!</p>",
+                "2020": "<p>Γειά σου 2021... η σωστή χρονιά αυτή τη φορά!</p><p>Το A Year in Mapping 2020 ήρθε πάλι κοντά σας  \nγια να σας φέρει τα ρεκόρ της ΦΕΤΙΝΗΣ χρονιάς όπως επίσης και τα λεπτομερή στατιστικά στοιχεία που συγκεντρώθηκαν!</p><p>Τα σχόλια είναι κλειστά για το 2020. Ας ελπίσουμε ότι θα μπορέσουμε να τα επαναφέρουμε στο μέλλον! Εν το μεταξύ δείτε όλα τα ρεκόρ και στατιστικά!</p>",
+                "2021": "<p>Tο 2022 είναι εδώ και το A Year in Mapping 2021 είναι εδώ για να σας παρέχει με τα ρεκόρ και τα στατιστικά που έγιναν ή ακόμα και κατέρρευσαν!</p>",
+                "2022": "<p>Καλώς ήρθατε στο 2023!</p> <p>Το A Year in Mapping 2022 είναι εδώ για να σας παρέχει με τα ρεκόρ και τα στατιστικά που έγιναν ή ακόμα και κατέρρευσαν! Αυτή τη φορά στην ώρα του (περίπου)!</p>",
+                "2023": "<p>Ήρθε το 2024 και μαζί του ήρθε και το A Year in Mapping 2023 για να σας παρέχει με τα ρεκόρ και τα στατιστικά που έγιναν η ακόμα και κατέρρευσαν!</p>"
+            }
+        },
+        "mapsets": {
+            "name": "MAPSETS",
+            "playcount": "ΑΡΙΘΜΟΣ ΠΡΟΣΠΑΘΕΙΩΝ",
+            "favourites": "ΑΓΑΠΗΜΕΝΑ",
+            "favouritesExclHybrid": "ΑΓΑΠΗΜΕΝΑ (ΕΞΑΙΡΟΥΝΤΑΙ ΤΑ ΥΒΡΙΔΙΚΑ)",
+            "length": "ΔΙΑΡΚΕΙΑ",
+            "difficulties": "ΔΥΣΚΟΛΙΕΣ",
+            "playTime": "ΔΙΑΡΚΕΙΑ (ΑΘΡΟΙΣΜΑ ΟΛΩΝ ΤΩΝ ΔΥΣΚΟΛΙΩΝ)",
+            "totalRanked": "ΣΥΝΟΛΟ RANKED",
+            "totalDiff": "ΣΥΝΟΛΙΚΕΣ ΔΥΣΚΟΛΙΕΣ",
+            "submitDates": "ΗΜΕΡΟΜΗΝΙΕΣ ΥΠΟΒΟΛΗΣ",
+            "starRatings": "STAR RATINGS",
+            "approachRate": "TAXYTHTA ΠΡΟΣΕΓΓΙΣΗΣ",
+            "overallDifficulty": "ΣΥΝΟΛΙΚΗ ΔΥΣΚΟΛΙΑ",
+            "hpDrain": "ΕΞΑΝΤΛΗΣΗ HP",
+            "circleSize": "ΜΕΓΕΘΟΣ ΚΥΚΛΟΥ",
+            "spinners": "SPINNER",
+            "sliders": "SLIDER",
+            "circles": "ΚΥΚΛΟΙ",
+            "avgSpinnersPerDiff": "ΜΕΣΟΙ SPINNER ΑΝΑ ΔΥΣΚΟΛΙΑ",
+            "avgSlidersPerDiff": "ΜΕΣΑ SLIDER ΑΝΑ ΔΥΣΚΟΛΙΑ",
+            "avgCirclesPerDiff": "ΜΕΣΟΙ ΚΥΚΛΟΙ ΑΝΑ ΔΥΣΚΟΛΙΑ",
+            "highestSr": "ΜΕΓΙΣΤΗ ΒΑΘΜΟΛΟΓΙΣΗ ΑΣΤΕΡΩΝ (STAR RATING)",
+            "lowestSr": "ΕΛΑΧΙΣΤΗ ΒΑΘΜΟΛΟΓΙΣΗ ΑΣΤΕΡΩΝ (STAR RATING)"
+        },
+        "mappers": {
+            "name": "MAPPERS",
+            "mostRanked": "ΠΕΡΙΣΣΟΤΕΡΑ RANKED",
+            "mostDiffs": "ΠΕΡΙΣΣΟΤΕΡΕΣ ΔΥΣΚΟΛΙΕΣ",
+            "mostFavs": "ΠΕΡΙΣΣΟΤΕΡΑ ΑΓΑΠΗΜΕΝΑ",
+            "mostFavsExclHybrid": "ΠΕΡΙΣΣΟΤΕΡΑ ΑΓΑΠΗΜΕΝΑ (ΕΞΑΙΡΟΥΝΤΑΙ ΤΑ ΥΒΡΙΔΙΚΑ)",
+            "mostPlayed": "ΠΕΡΙΣΣΟΤΕΡΟ ΠΑΙΓΜΕΝΑ",
+            "totalMappers": "ΣΥΝΟΛΙΚΟΙ MAPPER",
+            "newMapperAges": "ΗΛΙΚΙΑ ΛΟΓΑΡΙΑΣΜΟΥ ΝΕΩΝ MAPPER",
+            "mapperAges": "ΗΛΙΚΙΑ ΛΟΓΑΡΙΑΣΜΟΥ MAPPER",
+            "mapsPerMapperAges": "MAPS ΑΠΟ MAPPER ΤΗΣ ΚΑΘΕ ΧΡΟΝΙΑΣ",
+            "bng": "BNG",
+            "nat": "Ομάδα Αξιολόγησης Υποψηφιοτήτων",
+            "uniqueMappers": "ΣΥΝΟΛΙΚΟΙ MAPPER",
+            "newMappers": "ΚΑΙΝΟΥΡΓΙΟΙ MAPPER",
+            "highestAvgSr": "ΜΕΓΙΣΤΗ ΜΕΣΗ ΒΑΘΜΟΛΟΓΙΣΗ ΑΣΤΕΡΩΝ",
+            "lowestAvgSr": "ΕΛΑΧΙΣΤΗ ΜΕΣΗ ΒΑΘΜΟΛΟΓΙΣΗ ΑΣΤΕΡΩΝ",
+            "mappers": "MAPPERS"
+        },
+        "statistics": {
+            "numberOf": "αριθμός των",
+            "numberOfMapsWith": "αριθμός των map με",
+            "average": "μέση τιμή"
+        },
+        "comments": {
+            "name": "ΣΧΟΛΙΑ",
+            "info": "Όλα τα σχόλια γίνονται δημόσια μετά την δημοσίευση των αποτελεσμάτων αυτού του MCA! Μπορείτε να υποβάλετε τα σχόλια σας μέχρι τότε.",
+            "search": "αναζήτηση για ένα mapper",
+            "viewSubmit": "δές/υπέβαλλε σχόλια",
+            "writeHere": "Γράψε ένα καινούργιο σχόλιο για αυτόν τον mapper εδώ!",
+            "update": "Ανανέωση",
+            "remove": "Αφαίρεσε",
+            "create": "Δημιούργησε",
+            "login": "Συνδέσου για να δημιουργήσεις ένα σχόλιο!",
+            "visible": "(δεν φαίνεται ακόμα)",
+            "notice": "Γειά σου! Αυτή ισως να είναι η πρώτη φορά που πλοηγείσε σε (μία από) τις σελίδες σχολίων! <br> Λάβετε υπόψη ότι τα σχόλια είναι συγχρηματοδοτούμενα! <br> Οποιοσδήποτε (συμπεριλαμβανομένου και εσάς) μπορεί να γράψει σχόλια για οποιονδήποτε μέχρι να ολοκληρωθεί το φετινό MCA! <br> Γράψτε για το τι έκαναν ή τα επιτεύγματά τους το [ΕΤΟΣ] για να δείξετε εκτίμηση στους mappers που συμμετέχουν στην κοινότητα!"
+        }
+    },
+    "mca": {
+        "main": {
+            "banner": "ΑΣ ΚΟΙΤΑΞΟΥΜΕ ΠΙΣΩ <br> ΣΤΟ",
+            "click": "ΚΑΝΤΕ ΚΛΙΚ ΕΔΩ ΓΙΑ ΝΑ ΜΠΕΙΤΕ",
+            "welcome": "ΚΑΛΩΣ ΗΡΘΑΤΕ ΣΤΟ MCA",
+            "voting": "ψηφίζοντας",
+            "nominating": "προτείνοντας",
+            "preparation": "προετοιμασία",
+            "results": "αποτελέσματα",
+            "timeline": "χρονοδιάγραμμα",
+            "mapsetsLabel": "MAPSETS",
+            "mappersLabel": "MAPPERS",
+            "commentsLabel": "ΣΧΟΛΙΑ",
+            "recordsLabel": "ΡΕΚΟΡ",
+            "statisticsLabel": "ΣΤΑΤΙΣΤΙΚΑ",
+            "stage": {
+                "voting": "στάδιο της ψηφοφορίας",
+                "nominating": "στάδιο υποψηφιοτήτων",
+                "preparation": "στάδιο προετοιμασίας",
+                "stage": "σκηνή"
+            },
+            "rankedSets": "RANKED ΣΕΤ",
+            "nominateNow": "προτείνετε τώρα!",
+            "voteNow": "ψηφίστε τώρα!",
+            "viewResults": "δείτε τα αποτελέσματα!",
+            "daysLeft": "εναπομείναντες ημέρες",
+            "message": {
+                "2019": "<p>Τα Mapper's Choice Awards επιστρέφουν το 2019 για τον 4ο γύρο! Αυτή είναι μια εκδήλωση ψηφοφορίας όπου όλοι οι mappers/modders μπορούν να προτείνουν και να ψηφίσουν ποιό/ς πιστεύουν ότι είναι το ή ο καλύτερο/ς map/mapper κάθε κατηγορίας!</p><p>Πρόθεσή μας είναι να δώσουμε μια νέα προοπτική στα καλύτερα maps του 2019 μέσα από τα μάτια της mapping κοινότητας!</p><p>Φέτος, δημιουργήσαμε πλήρως έναν ιστότοπο, ώστε να μπορούμε να κάνουμε όσο το δυνατόν πιο εύκολο για τους δικαιούχους ψηφοφόρους να προτείνουν και να ψηφίσουν!</p><p>Όλα τα βραβεία osu! supporter παρέχονται από το osu! προσωπικό. 2 μήνες supporter για τους νικητές κάθε κατηγορίας και 6 μήνες για τους νικητές των Μεγάλων Βραβείων!</p><p>Ελπίζουμε όσο το δυνατόν περισσότεροι συμμετέχοντες να λάβουν μέρος σε αυτή την εκδήλωση! Ενημερώστε το VINXIS στον διακομιστή της corsace στο discord για τυχόν σφάλματα ή προβλήματα με τον ιστότοπο!</p>",
+                "2020": "<p>To Mapper's Choice Awards είναι και πάλι εδώ να το ολοκληρώσουν στον 5ο γύρο με το 2020! Αυτή είναι μια εκδήλωση ψηφοφορίας όπου όλοι οι mappers/modders μπορούν να προτείνουν και να ψηφίσουν αυτό που πιστεύουν ότι είναι ο καλύτερος map/mapper για κάθε κατηγορία!</p><p>Πρόθεσή μας είναι να δώσουμε μια νέα προοπτική στα καλύτερα maps του 2020 μέσα από τα μάτια της mapping κοινότητας!</p><p>Κάναμε πολλές αλλαγές και ελπίζουμε να αντιμετωπίσαμε όλα τα σφάλματα που βρέθηκαν σε όλη τη διάρκεια του MCA 2019, καθώς και να αλλάξαμε κατηγορίες ανάλογα με τις ανάγκες, οπότε αυτή θα πρέπει να είναι πολύ πιο ομαλή!</p><p>Όλα τα βραβεία osu! supporter παρέχονται από το osu! προσωπικό. 2 μήνες supporter για τους νικητές κάθε κατηγορίας και 6 μήνες για τους νικητές των Μεγάλων Βραβείων!</p><p>Ελπίζουμε όσο το δυνατόν περισσότεροι συμμετέχοντες να λάβουν μέρος σε αυτή την εκδήλωση!</p>",
+                "2021": "<p>Τα Mapper's Choice Awards επέστρεψαν πάλι για το 2021! Αυτή είναι μια εκδήλωση ψηφοφορίας όπου όλοι οι mappers/modders μπορούν να προτείνουν και να ψηφίσουν ποιό/ς πιστεύουν ότι είναι το ή ο καλύτερο/ς map/mapper κάθε κατηγορίας!</p><p>Όλα τα βραβεία osu! supporter παρέχονται από το osu! προσωπικό. 2 μήνες supporter για τους νικητές κάθε κατηγορίας και 4 μήνες για τους νικητές των Μεγάλων Βραβείων!</p><p>Ελπίζουμε όσο το δυνατόν περισσότεροι συμμετέχοντες να λάβουν μέρος σε αυτή την εκδήλωση!</p>",
+                "2022": "Επιστρέψαμε για άλλη μια δόση των Mapper's Choice Awards! (Αυτή τη φορά σχεδόν σύμφωνα με το πρόγραμμα!)<br>Αυτή είναι μια εκδήλωση ψηφοφορίας όπου όλοι οι mappers/modders μπορούν να προτείνουν και να ψηφίσουν ποιό/ς πιστεύουν ότι είναι το ή ο καλύτερο/ς map/mapper κάθε κατηγορίας!<br>Όλα τα βραβεία osu! supporter παρέχονται από το osu! προσωπικό. 2 μήνες supporter για τους νικητές κάθε κατηγορίας και 4 μήνες για τους νικητές των Μεγάλων Βραβείων!<br>Ελπίζουμε όσο το δυνατόν περισσότεροι συμμετέχοντες να λάβουν μέρος σε αυτή την εκδήλωση!",
+                "2023": "Νέα χρονιά, νέα επανάληψη των Mapper's Choice Awards!<br>Αυτή είναι μια εκδήλωση ψηφοφορίας όπου όλοι οι mappers/modders μπορούν να προτείνουν και να ψηφίσουν ποιό/ς πιστεύουν ότι είναι το ή ο καλύτερο/ς map/mapper κάθε κατηγορίας!<br>Όλα τα βραβεία osu! supporter παρέχονται από το osu! προσωπικό. 2 μήνες supporter για τους νικητές κάθε κατηγορίας και 4 μήνες για τους νικητές των Μεγάλων Βραβείων!<br>Ελπίζουμε όσο το δυνατόν περισσότεροι συμμετέχοντες να λάβουν μέρος σε αυτή την εκδήλωση!"
+            },
+            "categories": {
+                "index": "κατηγορίες",
+                "map": "κατηγορίες για map",
+                "user": "κατηγορίες για χρήστες"
+            },
+            "organized": "ΟΡΓΑΝΩΤΕΣ"
+        },
+        "categories": {
+            "grandAward": {
+                "name": "Μεγάλο Βραβείο",
+                "description": "Οι καλύτεροι των καλύτερων."
+            },
+            "grandStoryboard": {
+                "name": "Grand Storyboard",
+                "description": "The best storyboard out there."
+            },
+            "grandStoryboarder": {
+                "name": "Grand Storyboarder",
+                "description": "The best storyboarder out there."
+            },
+            "marathon": {
+                "name": "Best Marathon",
+                "description": "The best beatmap with 5+ minute drain time."
+            },
+            "marathonMan": {
+                "name": "Best Marathon",
+                "description": "The best beatmap with 4+ minute drain time."
+            },
+            "hitsounding": {
+                "name": "Best Hitsounding",
+                "description": "The best bells and whistles out there."
+            },
+            "collab": {
+                "name": "Best Collab",
+                "description": "The best beatmap with 2+ mappers creating the top difficulty."
+            },
+            "simple": {
+                "name": "Best Simple",
+                "description": "The best beatmap with the top difficulty lower than an insane."
+            },
+            "highBPM": {
+                "name": "Best High BPM",
+                "description": "The best beatmap with atypically fast streaming or high singletap strain."
+            },
+            "smallCircles": {
+                "name": "Best Small Circles",
+                "description": "The best beatmap with the top difficulty using circle size 5 or smaller."
+            },
+            "heavy13": {
+                "name": "Best 1/3 Heavy",
+                "description": "The best beatmap with top difficulties using lots of purple ticks."
+            },
+            "throwback": {
+                "name": "Best Throwback",
+                "description": "The best beatmap with a style of the old."
+            },
+            "mapper": {
+                "name": "Best Mapper",
+                "description": "The one who created the best beatmaps."
+            },
+            "modder": {
+                "name": "Best Modder",
+                "description": "The one who created the best mods."
+            },
+            "hitsounder": {
+                "name": "Best Hitsounder",
+                "description": "The one who created the best hitsounds."
+            },
+            "mostPromising": {
+                "name": "Most Promising",
+                "description": "The best mapper who ranked their first set this year."
+            },
+            "mostInfluential": {
+                "name": "Most Influential",
+                "description": "The one who inspired and influenced other mappers the most."
+            },
+            "outCont": {
+                "name": "Outstanding Contributor",
+                "description": "The one who positively contributed to the health of osu! the most."
+            },
+            "spread": {
+                "name": "Best Spread",
+                "description": "The set with the best spread of difficulties."
+            },
+            "experimental": {
+                "name": "Best Experimental",
+                "description": "The best \"tech\" / off meta beatmap."
+            },
+            "stream": {
+                "name": "Best Streams",
+                "description": "The beatmap with the best continuous streams."
+            },
+            "highBPMTaiko": {
+                "name": "Best High BPM",
+                "description": "The best beatmap with over 240 BPM."
+            },
+            "lowBPMTaiko": {
+                "name": "Best Low BPM",
+                "description": "The best beatmap with under 130 BPM."
+            },
+            "simplistic": {
+                "name": "Best Simplistic",
+                "description": "The best cleanest beatmap out there."
+            },
+            "sliderVelocity": {
+                "name": "Best Slider Velocity",
+                "description": "The best beatmap with an intense usage of slider velocities."
+            },
+            "featuredArtist": {
+                "name": "Best Featured Artist",
+                "description": "The best beatmap for a featured artist song."
+            },
+            "longNotes": {
+                "name": "Best Long Notes",
+                "description": "The best beatmap with an intense usage of LNs."
+            },
+            "longNotes4K": {
+                "name": "Best 4K Long Notes",
+                "description": "The best 4K beatmap with an intense usage of LNs."
+            },
+            "longNotes7K": {
+                "name": "Best 7K Long Notes",
+                "description": "The best 7K beatmap with an intense usage of LNs."
+            },
+            "rice": {
+                "name": "Best Rice",
+                "description": "The best beatmap with an intense usage of rice."
+            },
+            "rice4K": {
+                "name": "Best 4K Rice",
+                "description": "The best 4K beatmap with an intense usage of rice."
+            },
+            "rice7K": {
+                "name": "Best 7K Rice",
+                "description": "The best 7K beatmap with an intense usage of rice."
+            },
+            "antiMeta": {
+                "name": "Best Anti Meta",
+                "description": "The best beatmap based around 5K/6K/8K/9K."
+            },
+            "7K": {
+                "name": "Best 7K Specific",
+                "description": "The best beatmap based around 7K."
+            },
+            "technical": {
+                "name": "Best Technical Storyboard",
+                "description": "The best storyboard in its technical capabilities."
+            },
+            "gameplay": {
+                "name": "Best Gameplay Storyboard",
+                "description": "The best storyboard in utilizing gameplay elements."
+            },
+            "minimalistic": {
+                "name": "Best Minimalistic Storyboard",
+                "description": "The best storyboard in saying a lot with very little."
+            },
+            "narrative": {
+                "name": "Best Narrative Storyboard",
+                "description": "The best storyboard in telling a great story."
+            },
+            "technicalTaiko": {
+                "name": "Best Technical",
+                "description": "The best beatmap rich in complex patterning and snap combinations."
+            },
+            "fastTaiko": {
+                "name": "Best Fast",
+                "description": "The best beatmap with fast tapping and high SV."
+            },
+            "slowTaiko": {
+                "name": "Best Slow",
+                "description": "The best beatmap with slow tapping and low SV."
+            },
+            "hybrid": {
+                "name": "Best Hybrid",
+                "description": "The best beatmap which showcases substantial amounts of both LN and rice patterning."
+            },
+            "hybrid4K": {
+                "name": "Best 4K Hybrid",
+                "description": "The best 4K beatmap which showcases substantial amounts of both LN and rice patterning."
+            },
+            "hybrid7K": {
+                "name": "Best 7K Hybrid",
+                "description": "The best 7K beatmap which showcases substantial amounts of both LN and rice patterning."
+            },
+            "highBPMAlternator": {
+                "name": "Best High BPM / Alternator",
+                "description": "The best beatmap with priority on extremely fast tapping and / or aim skills. (240+ BPM)"
+            },
+            "vanilla": {
+                "name": "Best Vanilla",
+                "description": "The best beatmap utilizing simple mapping techniques to great effect."
+            },
+            "complex": {
+                "name": "Best Complex Rhythm / Swing",
+                "description": "The best beatmap with extensive usage of uncommon snappings, including doubles, 1/3, 1/5, 1/7, and more."
+            },
+            "unorthodox": {
+                "name": "Best Unorthodox / Gimmick",
+                "description": "The best beatmap showcasing mapping techniques or ideas that are not frequently seen."
+            },
+            "sliderTech": {
+                "name": "Best Slider Tech",
+                "description": "The best beatmap featuring technical elements, intricate slider design and velocity usage, and complex stream patterns."
+            },
+            "mostInspiring": {
+                "name": "Most Inspiring",
+                "description": "The one who influenced and provided inspiration to others the most."
+            },
+            "mostInnovative": {
+                "name": "Most Innovative",
+                "description": "The one who influenced and provided inspiration to others the most."
+            },
+            "communityPillar": {
+                "name": "Community Pillar",
+                "description": "The best user in providing outstanding contribution to the community behind-the-scenes."
+            },
+            "simplisticTaiko": {
+                "name": "Best Simplistic",
+                "description": "The best beatmap in using simple patterning and rhythm."
+            },
+            "technicalCatch": {
+                "name": "Best Technical",
+                "description": "The best beatmap which utilizes concepts that push the boundaries of catch gameplay."
+            },
+            "antiMetaCatch": {
+                "name": "Best Anti-Meta",
+                "description": "The best beatmap at using unconventional / gimmicky patterning."
+            },
+            "unconventionalCtb": {
+                "name": "Best Unconventional AR/CS",
+                "description": "The best beatmap with unusual AR (Approx. <=8.5) or unusual CS (Approx. >=5, <=3)."
+            },
+            "diversity": {
+                "name": "Best Diversity",
+                "description": "The best beatmap focusing on many skillsets / categories."
+            },
+            "altSwing": {
+                "name": "Best Alternator / Swing",
+                "description": "The best beatmap focusing on alt-styled or swing-styled beatmaps."
+            },
+            "highDifficulty": {
+                "name": "Best High Difficulty",
+                "description": "The best difficult beatmap with a very high Star Rating (>=8 stars)."
+            },
+            "complexOnly": {
+                "name": "Best Complex",
+                "description": "The best beatmap with extensive usage of uncommon snappings."
+            },
+            "unorthodoxTaiko": {
+                "name": "Best Unorthodox",
+                "description": "The best beatmap that utilizes gimmicks and/or concepts."
+            },
+            "unorthodoxCatch": {
+                "name": "Best Unorthodox",
+                "description": "The best beatmap that strongly deviates from common norms."
+            },
+            "mapper4K": {
+                "name": "Best 4K Mapper",
+                "description": "The one who created the best 4K beatmaps."
+            },
+            "mapper7K": {
+                "name": "Best 7K Mapper",
+                "description": "The one who created the best 7K beatmaps."
+            },
+            "mapperAntiMeta": {
+                "name": "Best Anti Meta Mapper",
+                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
+            },
+            "motionDesign": {
+                "name": "Best Motion Design / Animation Storyboard",
+                "description": "The storyboard with the most satisfying animations and transitions."
+            },
+            "lyrics": {
+                "name": "Best Lyrics / Text Storyboard",
+                "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+            },
+            "mostPromisingSB": {
+                "name": "Most Promising Storyboarder",
+                "description": "The best storyboarder who ranked their first storyboard this year."
+            },
+            "outContSB": {
+                "name": "Outstanding Contributor (Storyboard)",
+                "description": "The one who positively contributed to the health of the storyboarding scene the most."
+            }
+        },
+        "nom_vote": {
+            "search": "search for a beatmap / user",
+            "select": "Please select a category!",
+            "candidates": "candidates",
+            "options": {
+                "date": "DATE",
+                "artist": "ARTIST",
+                "title": "TITLE",
+                "favs": "FAVS",
+                "creator": "CREATOR",
+                "sr": "SR",
+                "id": "ID",
+                "alph": "ALPH",
+                "asc": "ASC",
+                "desc": "DESC",
+                "voteOrder": "VOTE ORDER",
+                "valid": "VALID",
+                "invalid": "INVALID",
+                "both": "BOTH",
+                "all": "ALL",
+                "played": "PLAYED",
+                "results": "RESULTS",
+                "voters": "VOTERS"
+            },
+            "votingOverlay": "Hello! this may be the first time you have navigated to the voting page! <br> MCA Voting utilizes <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting!</a> <br> This means you can select any number of beatmaps/users to vote for! <br> All votes are ordered by choice, so <span class='notice-modal--bold'>the first choice will have the highest priority!</span> <br> Your first choice will count until it loses the race. Then your second, then your third, then 4th, e.t.c. <br> Good luck and can't wait to see the results for MCA [YEAR]",
+            "hosted": "HOSTED BY",
+            "userID": "USER ID"
+        },
+        "results": {
+            "headings": {
+                "placement": "PLACE",
+                "map": "MAP",
+                "title": "TITLE",
+                "artist": "ARTIST",
+                "hoster": "HOST",
+                "username": "USER",
+                "firstChoice": "1ST CHOICES",
+                "secondThirdChoice": "2ND-3RD CHOICES",
+                "restChoice": "4TH+ CHOICES"
+            },
+            "resultsOverlay": "Hello! This is possibly the first time you have navigated to the results page! <br> These results show the final placements of the beatmaps/users using <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> alongside the amount of times the beatmap/user was a first choice, and the total number of appearances!<br> Hopefully these results for MCA [YEAR] are to your liking! Can't wait to see you all for next MCA!"
+        }
+    },
+    "open": {
+        "navbar": {
+            "home": "HOME",
+            "info": "INFO",
+            "qualifiers": "QUALIFIERS",
+            "teams": "TEAMS",
+            "schedule": "SCHEDULE",
+            "mappool": "MAPPOOL",
+            "staff": "STAFF",
+            "createTeam": "CREATE TEAM",
+            "invitations": "INVITATIONS",
+            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
+            "teamInvites": "TEAM INVITES",
+            "noInvites": "You currently have no invites"
+        },
+        "footer": {
+            "corsace": "CORSACE",
+            "twitter": "TWITTER",
+            "discord": "DISCORD",
+            "twitch": "TWITCH",
+            "youtube": "YOUTUBE"
+        },
+        "stages": {
+            "qualifiers": "QUALIFIERS",
+            "round robin": "ROUND ROBIN",
+            "runoff bracket": "RUNOFF BRACKET",
+            "knockout 1": "KNOCKOUT 1",
+            "knockout 2": "KNOCKOUT 2",
+            "abbreviations": {
+                "ql": "(QL)",
+                "rr": "(RR)",
+                "ro": "(RO)",
+                "ko1": "(KO1)",
+                "ko2": "(KO2)"
+            }
+        },
+        "home": {
+            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
+            "timeline": "TIMELINE",
+            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "registrations": "REGISTRATIONS",
+            "button": {
+                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
+                "mappoolDownload": "Mappool download and statistics",
+                "register": "CREATE AND REGISTER YOUR TEAM",
+                "registrationsEnd": "Registrations end"
+            }
+        },
+        "info": {
+            "title": "INFORMATION",
+            "condensed": "CONDENSED INFO",
+            "error": "Could not find tournament",
+            "matchInfo": {
+                "matchSize": "MATCH SIZE",
+                "minPlayers": "MIN. PLAYERS",
+                "maxPlayers": "MAX. PLAYERS",
+                "pickTimer": "MAP PICK TIMER",
+                "readyTimer": "READY TIMER",
+                "order": "ORDER",
+                "scoringMethod": "SCORING METHOD",
+                "type": "TYPE",
+                "startDate": "START DATE",
+                "endDate": "END DATE",
+                "rounds": "ROUNDS",
+                "initialSize": "INITIAL SIZE",
+                "finalSize": "FINAL SIZE"
+            },
+            "headings": {
+                "mappools": "MAPPOOLS",
+                "stage": "STAGE"
+            },
+            "status": {
+                "notStarted": "NOT STARTED",
+                "complete": "COMPLETE",
+                "ongoing": "ONGOING"
+            },
+            "mappools": {
+                "info": "MAPPOOL INFO",
+                "notAvailable": "INFO NOT AVAILABLE",
+                "mappackDownload": "DOWNLOAD MAP PACK",
+                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
+            },
+            "prizes": "PRIZES",
+            "donateToCorsace": "DONATE TO CORSACE",
+            "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
+            "generalInfo": "GENERAL INFORMATION",
+            "teamStructure": "TEAM STRUCTURE",
+            "qualifiersProcedures": "QUALIFIERS PROCEDURES",
+            "tournamentStructure": "TOURNAMENT STRUCTURE",
+            "infoGraphic": "INFOGRAPHIC",
+            "matchProcedures": "MATCH PROCEDURES",
+            "reportTournament": "REPORT TOURNAMENTS HERE",
+            "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
+        },
+        "qualifiers": {
+            "nav": {
+                "mappool": "MAPPOOL",
+                "qualifiers": "QUALIFIERS",
+                "scores": "SCORES"
+            },
+            "mappool": {
+                "sheets": "SHEETS",
+                "mappool": "MAPPOOL",
+                "notAvailable": "Mappool not available yet",
+                "banner": {
+                    "mapper": "MAPPER",
+                    "difficulty": "DIFFICULTY"
+                }
+            },
+            "scores": {
+                "nav": {
+                    "sort": "SORT",
+                    "average": "AVERAGE",
+                    "sum": "SUM",
+                    "percentAvg": "%AVG",
+                    "relAvg": "REL. AVG",
+                    "percentMax": "%MAX",
+                    "relMax": "REL. MAX",
+                    "zScore": "Z-SCORE",
+                    "placement": "PLACE",
+                    "player": "PLAYER",
+                    "team": "TEAM",
+                    "best": "BEST",
+                    "worst": "WORST"
+                },
+                "categorySelect": "CATEGORY SELECT",
+                "players": "PLAYERS",
+                "teams": "TEAMS"
+            },
+            "create": "CREATE",
+            "error": {
+                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
+                "pressToClose": "Press anywhere to close"
+            }
+        },
+        "teams": {
+            "teamsList": "TEAMS LIST",
+            "error": "COULD NOT GET TEAM LIST",
+            "searchPlaceholder": "search for user/team",
+            "editTeamInfo": "edit team info",
+            "qualifierId": "Qualifier ID",
+            "placeholders": {
+                "searchUser": "osu! username (must have corsace account)",
+                "name": "name",
+                "abbreviation": "abbreviation"
+            },
+            "edit": {
+                "teamName": "TEAM NAME",
+                "teamAbbreviation": "TEAM ABBREVIATION",
+                "timezone": "TIMEZONE",
+                "teamAvatar": "TEAM AVATAR",
+                "errors": {
+                    "size": "Image is too large. Ensure the image is less than 5MB.",
+                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
+                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
+                    "invalidTimezone": "Invalid timezone.",
+                    "errorAddingTeamAvatar": "Error adding team avatar:\n{error}",
+                    "invalidName": "",
+                    "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
+                },
+                "confirm": {
+                    "deleteTeam": "Are you sure you want to delete this team?",
+                    "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
+                    "removeMember": "Are you sure you want to remove {username} from your team?",
+                    "transferManager": "Are you sure you want to transfer manager to {username}?",
+                    "invite": "Are you sure you want to invite {username} to your team?",
+                    "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
+                    "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
+                },
+                "save": "SAVE",
+                "deleteTeam": "DELETE TEAM"
+            },
+            "headers": {
+                "tournaments": "TOURNAMENTS",
+                "teamStats": "TEAM STATS",
+                "teamManager": "TEAM MANAGER",
+                "teamMembers": "TEAM MEMBERS",
+                "editTeamMembers": "edit team members",
+                "closeTeamMembers": "close team members edit",
+                "becomeMember": "become a member and play as well",
+                "becomeManager": "become manager only",
+                "teamInvites": "TEAM INVITES",
+                "editTeamInvites": "edit team invites",
+                "closeTeamInvites": "close team invites edit",
+                "qualifier": "QUALIFIER",
+                "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
+                "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
+            },
+            "registration": {
+                "noRegistration": "Registered in no tournaments",
+                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+            },
+            "teamID": "TEAM ID",
+            "member": "member",
+            "members": "members",
+            "averageBWS": "Average BWS",
+            "averageRank": "Average Rank",
+            "averagePP": "Average PP",
+            "editQualifierTime": "edit qualifier time",
+            "deleteTeam": "delete qualifier/unregister team",
+            "createJoinQualifier": "create/join qualifier",
+            "notRegistered": "Currently not registered in Corsace Open."
+        },
+        "create": {
+            "title": "CREATE A TEAM",
+            "info1": "Registrations will end on",
+            "info2": "Please ensure all information is correct before finalizing.",
+            "teamName": "TEAM NAME",
+            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
+            "teamAcronym": "TEAM ACRONYM",
+            "acronymLength": "2 - 4 characters. Profanity will be checked.",
+            "teamTimezone": "TEAM TIMEZONE",
+            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
+            "teamAvatar": "TEAM AVATAR",
+            "upload": "UPLOAD",
+            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
+            "fileSizeError": "file size too big! please upload a smaller image",
+            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
+            "preview": "PREVIEW",
+            "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
+            "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
+            "avatarInfo3": "All names and avatars will be approved by staff.",
+            "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
+            "teamManagement": "TEAM MANAGEMENT",
+            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "create": "CREATE TEAM"
+        },
+        "components": {
+            "openCardTeam": {
+                "rank": "RANK",
+                "teambwsAverage": "TEAM BWS AVG",
+                "unregistered": "UNREGISTERED",
+                "bws": "BWS"
+            },
+            "stageSelector": "STAGE SELECT"
+        },
+        "staff": {
+            "title": "STAFF",
+            "notLoggedIn": "NOT LOGGED IN"
+        },
+        "referee": {
+            "title": "REFEREE",
+            "loadMore": "LOAD MORE",
+            "back": "BACK TO MATCHUP LIST",
+            "createLobby": "CREATE LOBBY",
+            "roll": "ROLL",
+            "reroll": "RE-ROLL",
+            "settings": "!MP SETTINGS",
+            "timer": "!MP TIMER",
+            "startMap": "!MP START",
+            "abortMap": "!MP ABORT",
+            "closeLobby": "CLOSE LOBBY"
+        },
+        "status": {
+            "loading": "LOADING"
+        },
+        "mappool": {
+            "title": "MAPPOOL"
+        }
+    },
+    "main": {
+        "construction": {
+            "underConstruction": "under construction",
+            "sorry": "sorry for the inconvenience",
+            "development": "the corsace website is still in early development",
+            "theTeam": "the corsace team"
+        },
+        "merch": {
+            "code": "Tap Trio - Corsace Bundle",
+            "products": "Limited quantity available"
+        }
+    }
+}

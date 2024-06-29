@@ -1,0 +1,144 @@
+---
+title: Web - Membuat Halaman/Komponen
+description: Cara untuk membuat halaman atau komponen pada situs web Corsace.
+lastUpdated: 2023-09-20
+sidebar:
+  order: 1210
+---
+
+## Bacaan Prasyarat
+
+* [Development/Client/Guide/Web - Menjalankan Lingkungan Sistem](../web-running-environment)
+* [Nuxt 2/Direktori Halaman](https://v2.nuxt.com/docs/directory-structure/pages)
+* [vue-class-component/Class Component](https://class-component.vuejs.org/guide/class-component.html)
+* [BEM/Penamaan](https://getbem.com/naming/)
+
+## Struktur Direktori
+
+Berkas halaman pada umumnya terletak pada lokasi yang sesuai dengan struktur direktori Nuxt. `[WEBSITE]/components`\
+Di sisi lain, berkas komponen saat ini terletak di dua lokasi berikut:
+
+* Apabila suatu komponen hanya digunakan untuk satu situs, maka komponen tersebut akan terletak pada folder `[WEBSITE]/components` (di bawah folder situs web yang bersangkutan).
+* Apabila suatu komponen digunakan untuk berbagai situs, maka komponen tersebut akan terletak pada `Assets/components`.
+
+:::caution
+This may change in the near future based on [this GitHub issue](https://github.com/Corsace/Corsace/issues/292)
+:::
+
+## Anatomi Halaman/Komponen
+
+Corsace menggunakan SASS/SCSS untuk pengayaan dan ts untuk penulisan script.\
+Khusus untuk berkas vue, dekorator `vue-property-decorator` digunakan untuk membuat baik halaman maupun komponen.
+Pada saat kamu membuat berkas vue baru, kamu disarankan untuk mengikuti template dasar sebagai sebagai berikut:
+
+```vue
+<template>
+    ...
+</template>
+
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
+    ...
+})
+export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
+    ...
+}
+</script>
+
+<style lang="scss">
+@import '@s-sass/[FILENAME FROM Assets/sass]';
+</style>
+```
+
+## Waktu Yang Tepat Untuk Membuat Komponen
+
+Untuk repositori ini, rangkaian situasi di mana kamu mungkin akan perlu untuk memisahkan kode yang ada ke masing-masing komponennya meliputi antara lain:
+
+* Ketika bagian HTML yang sedang kamu tulis nantinya akan/berkemungkinan untuk digunakan kembali di tempat lain
+* Ketika komponen yang bersangkutan **dapat** dianggap/digunakan sebagai komponen tunggal yang tidak terikat komponen induk (standalone)
+* Ketika halaman/komponen yang sedang kamu kerjakan dapat jauh lebih disederhanakan tanpa membuat repositori yang ada menjadi terlalu kompleks
+
+Kamu **sangat disarankan** untuk memisahkan bagian kode yang ada hanya seperlunya, agar segala sesuatunya mudah untuk dipahami/digunakan dan kamu tidak terjebak dalam pusaran DRY (Don't Repeat Yourself).
+
+## Mengakses Store
+
+### Mengakses Store Utama
+
+Berkas store utama terletak pada `Assets/store/index.ts`. Untuk dapat mengakses variabel tertentu dari state-nya masing-masing, kamu hanya perlu untuk menambahkan rangkaian kode berikut pada bagian `script`:
+
+```vue
+<script lang="ts">
+import { State } from "vuex-class";
+...
+export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
+    ...
+    @State [VARIABLE'S NAME FROM STORE]!: [VARIABLE'S TYPES];
+    ...
+}
+</script>
+```
+
+### Mengakses Store yang Spesifik
+
+Untuk mengakses store yang spesifik, caranya sangat mirip dengan mengakses store utama. Namun, kamu perlu untuk membuat `namespace` terlebih dahulu.\
+Sebagai contoh, apabila kamu ingin mengakses variabel yang terdapat pada store `Assets/store/mca-ayim.ts`, kamu dapat menginputkan kode berikut:
+
+```vue
+<script lang="ts">
+import { namespace } from "vuex-class";
+...
+const mcaAyimModule = namespace("mca-ayim");
+...
+export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
+    ...
+    @mcaAyimModule.State [VARIABLE'S NAME FROM STORE]!: [VARIABLE'S TYPES];
+    ...
+}
+</script>
+```
+
+## Protokol SASS/SCSS dan Pengayaan (Styling)
+
+:::danger
+Untuk memastikan kejelasan nomenklatur BEM:
+
+* Blok merupakan "bagian mandiri" ("standalone section")
+* Elemen merupakan "bagian berketergantungan" ("non-standalone section")
+* Pengubah/modifier merupakan "efek" ("effect")
+
+Sebagai contoh, berhubung `red` bukan merupakan blok/elemen, maka `red` akan selalu berlaku sebagai pengubah/modifier.
+:::
+Mengingat template vue pada umumnya hanya mengizinkan penggunaan 1 elemen anak (child element) dan nomenklatur pengayaan yang ada harus mengikuti BEM, berkas store ini biasanya hanya akan dipanggil oleh 1 blok yang kemudian dibuat bercabang dengan berbagai elemen dan pengubah/modifier.\
+Sebagai contoh:
+
+```vue
+<template>
+    <tag class="block">
+        <tag class="block__elem1">
+            <tag class="block__elem1--mod1">
+                ...
+            </tag>
+            ...
+        </tag>
+        ...
+    </tag>
+</template>
+...
+<style lang="scss">
+...
+.block {
+    &__elem1 {
+        &--mod1 {
+            ...
+        }
+        ...
+    }
+    ...
+}
+</style>
+```
+
+Seluruh nama elemen pengayaan harus ditulis dengan format `snake-case` alih-alih `camelCase`.\
+Sebagai contoh: Penulisan yang tepat untuk `mainPage` adalah `main-page`.
