@@ -1,0 +1,102 @@
+---
+title: Server + CronRunner - Creating Cron Type
+description: Creating a new CronJob type
+lastUpdated: 2023-09-21
+sidebar:
+  order: 3110
+---
+
+This explains how to write functionality for creating cron jobs.\
+Typically you will want to write a cron job when needing to run something after an extended period of time (say, an hour+ later) from now.\
+This is better than creating a `setTimeout` function in terms of reliability, and also for performance and organization.\
+This also solves the issue of persistence, as the cron will resume its timer whenever the instance begins again.
+
+## Pre-requisite Reading
+
+* [Development/Server/Guide/Server + CronRunner - Running Environment](../server-running-environment)
+
+## Directory Structure
+
+The primary code related to creating cron jobs and the CronRunner is in `Server/cron/cronFunctions`.\
+While the file entry-point is at `Server/cron-runner.ts`, that file is nore relevant to creating a new type of cron job.\
+The `Server/cron/index.ts` file is also not relevant for creating cron jobs, as it simply holds the class defintion we use for `Cron`.
+
+`Interfaces/cron` exists to contain the general typing and interfaces created for CronRunner as well.
+
+## CronJob Anatomy
+
+### CronJob Type
+
+Before writing the CronJob's functionality, go to `Interfaces/cron`, and append your CronJob type's name `[CRON TYPE]` to the CronJobType like so:
+
+```ts
+export enum CronJobType {
+    ...,
+    [CRON TYPE],
+}
+...
+```
+
+### CronJob Functionality
+
+Typically, there are only 2 functions required for a given CronJob:
+
+* `initialize` - The function called initially to get the list of CronJobs of that type that exist in the database (if any/needed)
+* `execute` - The function called when the cron's time is up.
+
+You would primarily write the logic for the CronJob in a new file within `Server/cron/cronFunctions` called whatever you want it to.
+
+Afterwards, the general structure of the file would be set up like so:
+
+```ts
+import { CronJobData, CronJobType } from "../../../Interfaces/cron";
+...
+async function initialize (): Promise<CronJobData[]> {
+    ... // Write logic to obtain dates from DB here
+    // The example below assumes a Date[] array called dateArray exists at the end
+    // Everything below (including the comments) are within every cron job file
+
+    // For each date, create a cron job with the end as the date.
+    let cronJobs: CronJobData[] = dateArray.map(date => ({
+        type: CronJobType[CRON TYPE],
+        date,
+    }));
+
+    // If any dates are in the past, remove them and add a job to start instantly.
+    if (cronJobs.some(j => j.date.getTime() < Date.now())) {
+        cronJobs = cronJobs.filter(j => j.date.getTime() > Date.now());
+        cronJobs.push({
+            type: CronJobType.[CRON TYPE],
+            date: new Date(Date.now() + 10 * 1000), // 10 second delay to avoid Date in past error
+        });
+    }
+
+    return cronJobs;
+}
+
+async function execute (job: CronJobData) {
+    ...
+}
+
+export default {
+    initialize,
+    execute,
+};
+```
+
+## Installing CronJob
+
+In `Server/cron/cronFunctions/index.ts`, simply append to the default export with the new enum type created in `Interfaces/cron` as its key, and the new code/file you have written in this same `cronFunctions` folder like so:
+
+```ts
+...
+import [CRON TYPE]Execute from "./[CRON TYPE]"
+import { CronJobType } from "../../../Interfaces/cron";
+
+export default {
+    ...,
+    [CronJobType.[CRON TYPE]]: [CRON TYPE]Execute,
+};
+```
+
+Afterwards, the `initialize` functionality should run whenever you start the CronRunner instance, and `execute` should run whenever a cron of your new type times out.
