@@ -2,15 +2,15 @@
     "language": "日本語",
     "flag": "https://osu.ppy.sh/images/flags/JP.png",
     "header": {
-        "welcomeBack": "welcome back",
-        "login": "login",
-        "register": "register",
-        "changeDiscord": "change discord",
-        "logout": "logout"
+        "welcomeBack": "おかえりなさい",
+        "login": "ログイン",
+        "register": "新規登録",
+        "changeDiscord": "Discordを変更",
+        "logout": "ログアウト"
     },
     "mca_ayim": {
         "banner": {
-            "merch": "OFFICIAL MERCHANDISE STORE",
+            "merch": "公式グッズストア",
             "corsace": "MAIN EVENT HUB"
         },
         "header": {
@@ -44,8 +44,9 @@
             "message": {
                 "2019": "<p>こんにちは、2020年。</p><p>A Year in Mapping 2019が当年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>このウェブサイトを使って、全ての年について検索できるだけの情報を含めることができました。ウェブサイト上のバグを含め、何か提案があればcorsaceのサーバー内でVINXISの元へ教えてください（リンクは左下にあります）。</p><p>また、コメントの募集も行っています。これを読んでいるあなたも、マッパーに対して好きなだけコメントを書いて送ることができます。</p><p>まずは下にあるアイコンからお好きなモードを選んで始めましょう！</p>",
                 "2020": "<p>こんにちは、2021年... 今度は間違いのない年です！</p><p>A Year in Mapping 2020が本年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>そして改めてにはなりますが、コメントは絶賛募集中です。早速下にあるアイコンからお好きなモードを選んで始めましょう！</p>",
-                "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>",
-                "2022": "<p>Welcome to 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>"
+                "2021": "<p>2022年になりました。</p> <p>A Year in Mapping 2021では、2021年に達成された、あるいは破られた記録や統計をお届けします！</p>",
+                "2022": "<p>2023年へようこそ！</p> <p>A Year in Mapping 2022では、2021年に達成された、あるいは破られた記録や統計をお届けします！今度こそはある意味予定通りです。</p>",
+                "2023": "<p>2024 is now here!</p> <p>A Year in Mapping 2023 is here to provide the records and stats made or even broken!</p>"
             }
         },
         "mapsets": {
@@ -120,7 +121,7 @@
             "nominating": "ノミネート",
             "preparation": "準備",
             "results": "結果",
-            "timeline": "timeline",
+            "timeline": "予定表",
             "mapsetsLabel": "マップセット",
             "mappersLabel": "マッパー",
             "commentsLabel": "コメント",
@@ -141,7 +142,8 @@
                 "2019": "<p>Mapper's Choice Awardsが帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。</p><p>Community Choiceとの違いは、マッピングコミュニティーの目線から2019年を代表する譜面を決めることが目的だという点です。</p><p>今年はできる限り簡単に参加できるように、ウェブサイトの開発を本格的に行いました。</p><p>すべてのosu!サポーターはスタッフが直接送ります。各部門の勝者には2ヶ月分、グランプリには6ヶ月分のサポーターが贈呈されます。</p><p>一人でも多くの人に投票してもらえることを期待しています！</p>",
                 "2020": "<p>2020年の仕上げに、Mapper's Choice Awardsがまたまた帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。</p><p>Community Choiceとの違いは、マッピングコミュニティーの目線から2020年を代表する譜面を決めることが目的だという点です。</p><p>様々な変更を加え、MCA2019で見つかったすべてのバグへの対処とともに、必要に応じて部門を修正したため、今回ははるかにスムーズなはずです。</p><p>一人でも多くの人に投票してもらえることを期待しています！</p>",
                 "2021": "<p>Mapper's Choice Awards is back again for 2021! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>",
-                "2022": "We are back for another installment of Mapper's Choice Awards! (This time almost on schedule!)<br>This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
+                "2022": "We are back for another installment of Mapper's Choice Awards! (This time almost on schedule!)<br>This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!",
+                "2023": "New year, new iteration of Mapper's Choice Awards!<br>This is a voting event where all mappers and modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
             },
             "categories": {
                 "index": "categories",
@@ -378,6 +380,54 @@
             "diversity": {
                 "name": "多様性",
                 "description": "多くの部門や技能を内包した譜面"
+            },
+            "altSwing": {
+                "name": "Best Alternator / Swing",
+                "description": "The best beatmap focusing on alt-styled or swing-styled beatmaps."
+            },
+            "highDifficulty": {
+                "name": "Best High Difficulty",
+                "description": "The best difficult beatmap with a very high Star Rating (>=8 stars)."
+            },
+            "complexOnly": {
+                "name": "Best Complex",
+                "description": "The best beatmap with extensive usage of uncommon snappings."
+            },
+            "unorthodoxTaiko": {
+                "name": "Best Unorthodox",
+                "description": "The best beatmap that utilizes gimmicks and/or concepts."
+            },
+            "unorthodoxCatch": {
+                "name": "Best Unorthodox",
+                "description": "The best beatmap that strongly deviates from common norms."
+            },
+            "mapper4K": {
+                "name": "Best 4K Mapper",
+                "description": "The one who created the best 4K beatmaps."
+            },
+            "mapper7K": {
+                "name": "Best 7K Mapper",
+                "description": "The one who created the best 7K beatmaps."
+            },
+            "mapperAntiMeta": {
+                "name": "Best Anti Meta Mapper",
+                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
+            },
+            "motionDesign": {
+                "name": "Best Motion Design / Animation Storyboard",
+                "description": "The storyboard with the most satisfying animations and transitions."
+            },
+            "lyrics": {
+                "name": "Best Lyrics / Text Storyboard",
+                "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+            },
+            "mostPromisingSB": {
+                "name": "Most Promising Storyboarder",
+                "description": "The best storyboarder who ranked their first storyboard this year."
+            },
+            "outContSB": {
+                "name": "Outstanding Contributor (Storyboard)",
+                "description": "The one who positively contributed to the health of the storyboarding scene the most."
             }
         },
         "nom_vote": {
@@ -425,18 +475,18 @@
     },
     "open": {
         "navbar": {
-            "home": "HOME",
-            "info": "INFO",
-            "qualifiers": "QUALIFIERS",
-            "teams": "TEAMS",
-            "schedule": "SCHEDULE",
-            "mappool": "MAPPOOL",
-            "staff": "STAFF",
-            "createTeam": "CREATE TEAM",
-            "invitations": "INVITATIONS",
-            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
-            "teamInvites": "TEAM INVITES",
-            "noInvites": "You currently have no invites"
+            "home": "ホーム",
+            "info": "詳細",
+            "qualifiers": "予選",
+            "teams": "チーム",
+            "schedule": "スケジュール",
+            "mappool": "マッププール",
+            "staff": "スタッフ",
+            "createTeam": "チームを作成",
+            "invitations": "招待",
+            "loginDiscord": "Discordにログインしてチームを編集または招待",
+            "teamInvites": "チーム招待",
+            "noInvites": "招待はありません"
         },
         "footer": {
             "corsace": "CORSACE",
@@ -460,230 +510,230 @@
             }
         },
         "home": {
-            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
-            "timeline": "TIMELINE",
-            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
-            "registrations": "REGISTRATIONS",
+            "description": "Corsace Open 2023へ飛び込もう - 世界の osu! エリート達が戦いを繰り広げる。",
+            "timeline": "タイムライン",
+            "presentedBy": "CORSACE OPEN 23 は以下によって主催",
+            "registrations": "登録期間",
             "button": {
-                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
-                "mappoolDownload": "Mappool download and statistics",
-                "register": "CREATE AND REGISTER YOUR TEAM",
-                "registrationsEnd": "Registrations end"
+                "qualifiersMappool": "予選マッププール",
+                "mappoolDownload": "マッププールのダウンロードと詳細",
+                "register": "チームを作成して登録する",
+                "registrationsEnd": "登録期間終了"
             }
         },
         "info": {
-            "title": "INFORMATION",
-            "condensed": "CONDENSED INFO",
-            "error": "Could not find tournament",
+            "title": "詳細",
+            "condensed": "要約",
+            "error": "トーナメントが見つかりません",
             "matchInfo": {
-                "matchSize": "MATCH SIZE",
-                "minPlayers": "MIN. PLAYERS",
-                "maxPlayers": "MAX. PLAYERS",
-                "pickTimer": "MAP PICK TIMER",
-                "readyTimer": "READY TIMER",
-                "order": "ORDER",
-                "scoringMethod": "SCORING METHOD",
-                "type": "TYPE",
-                "startDate": "START DATE",
-                "endDate": "END DATE",
-                "rounds": "ROUNDS",
+                "matchSize": "マッチサイズ",
+                "minPlayers": "最低プレイヤー数",
+                "maxPlayers": "最大プレイヤー数",
+                "pickTimer": "マップピックタイマー",
+                "readyTimer": "レディータイマー",
+                "order": "人数",
+                "scoringMethod": "スコア計算方法",
+                "type": "タイプ",
+                "startDate": "開始日時",
+                "endDate": "終了日時",
+                "rounds": "ラウンド",
                 "initialSize": "INITIAL SIZE",
                 "finalSize": "FINAL SIZE"
             },
             "headings": {
-                "mappools": "MAPPOOLS",
-                "stage": "STAGE"
+                "mappools": "マッププール",
+                "stage": "ステージ"
             },
             "status": {
                 "notStarted": "NOT STARTED",
-                "complete": "COMPLETE",
-                "ongoing": "ONGOING"
+                "complete": "終了",
+                "ongoing": "進行中"
             },
             "mappools": {
-                "info": "MAPPOOL INFO",
-                "notAvailable": "INFO NOT AVAILABLE",
-                "mappackDownload": "DOWNLOAD MAP PACK",
-                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
+                "info": "マッププール詳細",
+                "notAvailable": "詳細は利用できません",
+                "mappackDownload": "マップパックをダウンロード",
+                "mappacknotAvailable": "マップパックは利用できません"
             },
-            "prizes": "PRIZES",
-            "donateToCorsace": "DONATE TO CORSACE",
-            "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
-            "generalInfo": "GENERAL INFORMATION",
-            "teamStructure": "TEAM STRUCTURE",
-            "qualifiersProcedures": "QUALIFIERS PROCEDURES",
-            "tournamentStructure": "TOURNAMENT STRUCTURE",
-            "infoGraphic": "INFOGRAPHIC",
-            "matchProcedures": "MATCH PROCEDURES",
-            "reportTournament": "REPORT TOURNAMENTS HERE",
-            "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
+            "prizes": "賞品",
+            "donateToCorsace": "Corsaceに寄付する",
+            "supportViaSponsorship": "MOMOKAI SPONSORSHIPによるサポート",
+            "generalInfo": "基本情報",
+            "teamStructure": "チーム構成",
+            "qualifiersProcedures": "予選進行",
+            "tournamentStructure": "トーナメント構成",
+            "infoGraphic": "インフォグラフィック",
+            "matchProcedures": "試合進行",
+            "reportTournament": "ここからトーナメントを報告",
+            "subjectToChange": "すべてのルールは、明確化および調整のために変更される可能性があります"
         },
         "qualifiers": {
             "nav": {
-                "mappool": "MAPPOOL",
-                "qualifiers": "QUALIFIERS",
-                "scores": "SCORES"
+                "mappool": "マッププール",
+                "qualifiers": "予選",
+                "scores": "スコア"
             },
             "mappool": {
-                "sheets": "SHEETS",
-                "mappool": "MAPPOOL",
-                "notAvailable": "Mappool not available yet",
+                "sheets": "シート",
+                "mappool": "マッププール",
+                "notAvailable": "マッププールはまだ利用できません",
                 "banner": {
-                    "mapper": "MAPPER",
-                    "difficulty": "DIFFICULTY"
+                    "mapper": "マッパー",
+                    "difficulty": "難易度"
                 }
             },
             "scores": {
                 "nav": {
-                    "sort": "SORT",
-                    "average": "AVERAGE",
+                    "sort": "ソート",
+                    "average": "平均",
                     "sum": "SUM",
                     "percentAvg": "%AVG",
                     "relAvg": "REL. AVG",
                     "percentMax": "%MAX",
                     "relMax": "REL. MAX",
                     "zScore": "Z-SCORE",
-                    "placement": "PLACE",
-                    "player": "PLAYER",
-                    "team": "TEAM",
-                    "best": "BEST",
-                    "worst": "WORST"
+                    "placement": "順位",
+                    "player": "プレイヤー",
+                    "team": "チーム",
+                    "best": "ベスト",
+                    "worst": "ワースト"
                 },
-                "categorySelect": "CATEGORY SELECT",
-                "players": "PLAYERS",
-                "teams": "TEAMS"
+                "categorySelect": "カテゴリー選択",
+                "players": "プレイヤー",
+                "teams": "チーム"
             },
-            "create": "CREATE",
+            "create": "作成",
             "error": {
-                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
-                "pressToClose": "Press anywhere to close"
+                "message": "{numPlayers} 人のプレイヤーが揃うまで、予選に作成したり参加することはできません！",
+                "pressToClose": "空白を押して閉じる"
             }
         },
         "teams": {
-            "teamsList": "TEAMS LIST",
-            "error": "COULD NOT GET TEAM LIST",
-            "searchPlaceholder": "search for user/team",
-            "editTeamInfo": "edit team info",
-            "qualifierId": "Qualifier ID",
+            "teamsList": "チームリスト",
+            "error": "チームリストを取得できませんでした",
+            "searchPlaceholder": "ユーザー/チームを検索",
+            "editTeamInfo": "チーム情報を編集",
+            "qualifierId": "予選ID",
             "placeholders": {
-                "searchUser": "osu! username (must have corsace account)",
-                "name": "name",
-                "abbreviation": "abbreviation"
+                "searchUser": "osu! ユーザー名 (corsaceアカウントが必要です)",
+                "name": "名前",
+                "abbreviation": "略称"
             },
             "edit": {
-                "teamName": "TEAM NAME",
-                "teamAbbreviation": "TEAM ABBREVIATION",
-                "timezone": "TIMEZONE",
-                "teamAvatar": "TEAM AVATAR",
+                "teamName": "チーム名",
+                "teamAbbreviation": "チーム略称",
+                "timezone": "タイムゾーン",
+                "teamAvatar": "チームアバター",
                 "errors": {
-                    "size": "Image is too large. Ensure the image is less than 5MB.",
-                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
-                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
-                    "invalidTimezone": "Invalid timezone.",
-                    "errorAddingTeamAvatar": "Error adding team avatar:\n{error}",
+                    "size": "画像が大きすぎます。5MB以下の画像をアップロードしてください。",
+                    "type": "無効な画像ファイルです。ファイルがPNGかJPGであることを確認してください。",
+                    "invalidImage": "無効な画像ファイルです。ファイルがPNGかJPGであるか、5MB以下であることを確認してください。",
+                    "invalidTimezone": "無効なタイムゾーンです。",
+                    "errorAddingTeamAvatar": "チームアバターを追加時にエラーが発生しました:\n{error}",
                     "invalidName": "",
                     "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
                 },
                 "confirm": {
-                    "deleteTeam": "Are you sure you want to delete this team?",
-                    "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
-                    "removeMember": "Are you sure you want to remove {username} from your team?",
-                    "transferManager": "Are you sure you want to transfer manager to {username}?",
-                    "invite": "Are you sure you want to invite {username} to your team?",
-                    "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
-                    "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
+                    "deleteTeam": "本当にこのチームを削除しますか？",
+                    "deleteTeamFinal": "本当にこのチームを削除しますか？この操作は取り消せません！",
+                    "removeMember": "このチームから {username} を削除しますか？",
+                    "transferManager": "このチームのマネージャー権を {username} に移行しますか？",
+                    "invite": "{username} をこのチームに招待しますか？",
+                    "removeInvite": "{username} へのチーム招待を取り消してもよろしいですか？",
+                    "unregister": "この大会の登録を取り消しますか？6人のメンバーがいれば、いつでも再登録できます。"
                 },
-                "save": "SAVE",
-                "deleteTeam": "DELETE TEAM"
+                "save": "セーブ",
+                "deleteTeam": "チームを削除"
             },
             "headers": {
-                "tournaments": "TOURNAMENTS",
-                "teamStats": "TEAM STATS",
-                "teamManager": "TEAM MANAGER",
-                "teamMembers": "TEAM MEMBERS",
-                "editTeamMembers": "edit team members",
-                "closeTeamMembers": "close team members edit",
-                "becomeMember": "become a member and play as well",
-                "becomeManager": "become manager only",
-                "teamInvites": "TEAM INVITES",
-                "editTeamInvites": "edit team invites",
-                "closeTeamInvites": "close team invites edit",
-                "qualifier": "QUALIFIER",
-                "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
-                "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
+                "tournaments": "トーナメント",
+                "teamStats": "チームスタッツ",
+                "teamManager": "チームマネージャー",
+                "teamMembers": "チームメンバー",
+                "editTeamMembers": "チームメンバーを編集",
+                "closeTeamMembers": "閉じる",
+                "becomeMember": "メンバーになりプレイに参加する",
+                "becomeManager": "マネージャーになる",
+                "teamInvites": "チーム招待",
+                "editTeamInvites": "チーム招待を編集",
+                "closeTeamInvites": "閉じる",
+                "qualifier": "予選",
+                "requiredMessageExact": "予選に登録、参加するには {minTeamSize} 人のチームメンバーが必要です",
+                "requiredMessageRange": "予選に登録、参加するには {minTeamSize} 人から {maxTeamSize} 人までのチームメンバーが必要です"
             },
             "registration": {
-                "noRegistration": "Registered in no tournaments",
-                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+                "noRegistration": "トーナメントに登録していません",
+                "toPlay": "Corsace Openに参加するには、6人のメンバーを集めて、予選日時を選択してください"
             },
-            "teamID": "TEAM ID",
-            "member": "member",
-            "members": "members",
-            "averageBWS": "Average BWS",
-            "averageRank": "Average Rank",
-            "averagePP": "Average PP",
-            "editQualifierTime": "edit qualifier time",
+            "teamID": "チームID",
+            "member": "メンバー",
+            "members": "メンバー",
+            "averageBWS": "平均BWS",
+            "averageRank": "平均ランク",
+            "averagePP": "平均PP",
+            "editQualifierTime": "予選時刻の変更",
             "deleteTeam": "delete qualifier/unregister team",
             "createJoinQualifier": "create/join qualifier",
-            "notRegistered": "Currently not registered in Corsace Open."
+            "notRegistered": "Corsace Open に登録していません。"
         },
         "create": {
-            "title": "CREATE A TEAM",
-            "info1": "Registrations will end on",
-            "info2": "Please ensure all information is correct before finalizing.",
-            "teamName": "TEAM NAME",
-            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
-            "teamAcronym": "TEAM ACRONYM",
-            "acronymLength": "2 - 4 characters. Profanity will be checked.",
-            "teamTimezone": "TEAM TIMEZONE",
-            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
-            "teamAvatar": "TEAM AVATAR",
-            "upload": "UPLOAD",
-            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
-            "fileSizeError": "file size too big! please upload a smaller image",
-            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
-            "preview": "PREVIEW",
-            "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
-            "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
-            "avatarInfo3": "All names and avatars will be approved by staff.",
-            "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
-            "teamManagement": "TEAM MANAGEMENT",
-            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
-            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
-            "create": "CREATE TEAM"
+            "title": "チームを作成",
+            "info1": "登録期間は次の時刻に終了します",
+            "info2": "確定する前に、すべての情報が間違っていないか確認してください。",
+            "teamName": "チーム名",
+            "teamLength": "5 - 20文字まで。チーム名に \"team\" を含めないでください。自動的に削除されます。",
+            "teamAcronym": "チーム簡略名",
+            "acronymLength": "2 - 4文字まで。冒涜的なワードがないかチェックされます。",
+            "teamTimezone": "チームタイムゾーン",
+            "timezoneText": "あなたのチームが選択したタイムゾーンの<span class='bold'>10:00から22:00</span>の間にプレイできると想定します。",
+            "teamAvatar": "チームアバター",
+            "upload": "アップロード",
+            "fileSizeLimit": "最大5mb。使用可能なファイルタイプ: .jpg .png",
+            "fileSizeError": "ファイルサイズが大きすぎます！容量の小さい画像をアップロードしてください",
+            "fileTypeError": "不正なファイルタイプです！.jpgか.pngを使用してください",
+            "preview": "プレビュー",
+            "avatarInfo1": "アバターのアスペクト比は <span>3:1</span> にすることを推奨します。",
+            "avatarInfo2": "キャプテンは登録終了までチーム名とアバターを自由に変更できます。",
+            "avatarInfo3": "全てのチーム名とアバターはスタッフによって審査されます。",
+            "avatarInfo4": "不適切と判断された場合、変更するよう通知されます。",
+            "teamManagement": "チーム管理",
+            "teamManagers": "<div>チーム<span>マネージャー</span>（あなた）は、プレイとキャプテンを同時に行うか</div><div>チームでプレイせずキャプテンだけを行うか選択することが出来ます。</div>",
+            "teamManagersFree": "プレイはせずマネージャーとしてのみ参加する場合、プレイヤー枠を獲得することは<span>できません。</span>",
+            "selectManager": "チームでプレイせず、<span>マネージャーとしてのみ</span>活動する場合は、このチェックボックスを選択してください。",
+            "confirmManager": "<div>ここにチェックを入れることで、私はマネージャーとしてのみ参加し</div> <div>どの試合にも参加できないことに同意します。</div>",
+            "create": "チームを作成"
         },
         "components": {
             "openCardTeam": {
-                "rank": "RANK",
-                "teambwsAverage": "TEAM BWS AVG",
-                "unregistered": "UNREGISTERED",
+                "rank": "ランク",
+                "teambwsAverage": "平均チームBWS",
+                "unregistered": "未登録",
                 "bws": "BWS"
             },
-            "stageSelector": "STAGE SELECT"
+            "stageSelector": "ステージ選択"
         },
         "staff": {
-            "title": "STAFF",
-            "notLoggedIn": "NOT LOGGED IN"
+            "title": "スタッフ",
+            "notLoggedIn": "ログインしていません"
         },
         "referee": {
-            "title": "REFEREE",
-            "loadMore": "LOAD MORE",
+            "title": "レフェリー",
+            "loadMore": "さらに読み込む",
             "back": "BACK TO MATCHUP LIST",
-            "createLobby": "CREATE LOBBY",
+            "createLobby": "アップロード",
             "roll": "ROLL",
             "reroll": "RE-ROLL",
             "settings": "!MP SETTINGS",
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "CLOSE LOBBY"
+            "closeLobby": "ロビーを閉じる"
         },
         "status": {
-            "loading": "LOADING"
+            "loading": "ロード中"
         },
         "mappool": {
-            "title": "MAPPOOL"
+            "title": "マッププール"
         }
     },
     "main": {
@@ -691,10 +741,10 @@
             "underConstruction": "未実装",
             "sorry": "ご不便をおかけして申し訳ございません",
             "development": "corsaceのウェブサイトはまだ開発中です",
-            "theTeam": "the corsace team"
+            "theTeam": "corsace チーム"
         },
         "merch": {
-            "code": "Tap Trio - Corsace Bundle",
+            "code": "Tap Trio - Corsace バンドル",
             "products": "数量限定"
         }
     }
