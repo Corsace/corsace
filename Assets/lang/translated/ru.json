@@ -637,7 +637,7 @@
                     "deleteTeam": "Вы уверены, что хотите удалить эту команду?",
                     "deleteTeamFinal": "Вы ДЕЙСТВИТЕЛЬНО уверены, что хотите удалить эту команду? Это не может быть отменено!",
                     "removeMember": "Вы уверены, что хотите убрать {username} из вашей команды?",
-                    "transferManager": "Вы уверены, что хотите передать роль менеджера {username}?",
+                    "transferCaptain": "Are you sure you want to transfer manager to {username}?",
                     "invite": "Вы уверены, что хотите пригласить {username} в вашу команду?",
                     "removeInvite": "Вы уверены, что хотите удалить приглашение {username} в вашу команду?",
                     "unregister": "Вы уверены, что хотите отменить регистрацию в этом турнире? Вы сможете зарегистрироваться заново в любое время, если у вас будет 6 членов."
@@ -648,12 +648,12 @@
             "headers": {
                 "tournaments": "ТУРНИРЫ",
                 "teamStats": "СТАТИСТИКА КОМАНДЫ",
-                "teamManager": "МЕНЕДЖЕР КОМАНДЫ",
+                "teamCaptain": "TEAM MANAGER",
                 "teamMembers": "СОСТАВ КОМАНДЫ",
                 "editTeamMembers": "изменить состав команды",
                 "closeTeamMembers": "закрыть редактирование членов команды",
                 "becomeMember": "become a member and play as well",
-                "becomeManager": "стать просто менеджером",
+                "becomeCaptain": "become manager only",
                 "teamInvites": "ПРИГЛАШЕНИЯ КОМАНДЫ",
                 "editTeamInvites": "изменить приглашения команды",
                 "closeTeamInvites": "закрыть редактирование приглашений команды",
@@ -697,10 +697,10 @@
             "avatarInfo3": "Все названия и аватарки будут утверждены организаторами.",
             "avatarInfo4": "Если они будут сочтены неуместными, вы будете уведомлены о необходимости внесения изменений.",
             "teamManagement": "УПРАВЛЕНИЕ КОМАНДОЙ",
-            "teamManagers": "<div><span>Менеджеры</span> команды (т. е. вы) имеют возможность играть и быть капитаном одновременно</div> <div><span>ИЛИ</span> не играть с командой, а просто быть капитаном.</div>",
-            "teamManagersFree": "Если вы не хотите играть и выступаете только в роли менеджера, вы <span>не</span> занимаете слот игрока.",
-            "selectManager": "Поставьте галочку, если вы <span>не</span> собираетесь играть с командой и выступаете только в роли <span>менеджера</span>.",
-            "confirmManager": "<div>Ставя галочку, я буду выступать только в качестве менеджера и понимаю, что не смогу участвовать </div> <div>в каком-либо матче.</div>",
+            "teamCaptains": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamCaptainsFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "confirmCaptain": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "СОЗДАТЬ КОМАНДУ"
         },
         "components": {
