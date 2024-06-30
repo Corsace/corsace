@@ -282,6 +282,14 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
         return;
     }
 
+    if (tournament.captainMustPlay && !team.members.some(m => m.ID === team.captain.ID)) {
+        ctx.body = {
+            success: false,
+            error: "Team captain must play in this tournament and be a member of the team",
+        };
+        return;
+    }
+
     const teamMembers = [team.captain, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
     const alreadyRegistered = await User
         .createQueryBuilder("user")
@@ -656,6 +664,14 @@ teamRouter.$post("/:teamID/captain", isLoggedInDiscord, validateTeam(true), asyn
             ctx.body = {
                 success: false,
                 error: "Team cannot have less than the minimum amount of players for the tournaments the team is in.",
+            };
+            return;
+        }
+
+        if (tournaments.some(t => t.captainMustPlay)) {
+            ctx.body = {
+                success: false,
+                error: "Team is registered in a tournament where the captain must play.",
             };
             return;
         }
