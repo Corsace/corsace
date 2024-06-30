@@ -41,9 +41,9 @@
         >
             <div 
                 class="referee__menu_select__option referee__menu_select__option--blue"
-                @click="banchoCall('roll', { allowed: 'managers' }); rollMenu = false"
+                @click="banchoCall('roll', { allowed: 'captains' }); rollMenu = false"
             >
-                ONLY MANAGERS ROLL
+                ONLY CAPTAINS ROLL
             </div>
             <div 
                 class="referee__menu_select__option referee__menu_select__option--blue"
@@ -728,19 +728,19 @@ export default class Referee extends Vue {
                 team2Score: 0,
             }];
 
-        this.team1PlayerStates = this.matchup?.team1?.manager ? [{
-            ID: this.matchup.team1.manager.ID,
-            username: this.matchup.team1.manager.username,
-            osuID: this.matchup.team1.manager.osuID,
+        this.team1PlayerStates = this.matchup?.team1?.captain ? [{
+            ID: this.matchup.team1.captain.ID,
+            username: this.matchup.team1.captain.username,
+            osuID: this.matchup.team1.captain.osuID,
             inLobby: false,
             ready: false,
             mods: "",
             slot: 0,
         }] : [];
-        this.team2PlayerStates = this.matchup?.team2?.manager ? [{
-            ID: this.matchup.team2.manager.ID,
-            username: this.matchup.team2.manager.username,
-            osuID: this.matchup.team2.manager.osuID,
+        this.team2PlayerStates = this.matchup?.team2?.captain ? [{
+            ID: this.matchup.team2.captain.ID,
+            username: this.matchup.team2.captain.username,
+            osuID: this.matchup.team2.captain.osuID,
             inLobby: false,
             ready: false,
             mods: "",

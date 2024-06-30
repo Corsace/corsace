@@ -55,7 +55,7 @@
                         <li>All scheduling shall be done in <strong>UTC</strong></li>
                         <li>All matches must take place between <strong>Friday 23:59 UTC</strong> and<strong> Sunday 23:59 UTC</strong></li>
                         <li>Reschedules must be submitted before <strong>Thursdays at 23:59 UTC</strong> the week a round is to take place. Exceptions are made on a case-by-case basis</li>
-                        <li>Staff are <strong>prohibited</strong> from playing and/or acting as managers in the tournament with the exception of<strong> streamers</strong>, <strong>commentators</strong>, and <strong>GFX artists</strong></li>
+                        <li>Staff are <strong>prohibited</strong> from playing and/or acting as captains in the tournament with the exception of<strong> streamers</strong>, <strong>commentators</strong>, and <strong>GFX artists</strong></li>
                     </ul>
                 </div>
                 <OpenTitle
@@ -69,21 +69,21 @@
                             <strong>1st Place</strong>:
                             <ul>
                                 <li><a href="https://momokai.com/corsace">Exclusive Corsace edition Momokai Tap Trio keypads</a></li>
-                                <li>50% of prizepool split among players and their manager how they wish</li>
+                                <li>50% of prizepool split among players and their captain how they wish</li>
                                 <li>(Pending) Corsace Open 1st place badge</li>
                             </ul>
                         </li>
                         <li>
                             <strong>2nd Place</strong>:
                             <ul>
-                                <li>30% of prizepool split among players and their manager how they wish</li>
+                                <li>30% of prizepool split among players and their captain how they wish</li>
                                 <li>(Pending) Corsace Open 2nd place badge</li>
                             </ul>
                         </li>
                         <li>
                             <strong>3rd Place</strong>:
                             <ul>
-                                <li>20% of prizepool split among players and their manager how they wish</li>
+                                <li>20% of prizepool split among players and their captain how they wish</li>
                                 <li>(Pending) Corsace Open 3rd place badge</li>
                             </ul>
                         </li>
@@ -116,16 +116,16 @@
                             </ul>
                         </li>
                     </ul>
-                    <h2>MANAGERS</h2>
+                    <h2>CAPTAINS</h2>
                     <ul class="info_desc__list">
                         <li>
-                            Teams are required to <strong>designate </strong>a manager, which may either be a player <strong>or</strong> an additional seventh member
+                            Teams are required to <strong>designate </strong>a captain, which may either be a player <strong>or</strong> an additional seventh member
                             <ul>
                                 <li>Said additions are subject to screening and are <strong>prohibited</strong> from participating in gameplay</li>
                             </ul>
                         </li>
-                        <li>Managers are the <strong>primary form of contact</strong> between teams and tournament administration alike</li>
-                        <li>Managers are allowed to win non-badge prizes (i.e. supporter/money, the split is determined by the team</li>
+                        <li>Captains are the <strong>primary form of contact</strong> between teams and tournament administration alike</li>
+                        <li>Captains are allowed to win non-badge prizes (i.e. supporter/money, the split is determined by the team</li>
                         <li>
                             <strong>Responsibilities:</strong>
                             <ul>
@@ -334,7 +334,7 @@
                         <li>
                             Teams are <strong>expected</strong> to show up on time and prepared to matches
                             <ul class="info_desc__list">
-                                <li>Managers are expected to <strong>be online</strong> at least 5 minutes <strong>before</strong> the scheduled match time to receive invites from referees</li>
+                                <li>Captains are expected to <strong>be online</strong> at least 5 minutes <strong>before</strong> the scheduled match time to receive invites from referees</li>
                             </ul>
                         </li>
                         <li>Teams that fail to field a roster <strong>5 minutes</strong> after the scheduled match time shall <strong>forfeit</strong>.</li>
@@ -383,7 +383,7 @@
                     </ul>
                     <h2>ROUND ROBIN/RUNOFF/KNOCKOUT 2</h2>
                     <ul class="info_desc__list">
-                        <li>Managers will roll in matches. The <strong>winner</strong> becomes <strong>Team 1</strong> which <strong>picks first, bans second, </strong>and, in Knockout 2, <strong>protects second</strong></li>
+                        <li>Captains will roll in matches. The <strong>winner</strong> becomes <strong>Team 1</strong> which <strong>picks first, bans second, </strong>and, in Knockout 2, <strong>protects second</strong></li>
                         <li>
                             Teams have <strong>1 protected map</strong> during Knockout 2
                             <ul class="info_desc__list">
@@ -407,7 +407,7 @@
                     </ul>
                     <h2>KNOCKOUT 1</h2>
                     <ul class="info_desc__list">
-                        <li>Managers will roll in matches. The <strong>winner</strong> becomes <strong>Team 1</strong> which <strong>picks first, bans second, </strong>and <strong>protects second</strong></li>
+                        <li>Captains will roll in matches. The <strong>winner</strong> becomes <strong>Team 1</strong> which <strong>picks first, bans second, </strong>and <strong>protects second</strong></li>
                         <li><strong>Matches</strong> are Best of 3 Sets whereas a  <strong>Set</strong> is a Best of 7 with 1 ban</li>
                         <li>
                             Pool selection for sets goes as follows:

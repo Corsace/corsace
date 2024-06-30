@@ -66,19 +66,19 @@
                     <div 
                         class="matchup__team1_members_member_avatar"
                         :style="{
-                            'background-image': `url(https://a.ppy.sh/${matchup.team1.manager.osuID})`,
+                            'background-image': `url(https://a.ppy.sh/${matchup.team1.captain.osuID})`,
                         }"
                     />
                     <div class="matchup__team1_members_member_username">
-                        {{ matchup.team1.manager.username.toUpperCase() }}
+                        {{ matchup.team1.captain.username.toUpperCase() }}
                     </div>
                     <div class="matchup__team1_members_member_BWS">
-                        MANAGER
+                        CAPTAIN
                     </div>
-                    <div class="matchup__team1_members_member_manager" />
+                    <div class="matchup__team1_members_member_captain" />
                 </div>
                 <div 
-                    v-for="member in matchup.team1.members.filter(member => !member.isManager)"
+                    v-for="member in matchup.team1.members.filter(member => !member.isCaptain)"
                     :key="member.ID"
                     class="matchup__team1_members_member"
                 >
@@ -153,19 +153,19 @@
                     <div 
                         class="matchup__team2_members_member_avatar"
                         :style="{
-                            'background-image': `url(https://a.ppy.sh/${matchup.team2.manager.osuID})`,
+                            'background-image': `url(https://a.ppy.sh/${matchup.team2.captain.osuID})`,
                         }"
                     />
                     <div class="matchup__team2_members_member_username">
-                        {{ matchup.team2.manager.username.toUpperCase() }}
+                        {{ matchup.team2.captain.username.toUpperCase() }}
                     </div>
                     <div class="matchup__team2_members_member_BWS">
-                        MANAGER
+                        CAPTAIN
                     </div>
-                    <div class="matchup__team2_members_member_manager" />
+                    <div class="matchup__team2_members_member_captain" />
                 </div>
                 <div 
-                    v-for="member in matchup.team2.members.filter(member => !member.isManager)"
+                    v-for="member in matchup.team2.members.filter(member => !member.isCaptain)"
                     :key="member.ID"
                     class="matchup__team2_members_member"
                 >
@@ -388,8 +388,8 @@ export default class Matchup extends Vue {
                 color: #EBEBEB;
             }
 
-            &_manager {
-                background-image: url("../../../Assets/img/site/open/team/managerBlack.svg");
+            &_captain {
+                background-image: url("../../../Assets/img/site/open/team/captainBlack.svg");
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;

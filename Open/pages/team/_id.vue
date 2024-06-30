@@ -14,7 +14,7 @@
                     <span class="team--acronym">({{ teamData.abbreviation }})</span>
                 </div>
                 <div
-                    v-if="isManager"
+                    v-if="isCaptain"
                     class="team_fields--clickable"
                     @click="edit = !edit"
                 >
@@ -64,23 +64,23 @@
                     <div class="team_fields_block team__member_list">
                         <a
                             class="team__member"
-                            :href="'https://osu.ppy.sh/users/' + teamData.manager.osuID"
+                            :href="'https://osu.ppy.sh/users/' + teamData.captain.osuID"
                         >
                             <img
-                                v-if="teamData.manager.isManager"
-                                class="team__member_manager"
-                                src="../../../Assets/img/site/open/team/manager.svg"
+                                v-if="teamData.captain.isCaptain"
+                                class="team__member_captain"
+                                src="../../../Assets/img/site/open/team/captain.svg"
                             >
                             <div 
                                 v-else 
-                                class="team__member_manager"
+                                class="team__member_captain"
                             />
                             <img 
                                 class="team__member_avatar"
-                                :src="`https://a.ppy.sh/${teamData.manager.osuID}`"
+                                :src="`https://a.ppy.sh/${teamData.captain.osuID}`"
                             >
                             <div class="team__member_name">
-                                {{ teamData.manager.username }}
+                                {{ teamData.captain.username }}
                             </div>
                         </a>
                     </div>
@@ -89,18 +89,18 @@
                     <div class="team_fields_block--label">
                         {{ $t('open.teams.headers.teamMembers') }}
                         <div 
-                            v-if="isManager && teamData.members.filter(m => !m.isManager).length > 0 && !teamData.qualifier?.mp"
+                            v-if="isCaptain && teamData.members.filter(m => !m.isCaptain).length > 0 && !teamData.qualifier?.mp"
                             class="team_fields--clickable"
                             @click="editMembers = !editMembers"
                         >
                             {{ !editMembers ? $t('open.teams.headers.editTeamMembers') : $t('open.teams.headers.closeTeamMembers') }}
                         </div>
                         <div 
-                            v-if="isManager && !teamData.qualifier?.mp"
+                            v-if="isCaptain && !teamData.qualifier?.mp"
                             class="team_fields--clickable"
-                            @click="managerToggle"
+                            @click="captainToggle"
                         >
-                            {{ teamData.members.some(m => m.isManager) ? $t('open.teams.headers.becomeManager') : $t('open.teams.headers.becomeMember') }}
+                            {{ teamData.members.some(m => m.isCaptain) ? $t('open.teams.headers.becomeManager') : $t('open.teams.headers.becomeMember') }}
                         </div>
                     </div>
                     <div class="team_fields_block team__member_list">
@@ -114,13 +114,13 @@
                                 class="team__member"
                             >
                                 <img
-                                    v-if="member.isManager"
-                                    class="team__member_manager"
-                                    src="../../../Assets/img/site/open/team/manager.svg"
+                                    v-if="member.isCaptain"
+                                    class="team__member_captain"
+                                    src="../../../Assets/img/site/open/team/captain.svg"
                                 >
                                 <div 
                                     v-else 
-                                    class="team__member_manager"
+                                    class="team__member_captain"
                                 />
                                 <img 
                                     class="team__member_avatar"
@@ -135,16 +135,16 @@
                             </a>
                             <div>
                                 <div
-                                    v-if="!member.isManager && isManager && editMembers" 
+                                    v-if="!member.isCaptain && isCaptain && editMembers" 
                                     class="team__member_x"
                                     @click="removeMember(member)"
                                 >
                                     X
                                 </div>
                                 <div
-                                    v-if="!member.isManager && isManager && editMembers" 
+                                    v-if="!member.isCaptain && isCaptain && editMembers" 
                                     class="team__member_crown"
-                                    @click="transferManager(member)"
+                                    @click="transferCaptain(member)"
                                 />
                             </div>
                         </div>
@@ -158,7 +158,7 @@
                         {{ $t('open.teams.headers.teamInvites') }}
 
                         <div 
-                            v-if="isManager"
+                            v-if="isCaptain"
                             class="team_fields--clickable"
                             @click="editInvites = !editInvites"
                         >
@@ -175,7 +175,7 @@
                                 :href="'https://osu.ppy.sh/users/' + member.osuID"
                                 class="team__member"
                             >
-                                <div class="team__member_manager" />
+                                <div class="team__member_captain" />
                                 <img 
                                     class="team__member_avatar"
                                     :src="`https://a.ppy.sh/${member.osuID}`"
@@ -185,15 +185,15 @@
                                 </div>
                             </a>
                             <div
-                                v-if="isManager && editInvites" 
+                                v-if="isCaptain && editInvites" 
                                 class="team__member_x"
                                 @click="removeInvite(member)"
                             >
                                 X
                             </div>
                         </div>
-                        <div class="team__member_manager" />
-                        <div v-if="isManager && editInvites">
+                        <div class="team__member_captain" />
+                        <div v-if="isCaptain && editInvites">
                             <SearchBar
                                 :placeholder="`${$t('open.teams.placeholders.searchUser')}`"
                                 style="min-width: 500px;"
@@ -205,7 +205,7 @@
                                 class="team__member team__member--search"
                                 @click="inviteUser(user)"
                             >
-                                <div class="team__member_manager" />
+                                <div class="team__member_captain" />
                                 <img 
                                     class="team__member_avatar"
                                     :src="`https://a.ppy.sh/${user.osu.userID}`"
@@ -221,14 +221,14 @@
                     <div class="team_fields_block--label">
                         {{ $t('open.teams.headers.qualifier') }}
                         <div
-                            v-if="isManager && teamData.qualifier && !teamData.qualifier.mp"
+                            v-if="isCaptain && teamData.qualifier && !teamData.qualifier.mp"
                             class="team_fields--clickable"
                             @click="unregister"
                         >
                             {{ $t('open.teams.deleteTeam') }}
                         </div>
                         <div 
-                            v-if="isManager && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
+                            v-if="isCaptain && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
                             @click="editQualifier = !editQualifier"
                         >
                             <div
@@ -244,7 +244,7 @@
                                 {{ $t('open.teams.createJoinQualifier') }}
                             </div>
                         </div>
-                        <div v-else-if="isManager && tournament">
+                        <div v-else-if="isCaptain && tournament">
                             <div class="team_fields--clickable">
                                 {{ tournament.minTeamSize === tournament.maxTeamSize ? $t('open.teams.headers.requiredMessageExact', {minTeamSize: tournament.minTeamSize}) : $t('open.teams.headers.requiredMessageRange', {minTeamSize: tournament.minTeamSize, maxTeamSize: tournament.maxTeamSize}), }}
                             </div>
@@ -298,7 +298,7 @@
         </div>
         <!-- Team Edit Modal -->
         <BaseModal
-            v-if="edit && teamData && teamData.manager.ID === loggedInUser?.ID"
+            v-if="edit && teamData && teamData.captain.ID === loggedInUser?.ID"
             @close="edit = false"
         >
             <div class="team_fields">
@@ -417,7 +417,7 @@
         </BaseModal>
         <!-- Qualifier Edit Modal -->
         <QualifierModal
-            v-if="editQualifier && teamData && teamData.manager.ID === loggedInUser?.ID"
+            v-if="editQualifier && teamData && teamData.captain.ID === loggedInUser?.ID"
             @close="closeQualifierEdit"
         />
     </div>
@@ -566,8 +566,8 @@ export default class Team extends Vue {
         this.previewBase64 = this.teamData?.avatarURL ?? null;
     }
 
-    get isManager (): boolean {
-        return this.teamData?.ID === this.team?.ID && this.teamData?.manager.ID === this.loggedInUser?.ID;
+    get isCaptain (): boolean {
+        return this.teamData?.ID === this.team?.ID && this.teamData?.captain.ID === this.loggedInUser?.ID;
     }
 
     uploadAvatar (e: Event) {
@@ -703,14 +703,14 @@ export default class Team extends Vue {
             alert(res.error);
     }
 
-    async transferManager (user: TeamUser) {
+    async transferCaptain (user: TeamUser) {
         if (!this.teamData)
             return;
 
         if (!confirm(this.$t("open.teams.edit.confirm.transferManager", {username: user.username}) as string))
             return;
 
-        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/manager/${user.ID}`);
+        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/captain/${user.ID}`);
 
         if (res.success) {
             this.teamData = await this.getTeam(true);
@@ -719,11 +719,11 @@ export default class Team extends Vue {
             alert(res.error);
     }
 
-    async managerToggle () {
-        if (!this.isManager || !this.teamData)
+    async captainToggle () {
+        if (!this.isCaptain || !this.teamData)
             return;
 
-        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/manager`);
+        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/captain`);
 
         if (res.success)
             this.teamData = await this.getTeam(true);
@@ -957,7 +957,7 @@ export default class Team extends Vue {
             color: $open-red;
         }
 
-        &_manager {
+        &_captain {
             width: 20px;
             height: 20px;
         }
@@ -983,7 +983,7 @@ export default class Team extends Vue {
         &_crown {
             width: 20px;
             height: 20px;
-            background-image: url('../../../Assets/img/site/open/team/manager.svg');
+            background-image: url('../../../Assets/img/site/open/team/captain.svg');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
