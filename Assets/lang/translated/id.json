@@ -637,7 +637,7 @@
                     "deleteTeam": "Apakah Anda yakin untuk menghapus tim ini?",
                     "deleteTeamFinal": "Apakah kamu BENAR-BENAR yakin untuk menghapus tim ini? Tindakan ini tidak dapat diurungkan!",
                     "removeMember": "Apakah kamu yakin untuk menghapus {username} dari tim kamu?",
-                    "transferManager": "Apakah kamu yakin untuk memberikan posisi manajer kepada {username}?",
+                    "transferCaptain": "Are you sure you want to transfer manager to {username}?",
                     "invite": "Apakah kamu yakin untuk mengundang {username} ke tim kamu?",
                     "removeInvite": "Apakah kamu yakin untuk menghapus undangan untuk {username} ke tim kamu?",
                     "unregister": "Apakah kamu yakin untuk mengurungkan pendaftaran tim kamu dari turnamen ini? Kamu akan dapat kembali mendaftar kapan saja selama tim kamu masih memiliki 6 anggota."
@@ -648,12 +648,12 @@
             "headers": {
                 "tournaments": "TURNAMEN",
                 "teamStats": "STATISTIK TIM",
-                "teamManager": "MANAJER TIM",
+                "teamCaptain": "TEAM MANAGER",
                 "teamMembers": "ANGGOTA TIM",
                 "editTeamMembers": "sunting anggota tim",
                 "closeTeamMembers": "tutup jendela penyuntingan anggota tim",
                 "becomeMember": "jadi anggota dan ikut bermain",
-                "becomeManager": "hanya jadi manajer",
+                "becomeCaptain": "become manager only",
                 "teamInvites": "UNDANGAN TIM",
                 "editTeamInvites": "sunting undangan tim",
                 "closeTeamInvites": "tutup jendela penyuntingan undangan tim",
@@ -697,10 +697,10 @@
             "avatarInfo3": "Seluruh nama dan avatar akan disetujui oleh para staf.",
             "avatarInfo4": "Apabila nama tim dan avatar ini dianggap tidak layak, kamu akan diminta untuk mengubahnya.",
             "teamManagement": "MANAJEMEN TIM",
-            "teamManagers": "<div>Manajer <span>tim</span> (kamu) dapat memilih untuk ikut bermain sekaligus menjadi kapten</div> <div><span>ATAU</span>untuk tidak ikut bermain dan hanya menjadi kapten.</div>",
-            "teamManagersFree": "Apabila kamu memilih untuk tidak ikut bermain dan hanya menjadi manajer, kamu <span>tidak</span> akan mengambil slot pemain.",
-            "selectManager": "Centang boks ini apabila kamu <span>tidak</span> akan ikut bermain dan hanya akan bertindak selaku <span>manajer tim</span>.",
-            "confirmManager": "<div>Dengan mencentang pilihan ini, saya menyatakan diri bahwa saya hanya akan bertindak sebagai manager, dan saya paham bahwa</div> <div>saya tidak akan dapat ikut serta dalam pertandingan apa pun.</div>",
+            "teamCaptains": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamCaptainsFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "confirmCaptain": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "BUAT TIM"
         },
         "components": {
