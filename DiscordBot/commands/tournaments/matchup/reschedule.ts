@@ -33,10 +33,10 @@ async function rescheduleLog (matchup: Matchup, prevDate: Date) {
             return;
 
         const pings: string[] = [];
-        if (matchup.team1?.manager.discord.userID)
-            pings.push(`<@${matchup.team1.manager.discord.userID}>`);
-        if (matchup.team2?.manager.discord.userID)
-            pings.push(`<@${matchup.team2.manager.discord.userID}>`);
+        if (matchup.team1?.captain.discord.userID)
+            pings.push(`<@${matchup.team1.captain.discord.userID}>`);
+        if (matchup.team2?.captain.discord.userID)
+            pings.push(`<@${matchup.team2.captain.discord.userID}>`);
         if (matchup.referee?.discord.userID)
             pings.push(`<@${matchup.referee.discord.userID}>`);
         if (matchup.streamer?.discord.userID)
@@ -81,8 +81,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .innerJoinAndSelect("stage.tournament", "tournament")
             .leftJoinAndSelect("matchup.team1", "team1")
             .leftJoinAndSelect("matchup.team2", "team2")
-            .leftJoinAndSelect("team1.manager", "manager1")
-            .leftJoinAndSelect("team2.manager", "manager2")
+            .leftJoinAndSelect("team1.captain", "captain1")
+            .leftJoinAndSelect("team2.captain", "captain2")
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
@@ -103,8 +103,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
 
         if (
-            matchup.team1?.manager.discord.userID !== commandUser(m).id && 
-            matchup.team2?.manager.discord.userID !== commandUser(m).id && 
+            matchup.team1?.captain.discord.userID !== commandUser(m).id && 
+            matchup.team2?.captain.discord.userID !== commandUser(m).id && 
             matchup.referee?.discord.userID !== commandUser(m).id
         ) {
             if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees]))
@@ -130,8 +130,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .innerJoinAndSelect("stage.tournament", "tournament")
             .leftJoinAndSelect("matchup.team1", "team1")
             .leftJoinAndSelect("matchup.team2", "team2")
-            .leftJoinAndSelect("team1.manager", "manager1")
-            .leftJoinAndSelect("team2.manager", "manager2")
+            .leftJoinAndSelect("team1.captain", "captain1")
+            .leftJoinAndSelect("team2.captain", "captain2")
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
@@ -144,11 +144,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
             .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
             .andWhere("matchup.date > :date", { date: new Date().toISOString() })
-            .andWhere("manager1.discordUserid = :userID OR manager2.discordUserid = :userID", { userID: commandUser(m).id })
+            .andWhere("captain1.discordUserid = :userID OR captain2.discordUserid = :userID", { userID: commandUser(m).id })
             .getMany();
 
         if (matchups.length === 0) {
-            await message.edit("Ur not in any matchups that can be rescheduled (u must be a manager of a team to reschedule a matchup)");
+            await message.edit("Ur not in any matchups that can be rescheduled (u must be a captain of a team to reschedule a matchup)");
             return;
         }
 
@@ -247,8 +247,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> U wanna reschedule ur match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID, dayBeforeStart - Date.now())) {
-        await message.edit(`Ok Lol . <@${matchup.team1.manager.discord.userID}> stopped reschedule or the message timed out`);
+    if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.captain.discord.userID}> U wanna reschedule ur match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.captain.discord.userID, dayBeforeStart - Date.now())) {
+        await message.edit(`Ok Lol . <@${matchup.team1.captain.discord.userID}> stopped reschedule or the message timed out`);
         return;
     }
 
@@ -257,8 +257,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> U wanna reschedule ur match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID, dayBeforeStart - Date.now())) {
-        await message.edit(`Ok Lol . <@${matchup.team2.manager.discord.userID}> stopped reschedule or the message timed out`);
+    if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.captain.discord.userID}> U wanna reschedule ur match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team2.captain.discord.userID, dayBeforeStart - Date.now())) {
+        await message.edit(`Ok Lol . <@${matchup.team2.captain.discord.userID}> stopped reschedule or the message timed out`);
         return;
     }
 

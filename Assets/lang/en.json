@@ -637,7 +637,7 @@
                     "deleteTeam": "Are you sure you want to delete this team?",
                     "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
                     "removeMember": "Are you sure you want to remove {username} from your team?",
-                    "transferManager": "Are you sure you want to transfer manager to {username}?",
+                    "transferCaptain": "Are you sure you want to transfer captain to {username}?",
                     "invite": "Are you sure you want to invite {username} to your team?",
                     "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
                     "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
@@ -648,12 +648,12 @@
             "headers": {
                 "tournaments": "TOURNAMENTS",
                 "teamStats": "TEAM STATS",
-                "teamManager": "TEAM MANAGER",
+                "teamCaptain": "TEAM CAPTAIN",
                 "teamMembers": "TEAM MEMBERS",
                 "editTeamMembers": "edit team members",
                 "closeTeamMembers": "close team members edit",
                 "becomeMember": "become a member and play as well",
-                "becomeManager": "become manager only",
+                "becomeCaptain": "become captain only",
                 "teamInvites": "TEAM INVITES",
                 "editTeamInvites": "edit team invites",
                 "closeTeamInvites": "close team invites edit",
@@ -697,10 +697,10 @@
             "avatarInfo3": "All names and avatars will be approved by staff.",
             "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
             "teamManagement": "TEAM MANAGEMENT",
-            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
-            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "teamCaptains": "<div>Team <span>captains</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamCaptainsFree": "If you wish to not play, and only act as a captain, you will <span>not</span> take up a player slot.",
+            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>captain</span>.",
+            "confirmCaptain": "<div>By checking this, I will only act as captain, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "CREATE TEAM"
         },
         "components": {

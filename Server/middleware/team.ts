@@ -2,7 +2,7 @@ import { DefaultState, Next } from "koa";
 import { CorsaceContext } from "../corsaceRouter";
 import getTeams from "../functions/get/getTeams";
 
-export function validateTeam (isManager?: boolean, invites?: boolean) {
+export function validateTeam (isCaptain?: boolean, invites?: boolean) {
     return async function<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next) {
         if (!ctx.state.user) {
             ctx.body = {
@@ -43,14 +43,14 @@ export function validateTeam (isManager?: boolean, invites?: boolean) {
             return;
         }
 
-        if (isManager && team.manager.ID !== user.ID) {
+        if (isCaptain && team.captain.ID !== user.ID) {
             ctx.body = {
                 success: false,
-                error: "You are not the manager of this team",
+                error: "You are not the captain of this team",
             };
             return;
         }
-        if (!isManager && team.manager.ID !== user.ID && !team.members.find(member => member.ID === user.ID)) {
+        if (!isCaptain && team.captain.ID !== user.ID && !team.members.find(member => member.ID === user.ID)) {
             ctx.body = {
                 success: false,
                 error: "You are not a member of this team",

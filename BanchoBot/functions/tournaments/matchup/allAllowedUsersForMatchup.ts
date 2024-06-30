@@ -13,15 +13,15 @@ export default async function allAllowedUsersForMatchup (matchup: Matchup) {
     
     if (matchup.stage.stageType === StageType.Qualifiers)
         return matchup.teams!
-            .flatMap(team => team.members.concat(team.manager))
+            .flatMap(team => team.members.concat(team.captain))
             .concat(botUsers)
             .filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
 
     return matchup.team1!.members
         .concat(
-            matchup.team1!.manager, 
+            matchup.team1!.captain, 
             matchup.team2!.members, 
-            matchup.team2!.manager, 
+            matchup.team2!.captain, 
             botUsers
         )
         .filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);

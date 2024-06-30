@@ -5,7 +5,7 @@ export const inviteSearchConditions = {
     "userID": "user.ID = :target",
 };
 
-export default async function getTeamInvites (target: string | number, searchType: keyof typeof inviteSearchConditions, target2?: string | number, searchType2?: keyof typeof inviteSearchConditions, getMembers?: boolean, getTournaments?: boolean,getRoles?: boolean,getManager?: boolean) {
+export default async function getTeamInvites (target: string | number, searchType: keyof typeof inviteSearchConditions, target2?: string | number, searchType2?: keyof typeof inviteSearchConditions, getMembers?: boolean, getTournaments?: boolean, getRoles?: boolean, getCaptain?: boolean) {
     const inviteQ = TeamInvite
         .createQueryBuilder("invite")
         .innerJoinAndSelect("invite.team", "team")
@@ -23,8 +23,8 @@ export default async function getTeamInvites (target: string | number, searchTyp
     if (getRoles)
         inviteQ.leftJoinAndSelect("tournament.roles", "role");
 
-    if (getManager)
-        inviteQ.leftJoinAndSelect("team.manager", "manager");
+    if (getCaptain)
+        inviteQ.leftJoinAndSelect("team.captain", "captain");
         
     inviteQ.where(inviteSearchConditions[searchType], { target: target });
 

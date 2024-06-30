@@ -3,10 +3,10 @@ import { Team } from "../../../Models/tournaments/team";
 
 export const teamSearchConditions = {
     "ID": "team.ID = :target",
-    "managerID": "manager.ID = :target",
+    "captainID": "captain.ID = :target",
     "memberID": () => new Brackets(qb => {
         qb.where("member.ID = :target")
-            .orWhere("manager.ID = :target");
+            .orWhere("captain.ID = :target");
     }),
     "name": (target: string | number) => {
         if (target.toString().length <= 4)
@@ -19,7 +19,7 @@ export const teamSearchConditions = {
 export default async function getTeams (target: string | number, searchType: keyof typeof teamSearchConditions, getInvites?: boolean, getTournaments?: boolean) {
     const teamQ = Team
         .createQueryBuilder("team")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "statMode");

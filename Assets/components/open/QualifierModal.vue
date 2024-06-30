@@ -17,7 +17,7 @@
                     class="qualifier_modal__label--no_shadow"
                     style="text-align: right;"
                 >
-                    Please note that the lobby will start when the manager joins.<br>If the manager is not a member, they cannot play qualifiers.<br>The manager can leave immediately after the bot selects the first map.
+                    Please note that the lobby will start when the captain joins.<br>If the captain is not a member, they cannot play qualifiers.<br>The captain can leave immediately after the bot selects the first map.
                 </div>
                 <input 
                     v-model="qualifierAt"
@@ -98,7 +98,7 @@ export default class QualifierModal extends Vue {
             return;
         }
 
-        if (!confirm(`Are you sure you want to register ${this.team.name} to the Corsace Open?\nAny player or manager in this team will not be able to join another team and register for this tournament.\nYour roster is considered set after you play the qualifier.`)) {
+        if (!confirm(`Are you sure you want to register ${this.team.name} to the Corsace Open?\nAny player or captain in this team will not be able to join another team and register for this tournament.\nYour roster is considered set after you play the qualifier.`)) {
             this.loading = false;
             return;
         }

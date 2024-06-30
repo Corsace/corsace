@@ -122,10 +122,10 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
             .innerJoinAndSelect("stage.tournament", "tournament")
             .innerJoinAndSelect("tournament.organizer", "organizer")
             .leftJoinAndSelect("matchup.team1", "team1")
-            .leftJoinAndSelect("team1.manager", "manager1")
+            .leftJoinAndSelect("team1.captain", "captain1")
             .leftJoinAndSelect("team1.members", "member1")
             .leftJoinAndSelect("matchup.team2", "team2")
-            .leftJoinAndSelect("team2.manager", "manager2")
+            .leftJoinAndSelect("team2.captain", "captain2")
             .leftJoinAndSelect("team2.members", "member2")
             .where("matchup.ID = :id", { id: ctx.params.matchupID })
             .getOne();
@@ -184,7 +184,7 @@ banchoRefereeRouter.$post("/:matchupID/roll", async (ctx) => {
     }
 
     const allowed = ctx.request.body.allowed;
-    if (allowed !== "managers" && allowed !== "all" && allowed !== "bot") {
+    if (allowed !== "captains" && allowed !== "all" && allowed !== "bot") {
         ctx.body = {
             success: false,
             error: "Invalid allowed value",
@@ -194,10 +194,10 @@ banchoRefereeRouter.$post("/:matchupID/roll", async (ctx) => {
 
     const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     const mpChannel = state.matchups[ctx.state.matchupID].lobby.channel;
-    if (allowed === "managers")
-        await mpChannel.sendMessage("OK we're gonna roll now, I want the managers to do !roll, higher roll will be considered Team 1");
+    if (allowed === "captains")
+        await mpChannel.sendMessage("OK we're gonna roll now, I want the captains to do !roll, higher roll will be considered Team 1");
     else if (allowed === "all")
-        await mpChannel.sendMessage("OK we're gonna roll now, I want the stand-in managers to do !roll, higher roll will be considered Team 1");
+        await mpChannel.sendMessage("OK we're gonna roll now, I want the stand-in captains to do !roll, higher roll will be considered Team 1");
     else if (allowed === "bot") {
         await mpChannel.sendMessage("OK we're gonna roll now, I'm gonna run !roll 2");
         await pause(100);

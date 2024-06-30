@@ -205,7 +205,7 @@ export class User extends BaseEntity {
     @OneToMany(() => JobPost, post => post.createdBy)
         jobPostsCreated!: JobPost[];
 
-    @OneToMany(() => Team, team => team.manager)
+    @OneToMany(() => Team, team => team.captain)
         teamsManaged!: Team[];
 
     @OneToMany(() => TeamInvite, invite => invite.user)

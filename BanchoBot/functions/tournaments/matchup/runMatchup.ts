@@ -258,13 +258,13 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     return;
 
                 if (whoRolls === "captains") {
-                    if (matchup.team1!.manager.osu.userID === player.user.id.toString()) {
+                    if (matchup.team1!.captain.osu.userID === player.user.id.toString()) {
                         if (team1Roll !== -1) {
                             await mpChannel.sendMessage(`${username} U already rolled ${team1Roll} point(s) u cant roll again`);
                             return;
                         }
                         team1Roll = points;
-                    } else if (matchup.team2!.manager.osu.userID === player.user.id.toString()) {
+                    } else if (matchup.team2!.captain.osu.userID === player.user.id.toString()) {
                         if (team2Roll !== -1) {
                             await mpChannel.sendMessage(`${username} U already rolled ${team2Roll} point(s) u cant roll again`);
                             return;
@@ -273,13 +273,13 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     } else
                         return;
                 } else if (whoRolls === "all") {
-                    if (matchup.team1!.manager.osu.userID === player.user.id.toString() || matchup.team1!.members.some(m => m.osu.userID === player.user.id.toString())) {
+                    if (matchup.team1!.captain.osu.userID === player.user.id.toString() || matchup.team1!.members.some(m => m.osu.userID === player.user.id.toString())) {
                         if (team1Roll !== -1) {
                             await mpChannel.sendMessage(`${username} Ur team already rolled ${team1Roll} point(s) u cant roll again`);
                             return;
                         }
                         team1Roll = points;
-                    } else if (matchup.team2!.manager.osu.userID === player.user.id.toString() || matchup.team2!.members.some(m => m.osu.userID === player.user.id.toString())) {
+                    } else if (matchup.team2!.captain.osu.userID === player.user.id.toString() || matchup.team2!.members.some(m => m.osu.userID === player.user.id.toString())) {
                         if (team2Roll !== -1) {
                             await mpChannel.sendMessage(`${username} Ur team already rolled ${team2Roll} point(s) u cant roll again`);
                             return;
@@ -458,12 +458,12 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (
             (
                 matchup.stage!.stageType === StageType.Qualifiers &&
-                matchup.teams!.some(team => !mpLobby.slots.some(m => m !== null && m.user.id.toString() === team.manager.osu.userID))
+                matchup.teams!.some(team => !mpLobby.slots.some(m => m !== null && m.user.id.toString() === team.captain.osu.userID))
             ) ||
             (
                 matchup.stage!.stageType !== StageType.Qualifiers &&
-                !mpLobby.slots.some(m => m !== null && m.user.id.toString() === matchup.team1!.manager.osu.userID) &&
-                !mpLobby.slots.some(m => m !== null && m.user.id.toString() === matchup.team2!.manager.osu.userID)
+                !mpLobby.slots.some(m => m !== null && m.user.id.toString() === matchup.team1!.captain.osu.userID) &&
+                !mpLobby.slots.some(m => m !== null && m.user.id.toString() === matchup.team2!.captain.osu.userID)
             )
         ) {
             await mpChannel.sendMessage(`${newPlayer.user.username} waiting for all ${matchup.stage!.tournament.matchupSize === 1 ? "players" : "captains"} to be here before matchup starts`);

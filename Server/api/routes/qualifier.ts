@@ -25,7 +25,7 @@ qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) 
         .leftJoinAndSelect("matchup.referee", "referee")
         .leftJoinAndSelect("matchup.teams", "team")
         .leftJoinAndSelect("team.members", "member")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("matchup.sets", "set")
         .leftJoinAndSelect("set.maps", "map")
         .leftJoinAndSelect("map.map", "mappoolMap")
@@ -67,7 +67,7 @@ qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) 
     else if (ctx.state.user && (
         tournament.organizer.ID === ctx.state.user.ID || 
         qualifier.referee?.ID === ctx.state.user.ID ||
-        qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user!.ID) || team.manager.ID === ctx.state.user!.ID)
+        qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user!.ID) || team.captain.ID === ctx.state.user!.ID)
     ))
         getScores = true;
     else {

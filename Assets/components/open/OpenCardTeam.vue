@@ -9,7 +9,7 @@
                     v-for="member in teamSync.members"
                     :key="member.ID"
                     class="open_card_team_overlay__list_item"
-                    :class="{ 'open_card_team_overlay__list_item--leader': member.isManager }"
+                    :class="{ 'open_card_team_overlay__list_item--leader': member.isCaptain }"
                 >
                     <div class="open_card_team_overlay__list_item_text">
                         {{ member.username }}
@@ -107,7 +107,7 @@ export default class OpenCardTeam extends Vue {
 
                     &:after {
                         content: "";
-                        background-image: url('../../img/site/open/team/manager.svg');
+                        background-image: url('../../img/site/open/team/captain.svg');
                         background-size: 100%;
                         width: 15px;
                         height: 10px;

@@ -37,7 +37,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { role, remove, role_type } = params;
 
     if (!remove && !role_type) {
-        await respond(m, "Listen ur either gonna have to tell me to remove a role, or ur gonna have to specify the role type u want to add\n\nThe list of role types are:\nParticipants (participants)\nStaff (staff)\nManagers (managers)\nMappoolers (mappoolers)\nMappers (mappers)\nTestplayers (testplayers)\nReferees (referees)\nStreamers (streamers)\nCommentators (commentators)\n\nExample: `!tournament_role @Tournament Staff`");
+        await respond(m, "Listen ur either gonna have to tell me to remove a role, or ur gonna have to specify the role type u want to add\n\nThe list of role types are:\nParticipants (participants)\nStaff (staff)\nCaptains (captains)\nMappoolers (mappoolers)\nMappers (mappers)\nTestplayers (testplayers)\nReferees (referees)\nStreamers (streamers)\nCommentators (commentators)\n\nExample: `!tournament_role @Tournament Staff`");
         return;
     }
 
@@ -88,7 +88,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const roleType = role_type.toLowerCase().charAt(0).toUpperCase() + role_type.toLowerCase().slice(1);
     if (!(roleType in TournamentRoleType)) {
-        await respond(m, `Invalid role type \`${role_type}\` (Valid role types are: Participants, Staff, Managers, Mappoolers, Mappers, Testplayers, Referees, Streamers, Commentators, Designers, Developers)`);
+        await respond(m, `Invalid role type \`${role_type}\` (Valid role types are: Participants, Staff, Captains, Mappoolers, Mappers, Testplayers, Referees, Streamers, Commentators, Designers, Developers)`);
         return;
     }
 
@@ -142,8 +142,8 @@ const data = new SlashCommandBuilder()
                 value: "Staff",
             },
             {
-                name: "Managers",
-                value: "Managers",
+                name: "Captains",
+                value: "Captains",
             },
             {
                 name: "Mappoolers",

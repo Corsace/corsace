@@ -152,7 +152,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
 
     const teams = await Team
         .createQueryBuilder("team")
-        .innerJoinAndSelect("team.manager", "manager")
+        .innerJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "mode")
@@ -162,8 +162,8 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
         success: true,
         teams: teams.map<TeamList>(t => {
             const members = t.members;
-            if (!members.some(m => m.ID === t.manager.ID))
-                members.push(t.manager);
+            if (!members.some(m => m.ID === t.captain.ID))
+                members.push(t.captain);
             return {
                 ID: t.ID,
                 name: t.name,
@@ -177,7 +177,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
                         username: m.osu.username,
                         osuID: m.osu.userID,
                         BWS: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.BWS ?? 0,
-                        isManager: m.ID === t.manager.ID,
+                        isCaptain: m.ID === t.captain.ID,
                     })),
                 isRegistered: tournament.teams.some(team => team.ID === t.ID),
             };
@@ -192,7 +192,7 @@ tournamentRouter.$get<any>("/:tournamentID/teams/screening", validateID, async (
     const teams = await Team
         .createQueryBuilder("team")
         .innerJoin("team.tournament", "tournament")
-        .innerJoinAndSelect("team.manager", "manager")
+        .innerJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .where("tournament.ID = :ID", { ID })
         .getMany();
@@ -207,8 +207,8 @@ tournamentRouter.$get<any>("/:tournamentID/teams/screening", validateID, async (
 
     const csv = teams.map(t => {
         const members = t.members;
-        if (!members.some(m => m.ID === t.manager.ID))
-            members.push(t.manager);
+        if (!members.some(m => m.ID === t.captain.ID))
+            members.push(t.captain);
         return members.map(m => `${m.osu.username},${t.name},${m.osu.userID}`).join("\n");
     }).join("\n");
 

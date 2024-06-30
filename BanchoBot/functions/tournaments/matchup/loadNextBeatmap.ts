@@ -48,14 +48,14 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
                     }, leniencyTime);
                 }
 
-                const isManagerMessage = !message.self && message.user.id && (
+                const isCaptainMessage = !message.self && message.user.id && (
                     (
                         matchup.stage?.stageType === StageType.Qualifiers &&
-                        matchup.teams?.some(team => team.manager.osu.userID === message.user.id.toString())
+                        matchup.teams?.some(team => team.captain.osu.userID === message.user.id.toString())
                     ) ??
-                    [matchup.team1, matchup.team2].some(team => team?.manager.osu.userID === message.user.id.toString()));
+                    [matchup.team1, matchup.team2].some(team => team?.captain.osu.userID === message.user.id.toString()));
 
-                if (!isManagerMessage)
+                if (!isCaptainMessage)
                     return;
 
                 const contentParts = message.content.split(" ");

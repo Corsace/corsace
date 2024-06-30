@@ -92,7 +92,7 @@
                         class="qualifiers__button_group"
                     >
                         <ContentButton 
-                            v-if="team && loggedInUser && team.manager.ID === loggedInUser.ID && !team.qualifier"
+                            v-if="team && loggedInUser && team.captain.ID === loggedInUser.ID && !team.qualifier"
                             class="content_button--header_button"
                             :class="{ 'content_button--disabled': !team || !tournament || tournament.minTeamSize > team.members.length || tournament.maxTeamSize < team.members.length }"
                             @click.native="togglePopup()"
@@ -131,7 +131,7 @@
             />
         </div>
         <QualifierModal
-            v-if="editQualifier && team && team.manager.ID === loggedInUser?.ID"
+            v-if="editQualifier && team && team.captain.ID === loggedInUser?.ID"
             @close="closeQualifierEdit"
         />
     </div>

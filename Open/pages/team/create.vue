@@ -126,7 +126,7 @@
                     </div>
                 </div>
             </div>
-            <hr class="line--gray line--nofill line--even-space">
+            <!-- <hr class="line--gray line--nofill line--even-space">
             <div class="create_fields">
                 <div class="create_fields_row">
                     <div class="create_fields_block--label">
@@ -135,16 +135,16 @@
                     <div class="create_fields_block">
                         <div 
                             class="create_fields_block--highlight"
-                            v-html="$t('open.create.teamManagers')" 
+                            v-html="$t('open.create.teamCaptains')" 
                         />
                         <div 
                             class="create_fields_block--highlight"
-                            v-html="$t('open.create.teamManagersFree')"
+                            v-html="$t('open.create.teamCaptainsFree')"
                         />
                         <br>
                         <div 
                             class="create_fields_block--highlight"
-                            v-html="$t('open.create.selectManager')" 
+                            v-html="$t('open.create.selectCaptain')" 
                         />
                         <div class="create_fields_block--spaced create_fields_block--inline">
                             <input 
@@ -155,12 +155,12 @@
                             <div
                                 class="create_fields__finetext create_fields__finetext--spaced create_fields__finetext--clickable"
                                 @click="isNotPlaying = !isNotPlaying" 
-                                v-html="$t('open.create.confirmManager')" 
+                                v-html="$t('open.create.confirmCaptain')" 
                             />
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="create_submit">
                 <ContentButton 
                     class="content_button content_button--red_lg"
@@ -235,7 +235,7 @@ export default class Create extends Vue {
 
     name = "";
     abbreviation = "";
-    isNotPlaying = false;
+    // isNotPlaying = false;
 
     loading = false;
     sizeError = false;
@@ -327,7 +327,8 @@ export default class Create extends Vue {
         const { data: res } = await this.$axios.post<{ team: Team, error?: string }>("/api/team/create", {
             name: this.name,
             abbreviation: this.abbreviation,
-            isPlaying: !this.isNotPlaying,
+            // isPlaying: !this.isNotPlaying,
+            isPlaying: true,
             timezoneOffset: timezone,
         });
 
