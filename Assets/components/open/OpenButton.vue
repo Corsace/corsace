@@ -5,7 +5,7 @@
     >
         <div 
             v-if="disabledSync"
-            class="open_button__child open_button__child--disabled open_button__content open_button__content--xl"
+            class="open_button__child open_button__content open_button__child--disabled"
         >
             CURRENTLY UNAVAILABLE
         </div>
@@ -18,8 +18,9 @@
                 <div class="open_button__content--xl">
                     <slot name="title" />
                 </div>
-                <hr class="line--red">
-                <slot />
+                <div class="open_button__content--text">
+                    <slot />
+                </div>
             </div>
         </NuxtLink>
         <a
@@ -34,8 +35,9 @@
                 <div class="open_button__content--xl">
                     <slot name="title" />
                 </div>
-                <hr class="line--red">
-                <slot />
+                <div class="open_button__content--text">
+                    <slot />
+                </div>
             </div>
         </a>
     </div>
@@ -59,48 +61,60 @@ export default class OpenButton extends Vue {
 .open_button {
     margin: 50px 0px;
     height: 112px;
-    border-radius: 9px;
-    background: linear-gradient(0deg, #555555 100%, #575757 75.26%, #575757 66.67%, #5B5B5B 0%);
-    padding: 1px;
+    color: $white;
+
+    &__content {
+        position: relative;
+        padding: 20px 20px;
+        height: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        &--xl {
+            color: #131313;
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-family: $font-zurich;
+            font-size: 80.77px;
+            line-height: 38.7px;
+            letter-spacing: -0.07em;
+            font-weight: 900;
+            text-transform: lowercase;
+        }
+
+        &--text {
+            z-index: 2;
+        }
+    }
+
+    &--disabled {
+        cursor: not-allowed;
+        color: $open-red;
+        border: 1px solid $open-red;
+        font-weight: bold;
+    }
 
     &__child {
         display: block;
-        background-image: url('../../img/site/open/checkers-bg.png'), linear-gradient(0deg, $dark -32.92%, #2F2F2F 84.43%);
-        background-repeat: no-repeat;
-        background-position: bottom 0px right 0px;
-        border-radius: 8px; /* reduce radius to keep within parent div */
         height: 110px;
-        box-shadow: 0px 4px 4px 0px #00000040;
+        background-color: $open-red;
 
         &:hover {
             text-decoration: none;
         }
 
         &--disabled {
-            background-image: url('../../img/site/open/checkers-bg.png'), linear-gradient(0deg, $dark, $dark);
+            background-color: initial;
+            background-image: url('../../img/site/open/checkers-bg.png');
+            background-repeat: no-repeat;
+            background-position: bottom 0px right 0px;
 
             display: flex;
             align-items: center;
             justify-content: center;
         }
-    }
-
-    &__content {
-        position: relative;
-        color: $white;
-        padding: 20px 20px;
-        text-align: start;
-        font-weight: 600;
-
-        &--xl {
-            font-size: $font-xl;
-            font-weight: bold;
-        }
-    }
-
-    &--disabled {
-        cursor: not-allowed;
-        opacity: 0.3;
     }
 }
 </style>

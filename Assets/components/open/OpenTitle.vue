@@ -34,9 +34,8 @@ export default class OpenTitle extends Vue {
         justify-content: space-between;
         flex-wrap: wrap;
         
-        &__text{
-            font-family: $font-commuterssans;
-            font-weight: 400;
+        &__text {
+            font-family: $font-zurich;
             font-size: $font-title;
         }
         &__button {

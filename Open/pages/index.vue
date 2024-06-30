@@ -34,7 +34,7 @@
                                 <span class="index_schedule__time">{{ new Date(tournament.registrations.start || "").toLocaleString('en-US', optionsRange) }} - {{ new Date(tournament.registrations.end || "").toLocaleString('en-US', optionsRange) }}</span>
                             </li>
                             <li 
-                                v-for="round in tournament?.stages"
+                                v-for="round in tournament?.stages || []"
                                 :key="round.name"
                                 class="index_schedule__group"
                             >
@@ -175,8 +175,6 @@ export default class Default extends Vue {
     justify-content: center;
     height: 100%;
 
-    font-weight: 600;
-
     &__video {
         position: absolute;
         top: 0;
@@ -236,7 +234,7 @@ export default class Default extends Vue {
             padding: 5px 0px;
             text-align: start;
             font-size: $font-xl;
-            font-weight: bold;
+            letter-spacing: 0.23em;
         }
 
         &__content {
