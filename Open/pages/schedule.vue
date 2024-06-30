@@ -2,7 +2,7 @@
     <div class="schedule">
         <div class="schedule_main_content">
             <OpenTitle>
-                SCHEDULE - {{ selectedStage?.abbreviation.toUpperCase() || '' }}
+                SCHEDULE - <span class="schedule_main_content__abbreviation">{{ selectedStage?.abbreviation.toUpperCase() || '' }}</span>
                 <template #selector>
                     <StageSelector
                         :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
@@ -128,6 +128,10 @@ export default class Schedule extends Vue {
         width: 75vw;
         position: relative;
         padding: 35px;
+
+        &__abbreviation {
+            color: $open-red;
+        }
 
         @media screen and (max-width: $breakpoint-xl) {
             width: 100vw;

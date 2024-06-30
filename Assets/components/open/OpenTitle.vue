@@ -14,7 +14,11 @@
                 />
             </div>
         </div>
-        <hr class="line--red line--bottom-space">
+        <slot
+            name="separator"
+        >
+            <hr class="line--red line--bottom-space">
+        </slot>
     </div>
 </template>
 
