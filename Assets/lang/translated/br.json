@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "Entre de cara na Corsace Open 2023 - onde os melhores jogadores de osu! do mundo se enfrentam.",
+            "description": "Entre de cara na Corsace Open 2024 - onde os melhores jogadores de osu! do mundo se enfrentam.",
             "timeline": "LINHA DO TEMPO",
-            "presentedBy": "CORSACE OPEN 23 É APRESENTADA POR",
+            "presentedBy": "CORSACE OPEN 2024 É APRESENTADA POR",
             "registrations": "INSCRIÇÕES",
             "button": {
-                "qualifiersMappool": "MAPPOOLS DAS QUALIFICATÓRIAS",
+                "qualifiersMappool": "MAPPOOL DAS QUALIFICATÓRIAS",
                 "mappoolDownload": "Baixar mappool e estatísticas",
-                "register": "CRIAR E INSCREVER SEU TIME",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "Fim das inscrições em"
             }
         },

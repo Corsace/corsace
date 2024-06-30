@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "세계 최고의 Osu! 플레이어들이 배틀하는 코사스 오픈 2023에 빠져보세요!",
+            "description": "세계 최고의 Osu! 플레이어들이 배틀하는 코사스 오픈 2024에 빠져보세요!",
             "timeline": "타임라인",
-            "presentedBy": "코사스 2023은 다음과 같은 곳에서 제공합니다",
+            "presentedBy": "코사스 2024은 다음과 같은 곳에서 제공합니다",
             "registrations": "등록 기간",
             "button": {
                 "qualifiersMappool": "퀄리파이어 맵풀",
                 "mappoolDownload": "맵풀 다운로드와 통계 보기",
-                "register": "당신의 팀을 만들고 등록하세요",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "등록이 마감됩니다"
             }
         },

@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "Погрузись в Corsace Open 2023 - место, где лучшие игроки osu! сходятся лицом к лицу.",
+            "description": "Погрузись в Corsace Open 2024 - место, где лучшие игроки osu! сходятся лицом к лицу.",
             "timeline": "ГРАФИК",
-            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "presentedBy": "CORSACE OPEN 2024 IS PRESENTED BY",
             "registrations": "РЕГИСТРАЦИЯ",
             "button": {
                 "qualifiersMappool": "ОТБОРОЧНЫЙ МАППУЛ",
                 "mappoolDownload": "Скачать маппул и статистика",
-                "register": "СОЗДАТЬ И ЗАРЕГИСТРИРОВАТЬ КОМАНДУ",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "Регистрация заканчивается"
             }
         },

@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
+            "description": "Dive into Corsace Open 2024 - where the world's osu! elites battle it out.",
             "timeline": "TIMELINE",
-            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "presentedBy": "CORSACE OPEN 2024 IS PRESENTED BY",
             "registrations": "REGISTRATIONS",
             "button": {
-                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
+                "qualifiersMappool": "QUALIFIERS MAPPOOL",
                 "mappoolDownload": "Mappool download and statistics",
-                "register": "CREATE AND REGISTER YOUR TEAM",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "Registrations end"
             }
         },

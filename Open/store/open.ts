@@ -155,8 +155,10 @@ export const actions: ActionTree<OpenState, OpenState> = {
     async setTournament ({ commit }, year) {
         const { data } = await this.$axios.get<{ tournament: Tournament }>(`/api/tournament/open/${year}`);
 
-        if (data.success)
+        if (data.success) {
             commit("setTournament", data.tournament);
+            commit("setTitle", data.tournament.year);
+        }
     },
     async setTeamList ({ commit }, tournamentID) {
         const { data } = await this.$axios.get<{ teams: Team[] }>(`/api/tournament/${tournamentID}/teams`);
@@ -227,10 +229,9 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (data.success)
             commit("setStaffList", data.staff);
     },
-    async setInitialData ({ commit, dispatch }, year) {
+    async setInitialData ({ dispatch }, year) {
         await Promise.all([
             dispatch("setTournament", year),
-            commit("setTitle", year),
             dispatch("setTeam"),
             dispatch("setInvites"),
         ]);
