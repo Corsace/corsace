@@ -30,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { user, team } = params;
 
-    const tournamentTeam = await getTeam(m, team ?? cmdUser.ID, team ? "name" : "managerID", cmdUser.ID, true, true);
+    const tournamentTeam = await getTeam(m, team ?? cmdUser.ID, team ? "name" : "captainID", cmdUser.ID, true, true);
     if (!tournamentTeam)
         return;
     

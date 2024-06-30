@@ -26,9 +26,9 @@ teamRouter.$get<{ teams: TeamInterface[] }>("/", isLoggedInDiscord, async (ctx) 
         ID: number;
     }[] = await Team
         .createQueryBuilder("team")
-        .leftJoin("team.manager", "manager")
+        .leftJoin("team.captain", "captain")
         .leftJoin("team.members", "member")
-        .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user!.discord.userID })
+        .where("captain.discordUserID = :discordUserID", { discordUserID: ctx.state.user!.discord.userID })
         .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user!.discord.userID })
         .select("team.ID", "ID")
         .getRawMany();
@@ -43,7 +43,7 @@ teamRouter.$get<{ teams: TeamInterface[] }>("/", isLoggedInDiscord, async (ctx) 
 
     const teams = await Team
         .createQueryBuilder("team")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("team.tournaments", "tournament")
         .leftJoinAndSelect("member.userStatistics", "stats")
@@ -60,7 +60,7 @@ teamRouter.$get<{ teams: TeamInterface[] }>("/", isLoggedInDiscord, async (ctx) 
 teamRouter.$get<{ teams: TeamInterface[] }>("/all", async (ctx) => {
     const teamQ = Team
         .createQueryBuilder("team")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "mode")
@@ -82,7 +82,7 @@ teamRouter.$get<{ teams: TeamInterface[] }>("/all", async (ctx) => {
 teamRouter.$get<{ team: TeamInterface }>("/:teamID", async (ctx) => {
     const team = await Team
         .createQueryBuilder("team")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "mode")
@@ -145,7 +145,7 @@ teamRouter.$post<{
     team.name = name;
     team.abbreviation = abbreviation;
     team.timezoneOffset = timezoneOffset;
-    team.manager = ctx.state.user!;
+    team.captain = ctx.state.user!;
     team.members = [];
     if (isPlaying)
         team.members = [ctx.state.user!];
@@ -282,7 +282,7 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
         return;
     }
 
-    const teamMembers = [team.manager, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
+    const teamMembers = [team.captain, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
     const alreadyRegistered = await User
         .createQueryBuilder("user")
         .innerJoin("user.teams", "team")
@@ -305,16 +305,16 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getMany();
     const participantRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Participants);
-    const managerRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Managers);
+    const captainRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Captains);
     const unallowedRoles = tournamentRoles.filter(r => unallowedToPlay.includes(r.roleType));
     try {
         const tournamentServer = await discordClient.guilds.fetch(tournament.server);
         await tournamentServer.members.fetch();
         const discordMembers = teamMembers.map(m => tournamentServer.members.resolve(m.discord.userID));
-        if (!discordMembers.some(m => team.manager.discord.userID === m?.id)) {
+        if (!discordMembers.some(m => team.captain.discord.userID === m?.id)) {
             ctx.body = {
                 success: false,
-                error: "Team managers are required to be in the discord server",
+                error: "Team captains are required to be in the discord server",
             };
             return;
         }
@@ -338,8 +338,8 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
             if (!discordMember)
                 continue;
 
-            if (team.manager.discord.userID === discordMember.id)
-                await discordMember.roles.add([...managerRoles.map(r => r.roleID), ...participantRoles.map(r => r.roleID)]);
+            if (team.captain.discord.userID === discordMember.id)
+                await discordMember.roles.add([...captainRoles.map(r => r.roleID), ...participantRoles.map(r => r.roleID)]);
             else
                 await discordMember.roles.add(participantRoles.map(r => r.roleID));
         }
@@ -614,7 +614,7 @@ teamRouter.$post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), as
     ctx.body = { success: true };
 });
 
-teamRouter.$post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$post("/:teamID/captain", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team = ctx.state.team!;
 
     const tournaments = await Tournament
@@ -682,7 +682,7 @@ teamRouter.$post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), asyn
     }
 });
 
-teamRouter.$post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$post("/:teamID/captain/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team = ctx.state.team!;
 
     const tournaments = await Tournament
@@ -728,10 +728,10 @@ teamRouter.$post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(tru
         return;
     }
 
-    if (team.manager.ID === userID) {
+    if (team.captain.ID === userID) {
         ctx.body = {
             success: false,
-            error: "User is already the manager",
+            error: "User is already the captain",
         };
         return;
     }
@@ -744,7 +744,7 @@ teamRouter.$post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(tru
         return;
     }
 
-    team.manager = team.members.find(m => m.ID === userID)!;
+    team.captain = team.members.find(m => m.ID === userID)!;
 
     if (!team.members.some(m => m.ID === ctx.state.user!.ID)) {
         team.members.push(ctx.state.user!);
@@ -884,7 +884,7 @@ teamRouter.$patch<{
 }>("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => {
     const team = await Team
         .createQueryBuilder("team")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "mode")

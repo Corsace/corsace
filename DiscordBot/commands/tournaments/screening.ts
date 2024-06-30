@@ -18,7 +18,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const teams = await Team
         .createQueryBuilder("team")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .leftJoin("team.tournaments", "tournament")
         .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
@@ -26,8 +26,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const csv = teams.map(t => {
         const members = t.members;
-        if (!members.some(m => m.ID === t.manager.ID))
-            members.push(t.manager);
+        if (!members.some(m => m.ID === t.captain.ID))
+            members.push(t.captain);
         return members.map(m => `${m.osu.username},${t.name},${m.osu.userID}`).join("\n");
     }).join("\n");
 

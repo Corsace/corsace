@@ -29,7 +29,7 @@ import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {
     if (tournament.minTeamSize !== 1) {
-        await respond(m, `User ${user.osu.username} is not in this tournament or is not a team manager`);
+        await respond(m, `User ${user.osu.username} is not in this tournament or is not a team captain`);
         return;
     }
 
@@ -40,7 +40,7 @@ async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommand
 
     const team = new Team();
     team.name = user.osu.username;
-    team.manager = user;
+    team.captain = user;
     team.members = [ user ];
     team.avatarURL = user.osu.avatar;
     team.tournaments = [];
@@ -156,10 +156,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!team) {
         const teams = await Team
             .createQueryBuilder("team")
-            .leftJoinAndSelect("team.manager", "manager")
+            .leftJoinAndSelect("team.captain", "captain")
             .leftJoinAndSelect("team.members", "members")
             .leftJoinAndSelect("team.tournaments", "tournament")
-            .where("manager.ID = :ID", { ID: user.ID })
+            .where("captain.ID = :ID", { ID: user.ID })
             .getMany();
 
         if (teams.length === 0) {
@@ -220,14 +220,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
 
         // New team, need to check roles
-        const teamMembers = [team.manager, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
+        const teamMembers = [team.captain, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
         const tournamentRoles = await TournamentRole
             .createQueryBuilder("tournamentRole")
             .leftJoin("tournamentRole.tournament", "tournament")
             .where("tournament.ID = :ID", { ID: tournament.ID })
             .getMany();
         const participantRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Participants);
-        const managerRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Managers);
+        const captainRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Captains);
         const unallowedRoles = tournamentRoles.filter(r => unallowedToPlay.includes(r.roleType));
         try {
             const tournamentServer = m.guild ?? await discordClient.guilds.fetch(tournament.server);
@@ -248,8 +248,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             for (const discordMember of discordMembers) {
                 if (!discordMember)
                     continue;
-                if (team.manager.discord.userID === discordMember.id)
-                    await discordMember.roles.add([...managerRoles.map(r => r.roleID), ...participantRoles.map(r => r.roleID)]);
+                if (team.captain.discord.userID === discordMember.id)
+                    await discordMember.roles.add([...captainRoles.map(r => r.roleID), ...participantRoles.map(r => r.roleID)]);
                 else
                     await discordMember.roles.add(participantRoles.map(r => r.roleID));
             }
@@ -261,12 +261,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const tournamentTeams = await Team
             .createQueryBuilder("team")
             .leftJoinAndSelect("team.tournaments", "tournament")
-            .leftJoinAndSelect("team.manager", "manager")
+            .leftJoinAndSelect("team.captain", "captain")
             .leftJoinAndSelect("team.members", "members")
             .where("tournament.ID = :ID", { ID: tournament.ID })
             .getMany();
 
-        const tournamentMembers = tournamentTeams.flatMap(t => [t.manager, ...t.members]);
+        const tournamentMembers = tournamentTeams.flatMap(t => [t.captain, ...t.members]);
         const alreadyRegistered = teamMembers.filter(member => tournamentMembers.some(m => m.ID === member.ID));
         if (alreadyRegistered.length > 0) {
             await respond(m, `Some members are already registered in this tournament:\n\`${alreadyRegistered.map(m => m.osu.username).join(", ")}\``);

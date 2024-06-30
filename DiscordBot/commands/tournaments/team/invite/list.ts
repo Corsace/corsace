@@ -25,7 +25,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .addFields(invites.map(invite => {
             return {
                 name: `${invite.team.name} (${invite.team.abbreviation})`,
-                value: `Manager: ${invite.team.manager.osu.username} <@${invite.team.manager.discord.userID}> (${invite.team.manager.osu.userID})`,
+                value: `Captain: ${invite.team.captain.osu.username} <@${invite.team.captain.discord.userID}> (${invite.team.captain.osu.userID})`,
             };
         }));
 

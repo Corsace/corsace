@@ -77,10 +77,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const matchupsQ = Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.team1", "team1")
-        .leftJoinAndSelect("team1.manager", "team1manager")
+        .leftJoinAndSelect("team1.captain", "team1captain")
         .leftJoinAndSelect("team1.members", "team1members")
         .leftJoinAndSelect("matchup.team2", "team2")
-        .leftJoinAndSelect("team2.manager", "team2manager")
+        .leftJoinAndSelect("team2.captain", "team2captain")
         .leftJoinAndSelect("team2.members", "team2members")
         .innerJoinAndSelect("matchup.stage", "stage")
         .innerJoinAndSelect("stage.tournament", "tournament")
@@ -95,7 +95,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     else if (filter === "unassigned")
         matchupsQ.andWhere("referee.ID IS NULL OR streamer.ID IS NULL OR (streamer.ID IS NOT NULL AND commentators.ID IS NULL)");
     else if (filter === "team")
-        matchupsQ.andWhere("team1manager.ID = :userID OR team2manager.ID = :userID OR team1members.ID = :userID OR team2members.ID = :userID", { userID: user.ID });
+        matchupsQ.andWhere("team1captain.ID = :userID OR team2captain.ID = :userID OR team1members.ID = :userID OR team2members.ID = :userID", { userID: user.ID });
     else if (isReferee(filter as referee))
         matchupsQ.andWhere("referee.ID IS NULL");
     else if (isStreamer(filter as streamer))
@@ -106,7 +106,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const matchups = await matchupsQ.getMany();
 
     if (matchups.length === 0) {
-        await respond(m, `No matchups found${filter === "assigned" ? " with u as a ref streamer or comm" : filter === "unassigned" ? " that r unassigned" : filter === "team" ? " with u as a team member/manager" : ""}`);
+        await respond(m, `No matchups found${filter === "assigned" ? " with u as a ref streamer or comm" : filter === "unassigned" ? " that r unassigned" : filter === "team" ? " with u as a team member/captain" : ""}`);
         return;
     }
     
@@ -114,7 +114,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const embed = new EmbedBuilder()
         .setTitle("Matchups")
-        .setDescription(`Here are the current matchups${filter === "assigned" ? " with u as a ref streamer or comm" : filter === "unassigned" ? " that r unassigned" : filter === "team" ? " with u as a team member/manager" : ""}`)
+        .setDescription(`Here are the current matchups${filter === "assigned" ? " with u as a ref streamer or comm" : filter === "unassigned" ? " that r unassigned" : filter === "team" ? " with u as a team member/captain" : ""}`)
         .setTimestamp();
 
     for (const matchup of matchups) {

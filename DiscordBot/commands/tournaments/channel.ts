@@ -37,7 +37,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { channel, remove, channel_type } = params;
 
     if (!remove && !channel_type) {
-        await respond(m, "Listen ur either gonna have to tell me to remove a channel, or ur gonna have to specify the channel type u want to add\n\nThe list of channel types are:\nGeneral (general)\nParticipants (participants)\nStaff (staff)\nManagers (managers)\nAnnouncements (announcements)\nAdmin (admin)\nMappool (mappool)\nMappool Log (mappoollog)\nMappool QA (mappoolqa)\nJob Board (jobboard)\nReferees (referees)\nStreamers (streamers)\nMatchup Results (matchupresults)\n\nExample: `!tournament_channel #general general`");
+        await respond(m, "Listen ur either gonna have to tell me to remove a channel, or ur gonna have to specify the channel type u want to add\n\nThe list of channel types are:\nGeneral (general)\nParticipants (participants)\nStaff (staff)\nCaptains (captains)\nAnnouncements (announcements)\nAdmin (admin)\nMappool (mappool)\nMappool Log (mappoollog)\nMappool QA (mappoolqa)\nJob Board (jobboard)\nReferees (referees)\nStreamers (streamers)\nMatchup Results (matchupresults)\n\nExample: `!tournament_channel #general general`");
         return;
     }
 
@@ -160,8 +160,8 @@ const data = new SlashCommandBuilder()
                 value: "Staff",
             },
             {
-                name: "Managers",
-                value: "Managers",
+                name: "Captains",
+                value: "Captains",
             },
             {
                 name: "Announcements",

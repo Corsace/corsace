@@ -322,9 +322,9 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
                                 description: "Create a tournament staff role",
                             },
                             {
-                                label: "Managers",
-                                value: "Managers",
-                                description: "Create a team manager role",
+                                label: "Captains",
+                                value: "Captains",
+                                description: "Create a team captain role",
                             },
                             {
                                 label: "Mappoolers",
@@ -521,9 +521,9 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                                 description: "Create a tournament staff channel",
                             },
                             {
-                                label: "Managers",
-                                value: "Managers",
-                                description: "Create a tournament team managers channel",
+                                label: "Captains",
+                                value: "Captains",
+                                description: "Create a tournament team captains channel",
                             },
                             {
                                 label: "Announcements",
@@ -930,7 +930,7 @@ const data = new SlashCommandBuilder()
             .setMaxValue(16))
     .addIntegerOption(option =>
         option.setName("max_players")
-            .setDescription("The maximum size for a team in the tournament (excl. managers)")
+            .setDescription("The maximum size for a team in the tournament (excl. captains if captain_must_play is false)")
             .setRequired(true)
             .setMinValue(1)
             .setMaxValue(16))
@@ -955,6 +955,10 @@ const data = new SlashCommandBuilder()
     .addBooleanOption(option =>
         option.setName("qualifiers")
             .setDescription("Does the tournament have qualifiers?")
+            .setRequired(true))
+    .addBooleanOption(option =>
+        option.setName("captain_must_play")
+            .setDescription("Does the captain have to be a player in the team? (If false, the captain is not counted in the min/max team size)")
             .setRequired(true))
     .addUserOption(option =>
         option.setName("organizer")

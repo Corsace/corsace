@@ -60,7 +60,7 @@ banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
         .innerJoinAndSelect("stage.tournament", "tournament")
         .innerJoinAndSelect("tournament.organizer", "organizer")
         .leftJoinAndSelect("matchup.teams", "team")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .where("matchup.date <= :now", { now: ctx.state.matchupDate })
         .andWhere("stage.stageType = '0'")

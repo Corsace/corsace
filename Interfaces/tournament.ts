@@ -36,7 +36,7 @@ export interface Tournament extends BaseTournament {
 export enum TournamentRoleType {
     Organizer,
     Participants,
-    Managers,
+    Captains,
     Mappoolers,
     Mappers,
     Testplayers,
@@ -58,7 +58,7 @@ export const unallowedToPlay = [
 
 export const playingRoles = [
     TournamentRoleType.Participants,
-    TournamentRoleType.Managers,
+    TournamentRoleType.Captains,
 ];
 
 export const tournamentStaffRoleOrder = [
@@ -77,7 +77,7 @@ export const tournamentStaffRoleOrder = [
 export enum TournamentChannelType {
     General,
     Participants,
-    Managers,
+    Captains,
     Announcements,
     Admin,
     Mappool,
@@ -99,7 +99,7 @@ export function getTournamentChannelTypeRoles () {
     return {
         [TournamentChannelType.General]: undefined,
         [TournamentChannelType.Participants]: Object.values(TournamentRoleType).filter((role) => typeof role === "number") as TournamentRoleType[],
-        [TournamentChannelType.Managers]: Object.values(TournamentRoleType).filter((role) => typeof role === "number" && role !== TournamentRoleType.Participants) as TournamentRoleType[],
+        [TournamentChannelType.Captains]: Object.values(TournamentRoleType).filter((role) => typeof role === "number" && role !== TournamentRoleType.Participants) as TournamentRoleType[],
         [TournamentChannelType.Announcements]: undefined,
         [TournamentChannelType.Admin]: [TournamentRoleType.Organizer],
         [TournamentChannelType.Mappool]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers],

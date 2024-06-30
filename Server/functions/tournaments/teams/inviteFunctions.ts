@@ -10,7 +10,7 @@ export async function invitePlayer (team: Team, user: User) {
     if (existingInvite.length > 0 || team.invites?.some(i => i.ID === user?.ID))
         return "User is already invited";
 
-    if (team.members.some(m => m.ID === user?.ID) || team.manager.ID === user?.ID)
+    if (team.members.some(m => m.ID === user?.ID) || team.captain.ID === user?.ID)
         return "User is already in the team";
 
     const invite = new TeamInvite();
@@ -34,11 +34,11 @@ export async function inviteAcceptChecks (invite: TeamInvite) {
             .createQueryBuilder("tournament")
             .innerJoinAndSelect("tournament.teams", "team")
             .innerJoinAndSelect("team.members", "member")
-            .innerJoinAndSelect("team.manager", "manager")
+            .innerJoinAndSelect("team.captain", "captain")
             .where("tournament.ID IN (:...tournaments)", { tournaments: registrationTournaments.map(t => t.ID) })
             .andWhere(new Brackets(qb => {
                 qb.where("member.ID = :userID", { userID: invite.user.ID })
-                    .orWhere("manager.ID = :userID", { userID: invite.user.ID });
+                    .orWhere("captain.ID = :userID", { userID: invite.user.ID });
             }))
             .getExists();
         if (alreadyInTeam)

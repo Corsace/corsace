@@ -12,7 +12,7 @@ export default async function guildMemberAdd (member: GuildMember) {
         .createQueryBuilder("role")
         .leftJoinAndSelect("role.tournament", "tournament")
         .leftJoinAndSelect("tournament.teams", "team")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .where("tournament.server = :server", { server: member.guild.id })
         .andWhere(new Brackets(qb => {
@@ -20,13 +20,13 @@ export default async function guildMemberAdd (member: GuildMember) {
                 .orWhere("role.roleType = '2'");
         }))
         .andWhere(new Brackets(qb => {
-            qb.where("manager.discordUserid = :discord", { discord: member.id })
+            qb.where("captain.discordUserid = :discord", { discord: member.id })
                 .orWhere("member.discordUserid = :discord", { discord: member.id });
         }))
         .getMany();
     for (const role of tournamentRolesToAdd)
         if (
-            role.tournament.teams.some(t => t.manager.discord.userID === member.id) ||
+            role.tournament.teams.some(t => t.captain.discord.userID === member.id) ||
             (
                 role.roleType === TournamentRoleType.Participants &&
                 role.tournament.teams.some(t => t.members.some(m => m.discord.userID === member.id))
