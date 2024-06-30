@@ -637,7 +637,7 @@
                     "deleteTeam": "本当にこのチームを削除しますか？",
                     "deleteTeamFinal": "本当にこのチームを削除しますか？この操作は取り消せません！",
                     "removeMember": "このチームから {username} を削除しますか？",
-                    "transferManager": "このチームのマネージャー権を {username} に移行しますか？",
+                    "transferCaptain": "Are you sure you want to transfer manager to {username}?",
                     "invite": "{username} をこのチームに招待しますか？",
                     "removeInvite": "{username} へのチーム招待を取り消してもよろしいですか？",
                     "unregister": "この大会の登録を取り消しますか？6人のメンバーがいれば、いつでも再登録できます。"
@@ -648,12 +648,12 @@
             "headers": {
                 "tournaments": "トーナメント",
                 "teamStats": "チームスタッツ",
-                "teamManager": "チームマネージャー",
+                "teamCaptain": "TEAM MANAGER",
                 "teamMembers": "チームメンバー",
                 "editTeamMembers": "チームメンバーを編集",
                 "closeTeamMembers": "閉じる",
                 "becomeMember": "メンバーになりプレイに参加する",
-                "becomeManager": "マネージャーになる",
+                "becomeCaptain": "become manager only",
                 "teamInvites": "チーム招待",
                 "editTeamInvites": "チーム招待を編集",
                 "closeTeamInvites": "閉じる",
@@ -697,10 +697,10 @@
             "avatarInfo3": "全てのチーム名とアバターはスタッフによって審査されます。",
             "avatarInfo4": "不適切と判断された場合、変更するよう通知されます。",
             "teamManagement": "チーム管理",
-            "teamManagers": "<div>チーム<span>マネージャー</span>（あなた）は、プレイとキャプテンを同時に行うか</div><div>チームでプレイせずキャプテンだけを行うか選択することが出来ます。</div>",
-            "teamManagersFree": "プレイはせずマネージャーとしてのみ参加する場合、プレイヤー枠を獲得することは<span>できません。</span>",
-            "selectManager": "チームでプレイせず、<span>マネージャーとしてのみ</span>活動する場合は、このチェックボックスを選択してください。",
-            "confirmManager": "<div>ここにチェックを入れることで、私はマネージャーとしてのみ参加し</div> <div>どの試合にも参加できないことに同意します。</div>",
+            "teamCaptains": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamCaptainsFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "confirmCaptain": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "チームを作成"
         },
         "components": {
