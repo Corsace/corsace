@@ -95,13 +95,13 @@
                         >
                             {{ !editMembers ? $t('open.teams.headers.editTeamMembers') : $t('open.teams.headers.closeTeamMembers') }}
                         </div>
-                        <div 
+                        <!-- <div 
                             v-if="isCaptain && !teamData.qualifier?.mp"
                             class="team_fields--clickable"
                             @click="captainToggle"
                         >
                             {{ teamData.members.some(m => m.isCaptain) ? $t('open.teams.headers.becomeCaptain') : $t('open.teams.headers.becomeMember') }}
-                        </div>
+                        </div> -->
                     </div>
                     <div class="team_fields_block team__member_list">
                         <div
@@ -719,17 +719,17 @@ export default class Team extends Vue {
             alert(res.error);
     }
 
-    async captainToggle () {
-        if (!this.isCaptain || !this.teamData)
-            return;
+    // async captainToggle () {
+    //     if (!this.isCaptain || !this.teamData)
+    //         return;
 
-        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/captain`);
+    //     const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/captain`);
 
-        if (res.success)
-            this.teamData = await this.getTeam(true);
-        else
-            alert(res.error);
-    }
+    //     if (res.success)
+    //         this.teamData = await this.getTeam(true);
+    //     else
+    //         alert(res.error);
+    // }
 
     async search (userSearch: string) {
         try {
