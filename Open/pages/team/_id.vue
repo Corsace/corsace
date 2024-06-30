@@ -59,7 +59,7 @@
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
-                        {{ $t('open.teams.headers.teamManager') }}
+                        {{ $t('open.teams.headers.teamCaptain') }}
                     </div>
                     <div class="team_fields_block team__member_list">
                         <a
@@ -100,7 +100,7 @@
                             class="team_fields--clickable"
                             @click="captainToggle"
                         >
-                            {{ teamData.members.some(m => m.isCaptain) ? $t('open.teams.headers.becomeManager') : $t('open.teams.headers.becomeMember') }}
+                            {{ teamData.members.some(m => m.isCaptain) ? $t('open.teams.headers.becomeCaptain') : $t('open.teams.headers.becomeMember') }}
                         </div>
                     </div>
                     <div class="team_fields_block team__member_list">
@@ -707,7 +707,7 @@ export default class Team extends Vue {
         if (!this.teamData)
             return;
 
-        if (!confirm(this.$t("open.teams.edit.confirm.transferManager", {username: user.username}) as string))
+        if (!confirm(this.$t("open.teams.edit.confirm.transferCaptain", {username: user.username}) as string))
             return;
 
         const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/captain/${user.ID}`);

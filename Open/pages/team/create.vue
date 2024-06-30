@@ -135,16 +135,16 @@
                     <div class="create_fields_block">
                         <div 
                             class="create_fields_block--highlight"
-                            v-html="$t('open.create.teamManagers')" 
+                            v-html="$t('open.create.teamCaptains')" 
                         />
                         <div 
                             class="create_fields_block--highlight"
-                            v-html="$t('open.create.teamManagersFree')"
+                            v-html="$t('open.create.teamCaptainsFree')"
                         />
                         <br>
                         <div 
                             class="create_fields_block--highlight"
-                            v-html="$t('open.create.selectManager')" 
+                            v-html="$t('open.create.selectCaptain')" 
                         />
                         <div class="create_fields_block--spaced create_fields_block--inline">
                             <input 
@@ -155,7 +155,7 @@
                             <div
                                 class="create_fields__finetext create_fields__finetext--spaced create_fields__finetext--clickable"
                                 @click="isNotPlaying = !isNotPlaying" 
-                                v-html="$t('open.create.confirmManager')" 
+                                v-html="$t('open.create.confirmCaptain')" 
                             />
                         </div>
                     </div>
