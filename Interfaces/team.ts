@@ -19,7 +19,7 @@ export interface TeamList extends BaseTeam {
 export interface Team extends TeamList {
     abbreviation: string;
     timezoneOffset: number;
-    manager: TeamMember;
+    captain: TeamMember;
     invites?: TeamUser[];
     qualifier?: BaseMatchup;
     tournaments?: BaseTournament[];
@@ -32,7 +32,7 @@ export interface TeamUser {
 }
 
 export interface TeamMember extends TeamUser {
-    isManager: boolean;
+    isCaptain: boolean;
     BWS: number;
 }
 

@@ -99,6 +99,9 @@ export class Tournament extends BaseEntity {
     @Column({ default: false })
         invitational!: boolean;
 
+    @Column({ default: true })
+        captainMustPlay!: boolean;
+
     @Column()
         minTeamSize!: number;
 

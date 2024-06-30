@@ -29,7 +29,7 @@ export class Team extends BaseEntity {
     @ManyToOne(() => User, user => user.teamsManaged, {
         nullable: false,
     })
-        manager!: User;
+        captain!: User;
 
     @ManyToMany(() => User, user => user.teams)
     @JoinTable()
@@ -123,12 +123,12 @@ export class Team extends BaseEntity {
             abbreviation: this.abbreviation,
             timezoneOffset: this.timezoneOffset,
             avatarURL: this.avatarURL ?? undefined,
-            manager: {
-                ID: this.manager.ID,
-                username: this.manager.osu.username,
-                osuID: this.manager.osu.userID,
-                BWS: this.manager.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
-                isManager: true,
+            captain: {
+                ID: this.captain.ID,
+                username: this.captain.osu.username,
+                osuID: this.captain.osu.userID,
+                BWS: this.captain.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
+                isCaptain: true,
             },
             members: this.members.map<TeamMember>(member => {
                 return {
@@ -136,7 +136,7 @@ export class Team extends BaseEntity {
                     username: member.osu.username,
                     osuID: member.osu.userID,
                     BWS: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
-                    isManager: member.ID === this.manager.ID,
+                    isCaptain: member.ID === this.captain.ID,
                 };
             }),
             pp: this.pp,
