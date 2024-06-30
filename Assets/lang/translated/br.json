@@ -637,7 +637,7 @@
                     "deleteTeam": "Você tem certeza que quer deletar este time?",
                     "deleteTeamFinal": "Você tem CERTEZA mesmo que deseja excluir este time? Isso não pode ser desfeito!",
                     "removeMember": "Você tem certeza de que deseja remover {username} de seu time?",
-                    "transferManager": "Você tem certeza de que deseja transferir a função de manager para {username}?",
+                    "transferCaptain": "Você tem certeza de que deseja transferir a função de manager para {username}?",
                     "invite": "Você tem certeza de que deseja convidar {username} para seu time?",
                     "removeInvite": "Você tem certeza de que deseja remover o convite de {username} para seu time?",
                     "unregister": "Você tem certeza de que deseja cancelar a inscrição deste torneio? Você pode se registrar novamente a qualquer momento se ainda tiver 6 membros."
@@ -648,12 +648,12 @@
             "headers": {
                 "tournaments": "TORNEIOS",
                 "teamStats": "ESTATÍSTICAS DO TIME",
-                "teamManager": "MANAGER DO TIME",
+                "teamCaptain": "MANAGER DO TIME",
                 "teamMembers": "MEMBROS DO TIME",
                 "editTeamMembers": "editar membros do time",
                 "closeTeamMembers": "fechar edição dos membros do time",
                 "becomeMember": "se tornar um membro e jogar também",
-                "becomeManager": "se tornar apenas um manager",
+                "becomeCaptain": "se tornar apenas um manager",
                 "teamInvites": "CONVITES DE TIME",
                 "editTeamInvites": "editar convites de time",
                 "closeTeamInvites": "fechar edição dos convites de time",
@@ -697,10 +697,10 @@
             "avatarInfo3": "Todos os nomes e avatares serão submetidos a aprovação da staff.",
             "avatarInfo4": "Se julgado inapropiado, você será notificado para realizar mudanças.",
             "teamManagement": "GERENCIAMENTO DO TIME",
-            "teamManagers": "<div>Os <span>managers</span> de times (ou seja, você) têm a opção de jogar e ser capitão simultaneamente</div> <div><span>OU</span> não jogar com o time e apenas ser o capitão.</div>",
-            "teamManagersFree": "Se você não deseja jogar e apenas participar como um manager, você <span>não</span> irá ocupar um slot de jogador.",
-            "selectManager": "Marque esta checkbox se você <span>não</span> vai jogar com o time e apenas atuar como <span>manager</span>.",
-            "confirmManager": "<div>Ao marcar esta opção, eu atuarei apenas como manager e entendo que não poderei participar </div> <div>em nenhuma das partidas.</div>",
+            "teamCaptains": "<div>Os <span>managers</span> de times (ou seja, você) têm a opção de jogar e ser capitão simultaneamente</div> <div><span>OU</span> não jogar com o time e apenas ser o capitão.</div>",
+            "teamCaptainsFree": "Se você não deseja jogar e apenas participar como um manager, você <span>não</span> irá ocupar um slot de jogador.",
+            "selectCaptain": "Marque esta checkbox se você <span>não</span> vai jogar com o time e apenas atuar como <span>manager</span>.",
+            "confirmCaptain": "<div>Ao marcar esta opção, eu atuarei apenas como manager e entendo que não poderei participar </div> <div>em nenhuma das partidas.</div>",
             "create": "CRIAR TIME"
         },
         "components": {
