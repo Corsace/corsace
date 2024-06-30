@@ -637,7 +637,7 @@
                     "deleteTeam": "你确定要删除这支队伍吗？",
                     "deleteTeamFinal": "你真的确定要删除这支队伍吗？这是无法撤销的！",
                     "removeMember": "您确定要将 {username} 从队伍中删除吗？",
-                    "transferManager": "您确定要将经理转到 {username}？",
+                    "transferCaptain": "Are you sure you want to transfer manager to {username}?",
                     "invite": "您确定要邀请 {username} 加入您的队伍吗？",
                     "removeInvite": "您确定要将 {username} 的入队申请删除吗？",
                     "unregister": "您确定要从本次比赛中取消注册吗？如果仍有 6 名成员，您可以随时重新注册。"
@@ -648,12 +648,12 @@
             "headers": {
                 "tournaments": "锦标赛",
                 "teamStats": "队伍数据",
-                "teamManager": "队伍管理者",
+                "teamCaptain": "TEAM MANAGER",
                 "teamMembers": "队伍成员",
                 "editTeamMembers": "编辑队伍成员",
                 "closeTeamMembers": "关闭队伍成员编辑",
                 "becomeMember": "成为队员并进行游戏",
-                "becomeManager": "仅为管理者",
+                "becomeCaptain": "become manager only",
                 "teamInvites": "队伍邀请",
                 "editTeamInvites": "编辑队伍邀请",
                 "closeTeamInvites": "关闭队伍邀请编辑",
@@ -697,10 +697,10 @@
             "avatarInfo3": "所有名称和头像都将由工作人员批准。",
             "avatarInfo4": "如果认为不合适，将通知您进行更改。",
             "teamManagement": "队伍管理",
-            "teamManagers": "<div>队伍<span>管理者</span> （你）既可以参加比赛并履行队长职责</div> <div><span>也可以</span> 不参加比赛只履行队长职责。</div>",
-            "teamManagersFree": "如果你不想参加比赛只想担任管理者，那么你<span>不会</span>占用一个玩家名额。",
-            "selectManager": "如果你 <span>不想</span>和队伍一起参加比赛只想担任<span>管理者</span>，请选择此复选框。",
-            "confirmManager": "<div>勾选此项后，我将只会承担管理员职责，并已了解</div><div>我不能参加任何比赛。</div>",
+            "teamCaptains": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamCaptainsFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "confirmCaptain": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "创建队伍"
         },
         "components": {
