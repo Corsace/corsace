@@ -1,0 +1,147 @@
+---
+title: 网页 - 创建页面/组件
+description: 为Corsace网站创建一个页面或组件。
+lastUpdated: 2023-09-20
+sidebar:
+  order: 1210
+---
+
+## 推荐先阅读
+
+* [开发/客户端/指南/网站 - 运行环境](../web-running-environment)
+* [Nuxt 2/页面目录](https://v2.nuxt.com/docs/directory-structure/pages)
+* [vue-class-component/类组件](https://class-component.vuejs.org/guide/class-component.html)
+* [BEM/命名方式](https://getbem.com/naming/)
+
+## 目录结构
+
+根据 Nuxt 的目录结构，页面会出现在它们预期的位置。 `[网站]/components`\
+而另一方面，组件目前分布在两个地方： `[网站]/components`\
+而另一方面，组件目前分布在两个地方：
+
+* 如果组件只用于一个站点，那么它将会在`[网站]/components` 文件夹（该网站文件夹）里。
+* 如果组件被用于多个站点，那么它将会在`Assets/components`。
+
+:::caution
+This may change in the near future based on [this GitHub issue](https://github.com/Corsace/Corsace/issues/292)
+:::
+
+## 页面/组件剖析
+
+Corsace 使用 SASS/SCSS 来设计所有样式，并使用 ts 来编写任何脚本。\
+针对 vue 文件，`vue-property-decorator` 装饰器被用于创建页面和组件。
+当你创建 vue 文件时，应遵循以下基本模板：
+当你创建 vue 文件时，应遵循以下基本模板：
+
+```vue
+<template>
+    ...
+</template>
+
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
+    ...
+})
+export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
+    ...
+}
+</script>
+
+<style lang="scss">
+@import '@s-sass/[FILENAME FROM Assets/sass]';
+</style>
+```
+
+## 什么时候制作组件
+
+对于这个仓库，你想把代码拆分成组件的主要情况是：
+
+* 您正在编写的 HTML 部分可能/将在其他地方重复使用
+* 组件**可能**会在其父组件（独立组件）之外单独考虑/使用
+* 在不会增加总仓库的复杂性时当前页面/组件的复杂性可以被大大降低
+
+**强烈建议**尽可能地拆分部分代码以便于理解和使用，并避免 DRY（不要重复自己）。
+
+## 访问数据仓库
+
+### 访问主数据仓库
+
+主数据仓库位于`Assets/store/index.ts`。 要从它的状态中访问任何变量，你只需在`script` 部分添加以下内容：
+
+```vue
+<script lang="ts">
+import { State } from "vuex-class";
+...
+export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
+    ...
+    @State [VARIABLE'S NAME FROM STORE]!: [VARIABLE'S TYPES];
+    ...
+}
+</script>
+```
+
+### 访问特定的数据仓库
+
+要想访问一个特定的数据仓库，过程与访问主数据仓库相似只是要想创建`namespace`。\
+例如你想访问一个位于`Assets/store/mca-ayim.ts`数据仓库状态的变量，你可以这样做：
+
+```vue
+<script lang="ts">
+import { namespace } from "vuex-class";
+...
+const mcaAyimModule = namespace("mca-ayim");
+...
+export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
+    ...
+    @mcaAyimModule.State [VARIABLE'S NAME FROM STORE]!: [VARIABLE'S TYPES];
+    ...
+}
+</script>
+```
+
+## SASS/SCSS和样式协议
+
+:::danger
+请确保 BEM 术语清晰：
+
+* 块是“独立的一部分”
+* 元素是“与其他有联系的部分”
+* 修改器是一种“效果”
+
+例如`red`不是一个块/元素，它始终是一个修改器。
+例如`red`不是一个块/元素，它始终是一个修改器。
+:::
+由于 vue 模板通常只允许 1 个子元素，并且样式命名法遵循 BEM，因此通常只有 1 个块，其中有多个元素和修饰符分支。\
+例如：
+
+```vue
+<template>
+    <tag class="block">
+        <tag class="block__elem1">
+            <tag class="block__elem1--mod1">
+                ...
+            </tag>
+            ...
+        </tag>
+        ...
+    </tag>
+</template>
+...
+<style lang="scss">
+...
+.block {
+    &__elem1 {
+        &--mod1 {
+            ...
+        }
+        ...
+    }
+    ...
+}
+</style>
+```
+
+所有样式的命名应采用`snake-case`而不是`camelCase`。\
+例如：`mainPage` 应该改为`main-page`。

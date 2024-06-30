@@ -1,0 +1,31 @@
+---
+title: Dokumentasi - Menjalankan Lingkungan Sistem
+description: Panduan memulai dan menjalankan lingkungan sistem untuk dokumentasi pengembangan.
+lastUpdated: 2023-09-16
+sidebar:
+  order: 1100
+---
+
+## Bacaan Prasyarat
+
+* [Pengembangan/Memulai](../../..)
+
+## Nilai Parameter Config yang Relevan
+
+Berdasarkan nilai parameter config yang telah kamu tetapkan pada `config.docs.host` dan `config.docs.port` milik situs lokalmu, kamu akan dapat mengakses Corsace secara lokal pada `http://host:port`.
+
+Sebagai contoh, apabila `config.docs.host` kamu diatur ke `localhost` dan nilai `config.docs.port` kamu adalah `10000`, maka situs lokalmu akan dapat diakses pada `http://localhost:10000`.
+
+Nilai parameter `config.docs.publicUrl` di sini harus merupakan gabungan antara nilai `config.docs.host` dan `config.docs.port`. Pada contoh di atas, nilai ini adalah `http://localhost:10000`.
+
+Lihat halaman [Referensi Config](../../../misc/reference/config) untuk informasi lebih lanjut.
+
+## Menjalankan Lingkungan Sistem
+
+Jalankan perintah berikut untuk memulai situs web dalam mode pengembangan:
+
+```bash
+npm run docs-dev
+```
+
+Situs web lokalmu akan dapat ditemui pada alamat URL yang kamu tentukan pada [Referensi Config](../../../misc/reference/config).

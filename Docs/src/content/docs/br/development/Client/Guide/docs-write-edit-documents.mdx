@@ -1,0 +1,157 @@
+---
+title: Docs - Escrever/Editar Documentos
+description: Escrevendo/Editando documentação para Corsace
+lastUpdated: 2023-09-18
+sidebar:
+  order: 1110
+---
+
+import WorkInProgress from '../../../../../../components/WorkInProgress.astro';
+
+Certifique-se de ter criado um fork, pois aceitamos contribuições por meio de pull requests de forks do repositório.
+
+## Leitura Pré-requisita
+
+* [Desenvolvimento/Guia/Docs - Ambiente de Execução](../docs-running-environment)
+* [Starlight/Autorando Conteúdo em Markdown](https://starlight.astro.build/guides/authoring-content/)
+* [GitHub/Criando um pull request de um fork](https://docs.github.com/pt/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
+
+## Estrutura de Diretórios
+
+No repositório, toda a documentação gerada está localizada em `Docs/src/content/docs/en`.\
+Outros idiomas também estão lá, mas geralmente são traduzidos a partir da pasta `en`.\
+Se você deseja traduzir em vez disso, solicite acesso em https://translate.corsace.io e junte-se ao [servidor Discord da Corsace](https://discord.gg/Z6vEMsr)
+
+Para qualquer documento que deseje criar, ele deve residir em algum lugar dentro de `Docs/src/content/docs/en` ou em seus subdiretórios.\
+A estrutura de pastas dentro disso é semelhante à hierarquia da barra lateral no site.\
+Primordialmente, existem 3 seções principais:
+
+* [Documentação de Design](design)
+* [Documentação de Desenvolvimento](development)
+* [Documentação sobre como executar torneios via Corsace](tournaments)
+
+Dentro delas, o [framework Diátaxis](https://diataxis.fr/) é usado como guia estrutural para escrever documentação; no entanto, o foco principal está na escrita de [Guias](https://diataxis.fr/how-to-guides/) e [Referências](https://diataxis.fr/reference/).
+
+## Anatomia do Documento
+
+Será assumido que você entende o formato markdown e os recursos extras que o Starlight fornece para escrevê-lo com base na seção [Leitura Pré-requisita](#pre-requisite-reading).
+
+É recomendável usar um arquivo .mdx para a documentação a fim de fornecer funcionalidade adicional por meio de Javascript/JSX.
+
+Para qualquer documento que se espera não estar completamente escrito/vinculado a outros documentos, certifique-se de ler a seção [Documentos em Andamento](#work-in-progress-documents).
+
+### Nome do Arquivo
+
+Basta criar um documento com o título do arquivo em letras minúsculas e com palavras separadas por hífens `-`.
+Por exemplo, como o título deste documento é `Docs - Escrever/Editar Documentos`, o nome do arquivo é `docs-write-edit-documents.mdx`.
+
+### Frontmatter
+
+Quase todo documento deve ter o seguinte em seu frontmatter:
+
+* `title` - O título do documento
+* `description` - Uma breve descrição para o caso de uso do documento
+* `lastUpdated` - A data em que você está criando/editando o documento no formato `YYYY-MM-DD`
+* `sidebar`
+  * `order` - A ordem do documento, quanto menor o número, mais alto ele aparecerá na barra lateral esquerda.
+  * Observação: A ordenação para subdocumentos é criada usando um número de 4 dígitos. Isso é usado de maneira semelhante a um sistema de ID para os documentos.
+
+Aqui está o frontmatter deste arquivo como exemplo:
+
+```yml
+---
+title: Docs - Write/Edit Documents
+description: Writing/Editing documentation for Corsace
+lastUpdated: 2023-09-17
+sidebar:
+    order: 1110
+---
+```
+
+### Corpo Principal
+
+Todos os cabeçalhos devem usar pelo menos 2 hashtags `##` para aparecerem corretamente.\
+O Astro Starlight cria automaticamente um `## Visão geral` internamente, portanto, para qualquer texto introdutório, você não precisa adicionar um cabeçalho extra.
+
+Se sua documentação depender de outros documentos dentro deste repositório ou do Astro Starlight, certifique-se de adicionar uma seção `## Leitura Pré-requisita` após seu texto introdutório, mas ANTES de qualquer outra seção que você criar.
+
+### Imagens
+
+As imagens devem ser colocadas no diretório `Assets/img/docs`. Quando você deseja inserir uma imagem em seu documento, pode fazer isso com um link relativo.
+Para acessar uma imagem em `Assets/img/docs` deste arquivo (que está em `Docs/src/content/docs/en/development/Client/Guide/docs-write-edit-documents.mdx`), você precisa da seguinte direção relativa:
+
+```mdx
+![Image](../../../../../../../../Assets/img/docs/image.png)
+```
+
+Cada `../` move uma pasta acima no diretório.
+
+### Variáveis
+
+Se você precisar adicionar algo que deve ser indicado como uma variável, faça isso escrevendo-o como [VARIABLE].
+
+Por exemplo, `config.[SITE].host` significa que `SITE` é uma variável, e isso se refere à opção `host` para um determinado site.
+
+## Documentos em Andamento
+
+Como a Corsace é um repositório em constante crescimento com muitas partes em movimento que ainda estão sendo desenvolvidas, haverá muita documentação que não pode ser totalmente concluída.
+
+Quando esse for o caso, as seguintes funcionalidades devem ser adicionadas ao seu documento:
+
+### WIP Frontmatter
+
+No frontmatter, o seguinte deve ser adicionado em `sidebar`:
+
+```yml
+  badge:
+    text: WIP
+    variant: caution
+```
+
+Por exemplo, com este documento:
+
+```yml
+---
+title: Docs - Write/Edit Documents
+description: Writing/Editing documentation for Corsace
+lastUpdated: 2023-09-17
+sidebar:
+    badge:
+        text: WIP
+        variant: caution
+    order: 1110
+---
+```
+
+Isso fornecerá um ícone "EM ANDAMENTO" para o documento na barra lateral esquerda, como este:\
+![Exemplo do distintivo EM ANDAMENTO](../../../../../../../../Assets/img/docs/wipExample.png)
+
+### WIP section
+
+Se houver uma seção específica que está em andamento, foi criado um componente chamado `WorkInProgress` dentro da pasta `Docs/src/components`. Você deve importá-lo APÓS o seu frontmatter, mas ANTES de adicionar qualquer texto, e usar um método semelhante de escrita de diretório relativo para importar imagens. Para este documento como exemplo:
+
+```mdx
+---
+title: Docs - Write/Edit Documents
+description: Writing/Editing documentation for Corsace
+lastUpdated: 2023-09-17
+sidebar:
+    badge:
+        text: WIP
+        variant: caution
+    order: 1110
+---
+import WorkInProgress from '../../../../../../components/WorkInProgress.astro';
+
+## Pre-requisite Reading
+```
+
+Depois, você pode colocá-lo em qualquer seção assim:
+
+```mdx
+<WorkInProgress section="section/name" />
+```
+
+O que ficará assim:
+
+<WorkInProgress section="section/name" />

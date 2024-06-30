@@ -1,0 +1,154 @@
+---
+title: Struktur Direktori
+description: Dokumentasi mengenai struktur direktori repositori Corsace.
+lastUpdated: 2023-09-16
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import DirectoryItem from '../../../../components/DirectoryItem.astro';
+import WorkInProgress from '../../../../components/WorkInProgress.astro';
+
+export const labels = [
+    { name: "Frontend/Client", color: "#B3F2B8" },
+    { name: "Backend/Server", color: "#F2B8B3" },
+    { name: "Both/Miscellaneous", color: "#B8B3F2" },
+]
+
+export const folders = [
+    { name: "AYIM             - Frontend/Client", color: "#B3F2B8" },
+    { name: "Assets           - Frontend/Client", color: "#B3F2B8" },
+    { name: "BanchoBot        - Backend/Server", color: "#F2B8B3" },
+    { name: "Closed           - Frontend/Client", color: "#B3F2B8" },
+    { name: "DiscordBot       - Backend/Server", color: "#F2B8B3" },
+    { name: "Docs             - Frontend/Client", color: "#B3F2B8" },
+    { name: "Interfaces       - Both/Miscellaneous", color: "#B8B3F2" },
+    { name: "MCA              - Frontend/Client", color: "#B3F2B8" },
+    { name: "Main             - Frontend/Client", color: "#B3F2B8" },
+    { name: "Models           - Backend/Server", color: "#F2B8B3" },
+    { name: "Open             - Frontend/Client", color: "#B3F2B8" },
+    { name: "Server           - Backend/Server", color: "#F2B8B3" },
+    { name: "Typing           - Both/Miscellaneous", color: "#B8B3F2" },
+    { name: "config           - Both/Miscellaneous", color: "#B8B3F2" },
+    { name: "corsace-chart    - Both/Miscellaneous", color: "#B8B3F2" },
+];
+
+Bagian ini akan menjelaskan struktur direktori repositori Corsace. Informasi di bawah ini akan berguna bagi kamu untuk memahami bagaimana caranya untuk menemukan berkas tertentu, dan di mana kamu harus menempatkan berkas baru. Di samping itu, informasi ini juga berguna untuk memahami bagaimana repositori Corsace diorganisir, dan bagaimana masing-masing komponen situs saling berinteraksi antar satu sama lain.
+
+Dokumentasi ini hanya mencakup struktur direktori yang ada secara garis besar.
+Untuk informasi yang lebih rinci, klik salah satu tautan pada bagian [Navigasi](#navigation) di bawah.
+
+## Folder Utama
+
+Sistem Corsace dapat dibagi menjadi tiga bagian utama:
+
+* **Frontend/Client** - Rangkaian situs web yang dikunjungi oleh pengguna beserta seluruh asetnya. Seluruh situs Corsace dibuat dengan framework [Nuxt 2](https://v2.nuxt.com/), kecuali bagian dokumentasi yang dibuat dengan [Astro/Starlight](https://starlight.astro.build/).
+* **Backend/Server** - Berbagai program yang berjalan di server dan terkadang berinteraksi dengan situs frontend.
+* **Both/Miscellaneous** - Berbagai berkas yang digunakan baik oleh frontend maupun backend serta yang tidak masuk ke dalam kedua kategori lainnya.
+
+Ketiga bagian di atas diwakilkan oleh rangkaian folder berikut:
+
+<Tabs>
+  <TabItem label="Colour Coded">
+    Berikut merupakan berbagai label yang digunakan untuk menandai kegunaan masing-masing folder:
+
+    <DirectoryItem folders={labels} />
+
+    Berikut merupakan berbagai folder di dalam repositori yang relevan terhadap proyek Corsace:
+
+    <DirectoryItem folders={folders} />
+  </TabItem>
+
+  <TabItem label="Raw">
+    Berikut merupakan berbagai folder di dalam repositori yang relevan terhadap proyek Corsace:
+
+    ```
+        📁 AYIM             - Frontend/Client
+        📁 Assets           - Frontend/Client
+        📁 BanchoBot        - Backend/Server
+        📁 Closed           - Frontend/Client
+        📁 DiscordBot       - Backend/Server
+        📁 Docs             - Frontend/Client
+        📁 Interfaces       - Both/Miscellaneous
+        📁 MCA              - Frontend/Client
+        📁 Main             - Frontend/Client
+        📁 Models           - Backend/Server
+        📁 Open             - Frontend/Client
+        📁 Server           - Backend/Server
+        📁 Typing           - Both/Miscellaneous
+        📁 config           - Both/Miscellaneous
+        📁 corsace-chart    - Both/Miscellaneous
+    ```
+  </TabItem>
+</Tabs>
+
+## Navigasi
+
+<WorkInProgress section="navigation" />
+
+Tergantung dari area yang ingin kamu kembangkan, kamu mungkin hanya akan perlu menggunakan sebagian folder yang ada. Berikut merupakan rincian masing-masing folder:
+
+* **[Frontend/Client](#frontendclient)**
+  * **[AYIM/Closed/MCA/Main/Open](../client/guide/web-running-environment)** - Dibuat dengan [Nuxt 2](https://v2.nuxt.com/)
+  * **[Docs](../client/guide/docs-running-environment)** - Dibuat dengan [Astro/Starlight](https://starlight.astro.build/)
+  * **[Assets](#)** - Gambar/Ikon, Font, CSS, Komponen, Terjemahan
+* [Backend/Server](#backendserver)
+  * **[BanchoBot](#)** - Dibuat dengan [Bancho.js](https://bancho.js.org/)
+  * **[DiscordBot](#)** - Dibuat dengan [Discord.js](https://discord.js.org/)
+  * **[Server/CronRunner](#)** - Dibuat dengan [Koa](https://koajs.com/)
+  * **[Centrifugo](#)** - Dibuat dengan [Centrifugo](https://centrifugal.dev/)
+  * **[Models](#)** - Dibuat dengan [TypeORM](https://typeorm.io/)
+* [Both/Miscellaneous](#bothmiscellaneous)
+  * **[Interfaces](#)** - Berkas typing untuk komunikasi antara Nuxt dan Koa
+  * **[Typing](#)** - Berkas yang mengandung tipe augment khusus untuk pustaka npm
+  * **[config](#)** - Berkas konfigurasi untuk masing-masing instansi sistem
+  * **[corsace-chart](#)** - Berkas untuk bagan helm Kubernetes
+
+## Frontend/Client
+
+Rangkaian folder berikut digunakan untuk bagian frontend situs web, yang merupakan bagian dari sistem yang dilihat dan diinteraksikan oleh pengguna.
+
+Folder-folder ini (beserta situs web-nya masing-masing) meliputi:
+
+* **📁 AYIM** - https://ayim.corsace.io
+* **📁 Closed** - https://closed.corsace.io (Saat ini belum dibuat)
+* **📁 Docs** - https://docs.corsace.io
+* **📁 MCA** - https://mca.corsace.io
+* **📁 Main** - https://corsace.io
+* **📁 Open** - https://open.corsace.io
+
+Folder sisanya (**📁 Assets**) digunakan untuk menyimpan aset-aset berikut untuk seluruh situs web di atas:
+
+* Gambar/Ikon
+* Font
+* CSS
+* Komponen
+* Terjemahan
+
+## Backend/Server
+
+<WorkInProgress section="backend/server" />
+
+Rangkaian folder berikut digunakan untuk bagian backend situs web, yang berisi server tempat situs web saling berkomunikasi atau node yang digunakan untuk berinteraksi dengan layanan eksternal seperti Discord, osu!, dan lain sebagainya.
+
+Folder-folder ini (beserta layanannya masing-masing) meliputi:
+
+* **📁 BanchoBot** - Bot IRC osu!
+* **📁 DiscordBot** - Bot Discord
+* **📁 Server**
+  * **Server** - Instansi node yang berjalan pada server utama situs web
+  * **CronRunner** - Instansi node yang menjalankan job cron yang dihasilkan oleh berbagai instansi server yang berbeda
+* **Centrifugo** - Instansi node yang menjalankan server Centrifugo
+  * Berhubung Centrifugo merupakan berkas tunggal yang dijalankan melalui perintah npm (lihat [Development/Getting Started#Centrifugo](/en/development/#centrifugo), layanan ini tidak memiliki foldernya tersendiri. Meskipun demikian, terdapat endpoint untuk Centrifugo yang tersimpan pada folder 📁 Server]\(#).
+
+Folder sisanya (**📁 Models**) digunakan untuk menyimpan model database untuk server.
+
+## Both/Miscellaneous
+
+Rangkaian folder berikut memiliki kegunaannya tersendiri yang tidak tergolong ke dalam kedua kategori di atas:
+
+* **📁 [Interfaces]** - Berkas typing untuk komunikasi antara Nuxt dan Koa
+* **📁 Typing** - Tipe augment khusus untuk berbagai pustaka npm yang digunakan
+* **📁 config** - Berkas konfigurasi untuk masing-masing instansi sistem
+* **📁 [corsace-chart]** - Berkas untuk bagan helm Kubernetes

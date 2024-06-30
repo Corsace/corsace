@@ -1,0 +1,35 @@
+---
+title: Bancho - Menjalankan Lingkungan Sistem
+description: Panduan memulai dan menjalankan lingkungan sistem untuk chat bot milik osu!.
+lastUpdated: 2023-09-19
+sidebar:
+  order: 3200
+---
+
+## Bacaan Prasyarat
+
+* [Pengembangan/Memulai](../../..)
+
+## Nilai Parameter Config yang Relevan
+
+The bancho instance creates an HTTP server in order to effectively communicate between the centrifugo and CronRunner instances. This is currently needed for refereeing.
+
+Based on what config values you had provided for the server's `config.banchoBot.host` and `config.banchoBot.port`, you should be able to access the bancho server at `http://host:port`
+
+For example, `http://localhost:8082` for the API server if your `config.banchoBot.host` is `localhost` and your `config.banchoBot.port` is `8082`.
+
+`config.banchoBot.publicUrl` should be equivalent to `config.banchoBot.host` and `config.banchoBot.port` combined. In the example above, this would be `http://localhost:8082`.
+
+See the [Config Reference](../config) for more information.
+
+## Menjalankan Lingkungan Sistem
+
+Jalankan perintah berikut untuk memulai Bancho dalam mode pengembangan:
+
+```bash
+npm run bancho-bot-dev
+```
+
+There are currently no commands that can be run on bancho itself, but when fully loaded, it should say `Logged into Bancho as [YOUR USERNAME]` in console.\
+The server should also now be available at the URL you configured in the [Config Reference](../../../misc/reference/config)\
+Accessing the page in the browser should show `Hello World!`.
