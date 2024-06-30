@@ -148,6 +148,9 @@ Usamos três buckets:
 - `mappacks-temp` ié um bucket privado que armazena mappacks privados que não devem ter acesso público.\
   Mappacks privados não devem ser armazenados permanentemente; uma política de ciclo de vida deve ser adicionada a esse bucket para excluir automaticamente objetos após 1 dia.\
   Mappacks que devem se tornar públicos são movidos para o bucket `mappacks`.\
+  `mappacks-temp` ié um bucket privado que armazena mappacks privados que não devem ter acesso público.\
+  Mappacks privados não devem ser armazenados permanentemente; uma política de ciclo de vida deve ser adicionada a esse bucket para excluir automaticamente objetos após 1 dia.\
+  Mappacks que devem se tornar públicos são movidos para o bucket `mappacks`.\
   Mappacks that should become public get moved to the `mappacks` bucket.
 
 #### Cloudflare R2
