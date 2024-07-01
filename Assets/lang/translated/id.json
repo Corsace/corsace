@@ -697,10 +697,10 @@
             "avatarInfo3": "Seluruh nama dan avatar akan disetujui oleh para staf.",
             "avatarInfo4": "Apabila nama tim dan avatar ini dianggap tidak layak, kamu akan diminta untuk mengubahnya.",
             "teamManagement": "MANAJEMEN TIM",
-            "teamCaptains": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamCaptainsFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
-            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmCaptain": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "teamCaptains": "<div><span>Kapten</span> tim (kamu) dapat memilih untuk ikut bermain sekaligus menjadi kapten </div> <div><span>ATAU</span> tidak bermain dan hanya menjadi kapten.</div>",
+            "teamCaptainsFree": "Apabila kamu memilih untuk tidak ikut bermain dan hanya menjadi kapten, kamu <span>tidak</span> akan mengambil slot pemain.",
+            "selectCaptain": "Centang pilihan ini apabila kamu <span>tidak</span> akan ikut bermain dengan tim kamu dan hanya akan bertindak sebagai <span>kapten</span>.",
+            "confirmCaptain": "<div>Dengan mencentang pilihan ini, saya hanya akan bertindak sebagai kapten, dan saya paham bahwa saya tidak akan dapat berpartisipasi</div> <div>dalam pertandingan mana pun.</div>",
             "create": "BUAT TIM"
         },
         "components": {
