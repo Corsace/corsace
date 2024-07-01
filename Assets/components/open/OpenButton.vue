@@ -70,10 +70,12 @@ export default class OpenButton extends Vue {
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        overflow: hidden;
 
         &--xl {
             color: #131313;
             position: absolute;
+            height: 100%;
             top: 0;
             left: 0;
             font-family: $font-zurich;
@@ -82,6 +84,8 @@ export default class OpenButton extends Vue {
             letter-spacing: -0.07em;
             font-weight: 900;
             text-transform: lowercase;
+            text-align: left;
+            vertical-align: middle;
         }
 
         &--text {
