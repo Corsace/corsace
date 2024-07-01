@@ -145,9 +145,9 @@ Kami menggunakan tiga bucket:
 
 - `team-avatars` merupakan bucket publik yang menyimpan avatar tim, yang dapat dilayani oleh CDN tanpa autentikasi
 - `mappacks` merupakan bucket publik yang menyimpan paket map publik, yang dapat dilayani oleh CDN tanpa autentikasi
-- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
+- `mappacks-temp` merupakan bucket pribadi yang menyimpan paket beatmap privat yang tidak ditujukan untuk akses publik  
 
-Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.
+Paket beatmap yang dihasilkan akan terlebih dahulu diunggah ke bucket ini, di mana para pengguna akan kemudian diberikan akses melalui URL yang telah ditandatangani sebelumnya (pre-signed URL).
 
 Paket beatmap yang bersifat privat tidak ditujukan untuk disimpan secara permanen. Kamu dihimbau untuk mengatur agar paket beatmap ini akan dihapus secara otomatis setelah 1 hari.
 
