@@ -1,35 +1,12 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import { config } from "node-config-ts";
-import { readdirSync, readFileSync } from "fs";
-import { basename, extname, join } from "path";
+import { locales } from "./utils/locales";
+import { configExport } from "./utils/config";
 
-const locales: Record<string, {
-        label: string;
-        lang?: string;
-    }> = {
-        en: {
-            label: "English",
-        },
-    };
-
-const dir = "../Assets/lang/translated";
-const files = readdirSync(dir);
-files.forEach(file => {
-    if (extname(file) !== ".json")
-        return;
-
-    const filePath = join(dir, file);
-    const content = readFileSync(filePath, "utf8");
-
-    const json = JSON.parse(content);
-
-    const fileNameWithoutExtension = basename(file, ".json");
-
-    locales[fileNameWithoutExtension] = {
-        label: json.language,
-    };
-});
+// Extract all interfaces from the Config.d.ts file
+configExport();
+console.log("Interfaces extracted to config.json");
 
 // https://astro.build/config
 export default defineConfig({
@@ -64,7 +41,7 @@ export default defineConfig({
             },
             favicon: "/favicon.ico",
             defaultLocale: "en",
-            locales,
+            locales: locales(),
             customCss: [
                 "./src/styles/custom.scss",
                 "./src/fonts/font-face.scss",
