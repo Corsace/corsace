@@ -73,7 +73,11 @@ export default defineConfig({
             sidebar: [
                 {
                     label: "Running Tournaments",
-                    autogenerate: { directory: "tournaments", collapsed: true },
+                    autogenerate: { directory: "tournament_org", collapsed: true },
+                },
+                {
+                    label: "Playing Tournaments",
+                    autogenerate: { directory: "tournament_play", collapsed: true },
                 },
                 {
                     label: "Development",
