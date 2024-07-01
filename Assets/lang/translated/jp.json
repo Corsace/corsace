@@ -515,7 +515,7 @@
             "presentedBy": "CORSACE OPEN 23 は以下によって主催",
             "registrations": "登録期間",
             "button": {
-                "qualifiersMappool": "予選マッププール",
+                "qualifiersMappool": "QUALIFIERS マッププール",
                 "mappoolDownload": "マッププールのダウンロードと詳細",
                 "register": "チームを作成して登録する",
                 "registrationsEnd": "登録期間終了"
@@ -537,15 +537,15 @@
                 "startDate": "開始日時",
                 "endDate": "終了日時",
                 "rounds": "ラウンド",
-                "initialSize": "INITIAL SIZE",
-                "finalSize": "FINAL SIZE"
+                "initialSize": "参加チーム数",
+                "finalSize": "最終参加チーム数"
             },
             "headings": {
                 "mappools": "マッププール",
                 "stage": "ステージ"
             },
             "status": {
-                "notStarted": "NOT STARTED",
+                "notStarted": "未開始",
                 "complete": "終了",
                 "ongoing": "進行中"
             },
@@ -570,7 +570,7 @@
         "qualifiers": {
             "nav": {
                 "mappool": "マッププール",
-                "qualifiers": "予選",
+                "qualifiers": "QUALIFIERS",
                 "scores": "スコア"
             },
             "mappool": {
@@ -613,7 +613,7 @@
             "error": "チームリストを取得できませんでした",
             "searchPlaceholder": "ユーザー/チームを検索",
             "editTeamInfo": "チーム情報を編集",
-            "qualifierId": "予選ID",
+            "qualifierId": "Qualifier ID",
             "placeholders": {
                 "searchUser": "osu! ユーザー名 (corsaceアカウントが必要です)",
                 "name": "名前",
@@ -631,7 +631,7 @@
                     "invalidTimezone": "無効なタイムゾーンです。",
                     "errorAddingTeamAvatar": "チームアバターを追加時にエラーが発生しました:\n{error}",
                     "invalidName": "",
-                    "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
+                    "contactVinxis": "検索エラーが発生しました。VINXISにお問い合わせください。詳細はコンソール（Ctrl + Shift + I）で確認できます。"
                 },
                 "confirm": {
                     "deleteTeam": "本当にこのチームを削除しますか？",
@@ -657,7 +657,7 @@
                 "teamInvites": "チーム招待",
                 "editTeamInvites": "チーム招待を編集",
                 "closeTeamInvites": "閉じる",
-                "qualifier": "予選",
+                "qualifier": "QUALIFIER",
                 "requiredMessageExact": "予選に登録、参加するには {minTeamSize} 人のチームメンバーが必要です",
                 "requiredMessageRange": "予選に登録、参加するには {minTeamSize} 人から {maxTeamSize} 人までのチームメンバーが必要です"
             },
@@ -672,8 +672,8 @@
             "averageRank": "平均ランク",
             "averagePP": "平均PP",
             "editQualifierTime": "予選時刻の変更",
-            "deleteTeam": "delete qualifier/unregister team",
-            "createJoinQualifier": "create/join qualifier",
+            "deleteTeam": "チームを解散してQualifierの出場を取り消す",
+            "createJoinQualifier": "チームを作成してQualifierに参加",
             "notRegistered": "Corsace Open に登録していません。"
         },
         "create": {
@@ -719,7 +719,7 @@
         "referee": {
             "title": "レフェリー",
             "loadMore": "さらに読み込む",
-            "back": "BACK TO MATCHUP LIST",
+            "back": "マッチアップリストに戻る",
             "createLobby": "アップロード",
             "roll": "ROLL",
             "reroll": "RE-ROLL",
