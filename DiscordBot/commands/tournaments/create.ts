@@ -958,7 +958,7 @@ const data = new SlashCommandBuilder()
             .setRequired(true))
     .addBooleanOption(option =>
         option.setName("captain_must_play")
-            .setDescription("Does the captain have to be a player in the team? (If false, the captain is not counted in the min/max team size)")
+            .setDescription("Can the captain be a non-player? (If yes, not counted in min/max team size)")
             .setRequired(true))
     .addUserOption(option =>
         option.setName("organizer")
