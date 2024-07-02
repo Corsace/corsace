@@ -19,19 +19,21 @@
                 <div
                     v-if="isSmall"
                     class="header-login__welcome"
+                    :class="`header-login__welcome--${site}`"
                 >
                     {{ loggedInUser.discord.username ? loggedInUser.discord.username : loggedInUser.osu.username }}
                 </div>
                 <div 
                     v-else
                     class="header-login__welcome"
-                    :class="`header-login__welcome--${viewTheme}`"
+                    :class="`header-login__welcome--${viewTheme} header-login__welcome--${site}`"
                 >
                     {{ $t('header.welcomeBack') }}
                 </div>
                 <div
                     v-if="loggedInUser.discord.username && !isSmall"
                     class="header-login__username"
+                    :class="`header-login__username--${site}`"
                 >
                     {{ loggedInUser.osu.username }} 
                     <span 
@@ -43,12 +45,13 @@
                 <div
                     v-else-if="loggedInUser.osu.username && !isSmall"
                     class="header-login__username"
+                    :class="`header-login__username--${site}`"
                 >
                     {{ loggedInUser.osu.username }}
                 </div>
                 <div  
                     class="header-login__welcome"
-                    :class="`header-login__welcome--${viewTheme}`"
+                    :class="`header-login__welcome--${viewTheme} header-login__welcome--${site}`"
                 >
                     <a
                         href="/api/logout"
@@ -56,7 +59,7 @@
                         <div
                             v-if="!isSmall" 
                             class="dot" 
-                            :class="`dot--${viewTheme}`"
+                            :class="`dot--${viewTheme} dot--${site}`"
                         />
                         {{ $t('header.logout') }}
                     </a>
@@ -67,7 +70,7 @@
                         <div 
                             v-if="!isSmall" 
                             class="dot" 
-                            :class="`dot--${viewTheme}`"
+                            :class="`dot--${viewTheme} dot--${site}`"
                         />
                         discord {{ $t('header.login') }}
                     </a>
@@ -78,7 +81,7 @@
                         <div 
                             v-if="!isSmall" 
                             class="dot" 
-                            :class="`dot--${viewTheme}`"
+                            :class="`dot--${viewTheme} dot--${site}`"
                         />
                         {{ $t('header.changeDiscord') }}
                     </a>
@@ -97,9 +100,9 @@
             >
                 <div 
                     class="dot" 
-                    :class="`dot--${viewTheme}`"
+                    :class="`dot--${viewTheme} dot--${site}`"
                 />
-                osu! {{ $t('header.login') }}
+                osu! {{ site === "open" ? $t('header.login').toString().toUpperCase() : $t('header.login') }}
             </a>
         </div>
     </div>
@@ -262,6 +265,15 @@ export default class TheHeader extends Vue {
         @include breakpoint(laptop) {
             font-size: $font-base;
         }
+        &--open {
+            color: $open-red;
+            font-stretch: condensed;
+
+            & > a {
+                color: $open-red;
+                font-stretch: condensed;
+            }
+        }
         & > a {
             display: flex;
             align-items: center;
@@ -281,6 +293,9 @@ export default class TheHeader extends Vue {
     &__username {
         text-transform: uppercase;
         text-overflow: ellipsis;
+        &--open {
+            font-weight: bold;
+        }
         @include breakpoint(mobile) {
             font-size: $font-sm;
         }
@@ -295,6 +310,13 @@ export default class TheHeader extends Vue {
     margin-right: 8px;
     &--dark {
         background: white;
+    }
+
+    &--open {
+        background: black;
+        border-radius: 0;
+        width: 2.5px;
+        height: 2.5px;
     }
 }
 </style>
