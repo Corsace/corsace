@@ -15,7 +15,13 @@
             class="open_button__child"
         >
             <div class="open_button__content">
-                <div class="open_button__content--xl">
+                <div 
+                    class="open_button__content--xl"
+                    :style="['kr', 'jp'].some(l => l === $i18n.locale) ? {
+                        'font-size': '57.56px',
+                        'line-height': '51.3px',
+                    } : {}"
+                >
                     <slot name="title" />
                 </div>
                 <div class="open_button__content--text">
@@ -32,7 +38,13 @@
                 v-if="linkSync !== '#'"
                 class="open_button__content"
             >
-                <div class="open_button__content--xl">
+                <div 
+                    class="open_button__content--xl"
+                    :style="['kr', 'jp'].some(l => l === $i18n.locale) ? {
+                        'font-size': '57.56px',
+                        'line-height': '51.3px',
+                    } : {}"
+                >
                     <slot name="title" />
                 </div>
                 <div class="open_button__content--text">
@@ -75,9 +87,6 @@ export default class OpenButton extends Vue {
         &--xl {
             color: #131313;
             position: absolute;
-            height: 100%;
-            top: 0;
-            left: 0;
             font-family: $font-zurich;
             font-size: 80.77px;
             line-height: 38.7px;
