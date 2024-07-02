@@ -207,7 +207,7 @@ export default class Qualifier extends Vue {
         } else
             ID = parseInt(this.$route.params.id);
 
-        const { data } = await this.$axios.get<{ success: false, error: string } | { success: true, qualifierData: QualifierInterface }>(`/api/qualifier/${ID}`);
+        const { data } = await this.$axios.get<{ qualifierData: QualifierInterface }>(`/api/qualifier/${ID}`);
         this.loading = false;
         return !data.success ? null : data.qualifierData;
     }

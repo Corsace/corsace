@@ -545,13 +545,13 @@ export default class Team extends Vue {
             return this.team;
         }
 
-        const { data: teamData } = await this.$axios.get<{ error: string } | TeamInterface>(`/api/team/${this.$route.params.id}`);
-        if ("error" in teamData) {
-            alert(teamData.error);
+        const { data } = await this.$axios.get<{ team: TeamInterface }>(`/api/team/${this.$route.params.id}`);
+        if (!data.success) {
+            alert(data.error);
             this.loading = false;
             return null;
         }
-
+        const teamData = data.team;
         if (teamData?.qualifier)
             teamData.qualifier.date = new Date(teamData.qualifier.date);
         this.loading = false;
@@ -567,6 +567,7 @@ export default class Team extends Vue {
     }
 
     get isCaptain (): boolean {
+        console.log(this.teamData);
         return this.teamData?.ID === this.team?.ID && this.teamData?.captain.ID === this.loggedInUser?.ID;
     }
 
