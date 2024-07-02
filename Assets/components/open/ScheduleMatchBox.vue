@@ -17,79 +17,17 @@
                 UTC
             </div>
         </div>
-        <div class="schedule_matchbox_team">
-            <div class="schedule_matchbox_team__left">
-                <div
-                    v-if="matchupSync.teams?.[0]"
-                    class="schedule_matchbox_team_card"
-                >
-                    <div
-                        class="schedule_matchbox_team_card__avatar" 
-                        :style="{ 'backgroundImage': `url(${matchupSync.teams[0].avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }" 
-                    />
-                    <div class="schedule_matchbox_team_card_details">
-                        <div class="schedule_matchbox_team_card_details__name">
-                            {{ matchupSync.teams[0].name }}
-                        </div>
-                        <div class="schedule_matchbox_team_card_details_teamrank">
-                            <div class="schedule_matchbox_team_card--title schedule_matchbox_team_card--title_soft">
-                                RANK
-                            </div>
-                            <div class="schedule_matchbox_team_card_details_teamrank__rank">
-                                {{ Math.round(matchupSync.teams[0].rank) }}
-                            </div>
-                        </div>
-                        <div class="schedule_matchbox_team_card_details_teambws">
-                            <div class="schedule_matchbox_team_card--title schedule_matchbox_team_card--title_soft">
-                                TEAM BWS AVG
-                            </div>
-                            <div class="schedule_matchbox_team_card_details_teambws__bws">
-                                {{ Math.round(matchupSync.teams[0].BWS) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="schedule_matchbox_teams">
+            <ScheduleMatchBoxTeam :team="matchupSync.teams?.[0]" />
             <div 
-                class="schedule_matchbox_team__vs"
+                class="schedule_matchbox_teams__vs"
                 :style="{
                     'background-color': matchupSync.potential ? '#FF5F22' : '#EF3255'
                 }"
             >
                 VS
             </div>
-            <div class="schedule_matchbox_team__right">
-                <div
-                    v-if="matchupSync.teams?.[1]"
-                    class="schedule_matchbox_team_card"
-                >
-                    <div
-                        class="schedule_matchbox_team_card__avatar" 
-                        :style="{ 'backgroundImage': `url(${matchupSync.teams[1].avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }" 
-                    />
-                    <div class="schedule_matchbox_team_card_details">
-                        <div class="schedule_matchbox_team_card_details__name">
-                            {{ matchupSync.teams[1].name }}
-                        </div>
-                        <div class="schedule_matchbox_team_card_details_teamrank">
-                            <div class="schedule_matchbox_team_card--title schedule_matchbox_team_card--title_soft">
-                                RANK
-                            </div>
-                            <div class="schedule_matchbox_team_card_details_teamrank__rank">
-                                {{ Math.round(matchupSync.teams[1].rank) }}
-                            </div>
-                        </div>
-                        <div class="schedule_matchbox_team_card_details_teambws">
-                            <div class="schedule_matchbox_team_card--title schedule_matchbox_team_card--title_soft">
-                                TEAM BWS AVG
-                            </div>
-                            <div class="schedule_matchbox_team_card_details_teambws__bws">
-                                {{ Math.round(matchupSync.teams[1].BWS) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ScheduleMatchBoxTeam :team="matchupSync.teams?.[0]" />
         </div>
         <div class="schedule_matchbox_links">
             <IconButton link="https://www.twitch.tv/corsace">
@@ -111,13 +49,15 @@
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
 import ContentButton from "./ContentButton.vue";
-import IconButton from "../../Assets/components/open/IconButton.vue";
+import IconButton from "./IconButton.vue";
+import ScheduleMatchBoxTeam from "./ScheduleMatchBoxTeam.vue";
 import { MatchupList } from "../../../Interfaces/matchup";
 
 @Component({
     components: {
         ContentButton,
         IconButton,
+        ScheduleMatchBoxTeam,
     },
 })
 export default class ScheduleMatchBox extends Vue {
@@ -194,13 +134,13 @@ export default class ScheduleMatchBox extends Vue {
         }
     }
 
-    &_team {
+    &_teams {
         display: flex;
         width: 100%;
         color: #131313;
         background-color: #FAFAFA;
 
-        &__left {
+        &__side {
             flex: 1;
         }
         
@@ -221,89 +161,7 @@ export default class ScheduleMatchBox extends Vue {
             color: white;
             
         }
-        
-        &__right {
-            flex: 1;
-        }
 
-        &_card {
-            display: flex;
-            flex-direction: row;
-            height: 100%;
-            white-space: nowrap;
-
-            &__avatar {
-                width: 129px;
-                height: 100%;
-                overflow: hidden;
-                
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: cover;
-                border: 1px solid $open-red;
-                border-top: 0;
-                border-bottom: 0;
-                border-left: 0;
-            }
-
-            &_details {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                padding: 15px;
-
-                &__name {
-                    font-size: 28px;
-                    font-weight: 700;
-                    line-height: 37px;
-                    letter-spacing: 0em;
-                    text-align: left;
-                }
-                &_teamrank {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    gap: 10px;
-                    
-                    &__rank {
-                        font-size: 21px;
-                        font-weight: 700;
-                        line-height: 25px;
-                        letter-spacing: 0em;
-                        text-align: center;
-                        font-stretch: condensed;
-                    }
-                }
-                &_teambws {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    gap: 10px;
-
-                    &__bws {
-                        font-size: 21px;
-                        font-weight: 700;
-                        line-height: 25px;
-                        letter-spacing: 0em;
-                        text-align: left;
-                        font-stretch: condensed;
-                    }
-                }
-
-            }
-
-            &--title {
-                font-size: 12px;
-                font-weight: 600;
-                text-align: left;
-                color: $open-red;
-
-                &_soft {
-                    font-weight: normal;
-                    letter-spacing: -0.07em;
-                }
-            }
-        }
     }
 
     &_links {

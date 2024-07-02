@@ -29,6 +29,18 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("matchup.teams", "teams")
+        .leftJoinAndSelect("team1.members", "team1members")
+        .leftJoinAndSelect("team2.members", "team2members")
+        .leftJoinAndSelect("teams.members", "members")
+        .leftJoinAndSelect("team1.captain", "team1captain")
+        .leftJoinAndSelect("team2.captain", "team2captain")
+        .leftJoinAndSelect("teams.captain", "captain")
+        .leftJoinAndSelect("team1members.userStatistics", "team1stats")
+        .leftJoinAndSelect("team2members.userStatistics", "team2stats")
+        .leftJoinAndSelect("members.userStatistics", "stats")
+        .leftJoinAndSelect("team1stats.modeDivision", "team1modeDivision")
+        .leftJoinAndSelect("team2stats.modeDivision", "team2modeDivision")
+        .leftJoinAndSelect("stats.modeDivision", "modeDivision")
         .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
         .where("stage.ID = :stageID", { stageID: stage.ID })
         .andWhere("matchup.invalid = 0")
@@ -71,6 +83,9 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                 vod: matchup.vod,
                 potential: matchup.potentialFor ? `${matchup.potentialFor.ID}-${String.fromCharCode("A".charCodeAt(0) + val)}` : undefined,
                 teams: teams.map((team) => {
+                    let members = team.members;
+                    if (!members.some((member) => member.ID === team.captain.ID))
+                        members = [team.captain, ...members];
                     return {
                         ID: team.ID,
                         name: team.name,
@@ -78,7 +93,15 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                         pp: team.pp,
                         rank: team.rank,
                         BWS: team.BWS,
-                        members: [],
+                        members: members.map((member) => {
+                            return {
+                                ID: member.ID,
+                                username: member.osu.username,
+                                osuID: member.osu.userID,
+                                isCaptain: member.ID === team.captain.ID,
+                                BWS: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
+                            };
+                        }),
                     };
                 }),
             };
