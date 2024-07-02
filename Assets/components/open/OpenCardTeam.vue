@@ -3,23 +3,21 @@
         :to="`/team/${teamSync.ID}`"
         class="open_card_team"
     >
-        <div class="open_card_team_overlay">
-            <ul class="open_card_team_overlay__list">
-                <li 
-                    v-for="member in teamSync.members"
-                    :key="member.ID"
-                    class="open_card_team_overlay__list_item"
-                    :class="{ 'open_card_team_overlay__list_item--leader': member.isCaptain }"
-                >
-                    <div class="open_card_team_overlay__list_item_text">
-                        {{ member.username }}
-                    </div>
-                    <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
-                        {{ Math.round(member.BWS) }} {{ $t("open.components.openCardTeam.bws") }}
-                    </div>
-                </li>
-            </ul>
-        </div>
+        <ul class="open_card_team__members">
+            <li 
+                v-for="member in teamSync.members"
+                :key="member.ID"
+                class="open_card_team__member"
+                :class="{ 'open_card_team__member_leader': member.isCaptain }"
+            >
+                <div class="open_card_team__member_username">
+                    {{ member.username }}
+                </div>
+                <div class="open_card_team__member_bws">
+                    {{ Math.round(member.BWS) }} {{ $t("open.components.openCardTeam.bws") }}
+                </div>
+            </li>
+        </ul>
         <div
             class="open_card_team__img"
             :style="{ 'backgroundImage': `url(${teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
@@ -74,64 +72,54 @@ export default class OpenCardTeam extends Vue {
     background: #171B1E;
     height: 198px;
 
-    &_overlay {
+    &__members {
         position: absolute;
         width: 100%;
         height: 100%;
+        margin: 0;
+        padding: 0;
         background: #131313F0;
         z-index: 1;
         opacity: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
 
         &:hover {
             opacity: 1;
         }
+    }
 
-        &__list {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+    &__member {
+        display: flex;
+        justify-content: space-between;
+        width: 75%;
 
-            &_item {
-                display: flex;
-                justify-content: space-between;
-                width: 75%;
+        &_leader {
+            position: relative;
 
-                &--leader {
-
-                    position: relative;
-
-                    &:after {
-                        content: "";
-                        background-image: url('../../img/site/open/team/captain.svg');
-                        background-size: 100%;
-                        width: 15px;
-                        height: 10px;
-                        background-repeat: no-repeat;
-                        position: absolute;
-                        left: -25px;
-                        top: 5px;
-                    }
-                }
-
-                &_text {
-
-                font-family: $font-ggsans;
-                font-weight: 500;
-                list-style: none;
-
-                    &--bws {
-
-                        color: $open-red;
-                        font-family: $font-swis721;
-                        font-weight: 700;
-                    }
-                }
+            &:after {
+                content: "";
+                background-image: url('../../img/site/open/team/captain.svg');
+                background-size: 100%;
+                width: 15px;
+                height: 10px;
+                background-repeat: no-repeat;
+                position: absolute;
+                left: -25px;
+                top: 5px;
             }
+        }
+
+        &_username, &_bws {
+            list-style: none;
+        }
+
+        &_bws {
+            color: $open-red;
+            font-weight: 700;
+            font-stretch: condensed;
         }
     }
 
