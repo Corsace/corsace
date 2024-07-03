@@ -518,7 +518,7 @@
                 "qualifiersMappool": "MAPPOOLS DAS QUALIFICATÓRIAS",
                 "mappoolDownload": "Baixar mappool e estatísticas",
                 "register": "CRIAR E INSCREVER SEU TIME",
-                "registrationsEnd": "Fim das inscrições em"
+                "registrationsEnd": "Registrations end {time}"
             }
         },
         "info": {
