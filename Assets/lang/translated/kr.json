@@ -518,7 +518,7 @@
                 "qualifiersMappool": "퀄리파이어 맵풀",
                 "mappoolDownload": "맵풀 다운로드와 통계 보기",
                 "register": "당신의 팀을 만들고 등록하세요",
-                "registrationsEnd": "등록이 마감됩니다"
+                "registrationsEnd": "Registrations end {time}"
             }
         },
         "info": {
