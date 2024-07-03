@@ -518,7 +518,7 @@
                 "qualifiersMappool": "资格赛图池",
                 "mappoolDownload": "图池下载和数据",
                 "register": "创建和注册您的团队",
-                "registrationsEnd": "注册截止至"
+                "registrationsEnd": "Registrations end {time}"
             }
         },
         "info": {
