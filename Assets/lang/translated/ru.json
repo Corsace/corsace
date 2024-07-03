@@ -518,7 +518,7 @@
                 "qualifiersMappool": "ОТБОРОЧНЫЙ МАППУЛ",
                 "mappoolDownload": "Скачать маппул и статистика",
                 "register": "СОЗДАТЬ И ЗАРЕГИСТРИРОВАТЬ КОМАНДУ",
-                "registrationsEnd": "Регистрация заканчивается"
+                "registrationsEnd": "Registrations end {time}"
             }
         },
         "info": {
