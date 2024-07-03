@@ -518,7 +518,7 @@
                 "qualifiersMappool": "QUALIFIERS MAPPOOLS",
                 "mappoolDownload": "Mappool download and statistics",
                 "register": "CREATE AND REGISTER YOUR TEAM",
-                "registrationsEnd": "Registrations end"
+                "registrationsEnd": "Registrations end {time}"
             }
         },
         "info": {
