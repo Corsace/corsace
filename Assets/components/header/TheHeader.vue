@@ -11,7 +11,6 @@
             :class="`header-login--${site}`"
         >
             <div class="header-login__welcome-container">
-                <slot name="login" />
                 <img 
                     :src="avatarURL"
                     class="header-login__avatar"
@@ -49,42 +48,50 @@
                 >
                     {{ loggedInUser.osu.username }}
                 </div>
-                <div  
-                    class="header-login__welcome"
-                    :class="`header-login__welcome--${viewTheme} header-login__welcome--${site}`"
-                >
-                    <a
-                        href="/api/logout"
+                <div>
+                    <div  
+                        class="header-login__welcome header-login__menu"
+                        :class="`header-login__welcome--${viewTheme} header-login__welcome--${site}`"
+                        @click="openMenu = !openMenu"
                     >
                         <div
-                            v-if="!isSmall" 
-                            class="dot" 
-                            :class="`dot--${viewTheme} dot--${site}`"
-                        />
-                        {{ $t('header.logout') }}
-                    </a>
-                    <a
-                        v-if="!loggedInUser.discord || !loggedInUser.discord.userID"
-                        :href="`/api/login/discord?site=${site}&redirect=${$route.fullPath}`"
+                            class="hamburger"
+                            :class="`hamburger--${viewTheme} hamburger--${site}`"
+                        >
+                            ≡
+                            <div
+                                class="notif" 
+                                :class="`notif--${viewTheme} notif--${site}`"
+                                :style="{ opacity: notifSync ? 1 : 0 }"
+                            />
+                        </div>
+                        {{ $t('header.menu') }}
+                    </div>
+                    <div
+                        v-if="openMenu"
+                        class="header-login__menu_dropdown"
+                        :class="`header-login__menu_dropdown--${viewTheme} header-login__menu_dropdown--${site}`"
+                        @click="openMenu = false"
                     >
-                        <div 
-                            v-if="!isSmall" 
-                            class="dot" 
-                            :class="`dot--${viewTheme} dot--${site}`"
-                        />
-                        discord {{ $t('header.login') }}
-                    </a>
-                    <a 
-                        v-else
-                        :href="`/api/login/discord?site=${site}&redirect=${$route.fullPath}`"
-                    >
-                        <div 
-                            v-if="!isSmall" 
-                            class="dot" 
-                            :class="`dot--${viewTheme} dot--${site}`"
-                        />
-                        {{ $t('header.changeDiscord') }}
-                    </a>
+                        <slot name="menu" />
+                        <a
+                            v-if="!loggedInUser.discord || !loggedInUser.discord.userID"
+                            :href="`/api/login/discord?site=${site}&redirect=${$route.fullPath}`"
+                        >
+                            <MenuItem>discord {{ $t('header.login') }}</MenuItem>
+                        </a>
+                        <a 
+                            v-else
+                            :href="`/api/login/discord?site=${site}&redirect=${$route.fullPath}`"
+                        >
+                            <MenuItem>{{ $t('header.changeDiscord') }}</MenuItem>
+                        </a>
+                        <a
+                            href="/api/logout"
+                        >
+                            <MenuItem>{{ $t('header.logout') }}</MenuItem>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,10 +105,6 @@
                 :class="`header-login__link--${viewTheme} header-login__link--${site}`"
                 :href="`/api/login/osu?site=${site}&redirect=${$route.fullPath}`"
             >
-                <div 
-                    class="dot" 
-                    :class="`dot--${viewTheme} dot--${site}`"
-                />
                 osu! {{ site === "open" ? $t('header.login').toString().toUpperCase() : $t('header.login') }}
             </a>
         </div>
@@ -109,13 +112,21 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 import { State } from "vuex-class";
+
+import MenuItem from "./MenuItem.vue";
 
 import { UserInfo } from "../../../Interfaces/user";
 
-@Component
+@Component({
+    components: {
+        MenuItem,
+    },
+})
 export default class TheHeader extends Vue {
+
+    @PropSync("notif", { type: Boolean, default : false }) notifSync!: boolean;
 
     @State site!: string;
     @State loggedInUser!: null | UserInfo;
@@ -125,14 +136,13 @@ export default class TheHeader extends Vue {
         return this.loggedInUser?.osu?.avatar ?? "";
     }
 
+    openMenu = false;
     isSmall = false;
 
     mounted () {
         if (process.client) {
             this.isSmall = window.innerWidth < 992;
-            window.addEventListener("resize", () => {
-                this.isSmall = window.innerWidth < 992;
-            });
+            window.addEventListener("resize", () => this.isSmall = window.innerWidth < 992);
         }
     }
 
@@ -252,7 +262,19 @@ export default class TheHeader extends Vue {
                 color: #6f6f6f;
             }
         }
+        &--open {
+            color: $open-red;
+            font-stretch: condensed;
+        }
+    }
+
+    &__menu {
+        cursor: pointer;
+        position: relative;
         display: flex;
+        width: fit-content;
+        gap: 5px;
+        align-items: center;
         flex-direction: column;
         @include breakpoint(laptop) {
             flex-direction: row;
@@ -265,27 +287,32 @@ export default class TheHeader extends Vue {
         @include breakpoint(laptop) {
             font-size: $font-base;
         }
-        &--open {
-            color: $open-red;
-            font-stretch: condensed;
 
-            & > a {
-                color: $open-red;
-                font-stretch: condensed;
-            }
-        }
-        & > a {
+        &_dropdown {
+            position: absolute;
+            padding: 10px;
             display: flex;
-            align-items: center;
-            font-size: $font-sm;
-            @include breakpoint(mobile) {
-                font-size: $font-xsm;
-            }
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1;
 
-            & > div {
-                width: 10px;
-                height: 10px;
-                margin-left: 10px;
+            background-color: white;
+            box-shadow: 0px 4px 4px 0px rgba(0,0,0,0.25);
+            font-stretch: condensed;
+            & > a {
+                color: black;
+            }
+            &--dark {
+                background-color: $dark;
+                & > a {
+                    color: white;
+                }
+            }
+            &--open {
+                background-color: white;
+                & > a {
+                    color: $open-red;
+                }
             }
         }
     }
@@ -302,21 +329,34 @@ export default class TheHeader extends Vue {
     }
 }
 
-.dot {
-    width: 3px;
-    height: 3px;
-    border-radius: 100%;
-    background: black;
-    margin-right: 8px;
+.hamburger {
+    position: relative;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
     &--dark {
-        background: white;
+        color: #6f6f6f;
     }
 
     &--open {
-        background: black;
-        border-radius: 0;
-        width: 2.5px;
-        height: 2.5px;
+        color: black;
+    }
+}
+
+.notif {
+    position: absolute;
+    height: 8px;
+    width: 8px;
+    border-radius: 100%;
+    top: 0.5rem;
+    right: -0.25rem;
+    background-color: black;
+    &--dark {
+        background-color: white;
+    }
+
+    &--open {
+        background-color: $open-red;
     }
 }
 </style>

@@ -5,6 +5,7 @@
         "welcomeBack": "welcome back",
         "login": "login",
         "register": "register",
+        "menu": "menu",
         "changeDiscord": "change discord",
         "logout": "logout"
     },
@@ -483,7 +484,8 @@
             "mappool": "MAPPOOL",
             "staff": "STAFF",
             "createTeam": "CREATE TEAM",
-            "invitations": "INVITATIONS",
+            "myTeams": "my teams",
+            "invitations": "invitations",
             "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
             "teamInvites": "TEAM INVITES",
             "noInvites": "You currently have no invites"
