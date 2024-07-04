@@ -518,7 +518,7 @@
                 "qualifiersMappool": "MAPPOOL KUALIFIKASI",
                 "mappoolDownload": "Unduhan dan statistik mappool",
                 "register": "BUAT DAN DAFTARKAN TIM KAMU",
-                "registrationsEnd": "Registrations end {time}"
+                "registrationsEnd": "Pendaftaran berakhir pada {time}"
             }
         },
         "info": {
