@@ -69,7 +69,7 @@ export default class OpenCardTeam extends Vue {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: #171B1E;
+    background: white;
     height: 198px;
 
     &__members {
@@ -94,7 +94,7 @@ export default class OpenCardTeam extends Vue {
     &__member {
         display: flex;
         justify-content: space-between;
-        width: 75%;
+        width: 50%;
 
         &_leader {
             position: relative;
@@ -119,6 +119,7 @@ export default class OpenCardTeam extends Vue {
         &_bws {
             color: $open-red;
             font-weight: 700;
+            font-size: 0.8rem;
             font-stretch: condensed;
         }
     }
@@ -130,6 +131,7 @@ export default class OpenCardTeam extends Vue {
     &__img {
         height: 81%;
         width: 100%;
+        border-bottom: 1px solid $open-red;
         object-fit: cover;
         overflow: hidden;
         background-position: center;
@@ -138,12 +140,10 @@ export default class OpenCardTeam extends Vue {
     }
 
     &__name {
-        font-family: gg sans;
         font-size: $font-xl;
         font-weight: 700;
         text-align: left;
-        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-        color: $white;
+        color: black;
         margin-left: 15px;
 
         & span {
@@ -154,16 +154,12 @@ export default class OpenCardTeam extends Vue {
 
     &__text {
         height: 57px;
-        background: #131313;
-        border-top: 1px solid $open-red;
         padding: 0 10px;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background-image: url('../../../Assets/img/site/open/checkers-bg.png');
-        background-repeat: no-repeat;
-        background-position: bottom 0px right -5px;
+        color: black;
 
         &_group {
             display: flex;
@@ -171,21 +167,20 @@ export default class OpenCardTeam extends Vue {
             align-items: center;
 
             &_label {
-                color: #131313;
+                color: white;
                 white-space: nowrap;
-                font-family: $font-swis721;
                 font-size: 10px;
                 font-weight: 700;
+                font-stretch: condensed;
                 text-align: left;
                 height: inherit;
                 background: $open-red;
                 padding: 1.75px 3.5px;
 
                 &--vertical {
-                    font-family: $font-swis721;
                     font-weight: 400;
                     font-size: $font-sm;
-                    font-style: italic;
+                    font-stretch: condensed;
                     color: $open-red;
                     writing-mode: vertical-rl;
                     text-orientation: mixed;
@@ -193,10 +188,9 @@ export default class OpenCardTeam extends Vue {
             }
 
             &_data {
-                font-family: $font-swis721;
-                font-size: $font-xl;
+                font-size: calc(1.25 * $font-xxxl);
                 font-weight: 700;
-                font-style: italic;
+                font-stretch: condensed;
                 margin: 0px 10px 0px 10px
             }
         }
