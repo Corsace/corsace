@@ -495,7 +495,8 @@
             "twitter": "TWITTER",
             "discord": "DISCORD",
             "twitch": "TWITCH",
-            "youtube": "YOUTUBE"
+            "youtube": "YOUTUBE",
+            "github": "GITHUB"
         },
         "stages": {
             "qualifiers": "QUALIFIERS",
@@ -665,7 +666,7 @@
             },
             "registration":{
                 "noRegistration": "Registered in no tournaments",
-                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+                "toPlay": "To play in Corsace Open, get 6-8 members, and choose a qualifier date and time below"
             },
             "teamID": "TEAM ID",
             "member": "member",

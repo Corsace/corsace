@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "Inscrito em nenhum torneio",
-                "toPlay": "Para jogar na Corsace Open, consiga 6 membros e escolha uma data e hora de qualificatória abaixo"
+                "toPlay": "Para jogar na Corsace Open, consiga 6-8 membros e escolha uma data e hora de qualificatória abaixo"
             },
             "teamID": "ID DO TIME",
             "member": "membro",
