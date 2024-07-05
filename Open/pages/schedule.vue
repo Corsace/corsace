@@ -19,12 +19,14 @@
                         </template>
                     </StageSelector>
                     <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
-                    <OpenTitleButton
+                    <ContentButton
+                        class="content_button--red"
                         :link="'https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing'"
                         :img-src="require('../../Assets/img/site/open/mappool/sheets-ico.svg')"
+                        external
                     >
                         {{ $t('open.qualifiers.mappool.sheets') }}
-                    </OpenTitleButton>
+                    </ContentButton>
                 </template>
             </OpenTitle>
             <div class="schedule_main_content_matches">
@@ -45,7 +47,7 @@ import { namespace } from "vuex-class";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import ScheduleMatchBox from "../../Assets/components/open/ScheduleMatchBox.vue";
-import OpenTitleButton from "../../Assets/components/open/OpenTitleButton.vue";
+import ContentButton from "../../Assets/components/open/ContentButton.vue";
 
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage, StageType } from "../../Interfaces/stage";
@@ -58,7 +60,7 @@ const openModule = namespace("open");
         StageSelector,
         OpenTitle,
         ScheduleMatchBox,
-        OpenTitleButton,
+        ContentButton,
     },
     head () {
         return {

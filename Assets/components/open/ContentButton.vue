@@ -4,6 +4,11 @@
         :target="externalSync ? '_blank' : '_self'"
         class="content_button"
     >
+        <img 
+            v-if="imgSrcSync"
+            class="content_button__ico" 
+            :src="imgSrcSync"
+        >
         <div class="content_button_text">
             <slot />
         </div>
@@ -13,14 +18,11 @@
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
 
-@Component({
-    components: {
-    },
-})
-
+@Component({})
 export default class ContentButton extends Vue {
     @PropSync("link", { type: String, default: "#" }) linkSync!: string;
     @PropSync("external", { type: Boolean, default: false }) externalSync!: boolean;
+    @PropSync("imgSrc", { type: String, default : "" }) imgSrcSync!: string;
 }
 </script>
 
@@ -30,6 +32,7 @@ export default class ContentButton extends Vue {
 .content_button {
     cursor: pointer;
     display: flex;
+    gap: 5px;
     flex-grow: 1;
     justify-content: center;
     align-items: center;

@@ -5,21 +5,19 @@
             class="team__container"
         >
             <OpenTitle>
-                <div class="team__title">
-                    <img 
-                        class="team__title_avatar"
-                        :src="teamData.avatarURL || require('../../../Assets/img/site/open/team/default.png')"
-                    > 
-                    <span>{{ teamData.name }}</span>
-                    <span class="team--acronym">({{ teamData.abbreviation }})</span>
-                </div>
-                <div
+                {{ teamData.name }} 
+                <span class="team--acronym">({{ teamData.abbreviation }})</span>
+                <template 
                     v-if="isCaptain"
-                    class="team_fields--clickable"
-                    @click="edit = !edit"
+                    #right
                 >
-                    {{ !edit ? $t('open.teams.editTeamInfo') : "" }}
-                </div>
+                    <ContentButton
+                        class="content_button--red"
+                        @click="edit = !edit"
+                    >
+                        {{ !edit ? $t('open.teams.editTeamInfo') : "" }}
+                    </ContentButton>
+                </template>
             </OpenTitle>
             <div class="team_fields">
                 <div class="team_fields_row">
@@ -273,13 +271,7 @@
             class="team__container"
         >
             <OpenTitle>
-                <div class="team__title">
-                    <img 
-                        class="team__title_avatar"
-                        src="../../../Assets/img/site/open/team/default.png"
-                    > 
-                    <span>{{ $t("open.status.loading") }}...</span>
-                </div>
+                {{ $t("open.status.loading") }}...
             </OpenTitle>
         </div>
         <div 
@@ -287,13 +279,7 @@
             class="team__container"
         >
             <OpenTitle>
-                <div class="team__title">
-                    <img 
-                        class="team__title_avatar"
-                        src="../../../Assets/img/site/open/team/default.png"
-                    > 
-                    <span>NO TEAM FOUND</span>
-                </div>
+                NO TEAM FOUND
             </OpenTitle>
         </div>
         <!-- Team Edit Modal -->
@@ -431,6 +417,8 @@ import { Team as TeamInterface, TeamUser, validateTeamText } from "../../../Inte
 import { User, UserInfo } from "../../../Interfaces/user";
 import { Tournament } from "../../../Interfaces/tournament";
 
+import { getTimezoneOffset } from "../../../Server/utils/dateParse";
+
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenInput from "../../../Assets/components/open/OpenInput.vue";
 import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
@@ -438,7 +426,6 @@ import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../../Assets/components/BaseModal.vue";
 import SearchBar from "../../../Assets/components/SearchBar.vue";
 import QualifierModal from "../../../Assets/components/open/QualifierModal.vue";
-import { getTimezoneOffset } from "../../../Server/utils/dateParse";
 
 const openModule = namespace("open");
 
@@ -808,35 +795,24 @@ export default class Team extends Vue {
 @import '@s-sass/_variables';
 
 .team {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
     overflow: auto;
 
     &--acronym {
         color: $open-red;
     }
 
-    &__title {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 20px;
+    &_avatar {
+        border: 1px solid $gray;
+        width: 9rem;
+        height: 3rem;
+        object-fit: cover;
 
-        text-transform: uppercase;
-
-        &_avatar {
-            border: 1px solid $gray;
-            width: 9rem;
-            height: 3rem;
-            object-fit: cover;
-
-            &_input {
-                display: none;
-            }
+        &_input {
+            display: none;
         }
     }
 
     &__container {
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
         align-self: center;
         display: flex;
         flex-direction: column;

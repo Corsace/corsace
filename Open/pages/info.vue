@@ -89,7 +89,7 @@
                     <ul class="info_desc__list">
                         <li>Teams may consist of <strong>6 - 8</strong> players </li>
                         <li>
-                            Team names may consist of 3 - 20 characters with acronyms of 2 - 4 letters along with a team photo (A 3:1 image is preferred)
+                            Team names may consist of 3 - 20 characters with acronyms of 2 - 4 letters along with a team photo
                             <ul>
                                 <li>Inappropriate pictures, names, and/or acronyms are subject to change at the discretion of administration</li>
                             </ul>
@@ -122,7 +122,7 @@
                         <li>
                             Teams<strong> complete registration</strong> by playing qualifiers
                             <ul class="info_desc__list">
-                                <li>Rosters are<strong> locked </strong>after play. Changes are <strong>not</strong> allowed</li>
+                                <li>Rosters are<strong> locked </strong>after play. Changes are <strong>not</strong> allowed under any circumstance</li>
                                 <li>Due to this process, teams with players who are <strong>screened out</strong> will automatically be <strong>disqualified</strong></li>
                             </ul>
                         </li>

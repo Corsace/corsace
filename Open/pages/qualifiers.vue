@@ -17,18 +17,22 @@
                     #right
                 >
                     <Clock />
-                    <OpenTitleButton
+                    <ContentButton
+                        class="content_button--red"
                         :link="'https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing'"
                         :img-src="require('../../Assets/img/site/open/mappool/sheets-ico.svg')"
+                        external
                     >
                         {{ $t('open.qualifiers.mappool.sheets') }}
-                    </OpenTitleButton>
-                    <OpenTitleButton
+                    </ContentButton>
+                    <ContentButton
+                        class="content_button--red"
                         :link="mappools?.[0].mappackLink || ''"
                         :img-src="require('../../Assets/img/site/open/mappool/dl-ico.svg')"
+                        external
                     >
                         {{ $t('open.qualifiers.mappool.mappool') }}
-                    </OpenTitleButton>
+                    </ContentButton>
                 </template>
                 <template
                     v-else-if="page === 'scores'"
@@ -119,7 +123,6 @@ import QualifiersView from "../../Assets/components/open/QualifiersView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../Assets/components/BaseModal.vue";
 import SubHeader from "../../Assets/components/open/SubHeader.vue";
-import OpenTitleButton from "../../Assets/components/open/OpenTitleButton.vue";
 
 import { Stage, StageType } from "../../Interfaces/stage";
 import { Tournament } from "../../Interfaces/tournament";
@@ -140,7 +143,6 @@ const openModule = namespace("open");
         QualifiersView,
         BaseModal,
         SubHeader,
-        OpenTitleButton,
     },
     head () {
         return {

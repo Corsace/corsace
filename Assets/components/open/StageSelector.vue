@@ -41,7 +41,6 @@ export default class StageSelector extends Vue {
     flex-direction: row;
     align-items: center;
     gap: 10px;
-    margin-right: 50px;
 
     &__text {
         display: flex;

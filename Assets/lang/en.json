@@ -615,6 +615,7 @@
             "teamList": "TEAM LIST",
             "teamManagement": "TEAM MANAGEMENT",
             "error": "COULD NOT GET TEAM LIST",
+            "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "search for user/team",
             "editTeamInfo": "edit team info",
             "qualifierId": "Qualifier ID",

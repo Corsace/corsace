@@ -45,6 +45,7 @@ export default class OpenTitle extends Vue {
             display: flex;
             flex-direction: row;
             align-items: center;
+            gap: 10px;
         }
     }
 }

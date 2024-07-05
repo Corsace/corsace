@@ -37,13 +37,21 @@
             <OpenTitle>
                 {{ $t('open.teams.teamManagement') }}
                 <template #right>
-                    <SearchBar
-                        :placeholder="`${$t('open.teams.searchPlaceholder')}`"
-                        style="margin-bottom: 10px;"
-                        @update:search="searchValue = $event"
-                    />
+                    <ContentButton
+                        class="content_button--red"
+                        :link="'/open/teams/create'"
+                        external
+                    >
+                        {{ $t('open.create.title') }}
+                    </ContentButton>
                 </template>
             </OpenTitle>
+        </div>
+        <div
+            v-else-if="page === 'management'"
+            class="teams_list__main_content"
+        >
+            {{ $t('open.teams.loginManagement') }}
         </div>
         <div
             v-else-if="loading"
@@ -66,23 +74,26 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
 import { Tournament } from "../../Interfaces/tournament";
 import { TeamList } from "../../Interfaces/team";
+import { UserInfo } from "../../Interfaces/user";
 
-import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
-import OpenCardTeam from "../../Assets/components/open/OpenCardTeam.vue";
 import SearchBar from "../../Assets/components/SearchBar.vue";
+import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
+import ContentButton from "../../Assets/components/open/ContentButton.vue";
+import OpenCardTeam from "../../Assets/components/open/OpenCardTeam.vue";
 import SubHeader from "../../Assets/components/open/SubHeader.vue";
 
 const openModule = namespace("open");
 
 @Component({
     components: {
-        OpenTitle,
-        OpenCardTeam,
         SearchBar,
+        OpenTitle,
+        ContentButton,
+        OpenCardTeam,
         SubHeader,
     },
     head () {
@@ -107,6 +118,8 @@ const openModule = namespace("open");
     },
 })
 export default class Teams extends Vue {
+
+    @State loggedInUser!: null | UserInfo;
     @openModule.State tournament!: Tournament | null;
     @openModule.State teamList!: TeamList[] | null;
 
@@ -139,14 +152,12 @@ export default class Teams extends Vue {
 @import '@s-sass/_variables';
 
 .teams_list {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
 
     &__main_content {
         align-self: center;
         position: relative;
         width: 65vw;
         padding: 35px;
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
 
         &_list {
             display: flex;

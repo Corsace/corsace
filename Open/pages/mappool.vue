@@ -30,20 +30,24 @@
                         </template>
                     </StageSelector>
                     <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
-                    <OpenTitleButton
+                    <ContentButton
+                        class="content_button--red"
                         :link="'https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing'"
                         :img-src="require('../../Assets/img/site/open/mappool/sheets-ico.svg')"
+                        external
                     >
                         {{ $t('open.qualifiers.mappool.sheets') }}
-                    </OpenTitleButton>
-                    <OpenTitleButton
+                    </ContentButton>
+                    <ContentButton
                         v-for="mappool in mappools"
                         :key="mappool.ID"
+                        class="content_button--red"
                         :link="mappool.mappackLink || ''"
                         :img-src="require('../../Assets/img/site/open/mappool/dl-ico.svg')"
+                        external
                     >
                         {{ $t('open.qualifiers.mappool.mappool') }} - {{ mappool.abbreviation.toUpperCase() }}
-                    </OpenTitleButton>
+                    </ContentButton>
                 </template>
                 <template
                     v-else-if="page === 'scores'"
@@ -120,9 +124,8 @@ import { MatchupScore } from "../../Interfaces/matchup";
 
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
-import OpenTitleButton from "../../Assets/components/open/OpenTitleButton.vue";
-import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
+import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
 import SubHeader from "../../Assets/components/open/SubHeader.vue";
 
@@ -133,7 +136,6 @@ const openModule = namespace("open");
         StageSelector,
         MappoolView,
         OpenTitle,
-        OpenTitleButton,
         ContentButton,
         ScoresView,
         SubHeader,
