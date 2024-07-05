@@ -31,7 +31,7 @@
             </div>
         </div>
         <div 
-            v-else-if="page === 'management'"
+            v-else-if="page === 'management' && loggedInUser?.discord.userID"
             class="teams_list__main_content"
         >
             <OpenTitle>
@@ -39,8 +39,7 @@
                 <template #right>
                     <ContentButton
                         class="content_button--red"
-                        :link="'/open/teams/create'"
-                        external
+                        :link="'team/create'"
                     >
                         {{ $t('open.create.title') }}
                     </ContentButton>
