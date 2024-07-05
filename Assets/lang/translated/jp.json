@@ -609,7 +609,7 @@
             }
         },
         "teams": {
-            "teamsList": "チームリスト",
+            "teamList": "チームリスト",
             "error": "チームリストを取得できませんでした",
             "searchPlaceholder": "ユーザー/チームを検索",
             "editTeamInfo": "チーム情報を編集",

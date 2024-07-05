@@ -1,12 +1,20 @@
 <template>
     <div class="teams_list">
+        <SubHeader
+            :selections="[
+                { text: $t('open.teams.teamList'), value: 'list' },
+                { text: $t('open.teams.teamManagement'), value: 'management' },
+            ]"
+            :current-page="page"
+            @update:page="page = $event"
+        />
         <div 
-            v-if="filteredTeams"
+            v-if="filteredTeams && page === 'list'"
             class="teams_list__main_content"
         >
             <OpenTitle>
-                {{ $t('open.teams.teamsList') }}
-                <template #buttons>
+                {{ $t('open.teams.teamList') }}
+                <template #right>
                     <SearchBar
                         :placeholder="`${$t('open.teams.searchPlaceholder')}`"
                         style="margin-bottom: 10px;"
@@ -21,6 +29,21 @@
                     :team="team"
                 />
             </div>
+        </div>
+        <div 
+            v-else-if="page === 'management'"
+            class="teams_list__main_content"
+        >
+            <OpenTitle>
+                {{ $t('open.teams.teamManagement') }}
+                <template #right>
+                    <SearchBar
+                        :placeholder="`${$t('open.teams.searchPlaceholder')}`"
+                        style="margin-bottom: 10px;"
+                        @update:search="searchValue = $event"
+                    />
+                </template>
+            </OpenTitle>
         </div>
         <div
             v-else-if="loading"
@@ -51,6 +74,7 @@ import { TeamList } from "../../Interfaces/team";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import OpenCardTeam from "../../Assets/components/open/OpenCardTeam.vue";
 import SearchBar from "../../Assets/components/SearchBar.vue";
+import SubHeader from "../../Assets/components/open/SubHeader.vue";
 
 const openModule = namespace("open");
 
@@ -59,6 +83,7 @@ const openModule = namespace("open");
         OpenTitle,
         OpenCardTeam,
         SearchBar,
+        SubHeader,
     },
     head () {
         return {
@@ -87,6 +112,7 @@ export default class Teams extends Vue {
 
     loading = true;
     searchValue = "";
+    page: "list" | "management" = "list";
 
     get filteredTeams () {
         if (!this.searchValue)

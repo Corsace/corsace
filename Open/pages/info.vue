@@ -1,21 +1,13 @@
 <template>
     <div class="info">
-        <div class="info__sub_header">
-            <div
-                class="info__sub_header_item"
-                :class="{ 'info__sub_header_item--active': page === 'info' }"
-                @click="page = 'info'"
-            >
-                {{ $t('open.info.title') }}
-            </div>
-            <div
-                class="info__sub_header_item"
-                :class="{ 'info__sub_header_item--active': page === 'condensed' }"
-                @click="page = 'condensed'"
-            >
-                {{ $t('open.info.condensed') }}
-            </div>
-        </div>
+        <SubHeader
+            :selections="[
+                { text: $t('open.info.title'), value: 'info' },
+                { text: $t('open.info.condensed'), value: 'condensed' },
+            ]"
+            :current-page="page"
+            @update:page="page = $event"
+        />
         <div class="info_wrapper">
             <OpenTitle v-if="page === 'condensed'">
                 {{ $t('open.info.title') }}
@@ -609,6 +601,7 @@ import MatchBox from "../../Assets/components/open/InfoMatchBox.vue";
 import InfoData from "../../Assets/components/open/InfoData.vue";
 import MatchStatus from "../../Assets/components/open/MatchStatus.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
+import SubHeader from "../../Assets/components/open/SubHeader.vue";
 
 const openModule = namespace("open");
 
@@ -625,6 +618,7 @@ enum StageStatus {
         InfoData,
         MatchStatus,
         OpenTitle,
+        SubHeader,
     },
     head () {
         return {
@@ -741,42 +735,6 @@ export default class Info extends Vue {
 
 .info {
     width: 100%;
-
-    &__sub_header {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        top: 0px;
-        background-color: $open-red;
-        color: $open-dark;
-
-        &_item {
-            position: relative;
-            display: flex;
-            justify-content: center;
-
-            cursor: pointer;
-            width: auto;
-            text-decoration: none;
-            font-weight: 700;
-            padding: 5px 90px;
-
-            &:hover, &--active {
-                color: $white;
-            }
-
-            &--active::after {
-                content: "";
-                position: absolute;
-                top: calc(50% - 4.5px/2);
-                right: calc(100% - 4.5em);
-                width: 4.5px;
-                height: 4.5px;
-                transform: rotate(-45deg);
-                background-color: $white;
-            }
-        }
-    }
 
     &_wrapper {
         width: 75vw;

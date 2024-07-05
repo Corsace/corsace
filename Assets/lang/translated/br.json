@@ -609,7 +609,7 @@
             }
         },
         "teams": {
-            "teamsList": "LISTA DE TIMES",
+            "teamList": "LISTA DE TIMES",
             "error": "NÃO FOI POSSÍVEL PEGAR A LISTA DE TIMES",
             "searchPlaceholder": "procurar por usuário/time",
             "editTeamInfo": "editar informações do time",

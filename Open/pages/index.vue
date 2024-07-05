@@ -47,21 +47,21 @@
                 </div>
                 <!--- MIDDLE: middle-->
                 <div class="index_portal__section">
-                    <OpenButton
+                    <OpenFrontPageButton
                         :link="'/qualifiers'"
                     >
                         <template #title>
                             {{ $t('open.home.button.qualifiersMappool') }}
                         </template>
                         {{ $t('open.home.button.mappoolDownload') }}
-                    </OpenButton>
-                    <OpenButton 
+                    </OpenFrontPageButton>
+                    <OpenFrontPageButton 
                         disabled
                     />         
                 </div>
                 <!-- RIGHT: register your team-->
                 <div class="index_portal__section">
-                    <OpenButton
+                    <OpenFrontPageButton
                         :link="loggedInUser ? loggedInUser.discord.username ? '/team/create' : '/api/login/discord?site=open&redirect=/team/create' : '/api/login/osu?site=open&redirect=/'"
                         :external="loggedInUser?.discord.username ? false : true"
                     >
@@ -69,7 +69,7 @@
                             {{ $t('open.home.button.register') }}
                         </template>
                         {{ $t('open.home.button.registrationsEnd').toString().replace("{time}", new Date(tournament?.registrations.end || "").toLocaleString('en-US', options)) }}
-                    </OpenButton>
+                    </OpenFrontPageButton>
                     <div class="index_portal__text-content">
                         {{ $t('open.home.presentedBy') }}
                         <hr class="line--red line--no-space">
@@ -101,13 +101,13 @@ import { State, namespace } from "vuex-class";
 import { Tournament } from "../../Interfaces/tournament";
 import { UserInfo } from "../../Interfaces/user";
 
-import OpenButton from "../../Assets/components/open/OpenButton.vue";
+import OpenFrontPageButton from "../../Assets/components/open/OpenFrontPageButton.vue";
 
 const openModule = namespace("open");
 
 @Component({
     components: {
-        OpenButton,
+        OpenFrontPageButton,
     },
     head () {
         return {

@@ -3,7 +3,7 @@
         <div class="schedule_main_content">
             <OpenTitle>
                 SCHEDULE - <span class="schedule_main_content__abbreviation">{{ selectedStage?.abbreviation.toUpperCase() || '' }}</span>
-                <template #selector>
+                <template #right>
                     <StageSelector
                         :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
                         :not-end="selectedStage?.ID !== stageList[stageList.length - 1]?.ID"
@@ -18,6 +18,13 @@
                             {{ selectedStage?.abbreviation.toUpperCase() || '' }}
                         </template>
                     </StageSelector>
+                    <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
+                    <OpenTitleButton
+                        :link="'https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing'"
+                        :img-src="require('../../Assets/img/site/open/mappool/sheets-ico.svg')"
+                    >
+                        {{ $t('open.qualifiers.mappool.sheets') }}
+                    </OpenTitleButton>
                 </template>
             </OpenTitle>
             <div class="schedule_main_content_matches">
@@ -33,13 +40,15 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import ScheduleMatchBox from "../../Assets/components/open/ScheduleMatchBox.vue";
+import OpenTitleButton from "../../Assets/components/open/OpenTitleButton.vue";
+
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage, StageType } from "../../Interfaces/stage";
-
-import { namespace } from "vuex-class";
 import { MatchupList } from "../../Interfaces/matchup";
 
 const openModule = namespace("open");
@@ -49,6 +58,7 @@ const openModule = namespace("open");
         StageSelector,
         OpenTitle,
         ScheduleMatchBox,
+        OpenTitleButton,
     },
     head () {
         return {

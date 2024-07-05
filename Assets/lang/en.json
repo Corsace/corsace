@@ -612,7 +612,8 @@
             }
         },
         "teams": {
-            "teamsList": "TEAMS LIST",
+            "teamList": "TEAM LIST",
+            "teamManagement": "TEAM MANAGEMENT",
             "error": "COULD NOT GET TEAM LIST",
             "searchPlaceholder": "search for user/team",
             "editTeamInfo": "edit team info",

@@ -7,7 +7,7 @@
             <div class="qualifier__main_content">
                 <OpenTitle>
                     QUALIFIERS
-                    <template #buttons>
+                    <template #right>
                         <ContentButton
                             v-if="qualifierData.mp"
                             class="content_button--red content_button--red_sm"

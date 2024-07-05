@@ -1,111 +1,89 @@
 <template>
     <div class="mappool">
-        <div class="qualifiers__sub_header">
-            <div
-                class="qualifiers__sub_header_item"
-                :class="{ 'qualifiers__sub_header_item--active': page === 'mappool' }"
-                @click="changePage('mappool')"
-            >
-                {{ $t('open.qualifiers.nav.mappool') }}
-            </div>
-            <div
-                class="qualifiers__sub_header_item"
-                :class="{ 'qualifiers__sub_header_item--active': page === 'scores' }"
-                @click="changePage('scores')"
-            >
-                {{ $t('open.qualifiers.nav.scores') }}
-            </div>
-        </div>
+        <SubHeader
+            :selections="[
+                { text: $t('open.qualifiers.nav.mappool'), value: 'mappool' },
+                { text: $t('open.qualifiers.nav.scores'), value: 'scores' },
+            ]"
+            :current-page="page"
+            @update:page="changePage"
+        />
         <div class="mappool__main_content">
             <OpenTitle>
                 {{ $t('open.mappool.title') }}
-                <template #buttons>
-                    <div
-                        v-if="page === 'mappool'"
-                        class="qualifiers__button_group"
+                <template 
+                    v-if="page === 'mappool'"
+                    #right
+                >
+                    <StageSelector
+                        :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
+                        :not-end="selectedStage?.ID !== stageList[stageList.length - 1]?.ID"
+                        @prev="index--"
+                        @next="index++"
                     >
-                        <StageSelector
-                            :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
-                            :not-end="selectedStage?.ID !== stageList[stageList.length - 1]?.ID"
-                            @prev="index--"
-                            @next="index++"
-                        >
-                            <template #text>
-                                {{ $t("open.components.stageSelector") }}
-                            </template>
-
-                            <template #stage>
-                                {{ selectedStage?.abbreviation.toUpperCase() || '' }}
-                            </template>
-                        </StageSelector>
-                        <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
-                        <a 
-                            href="https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing"
-                            class="qualifiers__button"
-                        >
-                            <div class="qualifiers__button_text">
-                                {{ $t('open.qualifiers.mappool.sheets') }}
-                            </div>
-                            <img 
-                                class="qualifiers__button_ico" 
-                                src="../../Assets/img/site/open/mappool/sheets-ico.svg"
-                            >
-                        </a>
-                        <a
-                            v-for="mappool in mappools"
-                            :key="mappool.ID"
-                            :href="mappool.mappackLink || ''"
-                            class="qualifiers__button"
-                        >
-                            <div class="qualifiers__button_text">
-                                {{ $t('open.qualifiers.mappool.mappool') }} - {{ mappool.abbreviation.toUpperCase() }}
-                            </div>
-                            <img 
-                                class="qualifiers__button_ico"
-                                src="../../Assets/img/site/open/mappool/dl-ico.svg"
-                            >
-                        </a>
-                    </div>
-                    <div
-                        v-if="page === 'scores'"
-                        class="qualifiers__button_group"
-                    >
-                        <StageSelector
-                            :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
-                            :not-end="selectedStage?.ID !== stageList[stageList.length - 1]?.ID"
-                            @prev="index--"
-                            @next="index++"
-                        >
+                        <template #text>
                             {{ $t("open.components.stageSelector") }}
+                        </template>
 
-                            <template #stage>
-                                {{ selectedStage?.abbreviation.toUpperCase() || '' }}
-                            </template>
-                        </StageSelector>
-                        <div class="qualifiers__header_subtext">
-                            {{ $t('open.qualifiers.scores.categorySelect') }}
-                        </div>
-                        <ContentButton 
-                            class="content_button--header_button"
-                            :class="{
-                                'content_button--red': scoreView === 'players',
-                                'content_button--red_outline': scoreView !== 'players',
-                            }"
-                            @click.native="scoreView = 'players'"
-                        >
-                            {{ $t('open.qualifiers.scores.players') }}
-                        </ContentButton>
-                        <ContentButton 
-                            class="content_button--header_button"
-                            :class="{
-                                'content_button--red': scoreView === 'teams',
-                                'content_button--red_outline': scoreView !== 'teams',
-                            }"
-                            @click.native="scoreView = 'teams'"
-                        >
-                            {{ $t('open.qualifiers.scores.teams') }}
-                        </ContentButton>
+                        <template #stage>
+                            {{ selectedStage?.abbreviation.toUpperCase() || '' }}
+                        </template>
+                    </StageSelector>
+                    <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
+                    <OpenTitleButton
+                        :link="'https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing'"
+                        :img-src="require('../../Assets/img/site/open/mappool/sheets-ico.svg')"
+                    >
+                        {{ $t('open.qualifiers.mappool.sheets') }}
+                    </OpenTitleButton>
+                    <OpenTitleButton
+                        v-for="mappool in mappools"
+                        :key="mappool.ID"
+                        :link="mappool.mappackLink || ''"
+                        :img-src="require('../../Assets/img/site/open/mappool/dl-ico.svg')"
+                    >
+                        {{ $t('open.qualifiers.mappool.mappool') }} - {{ mappool.abbreviation.toUpperCase() }}
+                    </OpenTitleButton>
+                </template>
+                <template
+                    v-else-if="page === 'scores'"
+                    #right
+                >
+                    <StageSelector
+                        :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
+                        :not-end="selectedStage?.ID !== stageList[stageList.length - 1]?.ID"
+                        @prev="index--"
+                        @next="index++"
+                    >
+                        {{ $t("open.components.stageSelector") }}
+
+                        <template #stage>
+                            {{ selectedStage?.abbreviation.toUpperCase() || '' }}
+                        </template>
+                    </StageSelector>
+                    <div class="qualifiers__header_subtext">
+                        {{ $t('open.qualifiers.scores.categorySelect') }}
                     </div>
+                    <ContentButton 
+                        class="content_button--header_button"
+                        :class="{
+                            'content_button--red': scoreView === 'players',
+                            'content_button--red_outline': scoreView !== 'players',
+                        }"
+                        @click.native="scoreView = 'players'"
+                    >
+                        {{ $t('open.qualifiers.scores.players') }}
+                    </ContentButton>
+                    <ContentButton 
+                        class="content_button--header_button"
+                        :class="{
+                            'content_button--red': scoreView === 'teams',
+                            'content_button--red_outline': scoreView !== 'teams',
+                        }"
+                        @click.native="scoreView = 'teams'"
+                    >
+                        {{ $t('open.qualifiers.scores.teams') }}
+                    </ContentButton>
                 </template>
             </OpenTitle>
             <div v-if="page === 'mappool' && mappools?.length !== 0">
@@ -115,10 +93,7 @@
                     :pool="mappool"
                 />
             </div>
-            <div
-                v-else-if="page === 'mappool'"
-                class="qualifiers__button_group"
-            >
+            <div v-else-if="page === 'mappool'">
                 {{ $t("open.qualifiers.mappool.notAvailable") }}
             </div>
             <div v-if="page === 'scores'">
@@ -145,11 +120,11 @@ import { MatchupScore } from "../../Interfaces/matchup";
 
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
+import OpenTitleButton from "../../Assets/components/open/OpenTitleButton.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
-
-import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
+import SubHeader from "../../Assets/components/open/SubHeader.vue";
 
 const openModule = namespace("open");
 
@@ -158,9 +133,10 @@ const openModule = namespace("open");
         StageSelector,
         MappoolView,
         OpenTitle,
-        OpenButton,
+        OpenTitleButton,
         ContentButton,
         ScoresView,
+        SubHeader,
     },
     head () {
         return {

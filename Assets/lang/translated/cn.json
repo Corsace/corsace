@@ -609,7 +609,7 @@
             }
         },
         "teams": {
-            "teamsList": "队伍列表",
+            "teamList": "队伍列表",
             "error": "无法获得队伍名单",
             "searchPlaceholder": "搜索用户/队伍",
             "editTeamInfo": "编辑队伍信息",

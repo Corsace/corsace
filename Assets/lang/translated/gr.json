@@ -609,7 +609,7 @@
             }
         },
         "teams": {
-            "teamsList": "TEAMS LIST",
+            "teamList": "TEAMS LIST",
             "error": "COULD NOT GET TEAM LIST",
             "searchPlaceholder": "search for user/team",
             "editTeamInfo": "edit team info",

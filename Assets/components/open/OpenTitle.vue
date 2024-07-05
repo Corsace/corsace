@@ -5,12 +5,9 @@
                 <slot />
             </div>
             
-            <div class="open_title_group__button_group">
+            <div class="open_title_group__right">
                 <slot 
-                    name="selector" 
-                />
-                <slot 
-                    name="buttons"
+                    name="right" 
                 />
             </div>
         </div>
@@ -31,6 +28,7 @@ export default class OpenTitle extends Vue {
 <style lang="scss">
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
+
 .open_title {
     &_group {
         display: flex;
@@ -42,30 +40,11 @@ export default class OpenTitle extends Vue {
             font-family: $font-zurich;
             font-size: $font-title;
         }
-        &__button {
-            cursor: pointer;
+
+        &__right {
             display: flex;
-            justify-content: space-between;
-            flex-direction: row-reverse;
-            background-color: $open-red;
-            margin: 15px 0px 15px 20px;
-            min-width: 150px;
-            height: 30px;
-            padding: 5px;
-            &:hover {
-                text-decoration: none;
-            }
-            &_group {
-                display: flex;
-                flex-direction: row;
-            }
-            &_text {
-                color: $open-dark;
-                font-weight: 600;
-            }
-            &_ico {
-                vertical-align: -10%;
-            }
+            flex-direction: row;
+            align-items: center;
         }
     }
 }

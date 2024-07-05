@@ -609,7 +609,7 @@
             }
         },
         "teams": {
-            "teamsList": "팀 목록",
+            "teamList": "팀 목록",
             "error": "팀 목록을 가져올 수 없습니다",
             "searchPlaceholder": "팀/유저 검색",
             "editTeamInfo": "팀 정보 수정",

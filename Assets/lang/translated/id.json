@@ -609,7 +609,7 @@
             }
         },
         "teams": {
-            "teamsList": "DAFTAR TIM",
+            "teamList": "DAFTAR TIM",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
             "searchPlaceholder": "cari pengguna/tim",
             "editTeamInfo": "sunting info tim",

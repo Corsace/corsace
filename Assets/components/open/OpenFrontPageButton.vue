@@ -1,22 +1,22 @@
 <template>
     <div
-        class="open_button"
-        :class="{'open_button--disabled': disabledSync}"
+        class="open_front_page_button"
+        :class="{'open_front_page_button--disabled': disabledSync}"
     >
         <div 
             v-if="disabledSync"
-            class="open_button__child open_button__content open_button__child--disabled"
+            class="open_front_page_button__child open_front_page_button__content open_front_page_button__child--disabled"
         >
             CURRENTLY UNAVAILABLE
         </div>
         <NuxtLink
             v-else-if="!externalSync"
             :to="linkSync"
-            class="open_button__child"
+            class="open_front_page_button__child"
         >
-            <div class="open_button__content">
+            <div class="open_front_page_button__content">
                 <div 
-                    class="open_button__content--xl"
+                    class="open_front_page_button__content--xl"
                     :style="['kr', 'jp'].some(l => l === $i18n.locale) ? {
                         'font-size': '57.56px',
                         'line-height': '51.3px',
@@ -24,7 +24,7 @@
                 >
                     <slot name="title" />
                 </div>
-                <div class="open_button__content--text">
+                <div class="open_front_page_button__content--text">
                     <slot />
                 </div>
             </div>
@@ -32,14 +32,14 @@
         <a
             v-else
             :href="linkSync" 
-            class="open_button__child"
+            class="open_front_page_button__child"
         >
             <div 
                 v-if="linkSync !== '#'"
-                class="open_button__content"
+                class="open_front_page_button__content"
             >
                 <div 
-                    class="open_button__content--xl"
+                    class="open_front_page_button__content--xl"
                     :style="['kr', 'jp'].some(l => l === $i18n.locale) ? {
                         'font-size': '57.56px',
                         'line-height': '51.3px',
@@ -47,7 +47,7 @@
                 >
                     <slot name="title" />
                 </div>
-                <div class="open_button__content--text">
+                <div class="open_front_page_button__content--text">
                     <slot />
                 </div>
             </div>
@@ -59,7 +59,7 @@
 import { Vue, Component, PropSync } from "vue-property-decorator";
 
 @Component
-export default class OpenButton extends Vue {
+export default class OpenFrontPageButton extends Vue {
     @PropSync("link", { type: String, default : "#" }) linkSync!: string;
     @PropSync("disabled", { type: Boolean, default : false }) disabledSync!: boolean;
     @PropSync("external", { type: Boolean, default : false }) externalSync!: boolean;
@@ -70,7 +70,7 @@ export default class OpenButton extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
-.open_button {
+.open_front_page_button {
     margin: 50px 0px;
     height: 112px;
     color: $white;

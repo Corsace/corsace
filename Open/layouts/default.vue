@@ -174,10 +174,27 @@
                     </template>
                     {{ $t("open.footer.youtube") }}
                 </Tooltip>
+                <Tooltip>
+                    <template #icon>
+                        <a
+                            class="socials__link"
+                            href="https://github.com/corsace/corsace"
+                            target="_blank"
+                        >
+                            <img
+                                class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
+                                src="../../Assets/img/social/github.png"
+                                alt=""
+                            >
+                        </a>
+                    </template>
+                    {{ $t("open.footer.github") }}
+                </Tooltip>
             </div>
             <div 
                 name="temp"
-                style="width: 84%;"
+                style="width: 81%;"
             />
         </the-footer>
     </div>
@@ -340,6 +357,7 @@ export default class Default extends Vue {
     &__icon {
         margin-right: 3px;
         height: 20px;
+        filter: brightness(100);
         @include breakpoint(tablet) {
             margin-right: 5px;
             height: 25px;   
