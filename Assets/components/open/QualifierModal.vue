@@ -6,7 +6,7 @@
             <div class="qualifier_modal__label qualifier_modal__label--no_shadow">
                 QUALIFIER DATE/TIME
             </div>
-            <div class="team_fields_block">
+            <div>
                 <div 
                     class="qualifier_modal__label--no_shadow"
                     style="text-align: left;"
@@ -15,7 +15,7 @@
                 </div>
                 <div 
                     class="qualifier_modal__label--no_shadow"
-                    style="text-align: right;"
+                    style="text-align: right; margin: 25px 0;"
                 >
                     Please note that the lobby will start when the captain joins.<br>If the captain is not a member, they cannot play qualifiers.<br>The captain can leave immediately after the bot selects the first map.
                 </div>
@@ -167,12 +167,14 @@ export default class QualifierModal extends Vue {
 
 <style lang="scss">
 .qualifier_modal {
+
     &__row {
         display: flex;
         margin-bottom: 2.5rem;
     }
 
     &__label {
+        align-self: center;
         width: 250px;
         padding-right: 60px;
         color: #F24141;

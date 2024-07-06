@@ -425,7 +425,20 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
             return;
         }
 
-        await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
+        try {
+            await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
+        } catch (e) {
+            tournament.teams.push(team);
+            await tournament.save();
+
+            await team.calculateStats();
+            await team.save();
+            ctx.body = {
+                success: false,
+                error: `Successfully registered team, but failed to schedule a timer to run qualifier matchup. Please contact VINXIS or ThePooN\n${e}`,
+            };
+            return;
+        }
     }
 
     tournament.teams.push(team);

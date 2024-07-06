@@ -130,7 +130,6 @@ export default class Invites extends Vue {
     }
 
     async mounted () {
-        console.log(this.myTeams, this.$route.params.id);
         if (!this.myTeams || !this.myTeams.some(team => team.ID === parseInt(this.$route.params.id))) {
             await this.$router.push("/");
             return;
@@ -232,7 +231,7 @@ export default class Invites extends Vue {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        align-items: start;
+        align-items: flex-start;
         gap: 10px;
         padding: 10px;
         background-size: cover;

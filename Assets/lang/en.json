@@ -504,12 +504,20 @@
             "runoff bracket": "RUNOFF BRACKET",
             "knockout 1": "KNOCKOUT 1",
             "knockout 2": "KNOCKOUT 2",
+            "week 1": "WEEK 1",
+            "week 2": "WEEK 2",
+            "week 3": "WEEK 3",
+            "week 4": "WEEK 4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
                 "ro": "(RO)",
                 "ko1": "(KO1)",
-                "ko2": "(KO2)"
+                "ko2": "(KO2)",
+                "w1": "(W1)",
+                "w2": "(W2)",
+                "w3": "(W3)",
+                "w4": "(W4)"
             }
         },
         "home": {

@@ -103,52 +103,21 @@
                             <span class="team__info_section--header">{{ $t('open.create.teamTimezone') }}</span>
                             <div>UTC{{ teamData.timezoneOffset >= 0 ? "+" : "" }}{{ teamData.timezoneOffset }}:00</div>
                         </div>
-                        <div
-                            v-if="isCaptain && teamData.qualifier && !teamData.qualifier.mp"
-                            class="team_fields--clickable"
-                            @click="unregister"
-                        >
-                            {{ $t('open.teams.deleteTeam') }}
-                        </div>
                         <div>
                             <span class="team__info_section--header">{{ $t('open.teams.headers.qualifier') }}</span>
-                            <div
-                                v-if="isCaptain && teamData.qualifier && !teamData.qualifier.mp"
-                                class="team_fields--clickable"
-                                @click="unregister"
-                            >
-                                {{ $t('open.teams.deleteTeam') }}
-                            </div>
-                            <div 
-                                v-if="isCaptain && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
-                                @click="editQualifier = !editQualifier"
-                            >
-                                <div
-                                    v-if="teamData.qualifier && !teamData.qualifier.mp" 
-                                    class="team_fields--clickable"
-                                >
-                                    {{ $t('open.teams.editQualifierTime') }}
-                                </div>
-                                <div
-                                    v-else-if="!teamData.qualifier"
-                                    class="team_fields--clickable"
-                                >
-                                    {{ $t('open.teams.createJoinQualifier') }}
-                                </div>
-                            </div>
-                            <div v-else-if="isCaptain && tournament">
-                                <div class="team_fields--clickable">
-                                    {{ tournament.minTeamSize === tournament.maxTeamSize ? $t('open.teams.headers.requiredMessageExact', {minTeamSize: tournament.minTeamSize}) : $t('open.teams.headers.requiredMessageRange', {minTeamSize: tournament.minTeamSize, maxTeamSize: tournament.maxTeamSize}), }}
-                                </div>
-                            </div>
                             <NuxtLink 
-                                v-else-if="teamData?.qualifier"
+                                v-if="teamData?.qualifier"
                                 style="text-decoration: none;"
                                 :to="'/qualifier/' + teamData.qualifier.ID"
                             >
                                 <div>{{ $t("open.teams.qualifierId") }} #{{ teamData.qualifier.ID }}</div>
                                 <div>{{ teamData.qualifier.date.toLocaleString('en-US', optionsUTC) }} ({{ teamData.qualifier.date.toLocaleString('en-US', options) }})</div>
                             </NuxtLink>
+                            <div v-else-if="isCaptain && tournament">
+                                <div class="team_fields--clickable">
+                                    {{ tournament.minTeamSize === tournament.maxTeamSize ? $t('open.teams.headers.requiredMessageExact', {minTeamSize: tournament.minTeamSize}) : $t('open.teams.headers.requiredMessageRange', {minTeamSize: tournament.minTeamSize, maxTeamSize: tournament.maxTeamSize}), }}
+                                </div>
+                            </div>
                             <div 
                                 v-else
                             >
@@ -161,9 +130,22 @@
                     <div class="team__players_header">
                         <span class="team__players_header--title">PLAYERS</span>
                         <ContentButton
-                            v-if="isCaptain && tournament" 
+                            v-if="isCaptain && teamData.qualifier && !teamData.qualifier.mp"
                             class="content_button--red content_button--noflex"
-                            :class="{ 'content_button--disabled': teamData.members.length < tournament.minTeamSize || teamData.members.length > tournament.maxTeamSize }"
+                            @click.native="unregister"
+                        >
+                            {{ $t('open.teams.deleteTeam') }}
+                        </ContentButton>
+                        <ContentButton
+                            v-else-if="isCaptain && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
+                            class="content_button--red content_button--noflex"
+                            @click.native="editQualifier = !editQualifier" 
+                        >
+                            {{ teamData.qualifier && !teamData.qualifier.mp ? $t('open.teams.editQualifierTime') : !teamData.qualifier ? $t('open.teams.createJoinQualifier') : '' }}
+                        </ContentButton>
+                        <ContentButton
+                            v-else-if="isCaptain && tournament && !teamData.qualifier?.mp"
+                            class="content_button--red content_button--noflex content_button--disabled"
                         >
                             JOIN QUALIFIERS {{ teamData.members.length < tournament.minTeamSize ? "(You need at least " + (tournament.minTeamSize - teamData.members.length) + " more players)" : teamData.members.length > tournament.maxTeamSize ? "(You need at least " + (teamData.members.length - tournament.maxTeamSize) + " less players)" : "" }}
                         </ContentButton>

@@ -85,7 +85,7 @@
                     </ContentButton>
                 </div>
                 <ScoresView
-                    v-if="mappools?.[0].isPublic"
+                    v-if="mappools?.[0]?.isPublic"
                     :view="scoreView"
                     :pool="mappools[0]"
                 />
