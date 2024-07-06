@@ -202,7 +202,6 @@ export default class Scores extends Vue {
         for (let i = 0; i < this.binNumber; i++) {
             const binMin = this.minZScore + i * binSize;
             const binMax = this.minZScore + (i + 1) * binSize;
-            console.log(binMin, binMax);
             bins.push(scores.filter(score => score >= binMin && score < binMax).length);
         }
 
@@ -215,7 +214,6 @@ export default class Scores extends Vue {
         if (typeof mapName === "string")
             this.mapName = mapName;
 
-        console.log(this.filteredScores);
         this.finalScores = computeScoreViews(
             score => ({ id: score.teamID, name: score.teamName, avatar: score.teamAvatar }),
             this.filteredScores,

@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "세계 최고의 Osu! 플레이어들이 배틀하는 코사스 오픈 2023에 빠져보세요!",
+            "description": "세계 최고의 Osu! 플레이어들이 배틀하는 코사스 오픈 2024에 빠져보세요!",
             "timeline": "타임라인",
-            "presentedBy": "코사스 2023은 다음과 같은 곳에서 제공합니다",
+            "presentedBy": "코사스 2024은 다음과 같은 곳에서 제공합니다",
             "registrations": "등록 기간",
             "button": {
                 "qualifiersMappool": "퀄리파이어 맵풀",
                 "mappoolDownload": "맵풀 다운로드와 통계 보기",
-                "register": "당신의 팀을 만들고 등록하세요",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "등록이 마감됩니다"
             }
         },
@@ -609,13 +609,13 @@
             }
         },
         "teams": {
-            "teamsList": "팀 목록",
+            "teamList": "팀 목록",
             "error": "팀 목록을 가져올 수 없습니다",
             "searchPlaceholder": "팀/유저 검색",
             "editTeamInfo": "팀 정보 수정",
             "qualifierId": "퀄리파이어 ID",
             "placeholders": {
-                "searchUser": "Osu! 닉네임 (코사스 계정이 있어야 합니다)",
+                "searchUser": "Osu! 닉네임",
                 "name": "팀 이름",
                 "abbreviation": "약어"
             },
@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "토너먼트에 등록되지 않았습니다",
-                "toPlay": "코사스 오픈에서 플레이하기 위해, 6명의 팀원을 확보하고 아래에서 퀄리파이어 날짜와 시간을 선택해 주세요."
+                "toPlay": "코사스 오픈에서 플레이하기 위해, 6-8명의 팀원을 확보하고 아래에서 퀄리파이어 날짜와 시간을 선택해 주세요."
             },
             "teamID": "팀 ID",
             "member": "멤버",

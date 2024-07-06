@@ -131,8 +131,6 @@ tournamentRouter.$get<{ tournamentID?: number }>("/validateKey", async (ctx) => 
 });
 
 tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID, async (ctx) => {
-    // TODO: Use tournament ID and only bring registered teams
-    // TODO: Effectively, we also removed isRegistered from the response
     const ID = ctx.state.ID;
 
     const tournament = await Tournament
@@ -156,6 +154,8 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "mode")
+        .leftJoin("team.tournaments", "tournament")
+        .where("tournament.ID = :ID", { ID })
         .getMany();
 
     ctx.body = {
@@ -171,15 +171,14 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
                 pp: t.pp,
                 BWS: t.BWS,
                 rank: t.rank,
-                members: members
-                    .map<TeamMember>(m => ({
-                        ID: m.ID,
-                        username: m.osu.username,
-                        osuID: m.osu.userID,
-                        BWS: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.BWS ?? 0,
-                        isCaptain: m.ID === t.captain.ID,
-                    })),
-                isRegistered: tournament.teams.some(team => team.ID === t.ID),
+                members: members.map<TeamMember>(m => ({
+                    ID: m.ID,
+                    username: m.osu.username,
+                    osuID: m.osu.userID,
+                    country: m.country,
+                    rank: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.rank ?? 0,
+                    isCaptain: m.ID === t.captain.ID,
+                })),
             };
         }),
     };

@@ -279,7 +279,6 @@ export default class Pickban extends Vue {
             return;
 
         this.matchup = data.matchup;
-        console.log(this.matchup);
 
         this.loading = false;
     }

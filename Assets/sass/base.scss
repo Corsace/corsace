@@ -177,6 +177,13 @@
     font-stretch: condensed;
 }
 
+@font-face {
+    font-family: Zurich;
+    src: url("../fonts/Zurich Black Italic.otf");
+    font-style: italic;
+    font-weight: bold;
+}
+
 :root {
     --standard: #fb2475;
     --taiko: #ff890a;
@@ -209,7 +216,7 @@ body {
         font-family: 'Futura PT', 'sans-serif';
     }
     &--open {
-        background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
+        background: #131313;
         font-family: 'Univers', 'sans-serif';
     }
     height: 100%;

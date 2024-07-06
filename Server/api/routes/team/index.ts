@@ -107,11 +107,25 @@ teamRouter.$post<{
     team: TeamInterface;
     error?: string;
 }>("/create", isLoggedInDiscord, async (ctx) => {
+    const teamCount2Days = await Team
+        .createQueryBuilder("team")
+        .where("team.createdAt > :date", { date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) })
+        .andWhere("team.captainID = :captainID", { captainID: ctx.state.user!.ID })
+        .getCount();
+
+    if (teamCount2Days > 5) {
+        ctx.body = {
+            success: false,
+            error: "You have created too many teams (5) in the last 2 days",
+        };
+        return;
+    }
+
     let { name, abbreviation, timezoneOffset } = ctx.request.body;
     const isPlaying = ctx.request.body?.isPlaying;
 
     if (!name || !abbreviation || !timezoneOffset) {
-        ctx.body = { 
+        ctx.body = {
             success: false,
             error: "Missing parameters",
         };
@@ -411,7 +425,20 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
             return;
         }
 
-        await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
+        try {
+            await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
+        } catch (e) {
+            tournament.teams.push(team);
+            await tournament.save();
+
+            await team.calculateStats();
+            await team.save();
+            ctx.body = {
+                success: false,
+                error: `Successfully registered team, but failed to schedule a timer to run qualifier matchup. Please contact VINXIS or ThePooN\n${e}`,
+            };
+            return;
+        }
     }
 
     tournament.teams.push(team);
@@ -698,6 +725,59 @@ teamRouter.$post("/:teamID/captain", isLoggedInDiscord, validateTeam(true), asyn
     }
 });
 
+teamRouter.$post("/:teamID/leave", isLoggedInDiscord, validateTeam(false), async (ctx) => {
+    const user = ctx.state.user!;
+    const team = ctx.state.team!;
+
+    const tournaments = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoin("tournament.teams", "team")
+        .where("team.ID = :ID", { ID: team.ID })
+        .getMany();
+
+    if (tournaments.some(t => t.status === TournamentStatus.Registrations)) {
+        const qualifierMatches = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoin("matchup.stage", "stage")
+            .innerJoin("stage.tournament", "tournament")
+            .innerJoin("matchup.teams", "team")
+            .where("tournament.ID IN (:...IDs)", { IDs: tournaments.filter(t => t.status === TournamentStatus.Registrations).map(t => t.ID) })
+            .andWhere("stage.stageType = '0'")
+            .andWhere("team.ID = :teamID", { teamID: team.ID })
+            .getMany();
+
+        if (qualifierMatches.length > 0) {
+            ctx.body = {
+                success: false,
+                error: "Team is currently registered in a tournament where they have already played a qualifier match",
+            };
+            return;
+        }
+    }
+
+    if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
+        ctx.body = {
+            success: false,
+            error: "Team cannot change lineup",
+        };
+        return;
+    }
+
+    if (team.members.every(m => m.ID !== user.ID)) {
+        ctx.body = {
+            success: false,
+            error: "User is not in the team",
+        };
+        return;
+    }
+
+    team.members = team.members.filter(m => m.ID !== user.ID);
+    await team.calculateStats();
+    await team.save();
+
+    ctx.body = { success: true };
+});
+
 teamRouter.$post("/:teamID/captain/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team = ctx.state.team!;
 
@@ -850,7 +930,7 @@ teamRouter.$patch<{
         team.timezoneOffset = body.timezoneOffset;
     }
     if (
-        (body?.name && body.name !== team.name) ?? 
+        (body?.name && body.name !== team.name) ||
         (body?.abbreviation && body.abbreviation !== team.abbreviation)
     ) {
         const tournaments = await Tournament

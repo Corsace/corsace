@@ -34,7 +34,9 @@ module.exports = {
         "@typescript-eslint/no-unsafe-call": "off",
         "@typescript-eslint/no-unsafe-argument": "off",
         // 
-        "@typescript-eslint/prefer-nullish-coalescing": "warn",
+        "@typescript-eslint/prefer-nullish-coalescing": ["warn", {
+            "ignoreConditionalTests": true,
+        }],
         "@typescript-eslint/restrict-template-expressions": "off",
         "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/no-explicit-any": "off",

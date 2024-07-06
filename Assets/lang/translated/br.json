@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "Entre de cara na Corsace Open 2023 - onde os melhores jogadores de osu! do mundo se enfrentam.",
+            "description": "Entre de cara na Corsace Open 2024 - onde os melhores jogadores de osu! do mundo se enfrentam.",
             "timeline": "LINHA DO TEMPO",
-            "presentedBy": "CORSACE OPEN 23 É APRESENTADA POR",
+            "presentedBy": "CORSACE OPEN 2024 É APRESENTADA POR",
             "registrations": "INSCRIÇÕES",
             "button": {
-                "qualifiersMappool": "MAPPOOLS DAS QUALIFICATÓRIAS",
+                "qualifiersMappool": "MAPPOOL DAS QUALIFICATÓRIAS",
                 "mappoolDownload": "Baixar mappool e estatísticas",
-                "register": "CRIAR E INSCREVER SEU TIME",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "Fim das inscrições em"
             }
         },
@@ -609,13 +609,13 @@
             }
         },
         "teams": {
-            "teamsList": "LISTA DE TIMES",
+            "teamList": "LISTA DE TIMES",
             "error": "NÃO FOI POSSÍVEL PEGAR A LISTA DE TIMES",
             "searchPlaceholder": "procurar por usuário/time",
             "editTeamInfo": "editar informações do time",
             "qualifierId": "ID da Qualificatória",
             "placeholders": {
-                "searchUser": "nome de usuário no osu! (necessário ter conta na corsace)",
+                "searchUser": "nome de usuário no osu!",
                 "name": "nome",
                 "abbreviation": "abreviação"
             },
@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "Inscrito em nenhum torneio",
-                "toPlay": "Para jogar na Corsace Open, consiga 6 membros e escolha uma data e hora de qualificatória abaixo"
+                "toPlay": "Para jogar na Corsace Open, consiga 6-8 membros e escolha uma data e hora de qualificatória abaixo"
             },
             "teamID": "ID DO TIME",
             "member": "membro",

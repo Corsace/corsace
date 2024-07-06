@@ -1,6 +1,6 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { Tournament } from "../../Interfaces/tournament";
-import { BaseTeam, Team, TeamList, TeamUser } from "../../Interfaces/team";
+import { BaseTeam, TeamList, Team, TeamInvites } from "../../Interfaces/team";
 import { BaseQualifier } from "../../Interfaces/qualifier";
 import { StaffList } from "../../Interfaces/staff";
 import { MatchupList, MatchupScore } from "../../Interfaces/matchup";
@@ -10,7 +10,8 @@ export interface OpenState {
     title: string;
     tournament: Tournament | null;
     teamList: TeamList[] | null;
-    team: Team | null;
+    myTeams: Team[] | null;
+    inviteList: TeamInvites[] | null;
     teamInvites: BaseTeam[] | null;
     qualifierList: BaseQualifier[] | null;
     matchupList: MatchupList[] | null;
@@ -23,7 +24,8 @@ export const state = (): OpenState => ({
     title: "",
     tournament: null,
     teamList: null,
-    team: null,
+    myTeams: null,
+    inviteList: null,
     teamInvites: null,
     qualifierList: null,
     matchupList: null,
@@ -86,32 +88,17 @@ export const mutations: MutationTree<OpenState> = {
     },
     setTeamList (state, teams: TeamList[] | undefined) {
         state.teamList = teams ?? null;
-        if (state.teamList) {
-            const unregisteredTeams = state.teamList.filter(team => !team.isRegistered);
-            unregisteredTeams
-                .sort((a, b) => a.BWS - b.BWS)
-                .sort((a, b) => (a.BWS === 0 ? 1 : 0) - (b.BWS === 0 ? 1 : 0))
-                .sort((a, b) => b.members.length - a.members.length);
-            const registeredTeams = state.teamList.filter(team => team.isRegistered);
-            registeredTeams
-                .sort((a, b) => a.BWS - b.BWS)
-                .sort((a, b) => (a.BWS === 0 ? 1 : 0) - (b.BWS === 0 ? 1 : 0));
-            state.teamList = [...registeredTeams, ...unregisteredTeams];
-        }
+        if (!state.teamList)
+            return;
+        state.teamList
+            .sort((a, b) => a.BWS - b.BWS)
+            .sort((a, b) => (a.BWS === 0 ? 1 : 0) - (b.BWS === 0 ? 1 : 0));
     },
-    setTeam (state, teams: Team[] | undefined) {
-        teams = teams?.filter(team => !team.tournaments || !team.tournaments.some(tournament => tournament.ID !== state.tournament?.ID)); // TODO: Remove this when the website supports multiple teams for a user
-
-        state.team = teams?.[0] ?? null;
-        if (state.team?.qualifier)
-            state.team.qualifier = {
-                ...state.team.qualifier,
-                date: new Date(state.team.qualifier.date),
-            };
+    setMyTeams (state, teams: Team[] | undefined) {
+        state.myTeams = teams ?? null;
     },
-    setTeamInvites (state, invites: TeamUser[] | undefined) {
-        if (state.team)
-            state.team.invites = invites;
+    setTeamInvites (state, invites: TeamInvites[] | undefined) {
+        state.inviteList = invites ?? null;
     },
     setInvites (state, invites: BaseTeam[] | undefined) {
         state.teamInvites = invites ?? null;
@@ -155,29 +142,27 @@ export const actions: ActionTree<OpenState, OpenState> = {
     async setTournament ({ commit }, year) {
         const { data } = await this.$axios.get<{ tournament: Tournament }>(`/api/tournament/open/${year}`);
 
-        if (data.success)
+        if (data.success) {
             commit("setTournament", data.tournament);
+            commit("setTitle", data.tournament.year);
+        }
     },
     async setTeamList ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get<{ teams: Team[] }>(`/api/tournament/${tournamentID}/teams`);
+        const { data } = await this.$axios.get<{ teams: TeamList[] }>(`/api/tournament/${tournamentID}/teams`);
 
         if (data.success)
             commit("setTeamList", data.teams);
     },
-    async setTeam ({ commit, dispatch }) {
+    async setMyTeams ({ commit, dispatch }) {
         const { data } = await this.$axios.get<{ teams: Team[] }>(`/api/team`);
 
         if (data.success)
-            commit("setTeam", data.teams);
+            commit("setMyTeams", data.teams);
         
         await dispatch("setTeamInvites");
     },
     async setTeamInvites ({ commit }) {
-        const team = (this.state as any).open.team;
-        if (!team)
-            return;
-
-        const { data } = await this.$axios.get<{ invites: TeamUser[] }>(`/api/team/invite/${team.ID}`);
+        const { data } = await this.$axios.get<{ invites: TeamInvites[] }>(`/api/team/invite/teams`);
 
         if (data.success)
             commit("setTeamInvites", data.invites);
@@ -227,11 +212,10 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (data.success)
             commit("setStaffList", data.staff);
     },
-    async setInitialData ({ commit, dispatch }, year) {
+    async setInitialData ({ dispatch }, year) {
         await Promise.all([
             dispatch("setTournament", year),
-            commit("setTitle", year),
-            dispatch("setTeam"),
+            dispatch("setMyTeams"),
             dispatch("setInvites"),
         ]);
     },

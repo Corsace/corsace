@@ -1,12 +1,20 @@
 <template>
     <div class="teams_list">
+        <SubHeader
+            :selections="[
+                { text: $t('open.teams.teamList'), value: 'list' },
+                { text: $t('open.teams.teamManagement'), value: 'management' },
+            ]"
+            :current-page="page"
+            @update:page="page = $event"
+        />
         <div 
-            v-if="filteredTeams"
+            v-if="filteredTeams && page === 'list'"
             class="teams_list__main_content"
         >
             <OpenTitle>
-                {{ $t('open.teams.teamsList') }}
-                <template #buttons>
+                {{ $t('open.teams.teamList') }}
+                <template #right>
                     <SearchBar
                         :placeholder="`${$t('open.teams.searchPlaceholder')}`"
                         style="margin-bottom: 10px;"
@@ -21,6 +29,35 @@
                     :team="team"
                 />
             </div>
+        </div>
+        <div 
+            v-else-if="page === 'management' && loggedInUser?.discord.userID"
+            class="teams_list__main_content"
+        >
+            <OpenTitle>
+                {{ $t('open.teams.teamManagement') }}
+                <template #right>
+                    <ContentButton
+                        class="content_button--red"
+                        :link="'team/create'"
+                    >
+                        {{ $t('open.create.title') }}
+                    </ContentButton>
+                </template>
+            </OpenTitle>
+            <div class="teams_list__main_content_list">
+                <OpenCardTeam
+                    v-for="team in filteredTeams"
+                    :key="team.ID"
+                    :team="team"
+                />
+            </div>
+        </div>
+        <div
+            v-else-if="page === 'management'"
+            class="teams_list__main_content"
+        >
+            {{ $t('open.teams.loginManagement') }}
         </div>
         <div
             v-else-if="loading"
@@ -43,22 +80,27 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
 import { Tournament } from "../../Interfaces/tournament";
-import { TeamList } from "../../Interfaces/team";
+import { Team, TeamList } from "../../Interfaces/team";
+import { UserInfo } from "../../Interfaces/user";
 
-import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
-import OpenCardTeam from "../../Assets/components/open/OpenCardTeam.vue";
 import SearchBar from "../../Assets/components/SearchBar.vue";
+import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
+import ContentButton from "../../Assets/components/open/ContentButton.vue";
+import OpenCardTeam from "../../Assets/components/open/OpenCardTeam.vue";
+import SubHeader from "../../Assets/components/open/SubHeader.vue";
 
 const openModule = namespace("open");
 
 @Component({
     components: {
-        OpenTitle,
-        OpenCardTeam,
         SearchBar,
+        OpenTitle,
+        ContentButton,
+        OpenCardTeam,
+        SubHeader,
     },
     head () {
         return {
@@ -82,13 +124,19 @@ const openModule = namespace("open");
     },
 })
 export default class Teams extends Vue {
+
+    @State loggedInUser!: null | UserInfo;
     @openModule.State tournament!: Tournament | null;
+    @openModule.State myTeams!: Team[] | null;
     @openModule.State teamList!: TeamList[] | null;
 
     loading = true;
     searchValue = "";
+    page: "list" | "management" = "list";
 
     get filteredTeams () {
+        if (this.page === "management")
+            return this.myTeams;
         if (!this.searchValue)
             return this.teamList;
         return this.teamList?.filter(team => 
@@ -101,6 +149,8 @@ export default class Teams extends Vue {
     }
 
     async mounted () {
+        if (this.$route.query.s === "my")
+            this.page = "management";
         this.loading = true;
         if (this.tournament)
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
@@ -113,14 +163,12 @@ export default class Teams extends Vue {
 @import '@s-sass/_variables';
 
 .teams_list {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
 
     &__main_content {
         align-self: center;
         position: relative;
         width: 65vw;
         padding: 35px;
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
 
         &_list {
             display: flex;

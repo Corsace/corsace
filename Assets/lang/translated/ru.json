@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "Погрузись в Corsace Open 2023 - место, где лучшие игроки osu! сходятся лицом к лицу.",
+            "description": "Погрузись в Corsace Open 2024 - место, где лучшие игроки osu! сходятся лицом к лицу.",
             "timeline": "ГРАФИК",
-            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "presentedBy": "CORSACE OPEN 2024 IS PRESENTED BY",
             "registrations": "РЕГИСТРАЦИЯ",
             "button": {
                 "qualifiersMappool": "ОТБОРОЧНЫЙ МАППУЛ",
                 "mappoolDownload": "Скачать маппул и статистика",
-                "register": "СОЗДАТЬ И ЗАРЕГИСТРИРОВАТЬ КОМАНДУ",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "Регистрация заканчивается"
             }
         },
@@ -609,13 +609,13 @@
             }
         },
         "teams": {
-            "teamsList": "СПИСОК КОМАНД",
+            "teamList": "СПИСОК КОМАНД",
             "error": "НЕ УДАЛОСЬ НАЙТИ СПИСОК КОМАНД",
             "searchPlaceholder": "искать пользователя/команду",
             "editTeamInfo": "изменить информацию о команде",
             "qualifierId": "ID Отборочного Матча",
             "placeholders": {
-                "searchUser": "ник в osu! (требуется аккаунт corsace)",
+                "searchUser": "ник в osu!",
                 "name": "название",
                 "abbreviation": "аббревиатура"
             },
@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "Не зарегистрирован ни в одном турнире",
-                "toPlay": "Чтобы играть в Corsace Open, наберите 6 членов и выберите ниже время и дату отборочного матча"
+                "toPlay": "Чтобы играть в Corsace Open, наберите 6-8 членов и выберите ниже время и дату отборочного матча"
             },
             "teamID": "ID КОМАНДЫ",
             "member": "член",

@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "Corsace Open 2023へ飛び込もう - 世界の osu! エリート達が戦いを繰り広げる。",
+            "description": "Corsace Open 2024へ飛び込もう - 世界の osu! エリート達が戦いを繰り広げる。",
             "timeline": "タイムライン",
-            "presentedBy": "CORSACE OPEN 23 は以下によって主催",
+            "presentedBy": "CORSACE OPEN 2024 は以下によって主催",
             "registrations": "登録期間",
             "button": {
                 "qualifiersMappool": "予選マッププール",
                 "mappoolDownload": "マッププールのダウンロードと詳細",
-                "register": "チームを作成して登録する",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "登録期間終了"
             }
         },
@@ -609,13 +609,13 @@
             }
         },
         "teams": {
-            "teamsList": "チームリスト",
+            "teamList": "チームリスト",
             "error": "チームリストを取得できませんでした",
             "searchPlaceholder": "ユーザー/チームを検索",
             "editTeamInfo": "チーム情報を編集",
             "qualifierId": "予選ID",
             "placeholders": {
-                "searchUser": "osu! ユーザー名 (corsaceアカウントが必要です)",
+                "searchUser": "osu! ユーザー名",
                 "name": "名前",
                 "abbreviation": "略称"
             },
@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "トーナメントに登録していません",
-                "toPlay": "Corsace Openに参加するには、6人のメンバーを集めて、予選日時を選択してください"
+                "toPlay": "Corsace Openに参加するには、6-8人のメンバーを集めて、予選日時を選択してください"
             },
             "teamID": "チームID",
             "member": "メンバー",

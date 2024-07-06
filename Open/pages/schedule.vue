@@ -2,8 +2,8 @@
     <div class="schedule">
         <div class="schedule_main_content">
             <OpenTitle>
-                SCHEDULE - {{ selectedStage?.abbreviation.toUpperCase() || '' }}
-                <template #selector>
+                SCHEDULE - <span class="schedule_main_content__abbreviation">{{ selectedStage?.abbreviation.toUpperCase() || '' }}</span>
+                <template #right>
                     <StageSelector
                         :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
                         :not-end="selectedStage?.ID !== stageList[stageList.length - 1]?.ID"
@@ -18,6 +18,15 @@
                             {{ selectedStage?.abbreviation.toUpperCase() || '' }}
                         </template>
                     </StageSelector>
+                    <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
+                    <ContentButton
+                        class="content_button--red"
+                        :link="'https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing'"
+                        :img-src="require('../../Assets/img/site/open/mappool/sheets-ico.svg')"
+                        external
+                    >
+                        {{ $t('open.qualifiers.mappool.sheets') }}
+                    </ContentButton>
                 </template>
             </OpenTitle>
             <div class="schedule_main_content_matches">
@@ -33,13 +42,15 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import ScheduleMatchBox from "../../Assets/components/open/ScheduleMatchBox.vue";
+import ContentButton from "../../Assets/components/open/ContentButton.vue";
+
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage, StageType } from "../../Interfaces/stage";
-
-import { namespace } from "vuex-class";
 import { MatchupList } from "../../Interfaces/matchup";
 
 const openModule = namespace("open");
@@ -49,6 +60,7 @@ const openModule = namespace("open");
         StageSelector,
         OpenTitle,
         ScheduleMatchBox,
+        ContentButton,
     },
     head () {
         return {
@@ -117,10 +129,8 @@ export default class Schedule extends Vue {
 @import '@s-sass/_variables';
 
 .schedule {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
 
     &_main_content {
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
         display: flex;
         align-self: center;
         justify-content: center;
@@ -128,6 +138,10 @@ export default class Schedule extends Vue {
         width: 75vw;
         position: relative;
         padding: 35px;
+
+        &__abbreviation {
+            color: $open-red;
+        }
 
         @media screen and (max-width: $breakpoint-xl) {
             width: 100vw;

@@ -63,7 +63,7 @@ export default class SearchBar extends Vue {
     
     // Vue doesnt allow using debounce inside methods, so no idea how this stuff below works, but works Ok
     mounted () {
-        this.emitUpdate = _.debounce(this.emitUpdate, 500);
+        this.emitUpdate = _.debounce(this.emitUpdate, 250);
         this.$nextTick(() => {
             this.showActions = !!this.$slots.default;
         });
@@ -125,8 +125,6 @@ export default class SearchBar extends Vue {
         justify-content: center;
 
         min-width: 50px;
-
-        margin: 0 15px;
         
         @include breakpoint(mobile) {
             min-width: 25px;
@@ -148,7 +146,7 @@ export default class SearchBar extends Vue {
             }
 
             &--open {
-                color: $open-red;
+                color: #818181;
             }
         }
     }
@@ -191,12 +189,14 @@ export default class SearchBar extends Vue {
 
         &--open {
             color: $white;
-            font-family: $font-ggsans;
-            font-style: italic;
-            font-weight: 500;
+            font-family: $font-univers;
+            font-style: normal;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 
             &::placeholder, &:placeholder-shown {
-                color: $white;
+                color: #818181;
+                font-style: normal;
+                text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
             }
         }
 

@@ -1,21 +1,13 @@
 <template>
     <div class="info">
-        <div class="info__sub_header">
-            <div
-                class="info__sub_header_item"
-                :class="{ 'info__sub_header_item--active': page === 'info' }"
-                @click="page = 'info'"
-            >
-                {{ $t('open.info.title') }}
-            </div>
-            <div
-                class="info__sub_header_item"
-                :class="{ 'info__sub_header_item--active': page === 'condensed' }"
-                @click="page = 'condensed'"
-            >
-                {{ $t('open.info.condensed') }}
-            </div>
-        </div>
+        <SubHeader
+            :selections="[
+                { text: $t('open.info.title'), value: 'info' },
+                { text: $t('open.info.condensed'), value: 'condensed' },
+            ]"
+            :current-page="page"
+            @update:page="page = $event"
+        />
         <div class="info_wrapper">
             <OpenTitle v-if="page === 'condensed'">
                 {{ $t('open.info.title') }}
@@ -29,14 +21,14 @@
                 </div>
                 <div class="info_desc__buttons">
                     <ContentButton 
-                        class="content_button--red info_desc_button"
+                        class="content_button--red info_desc_button content_button--margin"
                         link="https://paypal.me/corsaceofficial"
                         external
                     >
                         {{ $t('open.info.donateToCorsace') }}
                     </ContentButton>
                     <ContentButton 
-                        class="content_button--red info_desc_button"
+                        class="content_button--red info_desc_button content_button--margin"
                         link="http://momokai.com/corsace"
                         external
                     >
@@ -68,7 +60,6 @@
                         <li>
                             <strong>1st Place</strong>:
                             <ul>
-                                <li><a href="https://momokai.com/corsace">Exclusive Corsace edition Momokai Tap Trio keypads</a></li>
                                 <li>50% of prizepool split among players and their captain how they wish</li>
                                 <li>(Pending) Corsace Open 1st place badge</li>
                             </ul>
@@ -96,9 +87,9 @@
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
-                        <li>Teams may consist of <strong>6</strong> and <strong>only 6</strong> players </li>
+                        <li>Teams may consist of <strong>6 - 8</strong> players </li>
                         <li>
-                            Team names may consist of 3 - 20 characters with acronyms of 2 - 4 letters along with a team photo (A 3:1 image is preferred)
+                            Team names may consist of 3 - 20 characters with acronyms of 2 - 4 letters along with a team photo
                             <ul>
                                 <li>Inappropriate pictures, names, and/or acronyms are subject to change at the discretion of administration</li>
                             </ul>
@@ -116,35 +107,6 @@
                             </ul>
                         </li>
                     </ul>
-                    <h2>CAPTAINS</h2>
-                    <ul class="info_desc__list">
-                        <li>
-                            Teams are required to <strong>designate </strong>a captain, which may either be a player <strong>or</strong> an additional seventh member
-                            <ul>
-                                <li>Said additions are subject to screening and are <strong>prohibited</strong> from participating in gameplay</li>
-                            </ul>
-                        </li>
-                        <li>Captains are the <strong>primary form of contact</strong> between teams and tournament administration alike</li>
-                        <li>Captains are allowed to win non-badge prizes (i.e. supporter/money, the split is determined by the team</li>
-                        <li>
-                            <strong>Responsibilities:</strong>
-                            <ul>
-                                <li>
-                                    Registration
-                                    <ul>
-                                        <li>Create and update team information</li>
-                                    </ul>
-                                </li>
-                                <li>Reschedules</li>
-                                <li>
-                                    Match Presence
-                                    <ul>
-                                        <li>Rolls, picks, bans, and protects</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
                 </div>
                 <OpenTitle
                     class="info_section_header"
@@ -154,13 +116,13 @@
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
                         <li>Teams shall have their own lobby run by the Corsace bot</li>
-                        <li>The deadline to play qualifiers to complete registration is <strong>July 30 at 23:59 UTC</strong></li>
+                        <li>The deadline to play qualifiers to complete registration is <strong>July 28 at 23:59 UTC</strong></li>
                         <li>The mappool consists of <strong>10 maps</strong> (<strong>3 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong>) and shall be played <strong>ONCE</strong>, starting from NM1 and ending in DT3</li>
                         <li>90 second timers are used for teams to swap members and ready up</li>
                         <li>
                             Teams<strong> complete registration</strong> by playing qualifiers
                             <ul class="info_desc__list">
-                                <li>Rosters are<strong> locked </strong>after play. Changes are <strong>not</strong> allowed</li>
+                                <li>Rosters are<strong> locked </strong>after play. Changes are <strong>not</strong> allowed under any circumstance</li>
                                 <li>Due to this process, teams with players who are <strong>screened out</strong> will automatically be <strong>disqualified</strong></li>
                             </ul>
                         </li>
@@ -168,18 +130,18 @@
                     </ul>
                     <h2>SEEDING</h2>
                     <ul class="info_desc__list">
-                        <li><strong>24 teams </strong>qualify and are split into <strong>two tiers</strong></li>
+                        <li><strong>16 teams </strong>qualify and are split into <strong>two tiers</strong></li>
                         <li>
-                            <strong>Tier 1 </strong>(Seeds 1 - 8)
+                            <strong>Tier 1 </strong>(Seeds 1 - 4)
                             <ul class="info_desc__list">
-                                <li>Becomes Teams 1 - 8 in KO1</li>
-                                <li>Does not play Round Robin or Runoff</li>
+                                <li>Advances and is placed into the Upper Bracket in Week 2</li>
+                                <li>Does not play in Week 1</li>
                             </ul>
                         </li>
                         <li>
-                            <strong>Tier 2</strong> (Seeds 9 - 24)
+                            <strong>Tier 2</strong> (Seeds 5 - 16)
                             <ul class="info_desc__list">
-                                <li>Moves on to Round Robin placed into 4 groups of 4</li>
+                                <li>Moves on to Week 1, it is a group stage consisting of 4 groups of 3 teams</li>
                             </ul>
                         </li>
                     </ul>
@@ -191,136 +153,116 @@
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
-                        <li>The tournament consists of <strong>4 stages</strong>: Round Robin (RR), Runoff (RO), Knockout 1 (KO1), and Knockout 2 (KO2)</li>
+                        <li>The tournament consists of <strong>4 stages of play: </strong> Week 1, Week 2, Week 3, Week 4</li>
                         <li>Knockout 1 and Knockout 2 are considered the <strong>main bracket</strong> in the tournament with Round Robin and Runoff being used to supplement the remaining teams.</li>
                     </ul>
-                    <h2>ROUND ROBIN (AUG 12 - 13)</h2>
-                    <ul class="info_desc__list">
-                        <div class="info_desc__list_wrapper">
-                            <li>
-                                <strong>Groups </strong>(16 teams, 24 matches)
-                                <ul class="info_desc__list">
-                                    <li>Group A (Seeds 9, 16, 17, 24)</li>
-                                    <li>Group B (Seeds 10, 15, 18, 23)</li>
-                                    <li>Group C (Seeds 11, 14, 19, 22)</li>
-                                    <li>Group D (Seeds 12, 13, 20, 21)</li>
-                                </ul>
-                            </li>
-                            <img
-                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--small"
-                                src="../../Assets/img/site/open/info/rrgroup.png"
-                            >
-                        </div>
-                        <div class="info_desc__list_wrapper info_desc__list_wrapper">
-                            <div>
-                                <li>
-                                    <strong>Placements:</strong>
-                                    <ul class="info_desc__list">
-                                        <li>
-                                            Seeding is in the following precedence:
-                                            <ul class="info_desc__list">
-                                                <li>Match W/L Ratio</li>
-                                                <li>Difference in Points (Points Won - Points Lost)</li>
-                                                <li>Points Won</li>
-                                                <li>Points Lost</li>
-                                                <li>Average normalized score difference per map</li>
-                                            </ul>
-                                        </li>
-                                        <li><strong>1st:</strong> Moves on to <strong>Knockout 1</strong> (becomes Teams 9 - 12 in KO1)</li>
-                                        <li><strong>2nd</strong> and <strong>3rd:</strong> Moves on to <strong>Runoff</strong></li>
-                                        <li><strong>4th:</strong> <red>ELIMINATED</red></li>
-                                    </ul>
-                                </li>
-                                <li>Matches are <strong>Best of 9</strong> with <strong>1 ban</strong></li>
-                                <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
-                            </div>
-                            <img
-                                class="info_desc__list_wrapper__image"
-                                src="../../Assets/img/site/open/info/rrplacement.png"
-                            >
-                        </div>
-                    </ul>
-                    <h2> RUNOFF (AUG 19 - 20)</h2>
+                    <h2>WEEK 1 (AUG 10 - 11)</h2>
                     <div class="info_desc__list_wrapper">
                         <ul class="info_desc__list">
-                            <li>Consists of 2 rounds running similar to a traditional bracket</li>
-                            <li>Used to determine Teams 13 - 16 in Knockout 1</li>
                             <li>
-                                <strong>Round 1 </strong>(8 teams, 4 matches)
+                                <strong>Groups </strong>(12 teams, 12 matches)
                                 <ul class="info_desc__list">
-                                    <li>Winners move on to Round 2</li>
-                                    <li>Losers are <red>ELIMINATED</red></li>
+                                    <li>Group A (Seeds 5, 12, 13)</li>
+                                    <li>Group B (Seeds 6, 11, 14)</li>
+                                    <li>Group C (Seeds 7, 10, 15)</li>
+                                    <li>Group D (Seeds 8, 9, 16)</li>
+                                </ul>
+                            </li>
+                            
+                            <li>
+                                <strong>Placements:</strong>
+                                <ul class="info_desc__list">
+                                    <li>
+                                        Group placement and W2 seeding is in the following precedence:
+                                        <ul class="info_desc__list">
+                                            <li>Match W/L Ratio</li>
+                                            <li>Points Won</li>
+                                            <li>Difference in Points (Points Won - Points Lost)</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>1st:</strong> Moves into the Middle Bracket of Week 2</li>
+                                    <li><strong>2nd:</strong> Moves into the Lower Bracket of Week 3</li>
+                                    <li><strong>3rd:</strong> <red>ELIMINATED</red></li>
+                                </ul>
+                            </li>
+                            <li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong> and <strong>1 protect</strong></li>
+                            <li>Mappool size (17 maps): <strong>5 NM</strong><strong> / </strong><strong>3 HD</strong><strong> / </strong><strong>3 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
+                        </ul>
+                        <img
+                            class="info_desc__list_wrapper__image info_desc__list_wrapper__image--small"
+                            src="../../Assets/img/site/open/info/w1.png"
+                        >
+                    </div>
+                    <hr class="line--red line--bottom-space">
+                    <h2>WEEK 2 (AUG 17 - 18)</h2>
+                    <div class="info_desc__list_wrapper">
+                        <ul class="info_desc__list">
+                            <li>Triple bracket (Upper, Middle, Lower)</li>
+                            <li>Upper bracket: Seeds 1 - 4</li>
+                            <li>Middle bracket: 1st out of Groups</li>
+                            <li>Lower bracket: 2nd out of Groups</li>
+                            <li>
+                                <strong>Round 1 </strong>(12 teams, 6 matches)
+                                <ul class="info_desc__list">
+                                    <li>LB Losers are <red>ELIMINATED</red></li>
                                 </ul>
                             </li>
                             <li>
-                                <strong>Round 2 </strong>(4 teams, 2 matches)
+                                <strong>Round 2 </strong>(8 teams, 4 matches)
                                 <ul class="info_desc__list">
-                                    <li>Winners become Teams 13/14 in Knockout 1</li>
-                                    <li>Losers become Teams 15/16 in Knockout 1</li>
+                                    <li>UB losers go against MB winners</li>
+                                    <li>MB losers go against LB winners</li>
+                                    <li>LB losers are <red>ELIMINATED</red></li>
                                 </ul>
                             </li>
-                            <li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong></li>
-                            <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
+                            <li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong> and <strong>1 protect</strong></li>
+                            <li>Mappool size (17 maps): <strong>5 NM</strong><strong> / </strong><strong>3 HD</strong><strong> / </strong><strong>3 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
                         </ul>
                         <img 
                             class="info_desc__list_wrapper__image"
-                            src="../../Assets/img/site/open/info/rodesc.png"
+                            src="../../Assets/img/site/open/info/w2.png"
                         >
                     </div>
-
-                    <h2>KNOCKOUT 1 (AUG 26 - 27)</h2>
+                    <hr class="line--red line--bottom-space">
+                    <h2>WEEK 3 (AUG 24 - 25)</h2>
                     <div class="info_desc__list_wrapper">
                         <ul class="info_desc__list">
+                            <li>Double bracket</li>
                             <li>
-                                Single-elimination bracket
+                                <strong>Round 1 </strong>(8 teams, 4 matches)
                                 <ul class="info_desc__list">
-                                    <li>Consists of Round of 16 and Quarterfinals <strong>only</strong></li>
+                                    <li>LB Losers are <red>ELIMINATED</red></li>
                                 </ul>
                             </li>
-                            <li>Matchups are determined using <strong>power seeding</strong> (#1 vs #16, #2 vs #15, etc.)</li>
-                            <li>Teams 9 - 12 are seeded using the same order of precedence used in RO</li>
-                            <li>Matches are <strong>Best of 3 Sets</strong></li>
-                            <li>Sets are <strong>Best of 7</strong> with <strong>1 protect </strong>and <strong>1 ban</strong></li>
                             <li>
-                                Mappool size (31 maps):
+                                <strong>Round 2 </strong>(6 teams, 3 matches)
                                 <ul class="info_desc__list">
-                                    <li>
-                                        3 total mappools
-                                        <ul class="info_desc__list">
-                                            <li>Each mappool consists of 10 maps: <strong>4 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>2 DT</strong></li>
-                                        </ul>
-                                    </li>
-                                    <li>1 TB is used for the entire stage</li>
+                                    <li>UB winners go against each other</li>
+                                    <li>UB losers go against LB winners</li>
+                                    <li>LB losers are <red>ELIMINATED</red></li>
                                 </ul>
                             </li>
+                            <li>Matches are <strong>Best of 13</strong> with <strong>2 bans</strong> and <strong>1 protect</strong></li>
+                            <li>Mappool size (20 maps): <strong>5 NM</strong><strong> / </strong><strong>4 HD</strong><strong> / </strong><strong>4 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
                         </ul>
-                        <div class="info_desc__list_wrapper info_desc__list_wrapper--center">
-                            <img 
-                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
-                                src="../../Assets/img/site/open/info/ko1.png"
-                            >
-                            <img 
-                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
-                                src="../../Assets/img/site/open/info/ko1-2.png"
-                            >
-                            <img 
-                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
-                                src="../../Assets/img/site/open/info/ko1-3.png"
-                            >
-                        </div>
+                        <img 
+                            class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
+                            src="../../Assets/img/site/open/info/w3.png"
+                        >
                     </div>
-
-                    <h2>KNOCKOUT 2 (SEP 2 - 3)</h2>        
-                    <ul class="info_desc__list">
-                        <li>
-                            Single-elimination bracket (cont.)
-                            <ul class="info_desc__list">
-                                <li>Consists of Semifinals, Finals, and a match for 3rd place</li>
-                            </ul>
-                        </li>
-                        <li>Matches are <strong>Best of 13</strong> with <strong>1 protect</strong> and <strong>2 bans</strong></li>
-                        <li>Mappool size (18 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>4 FM</strong><strong> / 1 TB</strong></li>
-                    </ul>
+                    <hr class="line--red line--bottom-space">
+                    <h2>WEEK 4 (AUG 31 - SEP 1)</h2>   
+                    <div class="info_desc__list_wrapper">     
+                        <ul class="info_desc__list">
+                            <li>Single bracket</li>
+                            <li>Matches are <strong>Best of 13</strong> with <strong>2 bans</strong> and <strong>1 protect</strong></li>
+                            <li>Mappool size (20 maps): <strong>5 NM</strong><strong> / </strong><strong>4 HD</strong><strong> / </strong><strong>4 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
+                        </ul>
+                        <img 
+                            class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
+                            src="../../Assets/img/site/open/info/w4.png"
+                        >
+                    </div>
                 </div>
                 <OpenTitle
                     class="info_section_header"
@@ -337,11 +279,25 @@
                                 <li>Captains are expected to <strong>be online</strong> at least 5 minutes <strong>before</strong> the scheduled match time to receive invites from referees</li>
                             </ul>
                         </li>
-                        <li>Teams that fail to field a roster <strong>5 minutes</strong> after the scheduled match time shall <strong>forfeit</strong>.</li>
-                    </ul>
-                    <ul class="info_desc__list">
+                        <li>Teams that fail to field a roster <strong>5 minutes</strong> after the scheduled match time shall <strong>forfeit</strong></li>
                         <li>There are<strong> no restrictions</strong> on picks or bans</li>
                         <li><strong>NF</strong> is enforced on all maps</li>
+                        <li>Captains will roll in matches. The <strong>winner</strong> will <strong>pick first, ban second,</strong> and <strong>protect second</strong></li>
+                        <li>
+                            Teams have <strong>1 protected map</strong> each
+                            <ul class="info_desc__list">
+                                <li>Protected maps <strong>cannot</strong> be banned but can be picked by either team</li>
+                            </ul>
+                        </li>
+                        <li>Teams have <strong>2 bans</strong> throughout bracket stage</li>
+                        <li>
+                            Each set of bans shall have teams banning <strong>1 map</strong>
+                            <ul class="info_desc__list">
+                                <li>The <strong>first set</strong> of bans shall be at the <strong>start</strong> of the match</li>
+                                <li>The <strong>second set</strong> of bans shall be after <strong>4 maps</strong> are played</li>
+                                <li>Ban order is <strong>ABAB</strong></li>
+                            </ul>
+                        </li>
                         <li>
                             Teams have <strong>90 seconds</strong> to declare <strong>picks, bans, and protects</strong>
                             <ul class="info_desc__list">
@@ -381,59 +337,8 @@
                         <li>In the event of a <strong>disconnection</strong>, an abort/replay may be called if it occurred within the first <strong>30 seconds</strong> of the map. Other than that, common sense will be applied. If <strong>proof</strong> exists of the disconnected player's score (or a rough estimate of their hypothetical score if they finished the map), it will be used. If it is at all <strong>ambiguous</strong>, the player&rsquo;s score is considered <strong>forfeit</strong>.</li>
                         <li><strong>Disconnections</strong> are considered to be unexpected, game-breaking events <strong>out of a player&rsquo;s control</strong> (i.e. keyboard/tablet/mouse malfunction, system failure, internet disconnect, etc). Offset, background dim, leaderboard presence, etc. <strong>ARE NOT</strong> considered valid reasons to call for an abort/replay as players may fix these on their own time.</li>
                     </ul>
-                    <h2>ROUND ROBIN/RUNOFF/KNOCKOUT 2</h2>
-                    <ul class="info_desc__list">
-                        <li>Captains will roll in matches. The <strong>winner</strong> becomes <strong>Team 1</strong> which <strong>picks first, bans second, </strong>and, in Knockout 2, <strong>protects second</strong></li>
-                        <li>
-                            Teams have <strong>1 protected map</strong> during Knockout 2
-                            <ul class="info_desc__list">
-                                <li>Protected maps <strong>cannot</strong> be banned but can be picked by either team</li>
-                            </ul>
-                        </li>
-                        <li>Teams have<strong> 1 ban </strong>during <strong>Round Robin</strong>, <strong>2 bans</strong> during <strong>Runoff</strong> and <strong>Knockout 2</strong></li>
-                        <li>
-                            Each set of bans shall have teams banning <strong>1 map</strong>
-                            <ul class="info_desc__list">
-                                <li>The <strong>first set</strong> of bans shall be at the <strong>start</strong> of the match</li>
-                                <li>
-                                    The<strong> second set of bans</strong> shall be after <strong>4 maps</strong> are played
-                                    <ul class="info_desc__list">
-                                        <li>The<strong> losing</strong> team shall <strong>ban first</strong> (EX: If the scoreline is 4 - 0, the team with 0 points bans first)</li>
-                                        <li>If the score is tied (2 - 2), the ban order shall be the same as the first set of bans</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <h2>KNOCKOUT 1</h2>
-                    <ul class="info_desc__list">
-                        <li>Captains will roll in matches. The <strong>winner</strong> becomes <strong>Team 1</strong> which <strong>picks first, bans second, </strong>and <strong>protects second</strong></li>
-                        <li><strong>Matches</strong> are Best of 3 Sets whereas a  <strong>Set</strong> is a Best of 7 with 1 ban</li>
-                        <li>
-                            Pool selection for sets goes as follows:
-                            <ul class="info_desc__list">
-                                <li>
-                                    The <strong>first set</strong> will have both teams DM the referee with the pool that they&rsquo;d like to strike
-                                    <ul class="info_desc__list">
-                                        <li>This process <strong>decides</strong> the first pool to be played</li>
-                                        <li>If teams strike <strong>different pools</strong>, the remaining mappool shall be played</li>
-                                        <li>If teams strike the <strong>same pool</strong>, the<strong> lower-seeded team</strong> will choose the pool to play from the two remaining mappools</li>
-                                    </ul>
-                                </li>
-                                <li>The <strong>second set</strong> will have the<strong> losing team</strong> choose from the two remaining mappools</li>
-                                <li>The <strong>third set</strong> will use the remaining pool</li>
-                            </ul>
-                        </li>
-                        <li>
-                            Teams have <strong>1 protected map</strong>
-                            <ul class="info_desc__list">
-                                <li>Protected maps <strong>cannot</strong> be banned but can be picked by either team</li>
-                            </ul>
-                        </li>
-                        <li>Teams have <strong>1 ban</strong> that is declared after protects</li>
-                    </ul>
                     <ContentButton 
-                        class="content_button--red info_report_button"
+                        class="content_button--red info_report_button content_button--margin"
                         link="https://pif.ephemeral.ink/tournament-reports"
                         external
                     >
@@ -456,7 +361,7 @@
                     </div>
                     <hr class="line--gray line--no-fill">
                     <ContentButton 
-                        class="content_button--red info_report_button"
+                        class="content_button--red info_report_button content_button--margin"
                         link="https://pif.ephemeral.ink/tournament-reports"
                         external
                     >
@@ -502,7 +407,6 @@
                         <ContentButton 
                             v-for="stage in stageList"
                             :key="stage.ID"
-                            class="content_button--right_margin"
                             :class="{ 'content_button--active': selectedStage === stage.ID }"
                             @click.native="selectedStage = stage.ID"
                         >
@@ -638,8 +542,7 @@
                                     </div>
                                 </div>
                                 <div class="info_stage_data_button_group">
-                                    <ContentButton 
-                                        class="content_button--right_margin_bottom"
+                                    <ContentButton
                                         :class="{ 
                                             'content_button--red': mappool.isPublic,
                                             'content_button--disabled': !mappool.isPublic,
@@ -649,8 +552,7 @@
                                     >
                                         {{ mappool.isPublic ? $t('open.info.mappools.info') : $t('open.info.mappools.notAvailable') }}
                                     </ContentButton>
-                                    <ContentButton 
-                                        class="content_button--right_margin_bottom"
+                                    <ContentButton
                                         :class="{ 
                                             'content_button--red': mappool.isPublic,
                                             'content_button--disabled': !mappool.isPublic,
@@ -696,6 +598,7 @@ import MatchBox from "../../Assets/components/open/InfoMatchBox.vue";
 import InfoData from "../../Assets/components/open/InfoData.vue";
 import MatchStatus from "../../Assets/components/open/MatchStatus.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
+import SubHeader from "../../Assets/components/open/SubHeader.vue";
 
 const openModule = namespace("open");
 
@@ -712,6 +615,7 @@ enum StageStatus {
         InfoData,
         MatchStatus,
         OpenTitle,
+        SubHeader,
     },
     head () {
         return {
@@ -829,42 +733,6 @@ export default class Info extends Vue {
 .info {
     width: 100%;
 
-    &__sub_header {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        top: 0px;
-        background-color: $open-red;
-        color: $open-dark;
-
-        &_item {
-            position: relative;
-            display: flex;
-            justify-content: center;
-
-            cursor: pointer;
-            width: auto;
-            text-decoration: none;
-            font-weight: 700;
-            padding: 5px 90px;
-
-            &:hover, &--active {
-                color: $white;
-            }
-
-            &--active::after {
-                content: "";
-                position: absolute;
-                top: calc(50% - 4.5px/2);
-                right: calc(100% - 4.5em);
-                width: 4.5px;
-                height: 4.5px;
-                transform: rotate(-45deg);
-                background-color: $white;
-            }
-        }
-    }
-
     &_wrapper {
         width: 75vw;
         align-self: center;
@@ -938,6 +806,7 @@ export default class Info extends Vue {
         &__list {
             display: flex;
             flex-direction: column;
+            margin: 0;
 
             & li strong {
                 color: $open-red;
@@ -956,7 +825,8 @@ export default class Info extends Vue {
                 width: 100%;
                 justify-content: space-between;
                 overflow: hidden;
-                // align-items: center;
+                align-items: center;
+                margin-bottom: 1em;
 
                 &__image {
                     max-height: 300px;
@@ -1004,7 +874,7 @@ export default class Info extends Vue {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        margin: 0 0 10px -10px;
+        gap: 10px;
     }
 
     &_stage_panel {

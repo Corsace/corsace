@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "探索 Corsace 2023 公开赛——全世界 osu! 精英玩家一决高下的比赛。",
+            "description": "探索 Corsace 2024 公开赛——全世界 osu! 精英玩家一决高下的比赛。",
             "timeline": "时间线",
-            "presentedBy": "CORSACE OPEN 23 是由",
+            "presentedBy": "CORSACE OPEN 2024 是由",
             "registrations": "注册",
             "button": {
                 "qualifiersMappool": "资格赛图池",
                 "mappoolDownload": "图池下载和数据",
-                "register": "创建和注册您的团队",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "注册截止至"
             }
         },
@@ -609,13 +609,13 @@
             }
         },
         "teams": {
-            "teamsList": "队伍列表",
+            "teamList": "队伍列表",
             "error": "无法获得队伍名单",
             "searchPlaceholder": "搜索用户/队伍",
             "editTeamInfo": "编辑队伍信息",
             "qualifierId": "资格赛ID",
             "placeholders": {
-                "searchUser": "osu! 用户名（必须有 Corsace 账号）",
+                "searchUser": "osu! 用户名",
                 "name": "队伍名",
                 "abbreviation": "队伍缩写"
             },
@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "没有注册任何锦标赛",
-                "toPlay": "如要参加 Corsace Open，你需要 6 名队员并选择以下资格赛日期和时间"
+                "toPlay": "如要参加 Corsace Open，你需要 6-8 名队员并选择以下资格赛日期和时间"
             },
             "teamID": "队伍ID",
             "member": "队员",

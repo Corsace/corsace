@@ -510,14 +510,14 @@
             }
         },
         "home": {
-            "description": "Masuki dunia Corsace Open 2023 - di mana para elit osu! saling berunjuk gigi.",
+            "description": "Masuki dunia Corsace Open 2024 - di mana para elit osu! saling berunjuk gigi.",
             "timeline": "JADWAL",
-            "presentedBy": "CORSACE OPEN 23 DIPERSEMBAHKAN OLEH",
+            "presentedBy": "CORSACE OPEN 2024 DIPERSEMBAHKAN OLEH",
             "registrations": "PENDAFTARAN",
             "button": {
                 "qualifiersMappool": "MAPPOOL KUALIFIKASI",
                 "mappoolDownload": "Unduhan dan statistik mappool",
-                "register": "BUAT DAN DAFTARKAN TIM KAMU",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "Pendaftaran berakhir pada"
             }
         },
@@ -609,13 +609,13 @@
             }
         },
         "teams": {
-            "teamsList": "DAFTAR TIM",
+            "teamList": "DAFTAR TIM",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
             "searchPlaceholder": "cari pengguna/tim",
             "editTeamInfo": "sunting info tim",
             "qualifierId": "ID Kualifikasi",
             "placeholders": {
-                "searchUser": "nama pengguna osu! (harus memiliki akun corsace yang terhubung)",
+                "searchUser": "nama pengguna osu!",
                 "name": "nama",
                 "abbreviation": "singkatan"
             },
@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "Tidak terdaftar di turnamen mana pun",
-                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan 6 anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
+                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan 6-8 anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
             },
             "teamID": "ID TIM",
             "member": "anggota",

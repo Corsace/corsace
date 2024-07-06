@@ -5,7 +5,7 @@ import { Team } from "../../../../Models/tournaments/team";
 import { User } from "../../../../Models/user";
 import { inviteAcceptChecks, invitePlayer } from "../../../functions/tournaments/teams/inviteFunctions";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
-import { BaseTeam, TeamUser } from "../../../../Interfaces/team";
+import { BaseTeam, TeamUser, TeamInvites as TeamInviteInterface } from "../../../../Interfaces/team";
 import { TeamInvite } from "../../../../Models/tournaments/teamInvite";
 import { TeamAuthenticatedState, UserAuthenticatedState } from "koa";
 
@@ -30,8 +30,48 @@ inviteRouter.$get<{ invites: BaseTeam[] }>("/user", async (ctx) => {
             return {
                 ID: i.team.ID,
                 name: i.team.name,
+                avatarURL: i.team.avatarURL,
             };
         }),
+    };
+});
+
+inviteRouter.$get<{ invites: TeamInviteInterface[] }>("/teams", async (ctx) => {
+    const teamIDs: {
+        ID: number;
+    }[] = await Team
+        .createQueryBuilder("team")
+        .leftJoin("team.captain", "captain")
+        .leftJoin("team.members", "member")
+        .where("captain.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .select("team.ID", "ID")
+        .getRawMany();
+
+    if (teamIDs.length === 0) {
+        ctx.body = {
+            success: true,
+            invites: [],
+        };
+        return;
+    }
+
+    const invitePromises = teamIDs.map(t => {
+        return getTeamInvites(t.ID, "teamID").then(invites => ({
+            teamID: t.ID,
+            invites: invites.map<TeamUser>(i => {
+                return {
+                    ID: i.user.ID,
+                    username: i.user.osu.username,
+                    osuID: i.user.osu.userID,
+                };
+            }),
+        }));
+    });
+
+    ctx.body = {
+        success: true,
+        invites: await Promise.all(invitePromises),
     };
 });
 
@@ -120,7 +160,7 @@ inviteRouter.$post<{ invite: TeamInvite }, TeamAuthenticatedState>("/:teamID", v
     }
 });
 
-inviteRouter.$post<{ team: Team }>("/:teamID/accept", async (ctx) => {
+inviteRouter.$post("/:teamID/accept", async (ctx) => {
     const user = ctx.state.user;
     let invite: TeamInvite;
     try {
@@ -173,10 +213,7 @@ inviteRouter.$post<{ team: Team }>("/:teamID/accept", async (ctx) => {
 
     await invite.remove();
 
-    ctx.body = {
-        success: true,
-        team,
-    };
+    ctx.body = { success: true };
 });
 
 inviteRouter.$post("/:teamID/decline", async (ctx) => {
