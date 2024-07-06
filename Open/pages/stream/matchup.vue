@@ -91,8 +91,8 @@
                     <div class="matchup__team1_members_member_username">
                         {{ member.username.toUpperCase() }}
                     </div>
-                    <div class="matchup__team1_members_member_BWS">
-                        {{ Math.round(member.BWS) }} BWS
+                    <div class="matchup__team1_members_member_rank">
+                        #{{ Math.round(member.rank) }}
                     </div>
                 </div>
             </div>
@@ -178,8 +178,8 @@
                     <div class="matchup__team2_members_member_username">
                         {{ member.username.toUpperCase() }}
                     </div>
-                    <div class="matchup__team2_members_member_BWS">
-                        {{ Math.round(member.BWS) }} BWS
+                    <div class="matchup__team2_members_member_rank">
+                        #{{ Math.round(member.rank) }}
                     </div>
                 </div>
             </div>
@@ -382,7 +382,7 @@ export default class Matchup extends Vue {
                 padding-bottom: 5px;
             }
 
-            &_BWS {
+            &_rank {
                 padding-right: 5px;
                 background-color: $open-red;
                 color: #EBEBEB;

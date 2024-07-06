@@ -63,12 +63,11 @@
             </div>
             <template #menu>
                 <NuxtLink
-                    to="/team/create"
+                    to="/teams?s=my"
                 >
                     <MenuItem>{{ $t("open.navbar.myTeams") }}</MenuItem>
                 </NuxtLink>
                 <NuxtLink
-                    v-if="!team"
                     to="/team/invites"
                 >
                     <MenuItem>
@@ -205,7 +204,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
 import { UserInfo } from "../../Interfaces/user";
-import { BaseTeam, Team } from "../../Interfaces/team";
+import { BaseTeam } from "../../Interfaces/team";
 
 import DevBanner from "../../Assets/components/DevBanner.vue";
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
@@ -230,7 +229,6 @@ export default class Default extends Vue {
     @State viewTheme!: "light" | "dark";
     @State loggedInUser!: null | UserInfo;
 
-    @openModule.State team!: Team | null;
     @openModule.State teamInvites!: BaseTeam[] | null;
 
     devBanner = true;
@@ -252,7 +250,7 @@ export default class Default extends Vue {
     async inviteAction (inviteID: number, action: "accept" | "decline") {
         try {
             await this.$axios.post(`/api/team/invite/${inviteID}/${action}`);
-            await this.$store.dispatch("open/setTeam");
+            await this.$store.dispatch("open/setMyTeams");
             await this.$store.dispatch("open/setInvites");
         } catch (e) {
             alert("Something went wrong. Contact VINXIS. Error is in console, which can be accessed by pressing F12.");

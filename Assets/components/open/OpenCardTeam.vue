@@ -13,8 +13,8 @@
                 <div class="open_card_team__member_username">
                     {{ member.username }}
                 </div>
-                <div class="open_card_team__member_bws">
-                    {{ Math.round(member.BWS) }} {{ $t("open.components.openCardTeam.bws") }}
+                <div class="open_card_team__member_rank">
+                    #{{ Math.round(member.rank) }}
                 </div>
             </li>
         </ul>
@@ -112,7 +112,7 @@ export default class OpenCardTeam extends Vue {
             }
         }
 
-        &_username, &_bws {
+        &_username, &_rank {
             list-style: none;
         }
 

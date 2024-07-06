@@ -48,14 +48,12 @@
 
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
-import ContentButton from "./ContentButton.vue";
 import IconButton from "./IconButton.vue";
 import ScheduleMatchBoxTeam from "./ScheduleMatchBoxTeam.vue";
 import { MatchupList } from "../../../Interfaces/matchup";
 
 @Component({
     components: {
-        ContentButton,
         IconButton,
         ScheduleMatchBoxTeam,
     },

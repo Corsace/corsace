@@ -21,8 +21,8 @@
                     <div class="schedule_matchbox_team__member_username">
                         {{ member.username }}
                     </div>
-                    <div class="schedule_matchbox_team__member_bws">
-                        {{ Math.round(member.BWS) }} {{ $t("open.components.openCardTeam.bws") }}
+                    <div class="schedule_matchbox_team__member_rank">
+                        #{{ Math.round(member.rank) }}
                     </div>
                 </li>
             </ul>
@@ -121,7 +121,7 @@ $avatar-width: 129px;
             }
         }
 
-        &_username, &_bws {
+        &_username, &_rank {
             list-style: none;
             font-size: 12px;
         }

@@ -127,7 +127,8 @@ export class Team extends BaseEntity {
                 ID: this.captain.ID,
                 username: this.captain.osu.username,
                 osuID: this.captain.osu.userID,
-                BWS: this.captain.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
+                country: this.captain.country,
+                rank: this.captain.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
                 isCaptain: true,
             },
             members: this.members.map<TeamMember>(member => {
@@ -135,7 +136,8 @@ export class Team extends BaseEntity {
                     ID: member.ID,
                     username: member.osu.username,
                     osuID: member.osu.userID,
-                    BWS: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
+                    country: member.country,
+                    rank: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
                     isCaptain: member.ID === this.captain.ID,
                 };
             }),

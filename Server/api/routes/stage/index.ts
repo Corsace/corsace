@@ -15,6 +15,7 @@ import { Tournament } from "../../../../Models/tournaments/tournament";
 import { discordClient } from "../../../discord";
 import { validateStageOrRound } from "../../../middleware/tournament";
 import { osuClient } from "../../../osu";
+import { TeamList, TeamMember } from "../../../../Interfaces/team";
 
 const stageRouter  = new CorsaceRouter<TournamentStageState>();
 
@@ -82,7 +83,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                 mp: matchup.mp,
                 vod: matchup.vod,
                 potential: matchup.potentialFor ? `${matchup.potentialFor.ID}-${String.fromCharCode("A".charCodeAt(0) + val)}` : undefined,
-                teams: teams.map((team) => {
+                teams: teams.map<TeamList>((team) => {
                     let members = team.members;
                     if (!members.some((member) => member.ID === team.captain.ID))
                         members = [team.captain, ...members];
@@ -93,13 +94,14 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                         pp: team.pp,
                         rank: team.rank,
                         BWS: team.BWS,
-                        members: members.map((member) => {
+                        members: members.map<TeamMember>((member) => {
                             return {
                                 ID: member.ID,
                                 username: member.osu.username,
                                 osuID: member.osu.userID,
+                                country: member.country,
                                 isCaptain: member.ID === team.captain.ID,
-                                BWS: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
+                                rank: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
                             };
                         }),
                     };

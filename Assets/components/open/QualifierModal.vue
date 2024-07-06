@@ -29,7 +29,7 @@
             </div>
         </div>
         <ContentButton
-            v-if="!team?.qualifier"
+            v-if="!teamSync?.qualifier"
             class="content_button--red qualifier_modal__label--no_shadow"
             @click.native="registerTeam"
         >
@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 
 import BaseModal from "../BaseModal.vue";
 import ContentButton from "./ContentButton.vue";
@@ -65,9 +65,9 @@ const openModule = namespace("open");
     },
 })
 export default class QualifierModal extends Vue {
+    @PropSync("team", { type: Object, required: true }) teamSync!: Team | null; 
 
     @openModule.State tournament!: Tournament | null;
-    @openModule.State team!: Team | null;
 
     get qualifierStage () {
         return this.tournament?.stages.find(s => s.stageType === StageType.Qualifiers) ?? null;
@@ -82,7 +82,7 @@ export default class QualifierModal extends Vue {
     loading = false;
 
     async registerTeam () {
-        if (!this.team || this.loading)
+        if (!this.teamSync || this.loading)
             return;
 
         this.loading = true;
@@ -98,12 +98,12 @@ export default class QualifierModal extends Vue {
             return;
         }
 
-        if (!confirm(`Are you sure you want to register ${this.team.name} to the Corsace Open?\nAny player or captain in this team will not be able to join another team and register for this tournament.\nYour roster is considered set after you play the qualifier.`)) {
+        if (!confirm(`Are you sure you want to register ${this.teamSync.name} to the Corsace Open?\nAny player or captain in this team will not be able to join another team and register for this tournament.\nYour roster is considered set after you play the qualifier.`)) {
             this.loading = false;
             return;
         }
 
-        const { data: res } = await this.$axios.post(`/api/team/${this.team.ID}/register`, {
+        const { data: res } = await this.$axios.post(`/api/team/${this.teamSync.ID}/register`, {
             tournamentID: this.tournament?.ID,
             qualifierAt: date.getTime(),
         });
@@ -118,7 +118,7 @@ export default class QualifierModal extends Vue {
     }
 
     async editQualifier () {
-        if (!this.team || this.loading)
+        if (!this.teamSync || this.loading)
             return;
 
         this.loading = true;
@@ -129,7 +129,7 @@ export default class QualifierModal extends Vue {
             return;
         }
 
-        if (date.getTime() === this.team.qualifier?.date.getTime()) {
+        if (date.getTime() === this.teamSync.qualifier?.date.getTime()) {
             alert("You have not changed the qualifier time.");
             this.loading = false;
             return;
@@ -148,7 +148,7 @@ export default class QualifierModal extends Vue {
             return;
         }
 
-        const { data: res } = await this.$axios.post(`/api/team/${this.team.ID}/qualifier`, {
+        const { data: res } = await this.$axios.post(`/api/team/${this.teamSync.ID}/qualifier`, {
             tournamentID: this.tournament?.ID,
             qualifierAt: date.getTime(),
         });

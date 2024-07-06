@@ -129,10 +129,8 @@ export default class Schedule extends Vue {
 @import '@s-sass/_variables';
 
 .schedule {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
 
     &_main_content {
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
         display: flex;
         align-self: center;
         justify-content: center;

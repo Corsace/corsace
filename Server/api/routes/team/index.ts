@@ -850,7 +850,7 @@ teamRouter.$patch<{
         team.timezoneOffset = body.timezoneOffset;
     }
     if (
-        (body?.name && body.name !== team.name) ?? 
+        (body?.name && body.name !== team.name) ||
         (body?.abbreviation && body.abbreviation !== team.abbreviation)
     ) {
         const tournaments = await Tournament

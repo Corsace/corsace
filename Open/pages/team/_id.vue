@@ -7,217 +7,102 @@
             <OpenTitle>
                 {{ teamData.name }} 
                 <span class="team--acronym">({{ teamData.abbreviation }})</span>
+                {{ $t('open.teams.teamID') }} #{{ teamData.ID }}
                 <template 
                     v-if="isCaptain"
                     #right
                 >
                     <ContentButton
                         class="content_button--red"
-                        @click="edit = !edit"
+                        @click.native="edit = !edit"
                     >
-                        {{ !edit ? $t('open.teams.editTeamInfo') : "" }}
+                        {{ $t('open.teams.editTeamInfo') }}
+                    </ContentButton>
+                    <ContentButton
+                        class="content_button--red"
+                        :link="`/team/invite/${teamData.ID}`"
+                    >
+                        {{ $t('open.teams.headers.teamInvites') }}
+                    </ContentButton>
+                </template>
+                <template
+                    v-else-if="myTeams?.some(t => t.ID === teamData.ID)"
+                    #right
+                >
+                    <ContentButton
+                        v-if="!teamData.tournaments || teamData.tournaments.length === 0"
+                        class="content_button--red"
+                        @click.native="leaveTeam"
+                    >
+                        {{ $t('open.teams.leaveTeam') }}
+                    </ContentButton>
+                    <ContentButton
+                        class="content_button--red"
+                        :link="`/team/invite/${teamData.ID}`"
+                    >
+                        {{ $t('open.teams.headers.teamInvites') }}
                     </ContentButton>
                 </template>
             </OpenTitle>
-            <div class="team_fields">
-                <div class="team_fields_row">
-                    <div class="team_fields_block--label">
-                        {{ $t('open.teams.headers.tournaments') }}
-                    </div>
-                    <div class="team_fields_block">
-                        <div v-if="(teamData.tournaments?.length ?? -1) > 0">
-                            {{ teamData.tournaments?.map(t => t.name).join(", ") }}
-                        </div>
-                        <div v-else>
-                            {{ $t('open.teams.registration.noRegistration') }}
-                            <br>
-                            {{ $t('open.teams.registration.toPlay') }}
-                        </div>
-                    </div>
-                </div>
-                <div class="team_fields_row">
-                    <div class="team_fields_block--label">
-                        {{ $t('open.teams.headers.teamStats') }}
-                    </div>
-                    <div class="team_fields_block">
-                        <div>{{ $t('open.teams.teamID') }} #{{ teamData.ID }}</div>
-                        <div>{{ teamData.members.length }} {{ teamData.members.length === 1 ? $t('open.teams.member') : $t('open.teams.members') }}</div>
-                        <div>{{ Math.round(teamData.BWS) }} {{ $t('open.teams.averageBWS') }}</div>
-                        <div>#{{ Math.round(teamData.rank) }} {{ $t('open.teams.averageRank') }}</div>
-                        <div>{{ Math.round(teamData.pp) }} {{ $t('open.teams.averagePP') }}</div>
-                    </div>
-                </div>
-                <div class="team_fields_row">
-                    <div class="team_fields_block--label">
-                        {{ $t('open.create.teamTimezone') }}
-                    </div>
-                    <div class="team_fields_block">
-                        <div>UTC{{ teamData.timezoneOffset >= 0 ? "+" : "" }}{{ teamData.timezoneOffset }}:00</div>
-                    </div>
-                </div>
-                <div class="team_fields_row">
-                    <div class="team_fields_block--label">
-                        {{ $t('open.teams.headers.teamCaptain') }}
-                    </div>
-                    <div class="team_fields_block team__member_list">
-                        <a
-                            class="team__member"
-                            :href="'https://osu.ppy.sh/users/' + teamData.captain.osuID"
+            <div class="team__fields">
+                <div class="team__section">
+                    TEAM AVATAR
+                    <div class="team__avatar_section">
+                        <img 
+                            class="team__avatar"
+                            :src="teamData.avatarURL || require('../../../Assets/img/site/open/team/default.png')"
                         >
-                            <img
-                                v-if="teamData.captain.isCaptain"
-                                class="team__member_captain"
-                                src="../../../Assets/img/site/open/team/captain.svg"
-                            >
-                            <div 
-                                v-else 
-                                class="team__member_captain"
-                            />
-                            <img 
-                                class="team__member_avatar"
-                                :src="`https://a.ppy.sh/${teamData.captain.osuID}`"
-                            >
-                            <div class="team__member_name">
-                                {{ teamData.captain.username }}
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="team_fields_row">
-                    <div class="team_fields_block--label">
-                        {{ $t('open.teams.headers.teamMembers') }}
-                        <div 
-                            v-if="isCaptain && teamData.members.filter(m => !m.isCaptain).length > 0 && !teamData.qualifier?.mp"
-                            class="team_fields--clickable"
-                            @click="editMembers = !editMembers"
-                        >
-                            {{ !editMembers ? $t('open.teams.headers.editTeamMembers') : $t('open.teams.headers.closeTeamMembers') }}
-                        </div>
-                        <!-- <div 
-                            v-if="isCaptain && !teamData.qualifier?.mp"
-                            class="team_fields--clickable"
-                            @click="captainToggle"
-                        >
-                            {{ teamData.members.some(m => m.isCaptain) ? $t('open.teams.headers.becomeCaptain') : $t('open.teams.headers.becomeMember') }}
-                        </div> -->
-                    </div>
-                    <div class="team_fields_block team__member_list">
-                        <div
-                            v-for="member in teamData.members"
-                            :key="member.ID"
-                            class="team__member_invite"
-                        >
-                            <a   
-                                :href="'https://osu.ppy.sh/users/' + member.osuID"
-                                class="team__member"
-                            >
-                                <img
-                                    v-if="member.isCaptain"
-                                    class="team__member_captain"
-                                    src="../../../Assets/img/site/open/team/captain.svg"
-                                >
-                                <div 
-                                    v-else 
-                                    class="team__member_captain"
-                                />
-                                <img 
-                                    class="team__member_avatar"
-                                    :src="`https://a.ppy.sh/${member.osuID}`"
-                                >
-                                <div class="team__member_name">
-                                    {{ member.username }}
-                                </div>
-                                <div class="team__member_bws">
-                                    {{ Math.round(member.BWS) }} BWS
-                                </div>
-                            </a>
-                            <div>
-                                <div
-                                    v-if="!member.isCaptain && isCaptain && editMembers" 
-                                    class="team__member_x"
-                                    @click="removeMember(member)"
-                                >
-                                    X
-                                </div>
-                                <div
-                                    v-if="!member.isCaptain && isCaptain && editMembers" 
-                                    class="team__member_crown"
-                                    @click="transferCaptain(member)"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div 
-                    v-if="teamData.ID === team?.ID && !teamData.qualifier?.mp"
-                    class="team_fields_row"
-                >
-                    <div class="team_fields_block--label">
-                        {{ $t('open.teams.headers.teamInvites') }}
-
+                        <!-- TODO: Add avatar editing
                         <div 
                             v-if="isCaptain"
-                            class="team_fields--clickable"
-                            @click="editInvites = !editInvites"
+                            class="team__avatar_buttons"
                         >
-                            {{ !editInvites ? $t('open.teams.headers.editTeamInvites') : $t('open.teams.headers.closeTeamInvites') }}
-                        </div>
-                    </div>
-                    <div class="team_fields_block team__member_list">
-                        <div
-                            v-for="member in teamData.invites"
-                            :key="member.ID"
-                            class="team__member_invite"
-                        >
-                            <a   
-                                :href="'https://osu.ppy.sh/users/' + member.osuID"
-                                class="team__member"
+                            <ContentButton
+                                class="content_button--red content_button--disabled"
                             >
-                                <div class="team__member_captain" />
-                                <img 
-                                    class="team__member_avatar"
-                                    :src="`https://a.ppy.sh/${member.osuID}`"
-                                >
-                                <div class="team__member_name">
-                                    {{ member.username }}
-                                </div>
-                            </a>
-                            <div
-                                v-if="isCaptain && editInvites" 
-                                class="team__member_x"
-                                @click="removeInvite(member)"
+                                CROP/RESIZE
+                            </ContentButton>
+                            <ContentButton
+                                class="content_button--red content_button--margin"
+                                @click.native="editAvatar = !editAvatar"
                             >
-                                X
-                            </div>
-                        </div>
-                        <div class="team__member_captain" />
-                        <div v-if="isCaptain && editInvites">
-                            <SearchBar
-                                :placeholder="`${$t('open.teams.placeholders.searchUser')}`"
-                                style="min-width: 500px;"
-                                @update:search="search($event)"
-                            />
-                            <div 
-                                v-for="user in users"
-                                :key="user.ID"
-                                class="team__member team__member--search"
-                                @click="inviteUser(user)"
-                            >
-                                <div class="team__member_captain" />
-                                <img 
-                                    class="team__member_avatar"
-                                    :src="`https://a.ppy.sh/${user.osu.userID}`"
-                                >
-                                <div class="team__member_name">
-                                    {{ user.osu.username }}
-                                </div>
-                            </div>
+                                CHANGE PHOTO
+                            </ContentButton>
+                        </div> -->
+                        <div v-if="isCaptain">
+                            <p>Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.</p>
+                            <p>Any team name, and avatar deemed inappropriate by staff must be changed.</p>
+                            <p>Team editing will be locked at the end of the registration period.</p>
                         </div>
                     </div>
                 </div>
-                <div class="team_fields_row">
-                    <div class="team_fields_block--label">
-                        {{ $t('open.teams.headers.qualifier') }}
+                <hr class="line--red">
+                <div class="team__section">
+                    TEAM INFORMATION
+                    <div class="team__info_section">
+                        <div>
+                            <span class="team__info_section--header">{{ $t('open.teams.headers.tournaments') }}</span>
+                            <div v-if="(teamData.tournaments?.length ?? -1) > 0">
+                                {{ teamData.tournaments?.map(t => t.name).join(", ") }}
+                            </div>
+                            <div v-else>
+                                {{ $t('open.teams.registration.noRegistration') }}
+                                <br>
+                                {{ $t('open.teams.registration.toPlay') }}
+                            </div>
+                        </div>
+                        <div>
+                            <span class="team__info_section--header">{{ $t('open.teams.headers.teamStats') }}</span>
+                            <div>{{ $t('open.teams.teamID') }} #{{ teamData.ID }}</div>
+                            <div>{{ teamData.members.length }} {{ teamData.members.length === 1 ? $t('open.teams.member') : $t('open.teams.members') }}</div>
+                            <div>{{ Math.round(teamData.BWS) }} {{ $t('open.teams.averageBWS') }}</div>
+                            <div>#{{ Math.round(teamData.rank) }} {{ $t('open.teams.averageRank') }}</div>
+                            <div>{{ Math.round(teamData.pp) }} {{ $t('open.teams.averagePP') }}</div>
+                        </div>
+                        <div>
+                            <span class="team__info_section--header">{{ $t('open.create.teamTimezone') }}</span>
+                            <div>UTC{{ teamData.timezoneOffset >= 0 ? "+" : "" }}{{ teamData.timezoneOffset }}:00</div>
+                        </div>
                         <div
                             v-if="isCaptain && teamData.qualifier && !teamData.qualifier.mp"
                             class="team_fields--clickable"
@@ -225,46 +110,107 @@
                         >
                             {{ $t('open.teams.deleteTeam') }}
                         </div>
-                        <div 
-                            v-if="isCaptain && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
-                            @click="editQualifier = !editQualifier"
-                        >
+                        <div>
+                            <span class="team__info_section--header">{{ $t('open.teams.headers.qualifier') }}</span>
                             <div
-                                v-if="teamData.qualifier && !teamData.qualifier.mp" 
+                                v-if="isCaptain && teamData.qualifier && !teamData.qualifier.mp"
                                 class="team_fields--clickable"
+                                @click="unregister"
                             >
-                                {{ $t('open.teams.editQualifierTime') }}
+                                {{ $t('open.teams.deleteTeam') }}
                             </div>
-                            <div
-                                v-else-if="!teamData.qualifier"
-                                class="team_fields--clickable"
+                            <div 
+                                v-if="isCaptain && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
+                                @click="editQualifier = !editQualifier"
                             >
-                                {{ $t('open.teams.createJoinQualifier') }}
+                                <div
+                                    v-if="teamData.qualifier && !teamData.qualifier.mp" 
+                                    class="team_fields--clickable"
+                                >
+                                    {{ $t('open.teams.editQualifierTime') }}
+                                </div>
+                                <div
+                                    v-else-if="!teamData.qualifier"
+                                    class="team_fields--clickable"
+                                >
+                                    {{ $t('open.teams.createJoinQualifier') }}
+                                </div>
                             </div>
-                        </div>
-                        <div v-else-if="isCaptain && tournament">
-                            <div class="team_fields--clickable">
-                                {{ tournament.minTeamSize === tournament.maxTeamSize ? $t('open.teams.headers.requiredMessageExact', {minTeamSize: tournament.minTeamSize}) : $t('open.teams.headers.requiredMessageRange', {minTeamSize: tournament.minTeamSize, maxTeamSize: tournament.maxTeamSize}), }}
+                            <div v-else-if="isCaptain && tournament">
+                                <div class="team_fields--clickable">
+                                    {{ tournament.minTeamSize === tournament.maxTeamSize ? $t('open.teams.headers.requiredMessageExact', {minTeamSize: tournament.minTeamSize}) : $t('open.teams.headers.requiredMessageRange', {minTeamSize: tournament.minTeamSize, maxTeamSize: tournament.maxTeamSize}), }}
+                                </div>
+                            </div>
+                            <NuxtLink 
+                                v-else-if="teamData?.qualifier"
+                                style="text-decoration: none;"
+                                :to="'/qualifier/' + teamData.qualifier.ID"
+                            >
+                                <div>{{ $t("open.teams.qualifierId") }} #{{ teamData.qualifier.ID }}</div>
+                                <div>{{ teamData.qualifier.date.toLocaleString('en-US', optionsUTC) }} ({{ teamData.qualifier.date.toLocaleString('en-US', options) }})</div>
+                            </NuxtLink>
+                            <div 
+                                v-else
+                            >
+                                {{ $t('open.teams.notRegistered') }}
                             </div>
                         </div>
                     </div>
-                    <NuxtLink 
-                        v-if="teamData?.qualifier"
-                        class="team_fields_block"
-                        style="text-decoration: none;"
-                        :to="'/qualifier/' + teamData.qualifier.ID"
-                    >
-                        <div>{{ $t("open.teams.qualifierId") }} #{{ teamData.qualifier.ID }}</div>
-                        <div>{{ teamData.qualifier.date.toLocaleString('en-US', optionsUTC) }} ({{ teamData.qualifier.date.toLocaleString('en-US', options) }})</div>
-                    </NuxtLink>
-                    <div 
-                        v-else
-                        class="team_fields_block"
-                    >
-                        {{ $t('open.teams.notRegistered') }}
+                </div>
+                <div class="team__section team__players_section">
+                    <div class="team__players_header">
+                        <span class="team__players_header--title">PLAYERS</span>
+                        <ContentButton
+                            v-if="isCaptain && tournament" 
+                            class="content_button--red content_button--noflex"
+                            :class="{ 'content_button--disabled': teamData.members.length < tournament.minTeamSize || teamData.members.length > tournament.maxTeamSize }"
+                        >
+                            JOIN QUALIFIERS {{ teamData.members.length < tournament.minTeamSize ? "(You need at least " + (tournament.minTeamSize - teamData.members.length) + " more players)" : teamData.members.length > tournament.maxTeamSize ? "(You need at least " + (teamData.members.length - tournament.maxTeamSize) + " less players)" : "" }}
+                        </ContentButton>
+                    </div>
+                    <div class="team__players">
+                        <a 
+                            v-for="member in teamMembers"
+                            :key="member.ID"
+                            :href="`https://osu.ppy.sh/users/${member.osuID}`"
+                            target="_blank"
+                            class="team__players_player"
+                        >
+                            <img 
+                                class="team__players_player--avatar"
+                                :src="`https://a.ppy.sh/${member.osuID}`"
+                            >
+                            <div class="team__players_player--info">
+                                <div class="team__players_player--name">
+                                    {{ member.username }}   
+                                </div>
+                                <div class="team__players_player--misc">
+                                    <img 
+                                        class="team__players_player--country"
+                                        :src="`https://osu.ppy.sh/images/flags/${member.country}.png`"
+                                    >
+                                    <div
+                                        v-if="member.ID === teamData.captain.ID" 
+                                        class="team__players_player--captain"
+                                    >
+                                        CAPTAIN
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team__players_player--rank">
+                                #{{ Math.round(member.rank) }}
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
+        <div
+            v-if="teamData && !teamData.qualifier?.mp && isCaptain"
+            class="team__delete"
+            @click="deleteTeam"
+        >
+            {{ $t('open.teams.edit.deleteTeam') }}?
         </div>
         <div 
             v-else-if="loading"
@@ -287,8 +233,8 @@
             v-if="edit && teamData && teamData.captain.ID === loggedInUser?.ID"
             @close="edit = false"
         >
-            <div class="team_fields">
-                <div class="team_fields_row">
+            <div class="team__fields team__edit">
+                <div class="team__section">
                     <div class="team_fields_block--label team_fields_block--edit">
                         {{ $t('open.teams.edit.teamName') }}
                     </div>
@@ -303,7 +249,7 @@
                         />
                     </div>
                 </div>
-                <div class="team_fields_row">
+                <div class="team__section">
                     <div class="team_fields_block--label team_fields_block--edit">
                         {{ $t('open.teams.edit.teamAbbreviation') }}
                     </div>
@@ -318,14 +264,13 @@
                         />
                     </div>
                 </div>
-                <div
-                    class="team_fields_block--edit"
-                    v-html="$t('open.create.timezoneText')" 
-                />
-                <div class="team_fields_row">
-                    <div class="team_fields_block--label team_fields_block--edit">
+                <div class="team__section">
+                    <div>
                         {{ $t('open.teams.edit.timezone') }}
                     </div>
+                    <div
+                        v-html="$t('open.create.timezoneText')" 
+                    />
                     <div class="team_fields_block">
                         <OpenSelect
                             class="team__input"
@@ -335,14 +280,14 @@
                         />
                     </div>
                 </div>
-                <div
-                    class="team_fields_block--edit"
-                    v-html="$t('open.create.avatarInfo1')"
-                />
-                <div class="team_fields_row">
+                <div class="team__section">
                     <div class="team_fields_block--label team_fields_block--edit">
                         {{ $t('open.teams.edit.teamAvatar') }}
                     </div>
+                    <div
+                        class="team_fields_block--edit"
+                        v-html="$t('open.create.avatarInfo1')"
+                    />
                     <div class="team_fields_block team_fields_block__avatar_block">
                         <label 
                             for="avatar"
@@ -355,6 +300,7 @@
                             type="file"
                             accept=".jpg, .jpeg, .png"
                             class="team__input_avatar"
+                            style="display: none;"
                             @change="uploadAvatar"
                         >
 
@@ -373,16 +319,16 @@
                 </div>
             </div>
             
-            <div class="team_fields_block">
+            <div class="team__fields">
                 <div 
                     v-if="sizeError" 
-                    class="team_fields_block--edit"
+                    class="team__edit"
                 >
                     {{ $t('open.teams.edit.errors.size') }}
                 </div>
                 <div 
                     v-if="typeError"
-                    class="team_fields_block--edit"
+                    class="team__edit"
                 >
                     {{ $t('open.teams.edit.errors.type') }}
                 </div>
@@ -393,17 +339,11 @@
             >
                 {{ $t('open.teams.edit.save') }}
             </ContentButton>
-            <ContentButton
-                v-if="!teamData.qualifier?.mp"
-                class="content_button--red content_button--red_sm team_fields_block--edit"
-                @click.native="deleteTeam"
-            >
-                {{ $t('open.teams.edit.deleteTeam') }}
-            </ContentButton>
         </BaseModal>
         <!-- Qualifier Edit Modal -->
         <QualifierModal
             v-if="editQualifier && teamData && teamData.captain.ID === loggedInUser?.ID"
+            :team="teamData"
             @close="closeQualifierEdit"
         />
     </div>
@@ -467,7 +407,7 @@ export default class Team extends Vue {
     @State loggedInUser!: null | UserInfo;
 
     @openModule.State tournament!: Tournament | null;
-    @openModule.State team!: TeamInterface | null;
+    @openModule.State myTeams!: TeamInterface[] | null;
 
     optionsUTC: Intl.DateTimeFormatOptions = {
         month: "long", // Full month name (e.g., "July")
@@ -523,13 +463,29 @@ export default class Team extends Vue {
         return zones;
     }
 
+    get teamMembers () {
+        if (!this.teamData)
+            return [];
+
+        const members = this.teamData.members;
+        if (!members.some(m => m.ID === this.teamData!.captain.ID))
+            members.unshift(this.teamData.captain);
+        return members;
+    }
+
     async getTeam (refresh: boolean): Promise<TeamInterface | null> {
         this.loading = true;
-        if (!this.$route.params.id || parseInt(this.$route.params.id) === this.team?.ID) {
-            if (refresh)
-                await this.$store.dispatch("open/setTeam");
+        if (refresh)
+            await this.$store.dispatch("open/setMyTeams");
+
+        if (!this.$route.params.id) {
             this.loading = false;
-            return this.team;
+            return this.myTeams?.[0] ?? null;
+        }
+
+        if (this.myTeams && this.myTeams.some(t => t.ID === parseInt(this.$route.params.id))) {
+            this.loading = false;
+            return this.myTeams.find(t => t.ID === parseInt(this.$route.params.id)) ?? null;
         }
 
         const { data } = await this.$axios.get<{ team: TeamInterface }>(`/api/team/${this.$route.params.id}`);
@@ -554,8 +510,7 @@ export default class Team extends Vue {
     }
 
     get isCaptain (): boolean {
-        console.log(this.teamData);
-        return this.teamData?.ID === this.team?.ID && this.teamData?.captain.ID === this.loggedInUser?.ID;
+        return this.teamData?.captain.ID === this.loggedInUser?.ID;
     }
 
     uploadAvatar (e: Event) {
@@ -670,7 +625,7 @@ export default class Team extends Vue {
         const { data: res } = await this.$axios.delete(`/api/team/${this.teamData.ID}`);
 
         if (res.success) {
-            await this.$store.dispatch("open/setTeam");
+            await this.$store.dispatch("open/setMyTeams");
             await this.$router.push("/team/create");
         } else
             alert(res.error);
@@ -795,21 +750,11 @@ export default class Team extends Vue {
 @import '@s-sass/_variables';
 
 .team {
+    position: relative;
     overflow: auto;
 
     &--acronym {
         color: $open-red;
-    }
-
-    &_avatar {
-        border: 1px solid $gray;
-        width: 9rem;
-        height: 3rem;
-        object-fit: cover;
-
-        &_input {
-            display: none;
-        }
     }
 
     &__container {
@@ -822,168 +767,141 @@ export default class Team extends Vue {
         padding-top: 50px;
     }
 
-    &_fields {
-        margin-top: 25px;
+    &__fields {
+        margin-top: 18px;
+    }
 
-        &_row {
+    &__section {
+        font-weight: bold;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    &__avatar {
+        height: 100px;
+        width: 300px;
+        object-fit: cover;
+
+        &_section {
             display: flex;
-            margin-bottom: 2.5rem
+            gap: 23px;
+            font-weight: normal;
+        }   
+    }
+
+    &__info_section {
+        display: flex;
+        gap: 23px;
+        font-weight: normal;
+
+        &--header {
+            font-weight: bold;
+        }
+    }
+
+    &__players {
+        display: flex;
+        flex-wrap: wrap;
+        font-weight: bold;
+        gap: 87px;
+
+        &_section {
+            gap: 38px;
+            margin-top: 38px;
         }
 
-        &_block {
-            padding: 0px 0px 5px 0px;
+        &_header {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            font-weight: bold;
+
+            &--title {
+                flex: 1;
+                background-color: $open-red;
+                padding: 5px;
+            }
+        }
+
+        &_player {
             position: relative;
-            min-width: 40vw;
-            font-family: $font-ggsans;
-            font-weight: 700;
-            font-size: $font-lg;
-
-            &__avatar_block {
-                display: flex;
-                gap: 20px;
-                align-items: center;
-            }
-
-            &--label {
-                width: 250px;
-                padding-right: 60px;
-                color: $open-red;
-                font-family: $font-ggsans;
-                font-weight: 700;
-                font-size: $font-lg;
-            }
-
-            &--edit {
-                text-shadow: none;
-            }
-
-            &--image {
-                border: 1px solid #A0A0A0;
-                margin: 5px 0px;
-                width: 9rem;
-                height: 3rem;
-                object-fit: cover;
-            }
-
-            &--highlight {
-                font-family: $font-ggsans;
-                font-weight: 600;
-
-                & span {
-                    display: inline-block;
-                    font-weight: 700;
-                    font-family: $font-ggsans;
-                    font-style: italic;
-                    color: $open-red;
-                }
-
-            }
-
-            &--spaced {
-                padding-top: 20px;
-            }
-
-        }
-
-        &--clickable {
-            font-weight: 400;
-            font-size: $font-sm;
-            color: $gray;
-            margin-top: -5px;
+            display: flex;
+            gap: 12px;
+            background-color: #FAFAFA;
+            color: #131313;
+            width: 215px;
 
             &:hover {
                 text-decoration: none;
-                color: $white;
-                cursor: pointer;
+                box-shadow: 0px 0px 8px 4px $darker-gray;
             }
-        }
-    }
 
-    &__member {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
+            &--avatar {
+                height: 93px;
+                width: 74px;
+                object-fit: cover;
+                border-right: 1px solid $open-red;
+            }
 
-        &:hover {
-            text-decoration: none;
-        }
+            &--info {
+                display: flex;
+                flex-direction: column;
+                margin-top: 5px;
+                gap: 5px;
+            }
 
-        &_list {
-            display: flex;
-            flex-wrap: wrap;
-        }
+            &--name {
+                font-size: 20px;
+                font-weight: bold;
+            }
+            
+            &--misc {
+                display: flex;
+                align-items: center;
+                gap: 7px;
+            }
 
-        &_avatar {
-            border: 1px solid $gray;
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-        }
+            &--country {
+                height: 11px;
+                box-shadow: 0 0 1px 0 #000;
+            }
 
-        &_name {
-            font-family: $font-ggsans;
-            font-weight: 700;
-            font-size: $font-lg;
-        }
+            &--captain {
+                font-size: 12px;
+                font-stretch: condensed;
+                font-weight: normal;
+            }
 
-        &_bws {
-            font-family: $font-ggsans;
-            font-weight: 700;
-            font-size: $font-lg;
-            color: $open-red;
-        }
-
-        &_captain {
-            width: 20px;
-            height: 20px;
-        }
-
-        &_invite {
-            display: flex;
-            align-items: flex-start;
-        }
-
-        &_x {
-            cursor: pointer;
-            font-family: $font-ggsans;
-            font-weight: 700;
-            font-size: $font-lg;
-            margin-bottom: 10px;
-            color: $gray;
-
-            &:hover {
+            &--rank {
+                position: absolute;
                 color: $open-red;
+                bottom: 0;
+                right: 0;
+                padding: 5px;
+                font-weight: bold;
+                font-stretch: condensed;
+                font-size: 18px;
             }
-        }
-
-        &_crown {
-            width: 20px;
-            height: 20px;
-            background-image: url('../../../Assets/img/site/open/team/captain.svg');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            cursor: pointer;
-            filter: saturate(0);
-
-            &:hover {
-                filter: saturate(1);
-            }
-        }
-
-        &--search {
-            cursor: pointer;
         }
     }
 
-    &__input {
+    &__edit {
         display: flex;
-        margin: 5px 0;
+        gap: 40px;
+        flex-direction: column;
+    }
 
-        &_avatar {
-            display: none;
-        }
+    &__delete {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin-bottom: 20px;
+        color: $open-red;
+        letter-spacing: 0.23em;
+        cursor: pointer;
+        text-align: center;
     }
 }
 </style>

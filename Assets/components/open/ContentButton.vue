@@ -38,9 +38,9 @@ export default class ContentButton extends Vue {
     align-items: center;
     background-color: #545454;
     color: #FFFFFF;
-    margin: 15px 0px 15px 0px;
     min-height: 30px;
     padding: 5px;
+    text-shadow: none;
 
     &:hover, &--active {
         background-color: $open-red;
@@ -57,21 +57,12 @@ export default class ContentButton extends Vue {
         font-weight: 600;
     }
 
-    &--right_margin {
-        margin: 15px 0px 15px 10px;
+    &--margin {
+        margin: 15px 0px 15px 0px;
     }
 
-    &--right_margin_bottom {
-        margin: 15px 0px 0px 10px;
-    }
-
-    &--bottom_margin {
-        flex-grow: 0;
-        margin: 0px 0px 15px 0px;
-    }
-
-    &--bottom_margin:last-child {
-        margin: 0px 0 0 0;
+    &--noflex {
+        flex: none;
     }
 
     &--red {
@@ -89,7 +80,6 @@ export default class ContentButton extends Vue {
     &--red_lg {
         color: #181818;
         background-color: $open-red;
-        font-family: $font-commuterssans;
         font-size: $font-lg;
         font-weight: 400;
         line-height: 2rem;
@@ -104,7 +94,6 @@ export default class ContentButton extends Vue {
         background-color: rgba(0, 0, 0, 0);
         border: 1px solid $open-red;
         color: $open-red;
-        min-height: 29px;
     }
 
     &--red_outline:hover {
@@ -112,26 +101,15 @@ export default class ContentButton extends Vue {
     }
 
     &--header_button {
-        margin: 15px 0px 15px 20px;
         min-width: 150px;
-        height: 30px;
         padding: 5px;
     }
 
-    &--disabled {
+    &--disabled, &--disabled:hover {
         cursor: not-allowed;
         color: #545454;
         background-color: rgba(0, 0, 0, 0);
         border: 1px solid #545454;
-        min-height: 29px;
-    }
-
-    &--disabled:hover {
-        cursor: not-allowed;
-        color: #545454;
-        background-color: rgba(0, 0, 0, 0);
-        border: 1px solid #545454;
-        min-height: 29px;
     }
 }
 </style>

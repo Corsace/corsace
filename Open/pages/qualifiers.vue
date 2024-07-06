@@ -103,10 +103,6 @@
                 class="qualifiers__qualifiers"
             />
         </div>
-        <QualifierModal
-            v-if="editQualifier && team && team.captain.ID === loggedInUser?.ID"
-            @close="closeQualifierEdit"
-        />
     </div>
 </template>
 
@@ -118,7 +114,6 @@ import Clock from "../../Assets/components/open/Clock.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
-import QualifierModal from "../../Assets/components/open/QualifierModal.vue";
 import QualifiersView from "../../Assets/components/open/QualifiersView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../Assets/components/BaseModal.vue";
@@ -126,7 +121,6 @@ import SubHeader from "../../Assets/components/open/SubHeader.vue";
 
 import { Stage, StageType } from "../../Interfaces/stage";
 import { Tournament } from "../../Interfaces/tournament";
-import { Team } from "../../Interfaces/team";
 import { UserInfo } from "../../Interfaces/user";
 import { Mappool } from "../../Interfaces/mappool";
 
@@ -139,7 +133,6 @@ const openModule = namespace("open");
         ContentButton,
         ScoresView,
         OpenTitle,
-        QualifierModal,
         QualifiersView,
         BaseModal,
         SubHeader,
@@ -167,7 +160,6 @@ const openModule = namespace("open");
 })
 export default class Qualifiers extends Vue {
     isOpen = false;
-    editQualifier = false;
     calledScores = false;
     calledMappool = false;
     page: "mappool" | "qualifiers" | "scores" = "qualifiers";
@@ -176,25 +168,10 @@ export default class Qualifiers extends Vue {
     @State loggedInUser!: UserInfo | null;
 
     @openModule.State tournament!: Tournament | null;
-    @openModule.State team!: Team | null;
     @openModule.State mappools!: Mappool[] | null;
 
     get qualifiersStage (): Stage | null {
         return this.tournament?.stages.find(s => s.stageType === StageType.Qualifiers) ?? null;
-    }
-
-    togglePopup () {
-        if (!this.team || !this.tournament || this.tournament.minTeamSize > this.team.members.length || this.tournament.maxTeamSize < this.team.members.length) {
-            this.isOpen = !this.isOpen;
-            return;
-        }
-        this.editQualifier = true;
-    }
-
-    async closeQualifierEdit (get: boolean) {
-        this.editQualifier = false;
-        if (get)
-            await this.$store.dispatch("open/setQualifierList", this.tournament?.ID);
     }
 
     async pageHandler (page: "mappool" | "qualifiers" | "scores") {

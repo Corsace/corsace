@@ -33,11 +33,14 @@ export interface TeamUser {
 
 export interface TeamMember extends TeamUser {
     isCaptain: boolean;
-    BWS: number;
+    country: string;
+    rank: number;
 }
 
-// TODO: Add TeamInvite interface as needed
-// export interface TeamInvite extends TeamUser {}
+export interface TeamInvites {
+    teamID: number;
+    invites: TeamUser[];
+}
 
 export function validateTeamText (name: string, abbreviation: string): { name: string, abbreviation: string } | { error: string } {
     if (/^team /i.test(name)) {

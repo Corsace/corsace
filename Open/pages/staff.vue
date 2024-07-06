@@ -113,7 +113,6 @@ $flex-gap: 25px;
         position: relative;
         width: 65vw;
         padding: 35px;
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
 
         &_staff_list {
             padding-top: 20px;
@@ -130,9 +129,6 @@ $flex-gap: 25px;
         align-items: center;
         padding: $flex-gap;
         gap: $flex-gap;
-
-        background: linear-gradient(0deg, #131313, #131313),
-        linear-gradient(0deg, #2B2D2E, #2B2D2E);
         
         &__title {
             font-size: $font-base;
@@ -161,8 +157,6 @@ $flex-gap: 25px;
                 align-items: center;
 
                 border: 1px solid rgba(42, 44, 45, 1);
-                background: linear-gradient(0deg, #171B1E, #171B1E),
-                linear-gradient(0deg, #2A2C2D, #2A2C2D);
 
                 &:hover {
                     text-decoration: none;

@@ -45,6 +45,13 @@
                     </ContentButton>
                 </template>
             </OpenTitle>
+            <div class="teams_list__main_content_list">
+                <OpenCardTeam
+                    v-for="team in filteredTeams"
+                    :key="team.ID"
+                    :team="team"
+                />
+            </div>
         </div>
         <div
             v-else-if="page === 'management'"
@@ -76,7 +83,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
 import { Tournament } from "../../Interfaces/tournament";
-import { TeamList } from "../../Interfaces/team";
+import { Team, TeamList } from "../../Interfaces/team";
 import { UserInfo } from "../../Interfaces/user";
 
 import SearchBar from "../../Assets/components/SearchBar.vue";
@@ -120,6 +127,7 @@ export default class Teams extends Vue {
 
     @State loggedInUser!: null | UserInfo;
     @openModule.State tournament!: Tournament | null;
+    @openModule.State myTeams!: Team[] | null;
     @openModule.State teamList!: TeamList[] | null;
 
     loading = true;
@@ -127,6 +135,8 @@ export default class Teams extends Vue {
     page: "list" | "management" = "list";
 
     get filteredTeams () {
+        if (this.page === "management")
+            return this.myTeams;
         if (!this.searchValue)
             return this.teamList;
         return this.teamList?.filter(team => 
@@ -139,6 +149,8 @@ export default class Teams extends Vue {
     }
 
     async mounted () {
+        if (this.$route.query.s === "my")
+            this.page = "management";
         this.loading = true;
         if (this.tournament)
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);

@@ -21,14 +21,14 @@
                 </div>
                 <div class="info_desc__buttons">
                     <ContentButton 
-                        class="content_button--red info_desc_button"
+                        class="content_button--red info_desc_button content_button--margin"
                         link="https://paypal.me/corsaceofficial"
                         external
                     >
                         {{ $t('open.info.donateToCorsace') }}
                     </ContentButton>
                     <ContentButton 
-                        class="content_button--red info_desc_button"
+                        class="content_button--red info_desc_button content_button--margin"
                         link="http://momokai.com/corsace"
                         external
                     >
@@ -338,7 +338,7 @@
                         <li><strong>Disconnections</strong> are considered to be unexpected, game-breaking events <strong>out of a player&rsquo;s control</strong> (i.e. keyboard/tablet/mouse malfunction, system failure, internet disconnect, etc). Offset, background dim, leaderboard presence, etc. <strong>ARE NOT</strong> considered valid reasons to call for an abort/replay as players may fix these on their own time.</li>
                     </ul>
                     <ContentButton 
-                        class="content_button--red info_report_button"
+                        class="content_button--red info_report_button content_button--margin"
                         link="https://pif.ephemeral.ink/tournament-reports"
                         external
                     >
@@ -361,7 +361,7 @@
                     </div>
                     <hr class="line--gray line--no-fill">
                     <ContentButton 
-                        class="content_button--red info_report_button"
+                        class="content_button--red info_report_button content_button--margin"
                         link="https://pif.ephemeral.ink/tournament-reports"
                         external
                     >
@@ -407,7 +407,6 @@
                         <ContentButton 
                             v-for="stage in stageList"
                             :key="stage.ID"
-                            class="content_button--right_margin"
                             :class="{ 'content_button--active': selectedStage === stage.ID }"
                             @click.native="selectedStage = stage.ID"
                         >
@@ -543,8 +542,7 @@
                                     </div>
                                 </div>
                                 <div class="info_stage_data_button_group">
-                                    <ContentButton 
-                                        class="content_button--right_margin_bottom"
+                                    <ContentButton
                                         :class="{ 
                                             'content_button--red': mappool.isPublic,
                                             'content_button--disabled': !mappool.isPublic,
@@ -554,8 +552,7 @@
                                     >
                                         {{ mappool.isPublic ? $t('open.info.mappools.info') : $t('open.info.mappools.notAvailable') }}
                                     </ContentButton>
-                                    <ContentButton 
-                                        class="content_button--right_margin_bottom"
+                                    <ContentButton
                                         :class="{ 
                                             'content_button--red': mappool.isPublic,
                                             'content_button--disabled': !mappool.isPublic,
@@ -877,7 +874,7 @@ export default class Info extends Vue {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        margin: 0 0 10px -10px;
+        gap: 10px;
     }
 
     &_stage_panel {

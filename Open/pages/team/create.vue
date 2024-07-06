@@ -229,7 +229,6 @@ export default class Create extends Vue {
     };
 
     @openModule.State tournament!: Tournament | null;
-    @openModule.State team!: Team | null;
 
     @State loggedInUser!: null | UserInfo;
 
@@ -293,8 +292,6 @@ export default class Create extends Vue {
     async mounted () {
         if (!this.loggedInUser?.discord.userID)
             await this.$router.push("/");
-        else if (this.team)
-            await this.$router.push(`/team`);
     }
 
     async create () {
@@ -349,7 +346,7 @@ export default class Create extends Vue {
                 alert(`Error making team:\n${res.error}`);
 
             this.loading = false;
-            await this.$store.dispatch("open/setTeam");
+            await this.$store.dispatch("open/setMyTeams");
             await this.$router.push(`/team/${res.team.ID}`);
         } else
             alert(res.error);
@@ -364,7 +361,6 @@ export default class Create extends Vue {
 .create {
 
     &__container {
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
         align-self: center;
         display: flex;
         flex-direction: column;

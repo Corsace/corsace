@@ -12,6 +12,7 @@
                             v-if="qualifierData.mp"
                             class="content_button--red content_button--red_sm"
                             :link="`https://osu.ppy.sh/community/matches/${qualifierData.mp}`"
+                            external
                         >
                             osu! MP LINK
                         </ContentButton>
@@ -166,7 +167,7 @@ export default class Qualifier extends Vue {
     scoreView: "teams" | "players"  = "players";
 
     @openModule.State tournament!: Tournament | null;
-    @openModule.State team!: Team | null;
+    @openModule.State myTeams!: Team[] | null;
     @openModule.State mappools!: Mappool[] | null;
 
     loading = false;
@@ -198,12 +199,12 @@ export default class Qualifier extends Vue {
         this.loading = true;
         let ID = 0;
         if (!this.$route.params.id) {
-            if (!this.team?.qualifier?.ID) {
+            if (!this.myTeams || !this.myTeams.some(t => t.qualifier?.ID)) {
                 this.loading = false;
                 return null;
             }
             
-            ID = this.team.qualifier.ID;
+            ID = this.myTeams.find(t => t.qualifier?.ID)?.qualifier?.ID ?? 0;
         } else
             ID = parseInt(this.$route.params.id);
 
@@ -233,7 +234,6 @@ export default class Qualifier extends Vue {
 @import '@s-sass/_variables';
 
 .qualifier {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
     height: 100%;
 
     &__wrapper {
@@ -245,7 +245,6 @@ export default class Qualifier extends Vue {
         position: relative;
         width: 65vw;
         padding: 35px;
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
     }
 
     &__info_bar {
