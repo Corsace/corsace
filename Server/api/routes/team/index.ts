@@ -107,11 +107,25 @@ teamRouter.$post<{
     team: TeamInterface;
     error?: string;
 }>("/create", isLoggedInDiscord, async (ctx) => {
+    const teamCount2Days = await Team
+        .createQueryBuilder("team")
+        .where("team.createdAt > :date", { date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) })
+        .andWhere("team.captainID = :captainID", { captainID: ctx.state.user!.ID })
+        .getCount();
+
+    if (teamCount2Days > 5) {
+        ctx.body = {
+            success: false,
+            error: "You have created too many teams (5) in the last 2 days",
+        };
+        return;
+    }
+
     let { name, abbreviation, timezoneOffset } = ctx.request.body;
     const isPlaying = ctx.request.body?.isPlaying;
 
     if (!name || !abbreviation || !timezoneOffset) {
-        ctx.body = { 
+        ctx.body = {
             success: false,
             error: "Missing parameters",
         };
