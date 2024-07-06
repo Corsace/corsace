@@ -8,12 +8,12 @@
             <template
                 #right
             >
-                    <ContentButton
-                        class="content_button--red"
-                        :link="`/team/${teamData.ID}`"
-                    >
-                        {{ $t('open.teams.headers.teamPage') }}
-                    </ContentButton>
+                <ContentButton
+                    class="content_button--red"
+                    :link="`/team/${teamData.ID}`"
+                >
+                    {{ $t('open.teams.headers.teamPage') }}
+                </ContentButton>
             </template>
         </OpenTitle>
         <div class="invites_team__container">
@@ -56,7 +56,8 @@
                         :style="{backgroundImage: `linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url(https://a.ppy.sh/${invite.osuID})`}"
                     >
                         {{ invite.username }}
-                        <ContentButton v-if="isCaptain"
+                        <ContentButton 
+                            v-if="isCaptain"
                             @click.native="removeInvite(invite)"
                         >
                             {{ $t("open.teams.invites.decline") }}
@@ -121,7 +122,7 @@ export default class Invites extends Vue {
     userSearch: User[] = [];
 
     get teamInvites () {
-        return this.inviteList?.find(invite => invite.teamID === this.teamData?.ID)?.invites || [];
+        return this.inviteList?.find(invite => invite.teamID === this.teamData?.ID)?.invites ?? [];
     }
 
     get isCaptain (): boolean {
@@ -135,7 +136,7 @@ export default class Invites extends Vue {
             return;
         }
 
-        this.teamData = this.myTeams.find(team => team.ID === parseInt(this.$route.params.id)) || null;
+        this.teamData = this.myTeams.find(team => team.ID === parseInt(this.$route.params.id)) ?? null;
     }
 
     async search (userSearch: string) {

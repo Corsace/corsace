@@ -2,10 +2,6 @@
     <div class="invites">
         <OpenTitle>
             {{ $t("open.navbar.invitations") }}
-            <template
-                #right
-            >
-            </template>
         </OpenTitle>
 
         <div class="invites__team_list">
