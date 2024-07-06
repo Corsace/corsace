@@ -13,7 +13,6 @@ export interface TeamList extends BaseTeam {
     rank: number;
     BWS: number;
     members: TeamMember[];
-    isRegistered?: boolean;
 }
 
 export interface Team extends TeamList {

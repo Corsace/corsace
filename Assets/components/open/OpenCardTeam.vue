@@ -23,7 +23,7 @@
             :style="{ 'backgroundImage': `url(${teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
         />
         <div class="open_card_team__name">
-            {{ teamSync.name }} <span v-if="!teamSync.isRegistered">({{ $t("open.components.openCardTeam.unregistered") }})</span>
+            {{ teamSync.name }}
         </div>
         <div class="open_card_team__text">
             <div class="open_card_team__text_group">
@@ -51,11 +51,11 @@
 
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
-import { TeamList } from "../../../Interfaces/team";
+import { Team, TeamList } from "../../../Interfaces/team";
 
 @Component
 export default class OpenCardTeam extends Vue {
-    @PropSync("team", { type: Object }) teamSync!: TeamList;
+    @PropSync("team", { type: Object }) teamSync!: Team | TeamList;
 }
 </script>
 

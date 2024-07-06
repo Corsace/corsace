@@ -88,18 +88,11 @@ export const mutations: MutationTree<OpenState> = {
     },
     setTeamList (state, teams: TeamList[] | undefined) {
         state.teamList = teams ?? null;
-        if (state.teamList) {
-            const unregisteredTeams = state.teamList.filter(team => !team.isRegistered);
-            unregisteredTeams
-                .sort((a, b) => a.BWS - b.BWS)
-                .sort((a, b) => (a.BWS === 0 ? 1 : 0) - (b.BWS === 0 ? 1 : 0))
-                .sort((a, b) => b.members.length - a.members.length);
-            const registeredTeams = state.teamList.filter(team => team.isRegistered);
-            registeredTeams
-                .sort((a, b) => a.BWS - b.BWS)
-                .sort((a, b) => (a.BWS === 0 ? 1 : 0) - (b.BWS === 0 ? 1 : 0));
-            state.teamList = [...registeredTeams, ...unregisteredTeams];
-        }
+        if (!state.teamList)
+            return;
+        state.teamList
+            .sort((a, b) => a.BWS - b.BWS)
+            .sort((a, b) => (a.BWS === 0 ? 1 : 0) - (b.BWS === 0 ? 1 : 0));
     },
     setMyTeams (state, teams: Team[] | undefined) {
         state.myTeams = teams ?? null;
