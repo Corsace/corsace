@@ -246,17 +246,6 @@ export default class Default extends Vue {
             this.$store.dispatch("setViewTheme", "dark"),
         ]);
     }
-
-    async inviteAction (inviteID: number, action: "accept" | "decline") {
-        try {
-            await this.$axios.post(`/api/team/invite/${inviteID}/${action}`);
-            await this.$store.dispatch("open/setMyTeams");
-            await this.$store.dispatch("open/setInvites");
-        } catch (e) {
-            alert("Something went wrong. Contact VINXIS. Error is in console, which can be accessed by pressing F12.");
-            console.log(e);
-        }
-    }
 }
 </script>
 

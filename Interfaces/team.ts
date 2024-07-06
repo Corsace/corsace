@@ -5,10 +5,10 @@ import { BaseTournament } from "./tournament";
 export interface BaseTeam {
     ID: number;
     name: string;
+    avatarURL?: string | null;
 }
 
 export interface TeamList extends BaseTeam {
-    avatarURL?: string | null;
     pp: number;
     rank: number;
     BWS: number;

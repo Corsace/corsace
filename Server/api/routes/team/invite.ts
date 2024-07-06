@@ -30,6 +30,7 @@ inviteRouter.$get<{ invites: BaseTeam[] }>("/user", async (ctx) => {
             return {
                 ID: i.team.ID,
                 name: i.team.name,
+                avatarURL: i.team.avatarURL,
             };
         }),
     };
@@ -159,7 +160,7 @@ inviteRouter.$post<{ invite: TeamInvite }, TeamAuthenticatedState>("/:teamID", v
     }
 });
 
-inviteRouter.$post<{ team: Team }>("/:teamID/accept", async (ctx) => {
+inviteRouter.$post("/:teamID/accept", async (ctx) => {
     const user = ctx.state.user;
     let invite: TeamInvite;
     try {
@@ -212,10 +213,7 @@ inviteRouter.$post<{ team: Team }>("/:teamID/accept", async (ctx) => {
 
     await invite.remove();
 
-    ctx.body = {
-        success: true,
-        team,
-    };
+    ctx.body = { success: true };
 });
 
 inviteRouter.$post("/:teamID/decline", async (ctx) => {

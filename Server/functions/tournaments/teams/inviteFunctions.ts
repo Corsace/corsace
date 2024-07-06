@@ -22,8 +22,8 @@ export async function invitePlayer (team: Team, user: User) {
 
 export async function inviteAcceptChecks (invite: TeamInvite) {
     const teamTournaments = invite.team.tournaments;
-    if (teamTournaments.some(t => t.status === TournamentStatus.Ongoing))
-        return "Team is in an ongoing tournament";
+    if (teamTournaments.some(t => t.status === TournamentStatus.Ongoing || t.status === TournamentStatus.Finished))
+        return "Team is in an ongoing or has already finished tournament (locked roster)";
 
     const registrationTournaments = teamTournaments.filter(t => t.status === TournamentStatus.Registrations);
     if (registrationTournaments.some(t => invite.team.members.length + 1 > t.maxTeamSize))

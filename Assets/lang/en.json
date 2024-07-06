@@ -625,6 +625,13 @@
                 "name": "name",
                 "abbreviation": "abbreviation"
             },
+            "invites": {
+                "title": "TEAM INVITES",
+                "noInvites": "You currently have no invites",
+                "accept": "ACCEPT",
+                "decline": "DECLINE",
+                "error": "COULD NOT GET INVITES"
+            },
             "edit": {
                 "teamName": "TEAM NAME",
                 "teamAbbreviation": "TEAM ABBREVIATION",
