@@ -521,7 +521,7 @@
                 "qualifiersMappool": "QUALIFIERS MAPPOOL",
                 "mappoolDownload": "Mappool download and statistics",
                 "register": "TEAM REGISTRATION",
-                "registrationsEnd": "Registrations end"
+                "registrationsEnd": "Registrations end {time}"
             }
         },
         "info": {

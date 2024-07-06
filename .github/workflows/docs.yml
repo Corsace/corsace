@@ -3,7 +3,13 @@ name: Update docs
 on:
   push:
     branches:
-      - master
+      - '**'
+      - '!crowdin'
+    tags:
+      - '*'
+  pull_request_target:
+    branches:
+      - '*'
 
 permissions:
   contents: read
@@ -32,13 +38,15 @@ jobs:
           DEPLOYMENT: gh-pages
         run: |
           npm run build:docs
-          
+
       - name: Upload Pages Artifact
+        if: ${{ github.event_name == 'push' && github.repository == 'Corsace/Corsace' && github.ref_name == 'master' }}
         uses: actions/upload-pages-artifact@v1
         with:
           path: Docs/dist/
 
   deploy:
+    if: ${{ github.event_name == 'push' && github.repository == 'Corsace/Corsace' && github.ref_name == 'master' }}
     needs: build
     runs-on: ubuntu-latest
     environment:
