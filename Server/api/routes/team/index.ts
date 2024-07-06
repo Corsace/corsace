@@ -712,6 +712,59 @@ teamRouter.$post("/:teamID/captain", isLoggedInDiscord, validateTeam(true), asyn
     }
 });
 
+teamRouter.$post("/:teamID/leave", isLoggedInDiscord, validateTeam(false), async (ctx) => {
+    const user = ctx.state.user!;
+    const team = ctx.state.team!;
+
+    const tournaments = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoin("tournament.teams", "team")
+        .where("team.ID = :ID", { ID: team.ID })
+        .getMany();
+
+    if (tournaments.some(t => t.status === TournamentStatus.Registrations)) {
+        const qualifierMatches = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoin("matchup.stage", "stage")
+            .innerJoin("stage.tournament", "tournament")
+            .innerJoin("matchup.teams", "team")
+            .where("tournament.ID IN (:...IDs)", { IDs: tournaments.filter(t => t.status === TournamentStatus.Registrations).map(t => t.ID) })
+            .andWhere("stage.stageType = '0'")
+            .andWhere("team.ID = :teamID", { teamID: team.ID })
+            .getMany();
+
+        if (qualifierMatches.length > 0) {
+            ctx.body = {
+                success: false,
+                error: "Team is currently registered in a tournament where they have already played a qualifier match",
+            };
+            return;
+        }
+    }
+
+    if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
+        ctx.body = {
+            success: false,
+            error: "Team cannot change lineup",
+        };
+        return;
+    }
+
+    if (team.members.every(m => m.ID !== user.ID)) {
+        ctx.body = {
+            success: false,
+            error: "User is not in the team",
+        };
+        return;
+    }
+
+    team.members = team.members.filter(m => m.ID !== user.ID);
+    await team.calculateStats();
+    await team.save();
+
+    ctx.body = { success: true };
+});
+
 teamRouter.$post("/:teamID/captain/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team = ctx.state.team!;
 

@@ -20,7 +20,7 @@
                     </ContentButton>
                     <ContentButton
                         class="content_button--red"
-                        :link="`/team/invite/${teamData.ID}`"
+                        :link="`/team/invites/${teamData.ID}`"
                     >
                         {{ $t('open.teams.headers.teamInvites') }}
                     </ContentButton>
@@ -38,7 +38,7 @@
                     </ContentButton>
                     <ContentButton
                         class="content_button--red"
-                        :link="`/team/invite/${teamData.ID}`"
+                        :link="`/team/invites/${teamData.ID}`"
                     >
                         {{ $t('open.teams.headers.teamInvites') }}
                     </ContentButton>
@@ -88,7 +88,7 @@
                             <div v-else>
                                 {{ $t('open.teams.registration.noRegistration') }}
                                 <br>
-                                {{ $t('open.teams.registration.toPlay') }}
+                                {{ myTeams?.some(t => t.ID === teamData?.ID) ? $t('open.teams.registration.toPlay') : '' }}
                             </div>
                         </div>
                         <div>
@@ -205,13 +205,6 @@
                 </div>
             </div>
         </div>
-        <div
-            v-if="teamData && !teamData.qualifier?.mp && isCaptain"
-            class="team__delete"
-            @click="deleteTeam"
-        >
-            {{ $t('open.teams.edit.deleteTeam') }}?
-        </div>
         <div 
             v-else-if="loading"
             class="team__container"
@@ -227,6 +220,13 @@
             <OpenTitle>
                 NO TEAM FOUND
             </OpenTitle>
+        </div>
+        <div
+            v-if="teamData && !teamData.qualifier?.mp && isCaptain"
+            class="team__delete"
+            @click="deleteTeam"
+        >
+            {{ $t('open.teams.edit.deleteTeam') }}?
         </div>
         <!-- Team Edit Modal -->
         <BaseModal
@@ -364,7 +364,6 @@ import OpenInput from "../../../Assets/components/open/OpenInput.vue";
 import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../../Assets/components/BaseModal.vue";
-import SearchBar from "../../../Assets/components/SearchBar.vue";
 import QualifierModal from "../../../Assets/components/open/QualifierModal.vue";
 
 const openModule = namespace("open");
@@ -376,7 +375,6 @@ const openModule = namespace("open");
         OpenSelect,
         OpenTitle,
         BaseModal,
-        SearchBar,
         QualifierModal,
     },
     head () {
@@ -511,6 +509,16 @@ export default class Team extends Vue {
 
     get isCaptain (): boolean {
         return this.teamData?.captain.ID === this.loggedInUser?.ID;
+    }
+
+    async leaveTeam () {
+        if (!this.teamData)
+            return;
+        const { data } = await this.$axios.post(`/api/team/${this.teamData.ID}/leave`);
+        if (!data.success)
+            return alert(data.error);
+        await this.$store.dispatch("open/setMyTeams");
+        await this.getTeam(true);
     }
 
     uploadAvatar (e: Event) {
@@ -674,53 +682,6 @@ export default class Team extends Vue {
     //         alert(res.error);
     // }
 
-    async search (userSearch: string) {
-        try {
-            const { data } = await this.$axios.get<{ users: User[] }>(`/api/users/search?user=${userSearch}`);
-
-            if (!data.success)
-                alert(data.error);
-            else
-                this.users = data.users;
-        } catch (error) {
-            alert(this.$t("open.teams.edit.errors.contactVinxis") as string);
-            console.error(error);
-        }
-    }
-
-    async inviteUser (user: User) {
-        if (!this.teamData)
-            return;
-
-        if (!confirm(this.$t("open.teams.edit.confirm.invite", {username: user.osu.username}) as string))
-            return;
-
-        const { data: res } = await this.$axios.post(`/api/team/invite/${this.teamData.ID}`, {
-            userID: user.ID,
-            idType: "corsace",
-        });
-
-        if (res.success)
-            this.teamData = await this.getTeam(true);
-        else
-            alert(res.error);
-    }
-
-    async removeInvite (user: TeamUser) {
-        if (!this.teamData)
-            return;
-
-        if (!confirm(this.$t("open.teams.edit.confirm.removeInvite", {username: user.username}) as string))
-            return;
-
-        const { data: res } = await this.$axios.post(`/api/team/invite/${this.teamData.ID}/cancel/${user.ID}`);
-
-        if (res.success)
-            this.teamData = await this.getTeam(true);
-        else
-            alert(res.error);
-    }
-
     async unregister () {
         if (!this.teamData || !this.tournament)
             return;
@@ -804,7 +765,7 @@ export default class Team extends Vue {
         display: flex;
         flex-wrap: wrap;
         font-weight: bold;
-        gap: 87px;
+        gap: 50px;
 
         &_section {
             gap: 38px;
