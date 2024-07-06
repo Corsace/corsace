@@ -615,7 +615,7 @@
             "editTeamInfo": "sunting info tim",
             "qualifierId": "ID Kualifikasi",
             "placeholders": {
-                "searchUser": "nama pengguna osu! (harus memiliki akun corsace yang terhubung)",
+                "searchUser": "nama pengguna osu!",
                 "name": "nama",
                 "abbreviation": "singkatan"
             },

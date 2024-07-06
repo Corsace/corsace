@@ -621,13 +621,14 @@
             "leaveTeam": "LEAVE TEAM",
             "qualifierId": "Qualifier ID",
             "placeholders": {
-                "searchUser": "osu! username (must have corsace account)",
+                "searchUser": "osu! username",
                 "name": "name",
                 "abbreviation": "abbreviation"
             },
             "invites": {
                 "title": "TEAM INVITES",
                 "noInvites": "You currently have no invites",
+                "invite": "INVITE",
                 "accept": "ACCEPT",
                 "decline": "DECLINE",
                 "error": "COULD NOT GET INVITES"
@@ -668,6 +669,7 @@
                 "becomeMember": "become a member and play as well",
                 "becomeCaptain": "become captain only",
                 "teamInvites": "TEAM INVITES",
+                "teamPage": "TEAM PAGE",
                 "editTeamInvites": "edit team invites",
                 "closeTeamInvites": "close team invites edit",
                 "qualifier": "QUALIFIER",

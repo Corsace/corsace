@@ -615,7 +615,7 @@
             "editTeamInfo": "팀 정보 수정",
             "qualifierId": "퀄리파이어 ID",
             "placeholders": {
-                "searchUser": "Osu! 닉네임 (코사스 계정이 있어야 합니다)",
+                "searchUser": "Osu! 닉네임",
                 "name": "팀 이름",
                 "abbreviation": "약어"
             },

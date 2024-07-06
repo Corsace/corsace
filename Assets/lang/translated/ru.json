@@ -615,7 +615,7 @@
             "editTeamInfo": "изменить информацию о команде",
             "qualifierId": "ID Отборочного Матча",
             "placeholders": {
-                "searchUser": "ник в osu! (требуется аккаунт corsace)",
+                "searchUser": "ник в osu!",
                 "name": "название",
                 "abbreviation": "аббревиатура"
             },

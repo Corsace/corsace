@@ -615,7 +615,7 @@
             "editTeamInfo": "チーム情報を編集",
             "qualifierId": "予選ID",
             "placeholders": {
-                "searchUser": "osu! ユーザー名 (corsaceアカウントが必要です)",
+                "searchUser": "osu! ユーザー名",
                 "name": "名前",
                 "abbreviation": "略称"
             },
