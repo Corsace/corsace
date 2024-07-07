@@ -5,6 +5,7 @@
         "welcomeBack": "환영합니다",
         "login": "로그인",
         "register": "등록",
+        "menu": "menu",
         "changeDiscord": "디스코드 계정 변경",
         "logout": "로그아웃"
     },
@@ -483,6 +484,7 @@
             "mappool": "맵풀",
             "staff": "스태프",
             "createTeam": "팀 만들기",
+            "myTeams": "my teams",
             "invitations": "초대장",
             "loginDiscord": "팀 관리/초대를 하려면 디스코드 로그인을 해 주세요",
             "teamInvites": "받은 팀 초대",
@@ -493,7 +495,8 @@
             "twitter": "트위터",
             "discord": "디스코드",
             "twitch": "트위치",
-            "youtube": "유튜브"
+            "youtube": "유튜브",
+            "github": "GITHUB"
         },
         "stages": {
             "qualifiers": "퀄리파이어",
@@ -501,23 +504,31 @@
             "runoff bracket": "런오프 브라켓",
             "knockout 1": "녹아웃 1",
             "knockout 2": "녹아웃 2",
+            "week 1": "WEEK 1",
+            "week 2": "WEEK 2",
+            "week 3": "WEEK 3",
+            "week 4": "WEEK 4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
                 "ro": "(RO)",
                 "ko1": "(KO1)",
-                "ko2": "(KO2)"
+                "ko2": "(KO2)",
+                "w1": "(W1)",
+                "w2": "(W2)",
+                "w3": "(W3)",
+                "w4": "(W4)"
             }
         },
         "home": {
-            "description": "세계 최고의 Osu! 플레이어들이 배틀하는 코사스 오픈 2023에 빠져보세요!",
+            "description": "세계 최고의 Osu! 플레이어들이 배틀하는 코사스 오픈 2024에 빠져보세요!",
             "timeline": "타임라인",
-            "presentedBy": "코사스 2023은 다음과 같은 곳에서 제공합니다",
+            "presentedBy": "코사스 2024은 다음과 같은 곳에서 제공합니다",
             "registrations": "등록 기간",
             "button": {
                 "qualifiersMappool": "퀄리파이어 맵풀",
                 "mappoolDownload": "맵풀 다운로드와 통계 보기",
-                "register": "당신의 팀을 만들고 등록하세요",
+                "register": "TEAM REGISTRATION",
                 "registrationsEnd": "{time} 에 등록이 마감됩니다"
             }
         },
@@ -609,15 +620,26 @@
             }
         },
         "teams": {
-            "teamsList": "팀 목록",
+            "teamList": "팀 목록",
+            "teamManagement": "TEAM MANAGEMENT",
             "error": "팀 목록을 가져올 수 없습니다",
+            "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "팀/유저 검색",
             "editTeamInfo": "팀 정보 수정",
+            "leaveTeam": "LEAVE TEAM",
             "qualifierId": "퀄리파이어 ID",
             "placeholders": {
-                "searchUser": "Osu! 닉네임 (코사스 계정이 있어야 합니다)",
+                "searchUser": "Osu! 닉네임",
                 "name": "팀 이름",
                 "abbreviation": "약어"
+            },
+            "invites": {
+                "title": "TEAM INVITES",
+                "noInvites": "You currently have no invites",
+                "invite": "INVITE",
+                "accept": "ACCEPT",
+                "decline": "DECLINE",
+                "error": "COULD NOT GET INVITES"
             },
             "edit": {
                 "teamName": "팀 이름",
@@ -655,6 +677,7 @@
                 "becomeMember": "팀원이 되고 플레이도 해보세요",
                 "becomeCaptain": "캡틴만 되기",
                 "teamInvites": "팀 초대",
+                "teamPage": "TEAM PAGE",
                 "editTeamInvites": "팀 초대 수정하기",
                 "closeTeamInvites": "팀 초대 닫기",
                 "qualifier": "퀄리파이어",
@@ -663,7 +686,7 @@
             },
             "registration": {
                 "noRegistration": "토너먼트에 등록되지 않았습니다",
-                "toPlay": "코사스 오픈에서 플레이하기 위해, 6명의 팀원을 확보하고 아래에서 퀄리파이어 날짜와 시간을 선택해 주세요."
+                "toPlay": "코사스 오픈에서 플레이하기 위해, 6-8명의 팀원을 확보하고 아래에서 퀄리파이어 날짜와 시간을 선택해 주세요."
             },
             "teamID": "팀 ID",
             "member": "멤버",
