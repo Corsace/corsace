@@ -5,6 +5,7 @@
         "welcomeBack": "welkom terug",
         "login": "inloggen",
         "register": "registreren",
+        "menu": "menu",
         "changeDiscord": "discord veranderen",
         "logout": "uitloggen"
     },
@@ -483,6 +484,7 @@
             "mappool": "MAPPOOL",
             "staff": "STAFF",
             "createTeam": "CREATE TEAM",
+            "myTeams": "my teams",
             "invitations": "INVITATIONS",
             "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
             "teamInvites": "TEAM INVITES",
@@ -493,7 +495,8 @@
             "twitter": "TWITTER",
             "discord": "DISCORD",
             "twitch": "TWITCH",
-            "youtube": "YOUTUBE"
+            "youtube": "YOUTUBE",
+            "github": "GITHUB"
         },
         "stages": {
             "qualifiers": "QUALIFIERS",
@@ -501,24 +504,32 @@
             "runoff bracket": "RUNOFF BRACKET",
             "knockout 1": "KNOCKOUT 1",
             "knockout 2": "KNOCKOUT 2",
+            "week 1": "WEEK 1",
+            "week 2": "WEEK 2",
+            "week 3": "WEEK 3",
+            "week 4": "WEEK 4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
                 "ro": "(RO)",
                 "ko1": "(KO1)",
-                "ko2": "(KO2)"
+                "ko2": "(KO2)",
+                "w1": "(W1)",
+                "w2": "(W2)",
+                "w3": "(W3)",
+                "w4": "(W4)"
             }
         },
         "home": {
-            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
+            "description": "Dive into Corsace Open 2024 - where the world's osu! elites battle it out.",
             "timeline": "TIMELINE",
-            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "presentedBy": "CORSACE OPEN 2024 IS PRESENTED BY",
             "registrations": "REGISTRATIONS",
             "button": {
-                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
+                "qualifiersMappool": "QUALIFIERS MAPPOOL",
                 "mappoolDownload": "Mappool download and statistics",
-                "register": "CREATE AND REGISTER YOUR TEAM",
-                "registrationsEnd": "Registrations end {time}"
+                "register": "TEAM REGISTRATION",
+                "registrationsEnd": "Registrations end"
             }
         },
         "info": {
@@ -609,15 +620,26 @@
             }
         },
         "teams": {
-            "teamsList": "TEAMS LIST",
+            "teamList": "TEAMS LIST",
+            "teamManagement": "TEAM MANAGEMENT",
             "error": "COULD NOT GET TEAM LIST",
+            "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "search for user/team",
             "editTeamInfo": "edit team info",
+            "leaveTeam": "LEAVE TEAM",
             "qualifierId": "Qualifier ID",
             "placeholders": {
                 "searchUser": "osu! username (must have corsace account)",
                 "name": "name",
                 "abbreviation": "abbreviation"
+            },
+            "invites": {
+                "title": "TEAM INVITES",
+                "noInvites": "You currently have no invites",
+                "invite": "INVITE",
+                "accept": "ACCEPT",
+                "decline": "DECLINE",
+                "error": "COULD NOT GET INVITES"
             },
             "edit": {
                 "teamName": "TEAM NAME",
@@ -655,6 +677,7 @@
                 "becomeMember": "become a member and play as well",
                 "becomeCaptain": "become manager only",
                 "teamInvites": "TEAM INVITES",
+                "teamPage": "TEAM PAGE",
                 "editTeamInvites": "edit team invites",
                 "closeTeamInvites": "close team invites edit",
                 "qualifier": "QUALIFIER",
