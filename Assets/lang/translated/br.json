@@ -5,6 +5,7 @@
         "welcomeBack": "bem-vindo de volta",
         "login": "login",
         "register": "registrar",
+        "menu": "menu",
         "changeDiscord": "mudar discord",
         "logout": "sair"
     },
@@ -483,6 +484,7 @@
             "mappool": "MAPPOOL",
             "staff": "STAFF",
             "createTeam": "CRIAR TIME",
+            "myTeams": "my teams",
             "invitations": "CONVITES",
             "loginDiscord": "ENTRE PELO DISCORD PARA GERENCIAR TIMES/CONVITES",
             "teamInvites": "CONVITES DE TIME",
@@ -493,7 +495,8 @@
             "twitter": "TWITTER",
             "discord": "DISCORD",
             "twitch": "TWITCH",
-            "youtube": "YOUTUBE"
+            "youtube": "YOUTUBE",
+            "github": "GITHUB"
         },
         "stages": {
             "qualifiers": "QUALIFICATÓRIAS",
@@ -501,24 +504,32 @@
             "runoff bracket": "REPESCAGEM",
             "knockout 1": "MATA-MATA 1",
             "knockout 2": "MATA-MATA 2",
+            "week 1": "WEEK 1",
+            "week 2": "WEEK 2",
+            "week 3": "WEEK 3",
+            "week 4": "WEEK 4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
                 "ro": "(RO)",
                 "ko1": "(KO1)",
-                "ko2": "(KO2)"
+                "ko2": "(KO2)",
+                "w1": "(W1)",
+                "w2": "(W2)",
+                "w3": "(W3)",
+                "w4": "(W4)"
             }
         },
         "home": {
-            "description": "Entre de cara na Corsace Open 2023 - onde os melhores jogadores de osu! do mundo se enfrentam.",
+            "description": "Entre de cara na Corsace Open 2024 - onde os melhores jogadores de osu! do mundo se enfrentam.",
             "timeline": "LINHA DO TEMPO",
-            "presentedBy": "CORSACE OPEN 23 É APRESENTADA POR",
+            "presentedBy": "CORSACE OPEN 2024 É APRESENTADA POR",
             "registrations": "INSCRIÇÕES",
             "button": {
-                "qualifiersMappool": "MAPPOOLS DAS QUALIFICATÓRIAS",
+                "qualifiersMappool": "MAPPOOL DAS QUALIFICATÓRIAS",
                 "mappoolDownload": "Baixar mappool e estatísticas",
-                "register": "CRIAR E INSCREVER SEU TIME",
-                "registrationsEnd": "Registrations end {time}"
+                "register": "TEAM REGISTRATION",
+                "registrationsEnd": "Fim das inscrições em"
             }
         },
         "info": {
@@ -609,15 +620,26 @@
             }
         },
         "teams": {
-            "teamsList": "LISTA DE TIMES",
+            "teamList": "LISTA DE TIMES",
+            "teamManagement": "TEAM MANAGEMENT",
             "error": "NÃO FOI POSSÍVEL PEGAR A LISTA DE TIMES",
+            "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "procurar por usuário/time",
             "editTeamInfo": "editar informações do time",
+            "leaveTeam": "LEAVE TEAM",
             "qualifierId": "ID da Qualificatória",
             "placeholders": {
-                "searchUser": "nome de usuário no osu! (necessário ter conta na corsace)",
+                "searchUser": "nome de usuário no osu!",
                 "name": "nome",
                 "abbreviation": "abreviação"
+            },
+            "invites": {
+                "title": "TEAM INVITES",
+                "noInvites": "You currently have no invites",
+                "invite": "INVITE",
+                "accept": "ACCEPT",
+                "decline": "DECLINE",
+                "error": "COULD NOT GET INVITES"
             },
             "edit": {
                 "teamName": "NOME DO TIME",
@@ -655,6 +677,7 @@
                 "becomeMember": "se tornar um membro e jogar também",
                 "becomeCaptain": "se tornar apenas um manager",
                 "teamInvites": "CONVITES DE TIME",
+                "teamPage": "TEAM PAGE",
                 "editTeamInvites": "editar convites de time",
                 "closeTeamInvites": "fechar edição dos convites de time",
                 "qualifier": "QUALIFICATÓRIA",
@@ -663,7 +686,7 @@
             },
             "registration": {
                 "noRegistration": "Inscrito em nenhum torneio",
-                "toPlay": "Para jogar na Corsace Open, consiga 6 membros e escolha uma data e hora de qualificatória abaixo"
+                "toPlay": "Para jogar na Corsace Open, consiga 6-8 membros e escolha uma data e hora de qualificatória abaixo"
             },
             "teamID": "ID DO TIME",
             "member": "membro",
