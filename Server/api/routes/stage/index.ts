@@ -112,9 +112,6 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
 });
 
 stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
-    if (await ctx.cashed())
-        return;
-
     const stage = ctx.state.stage;
 
     const tournament = await Tournament
