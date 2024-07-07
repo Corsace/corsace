@@ -505,20 +505,20 @@
             "runoff bracket": "BRACKET RUNOFF",
             "knockout 1": "KNOCKOUT 1",
             "knockout 2": "KNOCKOUT 2",
-            "week 1": "WEEK 1",
-            "week 2": "WEEK 2",
-            "week 3": "WEEK 3",
-            "week 4": "WEEK 4",
+            "week 1": "MINGGU KE-1",
+            "week 2": "MINGGU KE-2",
+            "week 3": "MINGGU KE-3",
+            "week 4": "MINGGU KE-4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
                 "ro": "(RO)",
                 "ko1": "(KO1)",
                 "ko2": "(KO2)",
-                "w1": "(W1)",
-                "w2": "(W2)",
-                "w3": "(W3)",
-                "w4": "(W4)"
+                "w1": "(M1)",
+                "w2": "(M2)",
+                "w3": "(M3)",
+                "w4": "(M4)"
             }
         },
         "home": {
@@ -529,7 +529,7 @@
             "button": {
                 "qualifiersMappool": "MAPPOOL KUALIFIKASI",
                 "mappoolDownload": "Unduhan dan statistik mappool",
-                "register": "TEAM REGISTRATION",
+                "register": "PENDAFTARAN TIM",
                 "registrationsEnd": "Pendaftaran berakhir pada"
             }
         },
@@ -622,12 +622,12 @@
         },
         "teams": {
             "teamList": "DAFTAR TIM",
-            "teamManagement": "TEAM MANAGEMENT",
+            "teamManagement": "MANAJEMEN TIM",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
-            "loginManagement": "Log in to manage your teams.",
+            "loginManagement": "Silakan masuk untuk mengelola tim milikmu.",
             "searchPlaceholder": "cari pengguna/tim",
-            "editTeamInfo": "sunting info tim",
-            "leaveTeam": "LEAVE TEAM",
+            "editTeamInfo": "SUNtING INFO TIM",
+            "leaveTeam": "KELUAR DARI TIM",
             "qualifierId": "ID Kualifikasi",
             "placeholders": {
                 "searchUser": "nama pengguna osu!",
@@ -635,12 +635,12 @@
                 "abbreviation": "singkatan"
             },
             "invites": {
-                "title": "TEAM INVITES",
-                "noInvites": "You currently have no invites",
-                "invite": "INVITE",
-                "accept": "ACCEPT",
-                "decline": "DECLINE",
-                "error": "COULD NOT GET INVITES"
+                "title": "UNDANGAN TIM",
+                "noInvites": "Kamu saat ini tidak memiliki undangan",
+                "invite": "UNDANG",
+                "accept": "TERIMA",
+                "decline": "TOLAK",
+                "error": "TIDAK DAPAT MEMPEROLEH UNDANGAN"
             },
             "edit": {
                 "teamName": "NAMA TIM",
@@ -678,7 +678,7 @@
                 "becomeMember": "jadi anggota dan ikut bermain",
                 "becomeCaptain": "become manager only",
                 "teamInvites": "UNDANGAN TIM",
-                "teamPage": "TEAM PAGE",
+                "teamPage": "HALAMAN TIM",
                 "editTeamInvites": "sunting undangan tim",
                 "closeTeamInvites": "tutup jendela penyuntingan undangan tim",
                 "qualifier": "KUALIFIKASI",
@@ -687,7 +687,7 @@
             },
             "registration": {
                 "noRegistration": "Tidak terdaftar di turnamen mana pun",
-                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan 6-8 anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
+                "toPlay": "Untuk bermain di Corsace Open, kumpulkan 6-8 anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
             },
             "teamID": "ID TIM",
             "member": "anggota",
