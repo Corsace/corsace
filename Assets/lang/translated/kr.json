@@ -505,10 +505,10 @@
             "runoff bracket": "런오프 브라켓",
             "knockout 1": "녹아웃 1",
             "knockout 2": "녹아웃 2",
-            "week 1": "WEEK 1",
-            "week 2": "WEEK 2",
-            "week 3": "WEEK 3",
-            "week 4": "WEEK 4",
+            "week 1": "1주차",
+            "week 2": "2주차",
+            "week 3": "3주차",
+            "week 4": "4주차",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
@@ -529,7 +529,7 @@
             "button": {
                 "qualifiersMappool": "퀄리파이어 맵풀",
                 "mappoolDownload": "맵풀 다운로드와 통계 보기",
-                "register": "TEAM REGISTRATION",
+                "register": "팀 등록",
                 "registrationsEnd": "{time} 에 등록이 마감됩니다"
             }
         },
@@ -622,12 +622,12 @@
         },
         "teams": {
             "teamList": "팀 목록",
-            "teamManagement": "TEAM MANAGEMENT",
+            "teamManagement": "팀 관리",
             "error": "팀 목록을 가져올 수 없습니다",
-            "loginManagement": "Log in to manage your teams.",
+            "loginManagement": "팀을 관리하려면 로그인하세요",
             "searchPlaceholder": "팀/유저 검색",
             "editTeamInfo": "팀 정보 수정",
-            "leaveTeam": "LEAVE TEAM",
+            "leaveTeam": "팀 떠나기",
             "qualifierId": "퀄리파이어 ID",
             "placeholders": {
                 "searchUser": "Osu! 닉네임",
@@ -636,11 +636,11 @@
             },
             "invites": {
                 "title": "TEAM INVITES",
-                "noInvites": "You currently have no invites",
+                "noInvites": "받은 초대가 없습니다",
                 "invite": "INVITE",
-                "accept": "ACCEPT",
-                "decline": "DECLINE",
-                "error": "COULD NOT GET INVITES"
+                "accept": "수락하기",
+                "decline": "거부하기",
+                "error": "초대를 받을 수 없습니다"
             },
             "edit": {
                 "teamName": "팀 이름",
@@ -678,7 +678,7 @@
                 "becomeMember": "팀원이 되고 플레이도 해보세요",
                 "becomeCaptain": "캡틴만 되기",
                 "teamInvites": "팀 초대",
-                "teamPage": "TEAM PAGE",
+                "teamPage": "팀 페이지",
                 "editTeamInvites": "팀 초대 수정하기",
                 "closeTeamInvites": "팀 초대 닫기",
                 "qualifier": "퀄리파이어",
