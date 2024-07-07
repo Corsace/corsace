@@ -5,6 +5,7 @@
         "welcomeBack": "добро пожаловать",
         "login": "войти",
         "register": "зарегистрироваться",
+        "menu": "menu",
         "changeDiscord": "сменить дискорд",
         "logout": "выйти"
     },
@@ -483,6 +484,7 @@
             "mappool": "МАППУЛ",
             "staff": "ОРГАНИЗАТОРЫ",
             "createTeam": "СОЗДАТЬ КОМАНДУ",
+            "myTeams": "my teams",
             "invitations": "ПРИГЛАШЕНИЯ",
             "loginDiscord": "ВОЙДИТЕ В DISCORD, ЧТОБЫ УПРАВЛЯТЬ КОМАНДАМИ/ПРИГЛАШЕНИЯМИ",
             "teamInvites": "ПРИГЛАШЕНИЯ КОМАНДЫ",
@@ -493,7 +495,8 @@
             "twitter": "ТВИТТЕР",
             "discord": "ДИСКОРД",
             "twitch": "ТВИЧ",
-            "youtube": "ЮТЬЮБ"
+            "youtube": "ЮТЬЮБ",
+            "github": "GITHUB"
         },
         "stages": {
             "qualifiers": "ОТБОРОЧНЫЕ",
@@ -501,24 +504,32 @@
             "runoff bracket": "РАН-ОФФ",
             "knockout 1": "НОКАУТ 1",
             "knockout 2": "НОКАУТ 2",
+            "week 1": "WEEK 1",
+            "week 2": "WEEK 2",
+            "week 3": "WEEK 3",
+            "week 4": "WEEK 4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
                 "ro": "(RO)",
                 "ko1": "(KO1)",
-                "ko2": "(KO2)"
+                "ko2": "(KO2)",
+                "w1": "(W1)",
+                "w2": "(W2)",
+                "w3": "(W3)",
+                "w4": "(W4)"
             }
         },
         "home": {
-            "description": "Погрузись в Corsace Open 2023 - место, где лучшие игроки osu! сходятся лицом к лицу.",
+            "description": "Погрузись в Corsace Open 2024 - место, где лучшие игроки osu! сходятся лицом к лицу.",
             "timeline": "ГРАФИК",
-            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "presentedBy": "CORSACE OPEN 2024 IS PRESENTED BY",
             "registrations": "РЕГИСТРАЦИЯ",
             "button": {
                 "qualifiersMappool": "ОТБОРОЧНЫЙ МАППУЛ",
                 "mappoolDownload": "Скачать маппул и статистика",
-                "register": "СОЗДАТЬ И ЗАРЕГИСТРИРОВАТЬ КОМАНДУ",
-                "registrationsEnd": "Registrations end {time}"
+                "register": "TEAM REGISTRATION",
+                "registrationsEnd": "Регистрация заканчивается"
             }
         },
         "info": {
@@ -609,15 +620,26 @@
             }
         },
         "teams": {
-            "teamsList": "СПИСОК КОМАНД",
+            "teamList": "СПИСОК КОМАНД",
+            "teamManagement": "TEAM MANAGEMENT",
             "error": "НЕ УДАЛОСЬ НАЙТИ СПИСОК КОМАНД",
+            "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "искать пользователя/команду",
             "editTeamInfo": "изменить информацию о команде",
+            "leaveTeam": "LEAVE TEAM",
             "qualifierId": "ID Отборочного Матча",
             "placeholders": {
-                "searchUser": "ник в osu! (требуется аккаунт corsace)",
+                "searchUser": "ник в osu!",
                 "name": "название",
                 "abbreviation": "аббревиатура"
+            },
+            "invites": {
+                "title": "TEAM INVITES",
+                "noInvites": "You currently have no invites",
+                "invite": "INVITE",
+                "accept": "ACCEPT",
+                "decline": "DECLINE",
+                "error": "COULD NOT GET INVITES"
             },
             "edit": {
                 "teamName": "НАЗВАНИЕ КОМАНДЫ",
@@ -655,6 +677,7 @@
                 "becomeMember": "become a member and play as well",
                 "becomeCaptain": "become manager only",
                 "teamInvites": "ПРИГЛАШЕНИЯ КОМАНДЫ",
+                "teamPage": "TEAM PAGE",
                 "editTeamInvites": "изменить приглашения команды",
                 "closeTeamInvites": "закрыть редактирование приглашений команды",
                 "qualifier": "ОТБОРОЧНЫЙ",
@@ -663,7 +686,7 @@
             },
             "registration": {
                 "noRegistration": "Не зарегистрирован ни в одном турнире",
-                "toPlay": "Чтобы играть в Corsace Open, наберите 6 членов и выберите ниже время и дату отборочного матча"
+                "toPlay": "Чтобы играть в Corsace Open, наберите 6-8 членов и выберите ниже время и дату отборочного матча"
             },
             "teamID": "ID КОМАНДЫ",
             "member": "член",
