@@ -5,6 +5,7 @@
         "welcomeBack": "欢迎回来",
         "login": "登录",
         "register": "注册",
+        "menu": "menu",
         "changeDiscord": "修改 Discord",
         "logout": "退出登录"
     },
@@ -483,6 +484,7 @@
             "mappool": "图池",
             "staff": "工作人员",
             "createTeam": "创建队伍",
+            "myTeams": "my teams",
             "invitations": "邀请",
             "loginDiscord": "登录 Discord 来管理队伍或邀请",
             "teamInvites": "队伍邀请",
@@ -493,7 +495,8 @@
             "twitter": "推特",
             "discord": "DISCORD",
             "twitch": "TWITCH",
-            "youtube": "YOUTUBE"
+            "youtube": "YOUTUBE",
+            "github": "GITHUB"
         },
         "stages": {
             "qualifiers": "资格赛",
@@ -501,24 +504,32 @@
             "runoff bracket": "突围赛",
             "knockout 1": "淘汰赛一轮",
             "knockout 2": "淘汰赛二轮",
+            "week 1": "WEEK 1",
+            "week 2": "WEEK 2",
+            "week 3": "WEEK 3",
+            "week 4": "WEEK 4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
                 "ro": "(RO)",
                 "ko1": "(KO1)",
-                "ko2": "(KO2)"
+                "ko2": "(KO2)",
+                "w1": "(W1)",
+                "w2": "(W2)",
+                "w3": "(W3)",
+                "w4": "(W4)"
             }
         },
         "home": {
-            "description": "探索 Corsace 2023 公开赛——全世界 osu! 精英玩家一决高下的比赛。",
+            "description": "探索 Corsace 2024 公开赛——全世界 osu! 精英玩家一决高下的比赛。",
             "timeline": "时间线",
-            "presentedBy": "CORSACE OPEN 23 是由",
+            "presentedBy": "CORSACE OPEN 2024 是由",
             "registrations": "注册",
             "button": {
                 "qualifiersMappool": "资格赛图池",
                 "mappoolDownload": "图池下载和数据",
-                "register": "创建和注册您的团队",
-                "registrationsEnd": "Registrations end {time}"
+                "register": "TEAM REGISTRATION",
+                "registrationsEnd": "注册截止至"
             }
         },
         "info": {
@@ -609,15 +620,26 @@
             }
         },
         "teams": {
-            "teamsList": "队伍列表",
+            "teamList": "队伍列表",
+            "teamManagement": "TEAM MANAGEMENT",
             "error": "无法获得队伍名单",
+            "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "搜索用户/队伍",
             "editTeamInfo": "编辑队伍信息",
+            "leaveTeam": "LEAVE TEAM",
             "qualifierId": "资格赛ID",
             "placeholders": {
-                "searchUser": "osu! 用户名（必须有 Corsace 账号）",
+                "searchUser": "osu! 用户名",
                 "name": "队伍名",
                 "abbreviation": "队伍缩写"
+            },
+            "invites": {
+                "title": "TEAM INVITES",
+                "noInvites": "You currently have no invites",
+                "invite": "INVITE",
+                "accept": "ACCEPT",
+                "decline": "DECLINE",
+                "error": "COULD NOT GET INVITES"
             },
             "edit": {
                 "teamName": "队伍名",
@@ -655,6 +677,7 @@
                 "becomeMember": "成为队员并进行游戏",
                 "becomeCaptain": "become manager only",
                 "teamInvites": "队伍邀请",
+                "teamPage": "TEAM PAGE",
                 "editTeamInvites": "编辑队伍邀请",
                 "closeTeamInvites": "关闭队伍邀请编辑",
                 "qualifier": "资格赛",
@@ -663,7 +686,7 @@
             },
             "registration": {
                 "noRegistration": "没有注册任何锦标赛",
-                "toPlay": "如要参加 Corsace Open，你需要 6 名队员并选择以下资格赛日期和时间"
+                "toPlay": "如要参加 Corsace Open，你需要 6-8 名队员并选择以下资格赛日期和时间"
             },
             "teamID": "队伍ID",
             "member": "队员",
