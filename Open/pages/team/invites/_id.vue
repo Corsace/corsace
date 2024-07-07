@@ -27,7 +27,7 @@
                         :placeholder="`${$t('open.teams.placeholders.searchUser')}`"
                         @update:search="search($event)"
                     />
-                    Users must have a Corsace account.
+                    Users must have a Corsace account.<br>Users will see their invites after logging in on both osu! and discord.
                 </div>
                 <span class="invites_team--title">RESULTS</span>
                 <div class="invites_team__search_results">
