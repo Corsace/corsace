@@ -154,7 +154,6 @@
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
                         <li>The tournament consists of <strong>4 stages of play: </strong> Week 1, Week 2, Week 3, Week 4</li>
-                        <li>Knockout 1 and Knockout 2 are considered the <strong>main bracket</strong> in the tournament with Round Robin and Runoff being used to supplement the remaining teams.</li>
                     </ul>
                     <h2>WEEK 1 (AUG 10 - 11)</h2>
                     <div class="info_desc__list_wrapper">
