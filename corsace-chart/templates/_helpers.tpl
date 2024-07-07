@@ -82,36 +82,6 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: discordClientSecret
-- name: GOOGLE_CREDENTIALS_PRIVATEKEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "corsace-chart.fullname" $ }}
-      key: googleCredentialsPrivateKey
-- name: GOOGLE_CREDENTIALS_CLIENTEMAIL
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "corsace-chart.fullname" $ }}
-      key: googleCredentialsClientEmail
-- name: GOOGLE_SHEETS_TODO
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "corsace-chart.fullname" $ }}
-      key: googleSheetsTodo
-- name: GOOGLE_SHEETS_OPENMAPPOOL
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "corsace-chart.fullname" $ }}
-      key: googleSheetsOpenMappool
-- name: GOOGLE_SHEETS_CLOSEDMAPPOOL
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "corsace-chart.fullname" $ }}
-      key: googleSheetsClosedMappool
-- name: GOOGLE_SHEETS_SONGS
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "corsace-chart.fullname" $ }}
-      key: googleSheetsSongs
 - name: OSU_PROXY_BASEURL
   valueFrom:
     secretKeyRef:

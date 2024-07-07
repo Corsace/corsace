@@ -27,15 +27,6 @@ secrets:
   discord:
     token: ""
     clientSecret: ""
-  google:
-    credentials:
-      privateKey: ""
-      clientEmail: ""
-    sheets:
-      todo: ""
-      openMappool: ""
-      closedMappool: ""
-      songs: ""
   bn:
     username: ""
     secret: ""
