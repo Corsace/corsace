@@ -5,6 +5,7 @@
         "welcomeBack": "selamat datang kembali",
         "login": "masuk",
         "register": "daftar",
+        "menu": "menu",
         "changeDiscord": "ubah discord",
         "logout": "keluar"
     },
@@ -46,7 +47,7 @@
                 "2020": "<p>Halo, 2021… Akhirnya kita berjumpa lagi!</p>Setelah penyelenggaraan A Year in Mapping tahun lalu terpaksa batal karena satu dan lain hal, A Year in Mapping 2020 (akhirnya) dapat kembali hadir ke hadapan kalian semua!</p><p>Tidak hanya itu, tahun ini kami juga kembali menerima komentar secara terbuka! Silakan pilih mode permainan yang dikehendaki untuk mulai menjelajah situs A Year in Mapping.</p>",
                 "2021": "<p>2022 telah tiba!</p> <p>A Year in Mapping 2021 hadir untuk merekap berbagai statistik dan rekor yang telah ditorehkan selama setahun ke belakang.</p>",
                 "2022": "<p>Selamat datang di tahun 2023!</p> <p>A Year in Mapping 2022 hadir untuk menyajikan berbagai rekor dan statistik yang telah dibuat atau bahkan dipecahkan selama setahun ke belakang! Dan untuk tahun ini, akhirnya kami hadir (lumayan) tepat waktu!</p>",
-                "2023": "<p>2024 telah tiba!</p> <p>A Year in Mapping 2023 hadir untuk menyajikan berbagai rekor dan statistik yang telah ditorehkan atau bahkan dipecahkan selama setahun ke belakang!</p>"
+                "2023": "<p>2024 telah tiba!</p> <p>A Year in Mapping 2023 hadir untuk merekap berbagai rekor dan statistik yang ditorehkan atau bahkan dipecahkan selama setahun ke belakang!</p>"
             }
         },
         "mapsets": {
@@ -483,6 +484,7 @@
             "mappool": "MAPPOOL",
             "staff": "STAF",
             "createTeam": "BUAT TIM",
+            "myTeams": "my teams",
             "invitations": "UNDANGAN",
             "loginDiscord": "MASUK VIA DISCORD UNTUK MENGELOLA TIM/UNDANGAN",
             "teamInvites": "UNDANGAN TIM",
@@ -493,7 +495,8 @@
             "twitter": "TWITTER",
             "discord": "DISCORD",
             "twitch": "TWITCH",
-            "youtube": "YOUTUBE"
+            "youtube": "YOUTUBE",
+            "github": "GITHUB"
         },
         "stages": {
             "qualifiers": "KUALIFIKASI",
@@ -501,24 +504,32 @@
             "runoff bracket": "BRACKET RUNOFF",
             "knockout 1": "KNOCKOUT 1",
             "knockout 2": "KNOCKOUT 2",
+            "week 1": "WEEK 1",
+            "week 2": "WEEK 2",
+            "week 3": "WEEK 3",
+            "week 4": "WEEK 4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
                 "ro": "(RO)",
                 "ko1": "(KO1)",
-                "ko2": "(KO2)"
+                "ko2": "(KO2)",
+                "w1": "(W1)",
+                "w2": "(W2)",
+                "w3": "(W3)",
+                "w4": "(W4)"
             }
         },
         "home": {
-            "description": "Masuki dunia Corsace Open 2023 - di mana para elit osu! saling berunjuk gigi.",
+            "description": "Masuki dunia Corsace Open 2024 - di mana para elit osu! saling berunjuk gigi.",
             "timeline": "JADWAL",
-            "presentedBy": "CORSACE OPEN 23 DIPERSEMBAHKAN OLEH",
+            "presentedBy": "CORSACE OPEN 2024 DIPERSEMBAHKAN OLEH",
             "registrations": "PENDAFTARAN",
             "button": {
                 "qualifiersMappool": "MAPPOOL KUALIFIKASI",
                 "mappoolDownload": "Unduhan dan statistik mappool",
-                "register": "BUAT DAN DAFTARKAN TIM KAMU",
-                "registrationsEnd": "Pendaftaran berakhir pada {time}"
+                "register": "TEAM REGISTRATION",
+                "registrationsEnd": "Pendaftaran berakhir pada"
             }
         },
         "info": {
@@ -609,15 +620,26 @@
             }
         },
         "teams": {
-            "teamsList": "DAFTAR TIM",
+            "teamList": "DAFTAR TIM",
+            "teamManagement": "TEAM MANAGEMENT",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
+            "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "cari pengguna/tim",
             "editTeamInfo": "sunting info tim",
+            "leaveTeam": "LEAVE TEAM",
             "qualifierId": "ID Kualifikasi",
             "placeholders": {
-                "searchUser": "nama pengguna osu! (harus memiliki akun corsace yang terhubung)",
+                "searchUser": "nama pengguna osu!",
                 "name": "nama",
                 "abbreviation": "singkatan"
+            },
+            "invites": {
+                "title": "TEAM INVITES",
+                "noInvites": "You currently have no invites",
+                "invite": "INVITE",
+                "accept": "ACCEPT",
+                "decline": "DECLINE",
+                "error": "COULD NOT GET INVITES"
             },
             "edit": {
                 "teamName": "NAMA TIM",
@@ -655,6 +677,7 @@
                 "becomeMember": "jadi anggota dan ikut bermain",
                 "becomeCaptain": "become manager only",
                 "teamInvites": "UNDANGAN TIM",
+                "teamPage": "TEAM PAGE",
                 "editTeamInvites": "sunting undangan tim",
                 "closeTeamInvites": "tutup jendela penyuntingan undangan tim",
                 "qualifier": "KUALIFIKASI",
@@ -663,7 +686,7 @@
             },
             "registration": {
                 "noRegistration": "Tidak terdaftar di turnamen mana pun",
-                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan 6 anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
+                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan 6-8 anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
             },
             "teamID": "ID TIM",
             "member": "anggota",
