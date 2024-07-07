@@ -16,6 +16,7 @@ sidebar:
 ## 目录结构
 
 根据 Nuxt 的目录结构，页面会出现在它们预期的位置。 `[网站]/components`\
+而另一方面，组件目前分布在两个地方： 根据 Nuxt 的目录结构，页面会出现在它们预期的位置。 `[网站]/components`\
 而另一方面，组件目前分布在两个地方： `[网站]/components`\
 而另一方面，组件目前分布在两个地方：
 
@@ -30,6 +31,7 @@ This may change in the near future based on [this GitHub issue](https://github.c
 
 Corsace 使用 SASS/SCSS 来设计所有样式，并使用 ts 来编写任何脚本。\
 针对 vue 文件，`vue-property-decorator` 装饰器被用于创建页面和组件。
+当你创建 vue 文件时，应遵循以下基本模板：
 当你创建 vue 文件时，应遵循以下基本模板：
 当你创建 vue 文件时，应遵循以下基本模板：
 
@@ -111,6 +113,10 @@ export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
 * 修改器是一种“效果”
 
 例如`red`不是一个块/元素，它始终是一个修改器。
+例如`red`不是一个块/元素，它始终是一个修改器。
+:::
+由于 vue 模板通常只允许 1 个子元素，并且样式命名法遵循 BEM，因此通常只有 1 个块，其中有多个元素和修饰符分支。\
+例如：
 例如`red`不是一个块/元素，它始终是一个修改器。
 :::
 由于 vue 模板通常只允许 1 个子元素，并且样式命名法遵循 BEM，因此通常只有 1 个块，其中有多个元素和修饰符分支。\
