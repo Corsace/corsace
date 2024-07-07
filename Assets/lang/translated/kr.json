@@ -496,7 +496,8 @@
             "discord": "디스코드",
             "twitch": "트위치",
             "youtube": "유튜브",
-            "github": "GITHUB"
+            "github": "GITHUB",
+            "sheet": "SHEET"
         },
         "stages": {
             "qualifiers": "퀄리파이어",
