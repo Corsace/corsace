@@ -22,12 +22,21 @@
                     />
                 </template>
             </OpenTitle>
-            <div class="teams_list__main_content_list">
+            <div
+                v-if="filteredTeams.length !== 0" 
+                class="teams_list__main_content_list"
+            >
                 <OpenCardTeam
                     v-for="team in filteredTeams"
                     :key="team.ID"
                     :team="team"
                 />
+            </div>
+            <div
+                v-else
+                class="teams_list__main_content"
+            >
+                No registered teams currently
             </div>
         </div>
         <div 
@@ -45,12 +54,21 @@
                     </ContentButton>
                 </template>
             </OpenTitle>
-            <div class="teams_list__main_content_list">
+            <div 
+                v-if="filteredTeams && filteredTeams.length !== 0"
+                class="teams_list__main_content_list"
+            >
                 <OpenCardTeam
                     v-for="team in filteredTeams"
                     :key="team.ID"
                     :team="team"
                 />
+            </div>
+            <div
+                v-else
+                class="teams_list__main_content"
+            >
+                You are currently not in any teams
             </div>
         </div>
         <div
