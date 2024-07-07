@@ -1,7 +1,7 @@
 import archiver from "archiver";
 import { PassThrough, Readable } from "stream";
 
-export async function zipFiles (files: { content: Readable, name: string }[]): Promise<Readable> {
+export function zipFiles (files: { content: Readable, name: string }[]): Readable {
     const archive = archiver("zip");
     const passThrough = new PassThrough();
 
@@ -11,6 +11,6 @@ export async function zipFiles (files: { content: Readable, name: string }[]): P
         archive.append(content, { name });
     }
 
-    await archive.finalize();
+    void archive.finalize().catch((err) => passThrough.emit("error", err));
     return passThrough as Readable;
 }

@@ -62,9 +62,9 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
             const names = updatedMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
             const dlLinks = updatedMaps.map(m => m.beatmap ? `https://osu.direct/api/d/${m.beatmap.beatmapsetID}${video ? "" : "n"}` : m.customBeatmap?.link ?? ``).filter(l => l !== ``);
             const streams = dlLinks.map(link => download(link));
-            zipStream = await zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
+            zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
         }
-    
+
         const s3Key = `${randomUUID()}/${packName}.zip`;
 
         if (bucket === "mappacksTemp") {
@@ -90,7 +90,7 @@ export async function deletePack (bucket: "mappacks" | "mappacksTemp", mappool: 
     const s3Key = gets3Key(bucket, mappool);
     if (s3Key)
         await buckets[bucket].deleteObject(s3Key);
-    
+
     mappool.mappackLink = mappool.mappackExpiry = null;
     await mappool.save();
 }
