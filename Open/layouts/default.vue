@@ -190,10 +190,27 @@
                     </template>
                     {{ $t("open.footer.github") }}
                 </Tooltip>
+                <Tooltip>
+                    <template #icon>
+                        <a
+                            class="socials__link"
+                            href="https://docs.google.com/spreadsheets/d/1f2538nh9McAii15EJkHU18fi65ICQihxsmvTK-qhA0w"
+                            target="_blank"
+                        >
+                            <img
+                                class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
+                                src="../../Assets/img/social/sheets.png"
+                                alt=""
+                            >
+                        </a>
+                    </template>
+                    {{ $t("open.footer.sheet") }}
+                </Tooltip>
             </div>
             <div 
                 name="temp"
-                style="width: 81%;"
+                style="width: 79%;"
             />
         </the-footer>
     </div>
@@ -319,11 +336,6 @@ export default class Default extends Vue {
             }
         }
     }
-}
-
-.footer {
-    border-top: 1px solid white;
-    background-color: $open-red;
 }
 
 .socials {

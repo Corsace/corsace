@@ -214,7 +214,7 @@ export default class Invites extends Vue {
         flex-direction: column;
         gap: 25px;
         width: 25%;
-        height: 60%;
+        max-height: 680px;
         overflow: hidden;
 
         &_results {

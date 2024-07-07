@@ -17,7 +17,7 @@
                     class="qualifier_modal__label--no_shadow"
                     style="text-align: right; margin: 25px 0;"
                 >
-                    Please note that the lobby will start when the captain joins.<br>If the captain is not a member, they cannot play qualifiers.<br>The captain can leave immediately after the bot selects the first map.
+                    Please note that the lobby will start when the captain joins.<br>The captain can leave immediately after the bot selects the first map.
                 </div>
                 <input 
                     v-model="qualifierAt"

@@ -1,7 +1,7 @@
 <template>
     <div 
         class="footer"
-        :class="`footer--${viewTheme}`"
+        :class="`footer--${viewTheme} footer--${site}`"
     >
         <slot />
         
@@ -55,6 +55,10 @@ export default class TheFooter extends Vue {
     &--dark {
         background-color: $dark;
         color: white;
+    }
+    &--open {
+        border-top: 1px solid white;
+        background-color: $open-red;
     }
     bottom: 0;
 

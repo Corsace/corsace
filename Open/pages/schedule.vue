@@ -21,7 +21,7 @@
                     <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
                     <ContentButton
                         class="content_button--red"
-                        :link="'https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing'"
+                        :link="'https://docs.google.com/spreadsheets/d/1f2538nh9McAii15EJkHU18fi65ICQihxsmvTK-qhA0w'"
                         :img-src="require('../../Assets/img/site/open/mappool/sheets-ico.svg')"
                         external
                     >
