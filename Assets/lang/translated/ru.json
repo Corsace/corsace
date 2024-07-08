@@ -477,8 +477,8 @@
     "open": {
         "navbar": {
             "home": "ГЛАВНАЯ",
-            "info": "ИНФОРМАЦИЯ",
-            "qualifiers": "ОТБОРОЧНЫЕ",
+            "info": "ИНФО",
+            "qualifiers": "КВАЛИФИКАЦИИ",
             "teams": "КОМАНДЫ",
             "schedule": "РАСПИСАНИЕ",
             "mappool": "МАППУЛ",
@@ -500,7 +500,7 @@
             "sheet": "SHEET"
         },
         "stages": {
-            "qualifiers": "ОТБОРОЧНЫЕ",
+            "qualifiers": "КВАЛИФИКАЦИИ",
             "round robin": "ВСЕ ПРОТИВ ВСЕХ",
             "runoff bracket": "РАН-ОФФ",
             "knockout 1": "НОКАУТ 1",
@@ -523,11 +523,11 @@
         },
         "home": {
             "description": "Погрузись в Corsace Open 2024 - место, где лучшие игроки osu! сходятся лицом к лицу.",
-            "timeline": "ГРАФИК",
+            "timeline": "РАСПИСАНИЕ",
             "presentedBy": "CORSACE OPEN 2024 IS PRESENTED BY",
             "registrations": "РЕГИСТРАЦИЯ",
             "button": {
-                "qualifiersMappool": "ОТБОРОЧНЫЙ МАППУЛ",
+                "qualifiersMappool": "МАППУЛ КВАЛИФИКАЦИИ",
                 "mappoolDownload": "Скачать маппул и статистика",
                 "register": "TEAM REGISTRATION",
                 "registrationsEnd": "Регистрация заканчивается"
@@ -535,7 +535,7 @@
         },
         "info": {
             "title": "ИНФОРМАЦИЯ",
-            "condensed": "СОКРАЩЕННАЯ ИНФОРМАЦИЯ",
+            "condensed": "КРАТКАЯ ИНФОРМАЦИЯ",
             "error": "Не удалось найти турнир",
             "matchInfo": {
                 "matchSize": "РАЗМЕР МАТЧА",
@@ -572,7 +572,7 @@
             "supportViaSponsorship": "ПОДДЕРЖАТЬ ЧЕРЕЗ СПОНСОРСТВО MOMOKAI",
             "generalInfo": "ОСНОВНАЯ ИНФОРМАЦИЯ",
             "teamStructure": "СОСТАВ КОМАНДЫ",
-            "qualifiersProcedures": "ПОРЯДОК ПРОВЕДЕНИЯ ОТБОРОЧНЫХ",
+            "qualifiersProcedures": "ПОРЯДОК ПРОВЕДЕНИЯ КВАЛИФИКАЦИИ",
             "tournamentStructure": "ПОРЯДОК ПРОВЕДЕНИЯ ТУРНИРА",
             "infoGraphic": "ИНФОГРАФИКА",
             "matchProcedures": "ПОРЯДОК ПРОВЕДЕНИЯ МАТЧА",
