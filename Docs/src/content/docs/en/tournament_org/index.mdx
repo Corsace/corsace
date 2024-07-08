@@ -1,19 +1,50 @@
 ---
 title: Getting Started
 description: Documentation to get started on using Corsace services to run a tournament.
-lastUpdated: 2024-06-30
+lastUpdated: 2024-07-07
 sidebar:
-    badge:
-        text: WIP
-        variant: caution
     order: 1
 ---
-import WorkInProgress from '../../../../components/WorkInProgress.astro';
+import tournament_create_success from "../../../../images/tournament_org/tournament_create_success.png";
+
+:::note
+    Corsace tournament management/organization is in an unstable phase. This documentation is pertaining to the current state of the system and may be subject to change.
+    
+    The discord bot required to manage tournaments is also not available to the public at this time. You may request access to the bot in the Corsace Discord server from ThePooN.
+:::
 
 This documentation provides information on how to create, run, and manage a tournament using Corsace services.
 
 ## Prerequisites
 - Ensure you have logged in to the [Corsace website](https://corsace.io) at least once via osu! and discord before continuing.
 - If you currently have a discord server for the tournament, ensure you are not (near) the 250 role limit.
+- Ensure you have a role with `Administrator` permissions to create a tournament on the Corsace website.
 
-<WorkInProgress section="tournament_org" />
+You **DO NOT** need to be the organizer of the tournament to set up the initial tournament.
+
+## Creating a baseline tournament
+To get started, you will need to create a tournament via the Corsace Discord bot. This will allow you to manage the tournament, create matches, and more.
+
+:::caution[Warning on slash vs message commands]
+    The Corsace Discord bot supports both slash commands and message commands. This documentation will use slash commands for simplicity.
+
+    It is also **highly recommended** to use slash commands when running `create` or `edit` discord commands with the Corsace Discord bot.
+:::
+
+### Tournament creation
+The initial step is to create a tournament. Use the `/tournament_create` command in any channel in the server where you want the tournament to be created. Ensure you fill in all the required parameters.
+
+If you are not the organizer of the tournament, there is an optional parameter to select who the true organizer is.
+
+There are auto-checks for various cases that may be invalid, such as minTeamSize > maxTeamSize, or the tournament name being too long.
+
+A successful creation will return an embed of the tournament details. An example of a successfully created tournament is shown below:
+![Example of successful tournament creation](../../../../images/tournament_org/tournament_create_success.png)
+
+### Tournament editing
+If you need to edit the tournament details, you can use the `/tournament_edit` command in an `admin` channel that you have designated in the [previous step](#tournament-creation). 
+
+This command will go step by step through the tournament creation process, allowing you to edit any of the parameters you set in the initial creation.
+
+## Next Steps
+Once you have created a tournament, you can proceed to [creating stages and rounds](./stage-round-creation) for the tournament itself, followed by [creating mappools](./mappool-creation) for the stages and rounds.
