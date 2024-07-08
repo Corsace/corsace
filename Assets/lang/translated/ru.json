@@ -5,7 +5,7 @@
         "welcomeBack": "добро пожаловать",
         "login": "войти",
         "register": "зарегистрироваться",
-        "menu": "menu",
+        "menu": "меню",
         "changeDiscord": "сменить дискорд",
         "logout": "выйти"
     },
@@ -484,7 +484,7 @@
             "mappool": "МАППУЛ",
             "staff": "ОРГАНИЗАТОРЫ",
             "createTeam": "СОЗДАТЬ КОМАНДУ",
-            "myTeams": "my teams",
+            "myTeams": "мои команды",
             "invitations": "ПРИГЛАШЕНИЯ",
             "loginDiscord": "ВОЙДИТЕ В DISCORD, ЧТОБЫ УПРАВЛЯТЬ КОМАНДАМИ/ПРИГЛАШЕНИЯМИ",
             "teamInvites": "ПРИГЛАШЕНИЯ КОМАНДЫ",
@@ -496,8 +496,8 @@
             "discord": "ДИСКОРД",
             "twitch": "ТВИЧ",
             "youtube": "ЮТЬЮБ",
-            "github": "GITHUB",
-            "sheet": "SHEET"
+            "github": "ГИТХАБ",
+            "sheet": "ТАБЛИЦЫ"
         },
         "stages": {
             "qualifiers": "КВАЛИФИКАЦИИ",
@@ -505,10 +505,10 @@
             "runoff bracket": "РАН-ОФФ",
             "knockout 1": "НОКАУТ 1",
             "knockout 2": "НОКАУТ 2",
-            "week 1": "WEEK 1",
-            "week 2": "WEEK 2",
-            "week 3": "WEEK 3",
-            "week 4": "WEEK 4",
+            "week 1": "НЕДЕЛЯ 1",
+            "week 2": "НЕДЕЛЯ 2",
+            "week 3": "НЕДЕЛЯ 3",
+            "week 4": "НЕДЕЛЯ 4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
@@ -529,7 +529,7 @@
             "button": {
                 "qualifiersMappool": "МАППУЛ КВАЛИФИКАЦИИ",
                 "mappoolDownload": "Скачать маппул и статистика",
-                "register": "TEAM REGISTRATION",
+                "register": "РЕГИСТРАЦИЯ КОМАНДЫ",
                 "registrationsEnd": "Регистрация заканчивается"
             }
         },
@@ -541,9 +541,9 @@
                 "matchSize": "РАЗМЕР МАТЧА",
                 "minPlayers": "МИН. КОЛ-ВО ИГРОКОВ",
                 "maxPlayers": "МАКС. КОЛ-ВО ИГРОКОВ",
-                "pickTimer": "ТАЙМЕР ВЫБОРА КАРТЫ",
-                "readyTimer": "ТАЙМЕР ГОТОВНОСТИ",
-                "order": "ORDER",
+                "pickTimer": "ВРЕМЯ ВЫБОРА КАРТЫ",
+                "readyTimer": "ВРЕМЯ ГОТОВНОСТИ",
+                "order": "ЭТАП",
                 "scoringMethod": "СПОСОБ ПОДСЧЕТА ОЧКОВ",
                 "type": "ТИП",
                 "startDate": "ВРЕМЯ НАЧАЛА",
@@ -569,21 +569,21 @@
             },
             "prizes": "ПРИЗЫ",
             "donateToCorsace": "ПОЖЕРТВОВАТЬ CORSACE",
-            "supportViaSponsorship": "ПОДДЕРЖАТЬ ЧЕРЕЗ СПОНСОРСТВО MOMOKAI",
+            "supportViaSponsorship": "ПОДДЕРЖАТЬ С ПОМОЩЬЮ MOMOKAI",
             "generalInfo": "ОСНОВНАЯ ИНФОРМАЦИЯ",
             "teamStructure": "СОСТАВ КОМАНДЫ",
             "qualifiersProcedures": "ПОРЯДОК ПРОВЕДЕНИЯ КВАЛИФИКАЦИИ",
             "tournamentStructure": "ПОРЯДОК ПРОВЕДЕНИЯ ТУРНИРА",
             "infoGraphic": "ИНФОГРАФИКА",
             "matchProcedures": "ПОРЯДОК ПРОВЕДЕНИЯ МАТЧА",
-            "reportTournament": "СООБЩИТЬ О НАРУШЕНИЯХ В ТУРНИРАХ",
+            "reportTournament": "СООБЩИТЬ О НАРУШЕНИЯХ",
             "subjectToChange": "правила могут быть изменены для уточнения и/или корректировки"
         },
         "qualifiers": {
             "nav": {
                 "mappool": "МАППУЛ",
-                "qualifiers": "ОТБОРОЧНЫЕ",
-                "scores": "SCORES"
+                "qualifiers": "КВАЛИФИКАЦИИ",
+                "scores": "ОЧКИ"
             },
             "mappool": {
                 "sheets": "ТАБЛИЦЫ",
@@ -616,30 +616,30 @@
             },
             "create": "СОЗДАТЬ",
             "error": {
-                "message": "Вы не можете создать/присоединиться к отборочному матчу, пока у вас не будет {numPlayers} игрока(ов)!",
+                "message": "Вы не можете создать/присоединиться к квалификационному матчу, пока у вас не будет {numPlayers} игрока(ов)!",
                 "pressToClose": "Нажмите в любом месте, чтобы закрыть"
             }
         },
         "teams": {
             "teamList": "СПИСОК КОМАНД",
-            "teamManagement": "TEAM MANAGEMENT",
+            "teamManagement": "УПРАВЛЕНИЕ КОМАНДОЙ",
             "error": "НЕ УДАЛОСЬ НАЙТИ СПИСОК КОМАНД",
-            "loginManagement": "Log in to manage your teams.",
+            "loginManagement": "Войдите, чтобы управлять командами.",
             "searchPlaceholder": "искать пользователя/команду",
             "editTeamInfo": "изменить информацию о команде",
-            "leaveTeam": "LEAVE TEAM",
-            "qualifierId": "ID Отборочного Матча",
+            "leaveTeam": "ПОКИНУТЬ КОМАНДУ",
+            "qualifierId": "ID Квалификации",
             "placeholders": {
                 "searchUser": "ник в osu!",
                 "name": "название",
                 "abbreviation": "аббревиатура"
             },
             "invites": {
-                "title": "TEAM INVITES",
-                "noInvites": "You currently have no invites",
-                "invite": "INVITE",
-                "accept": "ACCEPT",
-                "decline": "DECLINE",
+                "title": "ПРИГЛАШЕНИЯ КОМАНДЫ",
+                "noInvites": "У вас сейчас нет приглашений",
+                "invite": "ПРИГЛАСИТЬ",
+                "accept": "ПРИНЯТЬ",
+                "decline": "ОТКЛОНИТЬ",
                 "error": "COULD NOT GET INVITES"
             },
             "edit": {
@@ -660,7 +660,7 @@
                     "deleteTeam": "Вы уверены, что хотите удалить эту команду?",
                     "deleteTeamFinal": "Вы ДЕЙСТВИТЕЛЬНО уверены, что хотите удалить эту команду? Это не может быть отменено!",
                     "removeMember": "Вы уверены, что хотите убрать {username} из вашей команды?",
-                    "transferCaptain": "Are you sure you want to transfer manager to {username}?",
+                    "transferCaptain": "Вы уверены, что хотите передать {username} капитана?",
                     "invite": "Вы уверены, что хотите пригласить {username} в вашу команду?",
                     "removeInvite": "Вы уверены, что хотите удалить приглашение {username} в вашу команду?",
                     "unregister": "Вы уверены, что хотите отменить регистрацию в этом турнире? Вы сможете зарегистрироваться заново в любое время, если у вас будет 6 членов."
@@ -671,23 +671,23 @@
             "headers": {
                 "tournaments": "ТУРНИРЫ",
                 "teamStats": "СТАТИСТИКА КОМАНДЫ",
-                "teamCaptain": "TEAM MANAGER",
+                "teamCaptain": "КАПИТАН КОМАНДЫ",
                 "teamMembers": "СОСТАВ КОМАНДЫ",
                 "editTeamMembers": "изменить состав команды",
                 "closeTeamMembers": "закрыть редактирование членов команды",
                 "becomeMember": "become a member and play as well",
-                "becomeCaptain": "become manager only",
+                "becomeCaptain": "стать только капитаном",
                 "teamInvites": "ПРИГЛАШЕНИЯ КОМАНДЫ",
-                "teamPage": "TEAM PAGE",
+                "teamPage": "СТРАНИЦА КОМАНДЫ",
                 "editTeamInvites": "изменить приглашения команды",
                 "closeTeamInvites": "закрыть редактирование приглашений команды",
-                "qualifier": "ОТБОРОЧНЫЙ",
-                "requiredMessageExact": "Вам нужно ровно {minTeamSize} члена(ов) команды для регистрации и участия в отборочном турнире",
-                "requiredMessageRange": "Вам нужно от {minTeamSize} до {maxTeamSize} членов команды для регистрации и участия в отборочном турнире"
+                "qualifier": "КВАЛИФИКАЦИЯ",
+                "requiredMessageExact": "Вам нужно ровно {minTeamSize} члена(ов) команды для регистрации и участия в квалификации",
+                "requiredMessageRange": "Вам нужно от {minTeamSize} до {maxTeamSize} членов команды для регистрации и участия в квалификации"
             },
             "registration": {
                 "noRegistration": "Не зарегистрирован ни в одном турнире",
-                "toPlay": "Чтобы играть в Corsace Open, наберите 6-8 членов и выберите ниже время и дату отборочного матча"
+                "toPlay": "Чтобы играть в Corsace Open, наберите 6-8 игроков и выберите ниже время и дату квалификации"
             },
             "teamID": "ID КОМАНДЫ",
             "member": "член",
@@ -695,8 +695,8 @@
             "averageBWS": "Среднее BWS",
             "averageRank": "Средний Ранк",
             "averagePP": "Средние PP",
-            "editQualifierTime": "изменить время отборочного матча",
-            "deleteTeam": "удалить отборочный/отменить регистрацию команды",
+            "editQualifierTime": "изменить время квалификации",
+            "deleteTeam": "удалить квалификацию/отменить регистрацию команды",
             "createJoinQualifier": "создать/присоединиться к отборочному матчу",
             "notRegistered": "В данный момент не зарегистрирован в Corsace Open."
         },
@@ -705,26 +705,26 @@
             "info1": "Регистрация закончится",
             "info2": "Перед завершением регистрации убедитесь, что вся указанная информация верна.",
             "teamName": "НАЗВАНИЕ КОМАНДЫ",
-            "teamLength": "От 5 до 20 символов. НЕ добавляйте слово \"team\" в название, оно будет автоматически удалено. Ненормативная лексика будет проверена.",
+            "teamLength": "От 5 до 20 символов. НЕ добавляйте \"team\" в название, оно будет автоматически удалено. Ненормативная лексика будет проверена.",
             "teamAcronym": "АББРЕВИАТУРА КОМАНДЫ",
             "acronymLength": "От 2 до 4 символов. Ненормативная лексика будет проверена.",
             "teamTimezone": "ЧАСОВОЙ ПОЯС КОМАНДЫ",
             "timezoneText": "Мы будем считать, что ваша команда сможет играть с <span class='bold'>10:00 до 22:00</span> в выбранном часовом поясе.",
             "teamAvatar": "АВАТАРКА КОМАНДЫ",
-            "upload": "ВЫГРУЗИТЬ",
+            "upload": "ЗАГРУЗИТЬ",
             "fileSizeLimit": "максимальный размер 5мб. поддерживаемые типы файлов: .jpg .png",
             "fileSizeError": "размер файла слишком большой! пожалуйста, загрузите изображение меньшего размера",
             "fileTypeError": "неверный тип файла! пожалуйста, загрузите .jpg или .png",
-            "preview": "ПРЕДПРОСМОТР",
+            "preview": "ПРЕВЬЮ",
             "avatarInfo1": "Для аватарки рекомендуется использовать изображение с <span>соотношением сторон 3:1</span>.",
             "avatarInfo2": "Капитаны могут изменять названия команд и аватарки до окончания регистрации.",
             "avatarInfo3": "Все названия и аватарки будут утверждены организаторами.",
-            "avatarInfo4": "Если они будут сочтены неуместными, вы будете уведомлены о необходимости внесения изменений.",
+            "avatarInfo4": "Если они будут сочтены непристойными, вы будете уведомлены о необходимости внести изменения.",
             "teamManagement": "УПРАВЛЕНИЕ КОМАНДОЙ",
-            "teamCaptains": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamCaptainsFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
-            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmCaptain": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "teamCaptains": "<div><span>Капитаны</span> команд (это вы) имеют возможность играть с командой и быть капитаном одновременно</div> <div><span>ИЛИ</span> не играть и быть только капитаном.</div>",
+            "teamCaptainsFree": "Если вы не хотите играть и выступаете только в роли капитана, вы <span>не</span> занимаете слот игрока.",
+            "selectCaptain": "Поставьте галочку, если вы <span>не</span> собираетесь играть с командой и выступаете только в роли <span>капитана</span>.",
+            "confirmCaptain": "<div>Ставя галочку, я буду выступать только в роли капитана и понимаю, что не смогу участвовать </div> <div>в каком-либо матче.</div>",
             "create": "СОЗДАТЬ КОМАНДУ"
         },
         "components": {
