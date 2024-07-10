@@ -29,12 +29,7 @@ interface SubscribeRequest {
     b64data?: string;
 }
 
-const channelTypes = [ "matchup" ];
-
 async function getChannel (channelType: string, channelID: number): Promise<any> {
-    if (!channelTypes.includes(channelType))
-        return null;
-
     if (channelType === "matchup") {
         return Matchup
             .createQueryBuilder("matchup")
