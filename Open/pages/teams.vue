@@ -97,8 +97,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Mixins, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
+import { ExtendedPublicationContext } from "centrifuge";
+import CentrifugeMixin from "../../Assets/mixins/centrifuge";
 
 import { Tournament } from "../../Interfaces/tournament";
 import { Team, TeamList } from "../../Interfaces/team";
@@ -141,7 +143,7 @@ const openModule = namespace("open");
         };
     },
 })
-export default class Teams extends Vue {
+export default class Teams extends Mixins(CentrifugeMixin) {
 
     @State loggedInUser!: null | UserInfo;
     @openModule.State tournament!: Tournament | null;
@@ -173,6 +175,14 @@ export default class Teams extends Vue {
         if (this.tournament)
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
         this.loading = false;
+
+        if (this.tournament)
+            await this.initCentrifuge(`teams:${this.tournament.ID}`);
+    }
+
+    handleData (ctx: ExtendedPublicationContext) {
+        if (ctx.data.type === "teamRegistered")
+            this.$store.commit("open/addTeamList", ctx.data.team);
     }
 }
 </script>

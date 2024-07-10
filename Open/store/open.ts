@@ -94,6 +94,13 @@ export const mutations: MutationTree<OpenState> = {
             .sort((a, b) => a.BWS - b.BWS)
             .sort((a, b) => (a.BWS === 0 ? 1 : 0) - (b.BWS === 0 ? 1 : 0));
     },
+    addTeamList (state, team: TeamList | undefined) {
+        if (!state.teamList)
+            state.teamList = [];
+
+        if (team)
+            state.teamList.push(team);
+    },
     setMyTeams (state, teams: Team[] | undefined) {
         state.myTeams = teams ?? null;
     },
@@ -102,6 +109,13 @@ export const mutations: MutationTree<OpenState> = {
     },
     setInvites (state, invites: BaseTeam[] | undefined) {
         state.teamInvites = invites ?? null;
+    },
+    addInvite (state, invite: BaseTeam | undefined) {
+        if (!state.teamInvites)
+            state.teamInvites = [];
+
+        if (invite)
+            state.teamInvites.push(invite);
     },
     setQualifierList (state, qualifiers: BaseQualifier[] | undefined) {
         state.qualifierList = qualifiers?.map(q => ({
