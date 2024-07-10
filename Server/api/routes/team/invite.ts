@@ -8,6 +8,7 @@ import getTeamInvites from "../../../functions/get/getTeamInvites";
 import { BaseTeam, TeamUser, TeamInvites as TeamInviteInterface } from "../../../../Interfaces/team";
 import { TeamInvite } from "../../../../Models/tournaments/teamInvite";
 import { TeamAuthenticatedState, UserAuthenticatedState } from "koa";
+import { publish } from "../../../functions/centrifugo";
 
 type idType = "osu" | "discord" | "corsace";
 
@@ -146,6 +147,13 @@ inviteRouter.$post<{ invite: TeamInvite }, TeamAuthenticatedState>("/:teamID", v
         }
 
         await invite.save();
+
+        
+        await publish(`invitations:${user.ID}`, { type: "invite", team: {
+            ID: team.ID,
+            name: team.name,
+            avatarURL: team.avatarURL,
+        }});
 
         ctx.body = {
             success: true,
