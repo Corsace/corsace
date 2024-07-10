@@ -794,6 +794,8 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.mapTimer = `${this.tournament?.mapTimer ?? 90}`;
         this.readyTimer = `${this.tournament?.readyTimer ?? 90}`;
 
+        await this.initCentrifuge(`matchup:${this.$route.params.id}`);
+
         if (this.matchup?.mp)
             await this.banchoCall("pulse");
     }
