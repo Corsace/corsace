@@ -1,0 +1,53 @@
+---
+title: Running Matches
+description: Documentation on running matches for a tournament.
+lastUpdated: 2024-07-08
+sidebar:
+    order: 5
+---
+import CorsaceOnly from '../../../../components/CorsaceOnly.astro';
+import WorkInProgress from '../../../../components/WorkInProgress.astro';
+
+## Prerequisite Reading
+
+* [Running Tournaments/Getting Started](../)
+* [Running Tournaments/Stage/Round Creation](./stage-round-creation)
+* [Running Tournaments/Mappool Creation](./mappool-creation)
+
+## Creating Matches
+
+### Qualifiers
+
+As teams are required to schedule their qualifiers, the Corsace Discord bot will automatically create the matchups for the qualifiers for them as they schedule them.
+
+While you necessarily shouldn't need to create them, you may create one for players/teams by using the same discord command they use, which is `/qualifier_team`. You will require providing the `target` parameter, which is the player/team you are creating the matchup for. This command is useful if the player/team schedule the qualifier at a time they did not want.
+
+### Other
+
+For any non-qualifier matchup, matches are currently created using a `POST /api/matchup/create` request. The code for the endpoint is found [here](https://github.com/Corsace/corsace/blob/master/Server/api/routes/matchup.ts#L327).
+
+<CorsaceOnly />
+
+## Running Matches
+
+### Autoreffing
+
+If the matchup is in a qualifier stage, they will typically be autoreffed. This is done by the Corsace Discord bot automatically.
+
+During an autoreffed lobby, there will be up to 2 messages posted in your discord server:
+
+One message is sent to a designated referee channel (if any exist) with information about the lobby information such as the mp ID and osu! channel, the lobby name, relevant commands for referees to use, and a button to addref any referees.
+
+Another message is sent to a general channel (if any exist) mentioning relevant users, explaining any relevant commands for players to use in the lobby, and an invite button to join the lobby.
+
+When a player triggers the `!panic` command, the bot will stop all autoreffing functionalities, and ping the organizer and all referee roles in the referee channel to take manual control of the lobby. Whenever everything is good again, you can run `!auto` to resume autoreffing.
+
+### Semi-automatic reffing
+
+For any non-qualifier matchup, matches are not autoreffed. They must be run semi-automatically by a referee staff member. This is currently available for Corsace Open via [the referee page](https://open.corsace.io/referee).
+
+Referee staff run the lobby via the Corsace bot account on osu!, with the ability for the staff user to join the lobby themselves, as they are also addreffed to the lobby.
+
+:::danger
+This was currently set up only for internal Corsace Open purposes. This will be expanded to be more user-friendly via the web, and the Corsace Discord bot in the future.
+:::
