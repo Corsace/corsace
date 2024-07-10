@@ -1,6 +1,7 @@
 import "centrifuge";
 import { PublicationContext } from "centrifuge";
 import { MatchupMap } from "../Interfaces/matchup";
+import { BaseTeam, TeamList } from "../Interfaces/team";
 
 declare module "centrifuge" {
 
@@ -78,6 +79,16 @@ declare module "centrifuge" {
         type: "closed";
     }
 
+    interface InviteData {
+        type: "invite";
+        team: BaseTeam;
+    }
+
+    interface TeamRegisteredData {
+        type: "teamRegistered";
+        team: TeamList;
+    }
+
     type PublicationData =
         CreatedData |
         MessageData |
@@ -88,7 +99,9 @@ declare module "centrifuge" {
         MatchStartedData |
         MatchAbortedData |
         MatchFinishedData |
-        ClosedData;
+        ClosedData |
+        InviteData |
+        TeamRegisteredData;
 
     interface ExtendedPublicationContext extends PublicationContext {
         data: PublicationData;

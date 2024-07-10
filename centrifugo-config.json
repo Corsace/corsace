@@ -16,6 +16,14 @@
         {
             "name": "matchup",
             "proxy_subscribe": true
+        },
+        {
+            "name": "invitations",
+            "proxy_subscribe": true
+        },
+        {
+            "name": "teams",
+            "proxy_subscribe": true
         }
     ],
     "proxy_connect_endpoint": "http://127.0.0.1:8080/api/centrifugo/connect",
