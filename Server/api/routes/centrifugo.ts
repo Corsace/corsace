@@ -47,7 +47,10 @@ async function getChannel (channelType: string, channelID: number): Promise<any>
     return `${channelType}:${channelID}`;
 }
 
-centrifugoRouter.$get<{ url: string }>("/publicUrl", (ctx) => {
+centrifugoRouter.$get<{ url: string }>("/publicUrl", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     ctx.body = {
         success: true,
         url: config.centrifugo.publicUrl,
