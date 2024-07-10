@@ -271,7 +271,7 @@ export default class Default extends Mixins(CentrifugeMixin) {
 
     handleData (ctx: ExtendedPublicationContext) {
         if (ctx.data.type === "invite")
-            this.$store.commit("open/addTeamInvite", ctx.data.team);
+            this.$store.commit("open/addInvite", ctx.data.team);
     }
 }
 </script>
