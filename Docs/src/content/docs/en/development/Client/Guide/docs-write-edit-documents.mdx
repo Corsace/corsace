@@ -1,7 +1,7 @@
 ---
 title: Docs - Write/Edit Documents
 description: Writing/Editing documentation for Corsace
-lastUpdated: 2023-09-18
+lastUpdated: 2024-07-07
 sidebar:
     order: 1110
 ---
@@ -9,7 +9,7 @@ import WorkInProgress from '../../../../../../components/WorkInProgress.astro';
 
 Please make sure to have created a fork, as we accept contributions via pull requests from repository forks.
 
-## Pre-requisite Reading
+## Prerequisite Reading
 - [Development/Guide/Docs - Running Environment](../docs-running-environment)
 - [Starlight/Authoring Content in Markdown](https://starlight.astro.build/guides/authoring-content/)
 - [GitHub/Creating a pull request from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
@@ -22,14 +22,15 @@ If you wish to translate instead, request access at https://translate.corsace.io
 For any document you wish to create, it must reside somewhere within `Docs/src/content/docs/en` or its sub-folders.\
 The folder structure within this is similar to the sidebar's hierarchy on the website.\
 Primarily, there are 3 main sections:
-- [Design Documentation](design)
-- [Development Documentation](development)
-- [Documentation on how to run tournaments via Corsace](tournaments)
+- [Design Documentation](../../../../design)
+- [Development Documentation](../../../../development)
+- [Documentation on how to run tournaments via Corsace](../../../../tournament_org)
+- [Documentation on playing in tournaments run via Corsace](../../../../tournament_play)
 
-Within these, the [Diátaxis framework](https://diataxis.fr/) is used as the structural guide for writing documentation; however, the main focus is on writing [Guides](https://diataxis.fr/how-to-guides/) and [References](https://diataxis.fr/reference/).
+Within these, the [Diátaxis framework](https://diataxis.fr/) is used as the structural guide for writing documentation; however, the main focus is on writing [Guides](https://diataxis.fr/how-to-guides/) and [References](https://diataxis.fr/reference/). The `Running Tournaments` and `Playing Tournaments` sections only contain guides, as any references needed are/will be within this `Development` section.
 
 ## Document Anatomy
-It will be assumed that you understand the markdown format and extra features Starlight provides for writing it based on the [Pre-requisite Reading](#pre-requisite-reading) section.
+It will be assumed that you understand the markdown format and extra features Starlight provides for writing it based on the [Prerequisite Reading](#prerequisite-reading) section.
 
 It's recommended to use a .mdx file for documentation in order to provide extra functionality via Javascript/JSX.
 
@@ -63,13 +64,13 @@ sidebar:
 All headers shuold use at least 2 hashtags `##` in order to properly appear.\
 Astro Starlight automtically creates an `## Overview` internally, so for any introductory text, you do not need to add an extra header.
 
-If your documentation is dependant on any other documents within this repository, or from Astro Starlight, then make sure to add a `## Pre-requisite Reading` section after your introductory text, but BEFORE any other section you create.
+If your documentation is dependant on any other documents within this repository, or from Astro Starlight, then make sure to add a `## Prerequisite Reading` section after your introductory text, but BEFORE any other section you create.
 
 ### Images
-Images should be put in the `Assets/img/docs` directory. When you want to input an image into your document you can do so with a relative link.
-To access an image in `Assets/img/docs` from this file (which is at `Docs/src/content/docs/en/development/Client/Guide/docs-write-edit-documents.mdx`), you require the following relative direction:
+Images should be put in the `Docs/src/images` directory with words lowercased and separated by underscores. When you want to input an image into your document you can do so with a relative link.
+To access an image in `Docs/src/images` from this file (which is at `Docs/src/content/docs/en/development/Client/Guide/docs-write-edit-documents.mdx`), you require the following relative direction:
 ```mdx
-![Image](../../../../../../../../Assets/img/docs/image.png)
+![Example Image](../../../../../../images/development/example_image.png)
 ```
 
 Each `../` moves up one folder in the directory.
@@ -107,7 +108,7 @@ sidebar:
 ```
 
 This will provide a WIP icon to the document on the left sidebar like so:\
-![Example of the WIP badge](../../../../../../../../Assets/img/docs/wipExample.png)
+![Example of the WIP badge](../../../../../../images/development/wip_example.png)
 
 ### WIP section
 If there's a specific section that is a work in progress, a component has been created called `WorkInProgress` within the `Docs/src/components` folder to label them as such.\
@@ -126,7 +127,7 @@ sidebar:
 ---
 import WorkInProgress from '../../../../../../components/WorkInProgress.astro';
 
-## Pre-requisite Reading
+## Prerequisite Reading
 ```
 
 Afterwards, you can place it into whichever section like so:
