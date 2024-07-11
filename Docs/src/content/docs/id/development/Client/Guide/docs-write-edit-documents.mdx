@@ -29,8 +29,9 @@ Secara garis besar, dokumentasi proyek ini terbagi menjadi 3 bagian utama:
 * [Dokumentasi Desain](design)
 * [Dokumentasi Pengembangan](development)
 * [Dokumentasi cara menjalankan turnamen melalui Corsace](tournaments)
+* [Documentation on playing in tournaments run via Corsace](../../../../tournament_play)
 
-Proyek ini menggunakan [framework Diátaxis](https://diataxis.fr/) digunakan sebagai panduan umum untuk menulis dokumen. Meskipun demikian, kamu hanya perlu untuk memahami cara untuk menulis [Panduan](https://diataxis.fr/how-to-guides/) dan [Referensi](https://diataxis.fr/reference/) untuk dapat berkontribusi.
+Proyek ini menggunakan [framework Diátaxis](https://diataxis.fr/) digunakan sebagai panduan umum untuk menulis dokumen. Meskipun demikian, kamu hanya perlu untuk memahami cara untuk menulis [Panduan](https://diataxis.fr/how-to-guides/) dan [Referensi](https://diataxis.fr/reference/) untuk dapat berkontribusi. The `Running Tournaments` and `Playing Tournaments` sections only contain guides, as any references needed are/will be within this `Development` section.
 
 ## Anatomi Dokumen
 
@@ -77,11 +78,11 @@ Apabila dokumentasi kamu bergantung pada dokumen lain pada repositori ini atau p
 
 ### Gambar
 
-Tempatkan seluruh gambar pada direktori `Assets/img/docs`. Kamu akan dapat menyisipkan gambar-gambar ini ke dokumenmu melalui tautan relatif (relative link).
-Untuk mengakses gambar di `Assets/img/docs` dari dokumen ini (yang berlokasi di `Docs/src/content/docs/en/development/Client/Guide/docs-write-edit-documents.mdx`), tautan relatif yang kamu butuhkan adalah sebagai berikut:
+Images should be put in the `Docs/src/images` directory with words lowercased and separated by underscores. Kamu akan dapat menyisipkan gambar-gambar ini ke dokumenmu melalui tautan relatif (relative link).
+To access an image in `Docs/src/images` from this file (which is at `Docs/src/content/docs/en/development/Client/Guide/docs-write-edit-documents.mdx`), you require the following relative direction:
 
 ```mdx
-![Image](../../../../../../../../Assets/img/docs/image.png)
+![Example Image](../../../../../../images/development/example_image.png)
 ```
 
 Dengan masing-masing tanda `../` digunakan untuk naik satu folder.
@@ -124,7 +125,7 @@ sidebar:
 ```
 
 Kode ini akan menampilkan ikon WIP pada dokumen di sidebar sebagai berikut:\
-![Contoh badge WIP](../../../../../../../../Assets/img/docs/wipExample.png)
+![Contoh badge WIP](../../../../../../images/development/wip_example.png)
 
 ### Bagian WIP
 
@@ -145,7 +146,7 @@ sidebar:
 ---
 import WorkInProgress from '../../../../../../components/WorkInProgress.astro';
 
-## Pre-requisite Reading
+## Prerequisite Reading
 ```
 
 Setelahnya, kamu dapat menempatkan komponen yang kamu impor pada bagian manapun yang ingin kamu tandai WIP sebagai berikut:
