@@ -1,8 +1,13 @@
 ---
-import { Aside } from '@astrojs/starlight/components';
+// TODO: Use Astro Starlighht <Aside> instead whenever astro/starlight is updated in https://github.com/Corsace/corsace/tree/api-ts-docs
+import { Icon } from '@astrojs/starlight/components';
 ---
-<Aside type="danger">
-    <slot>
-        This was currently set up only for internal Corsace Open purposes. This will be expanded to be more user-friendly via the web, and the Corsace Discord bot in the future.
-    </slot>
-</Aside>
+<aside aria-label="Danger" class="starlight-aside starlight-aside--danger">
+    <p class="starlight-aside__title" aria-hidden="true">
+        <Icon name={'error'} class="starlight-aside__icon" />
+        Danger
+    </p>
+    <section class="starlight-aside__content">
+        <p><slot>This was currently set up only for internal Corsace Open purposes. This will be expanded to be more user-friendly via the web, and the Corsace Discord bot in the future.</slot></p>
+    </section>
+</aside>
