@@ -1,22 +1,9 @@
-import Axios from "axios";
 import { BanchoLobbyPlayer, BanchoLobbyPlayerStates } from "bancho.js";
-import { PublicationData } from "centrifuge";
-import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-
-export function publish (matchup: Matchup, data: PublicationData) {
-    return Axios.post(`${config.centrifugo.apiUrl}/publish`, {
-        channel: `matchup:${matchup.ID}`,
-        data,
-    }, {
-        headers: {
-            "X-API-Key": config.centrifugo.apiKey,
-        },
-    });
-}
+import { publish } from "../../../../Server/functions/centrifugo";
 
 export function publishSettings (matchup: Matchup, slots: BanchoLobbyPlayer[]) {
-    return publish(matchup, { 
+    return publish(`matchup:${matchup.ID}`, { 
         type: "settings",
         slots: slots.map((slot, i) => ({
             playerOsuID: slot?.user.id,

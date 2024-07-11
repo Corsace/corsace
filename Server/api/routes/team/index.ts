@@ -1,7 +1,10 @@
+
+import { GuildMember } from "discord.js";
+import { QueryFailedError } from "typeorm";
 import { CorsaceRouter } from "../../../corsaceRouter";
 import { isCorsace, isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
-import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/team";
+import { Team as TeamInterface, TeamList, TeamMember, validateTeamText } from "../../../../Interfaces/team";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
@@ -13,11 +16,10 @@ import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { parseDateOrTimestamp } from "../../../utils/dateParse";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
-import { GuildMember } from "discord.js";
-import { QueryFailedError } from "typeorm";
 import { Stage } from "../../../../Models/tournaments/stage";
 import { User } from "../../../../Models/user";
 import { unallowedToPlay, TournamentRoleType } from "../../../../Interfaces/tournament";
+import { publish } from "../../../functions/centrifugo";
 
 const teamRouter = new CorsaceRouter();
 
@@ -373,6 +375,23 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
         return;
     }
 
+    const teamList: TeamList = {
+        ID: team.ID,
+        name: team.name,
+        avatarURL: team.avatarURL,
+        pp: team.pp,
+        BWS: team.BWS,
+        rank: team.rank,
+        members: team.members.map<TeamMember>(m => ({
+            ID: m.ID,
+            username: m.osu.username,
+            osuID: m.osu.userID,
+            country: m.country,
+            rank: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.rank ?? 0,
+            isCaptain: m.ID === team.captain.ID,
+        })),
+    };
+
     const qualifierStage = await Stage
         .createQueryBuilder("stage")
         .innerJoin("stage.tournament", "tournament")
@@ -433,6 +452,8 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
 
             await team.calculateStats();
             await team.save();
+
+            await publish(`teams:${tournamentID}`, { type: "teamRegistered", team: teamList });
             ctx.body = {
                 success: false,
                 error: `Successfully registered team, but failed to schedule a timer to run qualifier matchup. Please contact VINXIS or ThePooN\n${e}`,
@@ -447,6 +468,7 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
     await team.calculateStats();
     await team.save();
 
+    await publish(`teams:${tournamentID}`, { type: "teamRegistered", team: teamList });
     ctx.body = { success: true };
 });
 

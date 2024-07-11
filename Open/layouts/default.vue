@@ -217,8 +217,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Mixins, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
+import { ExtendedPublicationContext } from "centrifuge";
+import CentrifugeMixin from "../../Assets/mixins/centrifuge";
 
 import { UserInfo } from "../../Interfaces/user";
 import { BaseTeam } from "../../Interfaces/team";
@@ -241,7 +243,7 @@ const openModule = namespace("open");
     },
     middleware: "index",
 })
-export default class Default extends Vue {
+export default class Default extends Mixins(CentrifugeMixin) {
     
     @State viewTheme!: "light" | "dark";
     @State loggedInUser!: null | UserInfo;
@@ -259,9 +261,17 @@ export default class Default extends Vue {
             });
         }
 
-        await Promise.all([
-            this.$store.dispatch("setViewTheme", "dark"),
-        ]);
+        await this.$store.dispatch("setViewTheme", "dark");
+
+        if (!this.loggedInUser)
+            return;
+
+        await this.initCentrifuge(`invitations:${this.loggedInUser.ID}`);
+    }
+
+    handleData (ctx: ExtendedPublicationContext) {
+        if (ctx.data.type === "invite")
+            this.$store.commit("open/addInvite", ctx.data.team);
     }
 }
 </script>

@@ -5,7 +5,7 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { BanchoMatchupState } from "koa";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
 import state, { MatchupList } from "../../../../BanchoBot/state";
-import { publish } from "../../../../BanchoBot/functions/tournaments/matchup/centrifugo";
+import { publish } from "../../../functions/centrifugo";
 import { BanchoLobbyPlayerStates } from "bancho.js";
 import getMappoolSlotMods from "../../../../BanchoBot/functions/tournaments/matchup/getMappoolSlotMods";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
@@ -82,7 +82,7 @@ banchoRefereeRouter.$post<{ pulse: boolean }>("/:matchupID/pulse", async (ctx) =
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
-    await publish(state.matchups[ctx.state.matchupID].matchup, { 
+    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, { 
         type: "settings",
         slots: mpLobby.slots.map((slot, i) => ({
             playerOsuID: slot?.user.id,
@@ -328,7 +328,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
         await matchupMap.save();
         state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.push(matchupMap);
 
-        await publish(state.matchups[ctx.state.matchupID].matchup, {
+        await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
             type: "selectMap",
             map: {
                 ID: matchupMap.ID,
@@ -479,7 +479,7 @@ banchoRefereeRouter.$post("/:matchupID/settings", async (ctx) => {
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
-    await publish(state.matchups[ctx.state.matchupID].matchup, { 
+    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, { 
         type: "settings",
         slots: mpLobby.slots.map((slot, i) => ({
             playerOsuID: slot?.user.id,

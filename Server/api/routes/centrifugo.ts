@@ -29,12 +29,7 @@ interface SubscribeRequest {
     b64data?: string;
 }
 
-const channelTypes = [ "matchup" ];
-
 async function getChannel (channelType: string, channelID: number): Promise<any> {
-    if (!channelTypes.includes(channelType))
-        return null;
-
     if (channelType === "matchup") {
         return Matchup
             .createQueryBuilder("matchup")
@@ -47,7 +42,10 @@ async function getChannel (channelType: string, channelID: number): Promise<any>
     return `${channelType}:${channelID}`;
 }
 
-centrifugoRouter.$get<{ url: string }>("/publicUrl", (ctx) => {
+centrifugoRouter.$get<{ url: string }>("/publicUrl", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     ctx.body = {
         success: true,
         url: config.centrifugo.publicUrl,

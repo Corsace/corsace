@@ -458,9 +458,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Mixins, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
-import { Centrifuge, ExtendedPublicationContext, Subscription } from "centrifuge";
+import { ExtendedPublicationContext } from "centrifuge";
+import CentrifugeMixin from "../../../Assets/mixins/centrifuge";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
@@ -529,13 +530,10 @@ interface message {
         return !params.id || !isNaN(parseInt(params.id));
     },
 })
-export default class Referee extends Vue {
+export default class Referee extends Mixins(CentrifugeMixin) {
 
     @State loggedInUser!: UserInfo | null;
     @openModule.State tournament!: Tournament | null;
-
-    centrifuge: Centrifuge | null = null;
-    matchupChannel: Subscription | null = null;
 
     matchup: Matchup | null = null;
     mappools: Mappool[] = [];
@@ -796,58 +794,7 @@ export default class Referee extends Vue {
         this.mapTimer = `${this.tournament?.mapTimer ?? 90}`;
         this.readyTimer = `${this.tournament?.readyTimer ?? 90}`;
 
-        const { data: urlData } = await this.$axios.get<{url: string}>("/api/centrifugo/publicUrl");
-        if (!urlData.success) {
-            alert(urlData.error);
-            return;
-        }
-
-        const centrifuge = new Centrifuge(`${urlData.url}/connection/websocket`, {
-
-        });
-
-        centrifuge.on("connecting", (ctx) => {
-            console.log("connecting", ctx);
-        });
-
-        centrifuge.on("error", (err) => {
-            console.error("error", err);
-        });
-
-        centrifuge.on("connected", (ctx) => {
-            console.log("connected", ctx);
-        });
-
-        centrifuge.connect();
-
-        this.centrifuge = centrifuge;
-
-        this.matchupChannel = this.centrifuge.newSubscription(`matchup:${this.$route.params.id}`);
-
-        this.matchupChannel.on("error", (err) => {
-            alert("Error in console for matchup channel subscription");
-            console.error("error", err);
-        });
-
-        this.matchupChannel.on("unsubscribed", (ctx) => {
-            if (ctx.code === 102)
-                alert("Couldn't find matchup channel");
-            else if (ctx.code === 103)
-                alert("Unauthorized to subscribe to matchup channel");
-            else if (ctx.code !== 0) {
-                alert("Error in console for matchup channel subscription");
-                console.error("unsubscribed", ctx);
-            } else
-                console.log("unsubscribed", ctx);
-        });
-
-        this.matchupChannel.on("subscribed", (ctx) => {
-            console.log("subscribed", ctx.channel);
-        });
-
-        this.matchupChannel.on("publication", this.handleData);
-
-        this.matchupChannel.subscribe();
+        await this.initCentrifuge(`matchup:${this.$route.params.id}`);
 
         if (this.matchup?.mp)
             await this.banchoCall("pulse");
@@ -946,7 +893,7 @@ export default class Referee extends Vue {
         }
     }
 
-    handleData = (ctx: ExtendedPublicationContext) => {
+    handleData (ctx: ExtendedPublicationContext) {
         console.log("publication", ctx.channel, ctx.data);
 
         if (!ctx.channel.startsWith("matchup:"))
@@ -1031,7 +978,7 @@ export default class Referee extends Vue {
                 this.runningLobby = false;
                 break;
         }
-    };
+    }
 
     newSet () {
         if (!this.matchup?.sets)

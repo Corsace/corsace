@@ -30,10 +30,11 @@ import { User } from "../../../../Models/user";
 import { loginRow } from "../../../../DiscordBot/functions/loginResponse";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { unallowedToPlay } from "../../../../Interfaces/tournament";
-import { publish, publishSettings } from "./centrifugo";
+import { publishSettings } from "./centrifugo";
 import assignTeamsToNextMatchup from "../../../../Server/functions/tournaments/matchups/assignTeamsToNextMatchup";
 import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
 import { MapStatus } from "../../../../Interfaces/matchup";
+import { publish } from "../../../../Server/functions/centrifugo";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
@@ -61,6 +62,7 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
 }
 
 async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, invCollector?: InteractionCollector<any>, refCollector?: InteractionCollector<any>, auto = false) {
+    const centrifugoChannel = `matchup:${matchup.ID}`;
     // Save and store match instance
     state.runningMatchups++;
     state.matchups[matchup.ID] = {
@@ -90,7 +92,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     await matchup.save();
     log(matchup, `Saved matchup lobby to DB with mp ID ${mpLobby.id}`);
 
-    await publish(matchup, {
+    await publish(centrifugoChannel, {
         type: "created",
         mpID: mpLobby.id,
         baseURL,
@@ -209,7 +211,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMessage.user = user;
         matchup.messages!.push(matchupMessage);
 
-        await publish(matchup, { 
+        await publish(centrifugoChannel, { 
             type: "message", 
             timestamp: matchupMessage.timestamp, 
             content: matchupMessage.content, 
@@ -309,7 +311,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await mpChannel.sendMessage(`${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so theyll be ${orderString}`);
             }
 
-            await publish(matchup, {
+            await publish(centrifugoChannel, {
                 type: "first",
                 first: matchup.sets![matchup.sets!.length - 1].first?.ID,
             });
@@ -427,7 +429,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     });
 
     // Beatmap change event
-    mpLobby.on("beatmapId", async (beatmapID) => await publish(matchup, { type: "beatmap", beatmapID }));
+    mpLobby.on("beatmapId", async (beatmapID) => await publish(centrifugoChannel, { type: "beatmap", beatmapID }));
 
     // Player joined event
     mpLobby.on("playerJoined", async (joinInfo) => {
@@ -582,7 +584,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchStart = undefined;
         mapsPlayed = mapsPlayed.filter(m => m.beatmap!.ID !== mpLobby.beatmapId);
 
-        await publish(matchup, { type: "matchAborted" });
+        await publish(centrifugoChannel, { type: "matchAborted" });
 
         if (!state.matchups[matchup.ID].autoRunning)
             return;
@@ -616,7 +618,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             mapsPlayed.push(beatmap);
         playersPlaying = playersInLobby;
 
-        await publish(matchup, { type: "matchStarted" });
+        await publish(centrifugoChannel, { type: "matchStarted" });
     });
 
     mpLobby.on("matchFinished", async () => {
@@ -705,7 +707,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
 
-        await publish(matchup, {
+        await publish(centrifugoChannel, {
             type: "matchFinished",
             setTeam1Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team1Score ?? 0,
             setTeam2Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team2Score ?? 0,
@@ -758,7 +760,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             } else 
                 await matchup.save();
 
-            await publish(matchup, { type: "closed" });
+            await publish(centrifugoChannel, { type: "closed" });
 
             // Let it run one more time before clearing
             await pause(15 * 1000);
