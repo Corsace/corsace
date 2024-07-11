@@ -1,5 +1,5 @@
 import { ApprovalStatus, Beatmap, BeatmapScore, Mode, Score, UserScore } from "nodesu";
-import { acronymtoMods, modsToAcronym } from "../../Interfaces/mods";
+import { acronymtoMods, applyMods, modsToAcronym } from "../../Interfaces/mods";
 import { User } from "../../Models/user";
 import { discordGuild } from "../../Server/discord";
 import { osuClient } from "../../Server/osu";
@@ -13,7 +13,7 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set:
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function beatmapEmbed (beatmap: Beatmap, mods: string, setorUser: Beatmap[] | User, missCount?: number, userScore?: UserScore, isRecent?: boolean): Promise<EmbedBuilder> {
 
-    let embed = defaultBeatmapEmbed(beatmap, setorUser instanceof User ? false : true);
+    let embed = defaultBeatmapEmbed(applyMods(beatmap, mods), setorUser instanceof User ? false : true);
 
     const totalHits = beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner;
 

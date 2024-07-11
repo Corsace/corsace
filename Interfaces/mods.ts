@@ -178,20 +178,20 @@ export function modsToAcronym (mod?: ModsType): string {
  */
 export function applyMods (beatmap: Beatmap, mods: string): Beatmap {
     mods = mods.toLowerCase();
-    if (mods.includes("HR")) {
+    if (mods.includes("hr")) {
         beatmap.diffSize = Math.min(10, beatmap.diffSize * 1.3);
         beatmap.diffApproach = Math.min(10, beatmap.diffApproach * 1.4);
         beatmap.diffOverall = Math.min(10, beatmap.diffOverall * 1.4);
         beatmap.diffDrain = Math.min(10, beatmap.diffDrain * 1.4);
-    } else if (mods.includes("EZ")) {
+    } else if (mods.includes("ez")) {
         beatmap.diffSize /= 2.0;
         beatmap.diffApproach /= 2.0;
         beatmap.diffOverall /= 2.0;
         beatmap.diffDrain /= 2.0;
     }
 
-    if (mods.includes("DT") || mods.includes("NC") || mods.includes("HT")) {
-        const clock = mods.includes("HT") ? 0.75 : 1.5;
+    if (mods.includes("dt") || mods.includes("nc") || mods.includes("ht")) {
+        const clock = mods.includes("ht") ? 0.75 : 1.5;
 
         beatmap.bpm *= clock;
         beatmap.totalLength /= clock;
