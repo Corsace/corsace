@@ -29,8 +29,9 @@ Primordialmente, existem 3 seções principais:
 * [Documentação de Design](design)
 * [Documentação de Desenvolvimento](development)
 * [Documentação sobre como executar torneios via Corsace](tournaments)
+* [Documentation on playing in tournaments run via Corsace](../../../../tournament_play)
 
-Dentro delas, o [framework Diátaxis](https://diataxis.fr/) é usado como guia estrutural para escrever documentação; no entanto, o foco principal está na escrita de [Guias](https://diataxis.fr/how-to-guides/) e [Referências](https://diataxis.fr/reference/).
+Dentro delas, o [framework Diátaxis](https://diataxis.fr/) é usado como guia estrutural para escrever documentação; no entanto, o foco principal está na escrita de [Guias](https://diataxis.fr/how-to-guides/) e [Referências](https://diataxis.fr/reference/). The `Running Tournaments` and `Playing Tournaments` sections only contain guides, as any references needed are/will be within this `Development` section.
 
 ## Anatomia do Documento
 
@@ -77,11 +78,11 @@ Se sua documentação depender de outros documentos dentro deste repositório ou
 
 ### Imagens
 
-As imagens devem ser colocadas no diretório `Assets/img/docs`. Quando você deseja inserir uma imagem em seu documento, pode fazer isso com um link relativo.
-Para acessar uma imagem em `Assets/img/docs` deste arquivo (que está em `Docs/src/content/docs/en/development/Client/Guide/docs-write-edit-documents.mdx`), você precisa da seguinte direção relativa:
+As imagens devem ser colocadas no diretório `Docs/src/images`. Quando você deseja inserir uma imagem em seu documento, pode fazer isso com um link relativo.
+Para acessar uma imagem em `Docs/src/images` deste arquivo (que está em `Docs/src/content/docs/en/development/Client/Guide/docs-write-edit-documents.mdx`), você precisa da seguinte direção relativa:
 
 ```mdx
-![Image](../../../../../../../../Assets/img/docs/image.png)
+![Example Image](../../../../../../images/development/example_image.png)
 ```
 
 Cada `../` move uma pasta acima no diretório.
@@ -124,7 +125,7 @@ sidebar:
 ```
 
 Isso fornecerá um ícone "EM ANDAMENTO" para o documento na barra lateral esquerda, como este:\
-![Exemplo do distintivo EM ANDAMENTO](../../../../../../../../Assets/img/docs/wipExample.png)
+![Exemplo do distintivo EM ANDAMENTO](../../../../../../images/development/wip_example.png)
 
 ### WIP section
 
@@ -143,7 +144,7 @@ sidebar:
 ---
 import WorkInProgress from '../../../../../../components/WorkInProgress.astro';
 
-## Pre-requisite Reading
+## Prerequisite Reading
 ```
 
 Depois, você pode colocá-lo em qualquer seção assim:
