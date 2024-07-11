@@ -1,16 +1,67 @@
 ---
 title: Memulai
 description: Dokumentasi untuk memulai permainan turnamen dengan menggunakan layanan Corsace.
-lastUpdated: 2024-06-30
+lastUpdated: 2024-07-07
 sidebar:
-  badge:
-    text: WIP
-    variant: caution
   order: 1
 ---
 
-import WorkInProgress from '../../../../components/WorkInProgress.astro';
-
 This documentation provides information on the extra features provided for players, as well as any necessary information you may need to know while participating in a tournament run via Corsace services.
 
-<WorkInProgress section="tournament_play" />
+## Prerequisites
+
+* Ensure you have logged in to the [Corsace website](https://corsace.io) at least once via osu! and discord before continuing.
+* Ensure you have joined the discord server for the tournament you are participating in.
+
+## Joining a team
+
+:::note
+Teams are necessary for joining any non-solo non-1v1 tournament. If you are looking to participate in a solo 1v1 tournament, you can skip this section.
+:::
+
+You can currently join a team either from the web, or from the Corsace Discord bot. The captain of the team must have invited you to the team before you can join.
+
+### From the web
+
+To join a team from the web, go to and log in to the [Corsace Open website](https://open.corsace.io). Once logged in, the menu's 3 lines should have a red dot if the captain had already invited you. Click menu -> invitations to be transferred to the team invites page. The invitations option should also have a red dot if you have any pending invites.
+![Image of menu -> invitations](../../../../images/tournament_play/menu_invitations.png)
+
+From here, you can click the `ACCEPT` button to join the team. You may also press `DECLINE` for any invites you do not wish to accept to clear them from your list.
+
+### From the Corsace Discord bot
+
+You can also join a team via the Corsace Discord bot. To do this, use the `/invite_accept` command in a channel where the Corsace Discord bot is present. Fill in the necessary parameters and the bot will send a request to the team captain to join the team.
+
+You may also see a list of invites you have received by using the `/list_invites` command in a channel where the Corsace Discord bot is present.
+
+## Creating a team
+
+:::note
+Teams are necessary for joining any non-solo non-1v1 tournament. If you are looking to participate in a solo 1v1 tournament, you can skip this section.
+:::
+
+To create a team, go to and log in to the [Corsace Open website](https://open.corsace.io). Once logged in, click menu -> my teams to be transferred to the team listing page of all the teams you are currently in.
+![Image of menu -> my teams](../../../../images/tournament_play/menu_my_teams.png)
+
+From here, you should be in the `TEAM MANAGEMENT` section. In this page, you can click the `CREATE A TEAM` button to create a new team. Fill in the necessary information and click `CREATE TEAM` to finish the process.
+![Image of team management](../../../../images/tournament_play/team_management.png)
+![Image of create team page](../../../../images/tournament_play/create_team.png)
+![Image of team created](../../../../images/tournament_play/create_team_success.png)
+
+### Inviting players to your team
+
+You can currently invite players either from the web, or from the Corsace Discord bot.
+
+#### From the web
+
+Once you have created a team, you can invite players to join your team. To do this, go to the team page of the team you created. You can find this by clicking the team name in the team management page.
+
+From the team page, you can click the `TEAM INVITES` button to be transferred to the team invites page. Here, you can invite players to your team by entering their osu! username and clicking `INVITE PLAYER`.
+
+#### From the Corsace Discord bot
+
+You can also invite players to your team via the Corsace Discord bot. To do this, use the `/team_invite` command in a channel where the Corsace Discord bot is present. Fill in the necessary parameters and the bot will send an invite to the player.
+
+## Next Steps
+
+Once you have joined or created a team, you can proceed to [joining a tournament](./joining-tournament) to participate in the tournament itself.
