@@ -136,6 +136,7 @@ stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
         .innerJoinAndSelect("slots.maps", "maps")
         .leftJoinAndSelect("maps.beatmap", "beatmaps")
         .leftJoinAndSelect("beatmaps.beatmapset", "beatmapsets")
+        .leftJoinAndSelect("beatmapsets.creator", "beatmapCreators")
         .leftJoinAndSelect("maps.customBeatmap", "customBeatmaps")
         .leftJoinAndSelect("maps.customMappers", "customMappers");
 
