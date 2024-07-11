@@ -132,7 +132,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         no: randomUUID(),
     };
     const confirm = await m.channel!.send({
-        content: `Are u sure u wanna swap **${slot1}${order1Text}** (${name1}) with **${slot2}${order2Text}** (${name2})?`,
+        content: `Are u sure u wanna swap **${mappoolSlot1}** (${name1}) with **${mappoolSlot2}** (${name2})?`,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
@@ -195,9 +195,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await updateThreads(m, tournament, mappoolMap1, mappoolMap2, mappoolSlot1, mappoolSlot2);
 
-    await respond(m, `Swapped **${slot1}${order1Text}** with **${slot2}${order2Text}**\n\nAffected threads:\nCustom Threads: ${mappoolMap1.customThreadID ? `<#${mappoolMap1.customThreadID}>` : "N/A"} ${mappoolMap2.customThreadID ? `<#${mappoolMap2.customThreadID}>` : "None"}\nJob Boards: ${mappoolMap1.jobPost?.jobBoardThread ? `<#${mappoolMap1.jobPost.jobBoardThread}>` : "None"} ${mappoolMap2.jobPost?.jobBoardThread ? `<#${mappoolMap2.jobPost.jobBoardThread}>` : "N/A"}`);
+    await respond(m, `Swapped **${mappoolSlot1}** with **${mappoolSlot2}**\n\nAffected threads:\nCustom Threads: ${mappoolMap1.customThreadID ? `<#${mappoolMap1.customThreadID}>` : "N/A"} | ${mappoolMap2.customThreadID ? `<#${mappoolMap2.customThreadID}>` : "None"}\nJob Boards: ${mappoolMap1.jobPost?.jobBoardThread ? `<#${mappoolMap1.jobPost.jobBoardThread}>` : "None"} | ${mappoolMap2.jobPost?.jobBoardThread ? `<#${mappoolMap2.jobPost.jobBoardThread}>` : "N/A"}`);
 
-    await mappoolLog(tournament, "swap", user, `Swapped \`${slot1}${order1Text}\` with \`${slot2}${order2Text}\`\n${log2 ? `\`${slot1}${order1Text}\` is now ${log2.beatmap ? `\`${log2.beatmap.beatmapset.artist} - ${log2.beatmap.beatmapset.title} [${log2.beatmap.difficulty}]\`` : `\`${log2.artist} - ${log2.title} [${log2.difficulty}]`}\`` : `\`${slot1}${order1Text}\` is now empty`}\n${log1 ? `\`${slot2}${order2Text}\` is now ${log1.beatmap ? `\`${log1.beatmap.beatmapset.artist} - ${log1.beatmap.beatmapset.title} [${log1.beatmap.difficulty}]\`` : `\`${log1.artist} - ${log1.title} [${log1.difficulty}]`}\`` : `\`${slot2}${order2Text}\` is now empty`}`);
+    await mappoolLog(tournament, "swap", user, `Swapped \`${mappoolSlot1}\` with \`${mappoolSlot2}\`\n${log1 ? `\`${mappoolSlot1}\` is now ${log1.beatmap ? `\`${log1.beatmap.beatmapset.artist} - ${log1.beatmap.beatmapset.title} [${log1.beatmap.difficulty}]\`` : `\`${log1.artist} - ${log1.title} [${log1.difficulty}]`}\`` : `\`${mappoolSlot1}\` is now empty`}\n${log2 ? `\`${mappoolSlot2}\` is now ${log2.beatmap ? `\`${log2.beatmap.beatmapset.artist} - ${log2.beatmap.beatmapset.title} [${log2.beatmap.difficulty}]\`` : `\`${log2.artist} - ${log2.title} [${log2.difficulty}]`}\`` : `\`${mappoolSlot2}\` is now empty`}`);
 }
 
 async function swap (mappoolMap1: MappoolMap, mappoolMap2: MappoolMap, log1: MappoolMapHistory | undefined, log2: MappoolMapHistory | undefined, swapper: User) {
