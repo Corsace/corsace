@@ -1,0 +1,38 @@
+---
+title: Playing Matches
+description: Documentation on playing matches for a tournament.
+lastUpdated: 2024-07-10
+sidebar:
+  order: 3
+---
+
+## Prerequisite Reading
+
+* [Playing Tournaments/Getting Started](../)
+* [Playing Tournaments/Joining a Tournament](./joining-tournament)
+
+## Playing Matches
+
+Playing matches in a tournament run via Corsace services is a straightforward process that does not deviate much for regular matches. There are a few key differences, however, that are outlined below, especially for autoreffed matches.
+
+### All Matches
+
+Whenever a match starts at 10-15 minutes before its scheduled time, the Corsace osu! bot will create a lobby for the match, and invite all the players for the given lobby. A discord message will also be sent to the tournament's general channel (if it exists), mentioning the players and the lobby name, as well a button to send an invite again. Any player not assigned to that match will not be able to be invited by pressing the button.
+
+Whenever a player that is not in the match tries to join the lobby that also isn't an authorized staff member, the bot will kick them from the lobby, change the password, and reinvite all the players again. This is to fully prevent any unauthorized players from joining the lobby, and will be active regardless of autoreffing enabled or not.
+
+### Autoreffed Matches
+
+For autoreffed matches, the same features above will exist, but with the addition of a few more features. In the discord post, there will be information on relevant commands that are needed for an autoreffed lobby.
+
+`!start` is a command run by all captains in the match in order to fully start the lobby. The lobby otherwise will not allow any maps played or anything else relevant to running the matchup until the matchup time itself. This command can only be run by team captains; however, if the captain won't be available for the matchup, a referee or organizer can also join and run `!start` to force start the lobby.
+
+`!abort` is a command that does exactly what a player would expect. When a map is playing, a player can run the command, stopping the map. In the case where there are limits the tournament has on the abort count, it will stop working. This limit may be put in place to prevent abuse of using the command to "retry spam" the map. A map will also automatically be aborted if a player leaves, and if the abort count is not reached.
+
+In the case where an abort is run, it is expected that the same lineup of players will play the map again; otherwise, the map will be considered as not played, unless if a referee decides otherwise.
+
+`!panic` is a command that is run by any player in the lobby, and will stop all autoreffing functionalities. This will ping the organizer and all referee roles in the referee channel to take manual control of the lobby. Whenever everything is good again, a referee that joins the lobby may run `!auto` to resume the autoreffing service.
+
+## Rescheduling
+
+For reschedules, one of the captains can run the `/matchup_reschedule` command in the tournament's discord server. This will then ask for confirmation from both team captains to reschedule the match. If both captains confirm, the match will be rescheduled to the new time, and the relevant staff members assigned to the matchup alongside the organizer will be pinged about the reschedule.
