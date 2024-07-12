@@ -184,6 +184,61 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
     };
 });
 
+tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/unregisteredTeams", validateID, async (ctx) => {
+    const ID = ctx.state.ID;
+
+    const tournament = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoinAndSelect("tournament.teams", "teams")
+        .leftJoinAndSelect("tournament.mode", "mode")
+        .where("tournament.ID = :ID", { ID })
+        .getOne();
+
+    if (!tournament) {
+        ctx.body = {
+            success: false,
+            error: "Tournament not found",
+        };
+        return;
+    }
+
+    const teams = await Team
+        .createQueryBuilder("team")
+        .innerJoinAndSelect("team.captain", "captain")
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
+        .leftJoin("team.tournaments", "tournament")
+        .where("tournament.ID <> :ID", { ID })
+        .orderBy("team.ID", "DESC")
+        .getMany();
+
+    ctx.body = {
+        success: true,
+        teams: teams.map<TeamList>(t => {
+            const members = t.members;
+            if (!members.some(m => m.ID === t.captain.ID))
+                members.push(t.captain);
+            return {
+                ID: t.ID,
+                name: t.name,
+                avatarURL: t.avatarURL,
+                pp: t.pp,
+                BWS: t.BWS,
+                rank: t.rank,
+                members: members.map<TeamMember>(m => ({
+                    ID: m.ID,
+                    username: m.osu.username,
+                    osuID: m.osu.userID,
+                    country: m.country,
+                    rank: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.rank ?? 0,
+                    isCaptain: m.ID === t.captain.ID,
+                })),
+            };
+        }),
+    };
+});
+
 // <any> is used here to be able to send a raw csv file to the endpoint user
 tournamentRouter.$get<any>("/:tournamentID/teams/screening", validateID, async (ctx) => {
     const ID = ctx.state.ID;
