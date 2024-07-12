@@ -621,11 +621,16 @@
             }
         },
         "teams": {
+            "registeredTeams": "REGISTERED TEAMS",
+            "allTeams": "ALL TEAMS",
             "teamList": "TEAMS LIST",
             "teamManagement": "TEAM MANAGEMENT",
             "error": "COULD NOT GET TEAM LIST",
             "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "search for user/team",
+            "showUnregistered": "Show unregistered teams",
+            "noRegisteredTeams": "No teams have registered yet.",
+            "noCreatedTeams": "You are currently not in any teams",
             "editTeamInfo": "edit team info",
             "leaveTeam": "LEAVE TEAM",
             "qualifierId": "Qualifier ID",
