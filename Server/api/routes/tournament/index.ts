@@ -209,7 +209,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/unregisteredTeams",
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoin("team.tournaments", "tournament")
-        .where("tournament.ID <> :ID", { ID })
+        .where("tournament.ID IS NULL OR tournament.ID <> :ID", { ID })
         .orderBy("team.ID", "DESC")
         .getMany();
 
