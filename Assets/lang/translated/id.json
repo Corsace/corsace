@@ -621,11 +621,16 @@
             }
         },
         "teams": {
+            "registeredTeams": "REGISTERED TEAMS",
+            "allTeams": "ALL TEAMS",
             "teamList": "DAFTAR TIM",
             "teamManagement": "MANAJEMEN TIM",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
             "loginManagement": "Silakan masuk untuk mengelola tim milikmu.",
             "searchPlaceholder": "cari pengguna/tim",
+            "showUnregistered": "Show unregistered teams",
+            "noRegisteredTeams": "No teams have registered yet.",
+            "noCreatedTeams": "You are currently not in any teams",
             "editTeamInfo": "SUNtING INFO TIM",
             "leaveTeam": "KELUAR DARI TIM",
             "qualifierId": "ID Kualifikasi",
