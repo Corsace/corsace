@@ -65,6 +65,10 @@ export default class ContentButton extends Vue {
         flex: none;
     }
 
+    &--nowrap {
+        white-space: nowrap;
+    }
+
     &--red {
         color: #181818;
         background-color: $open-red;

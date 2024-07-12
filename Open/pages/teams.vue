@@ -9,12 +9,19 @@
             @update:page="page = $event"
         />
         <div 
-            v-if="filteredTeams && page === 'list'"
+            v-if="page === 'list'"
             class="teams_list__main_content"
         >
             <OpenTitle>
-                {{ $t('open.teams.teamList') }}
+                {{ unregisteredTeams ? $t('open.teams.allTeams') : $t('open.teams.registeredTeams') }}
                 <template #right>
+                    <ContentButton
+                        v-if="!unregisteredTeams"
+                        class="content_button--red content_button--nowrap"
+                        @click.native="getUnregisteredTeams"
+                    >
+                        {{ $t('open.teams.showUnregistered') }}
+                    </ContentButton>
                     <SearchBar
                         :placeholder="`${$t('open.teams.searchPlaceholder')}`"
                         style="margin-bottom: 10px;"
@@ -30,13 +37,31 @@
                     v-for="team in filteredTeams"
                     :key="team.ID"
                     :team="team"
+                    registered
                 />
+            </div>
+            <div
+                v-else-if="loading"
+                class="teams_list__main_content"
+            >
+                {{ $t('open.status.loading') }}...
             </div>
             <div
                 v-else
                 class="teams_list__main_content"
             >
-                No registered teams currently
+                {{ $t('open.teams.noRegisteredTeams') }}
+            </div>
+            <div
+                v-if="unregisteredTeams"
+                id="unregisteredTeams"
+                class="teams_list__main_content_list"
+            >
+                <OpenCardTeam
+                    v-for="team in unregisteredTeams"
+                    :key="team.ID"
+                    :team="team"
+                />
             </div>
         </div>
         <div 
@@ -55,20 +80,21 @@
                 </template>
             </OpenTitle>
             <div 
-                v-if="filteredTeams && filteredTeams.length !== 0"
+                v-if="filteredTeams.length !== 0"
                 class="teams_list__main_content_list"
             >
                 <OpenCardTeam
                     v-for="team in filteredTeams"
                     :key="team.ID"
                     :team="team"
+                    :registered="teamList && teamList.some(t => t.ID === team.ID)"
                 />
             </div>
             <div
                 v-else
                 class="teams_list__main_content"
             >
-                You are currently not in any teams
+                {{ $t('open.teams.noCreatedTeams') }}
             </div>
         </div>
         <div
@@ -81,17 +107,13 @@
             v-else-if="loading"
             class="teams_list__main_content"
         >
-            <OpenTitle>
-                {{ $t('open.status.loading') }}...
-            </OpenTitle>
+            {{ $t('open.status.loading') }}...
         </div>
         <div
             v-else 
             class="teams_list__main_content"
         >
-            <OpenTitle>
-                {{ $t('open.teams.error') }}...
-            </OpenTitle>
+            {{ $t('open.teams.error') }}...
         </div>
     </div>
 </template>
@@ -153,19 +175,20 @@ export default class Teams extends Mixins(CentrifugeMixin) {
     loading = true;
     searchValue = "";
     page: "list" | "management" = "list";
+    unregisteredTeams: TeamList[] | null = null;
 
     get filteredTeams () {
         if (this.page === "management")
-            return this.myTeams;
+            return this.myTeams ?? [];
         if (!this.searchValue)
-            return this.teamList;
+            return this.teamList ?? [];
         return this.teamList?.filter(team => 
             team.name.toLowerCase().includes(this.searchValue.toLowerCase()) ||
             team.members.some(member => member.username.toLowerCase().includes(this.searchValue.toLowerCase())) ||
             team.ID.toString().includes(this.searchValue.toLowerCase()) ||
             team.members.some(member => member.ID.toString().includes(this.searchValue.toLowerCase())) ||
             team.members.some(member => member.osuID.toLowerCase().includes(this.searchValue.toLowerCase()))
-        );
+        ) ?? [];
     }
 
     async mounted () {
@@ -178,6 +201,24 @@ export default class Teams extends Mixins(CentrifugeMixin) {
 
         if (this.tournament)
             await this.initCentrifuge(`teams:${this.tournament.ID}`);
+    }
+
+    async getUnregisteredTeams () {
+        this.loading = true;
+        const { data } = await this.$axios.get<{ teams: TeamList[] }>(`/api/tournament/${this.tournament?.ID}/unregisteredTeams`);
+        if (!data.success) {
+            alert("Failed to get unregistered teams, check console for more information");
+            console.error(data.error);
+            return;
+        }
+        this.unregisteredTeams = data.teams;
+        this.loading = false;
+
+        const teamsList = document.getElementsByClassName("teams_list")[0];
+        teamsList.scrollTo({
+            top: document.getElementById("unregisteredTeams")?.offsetTop ?? teamsList.scrollHeight,
+            behavior: "smooth",
+        });
     }
 
     handleData (ctx: ExtendedPublicationContext) {
