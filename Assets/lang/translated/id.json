@@ -11,7 +11,7 @@
     },
     "mca_ayim": {
         "banner": {
-            "merch": "TOKO CINDERAMATA RESMI",
+            "merch": "TOKO CENDERA MATA RESMI",
             "corsace": "HUB EVENT UTAMA"
         },
         "header": {
@@ -40,8 +40,8 @@
             "records": "REKAM JEJAK",
             "statistics": "STATISTIK",
             "search": "cari mapper",
-            "numberof": "total",
-            "numberwith": "total map dengan",
+            "numberof": "jumlah",
+            "numberwith": "jumlah map dengan",
             "message": {
                 "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat kamu jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
                 "2020": "<p>Halo, 2021… Akhirnya kita berjumpa lagi!</p>Setelah penyelenggaraan A Year in Mapping tahun lalu terpaksa batal karena satu dan lain hal, A Year in Mapping 2020 (akhirnya) dapat kembali hadir ke hadapan kalian semua!</p><p>Tidak hanya itu, tahun ini kami juga kembali menerima komentar secara terbuka! Silakan pilih mode permainan yang dikehendaki untuk mulai menjelajah situs A Year in Mapping.</p>",
@@ -95,8 +95,8 @@
             "mappers": "MAPPER"
         },
         "statistics": {
-            "numberOf": "total",
-            "numberOfMapsWith": "total map dengan",
+            "numberOf": "jumlah",
+            "numberOfMapsWith": "jumlah map dengan",
             "average": "rata-rata"
         },
         "comments": {
@@ -104,7 +104,7 @@
             "info": "Berikanlah komentarmu kepada para mapper di bawah ini! Seluruh komentar yang masuk akan ditampilkan setelah hasil MCA diumumkan.",
             "search": "cari mapper",
             "viewSubmit": "lihat/kirim komentar",
-            "writeHere": "Berikan komentarmu untuk mapper ini di sini!",
+            "writeHere": "Tulis komentar baru untuk mapper ini di sini!",
             "update": "Perbarui",
             "remove": "Hapus",
             "create": "Tulis",
@@ -621,16 +621,16 @@
             }
         },
         "teams": {
-            "registeredTeams": "REGISTERED TEAMS",
-            "allTeams": "ALL TEAMS",
+            "registeredTeams": "TIM YANG TERDAFTAR",
+            "allTeams": "SELURUH TIM",
             "teamList": "DAFTAR TIM",
             "teamManagement": "MANAJEMEN TIM",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
             "loginManagement": "Silakan masuk untuk mengelola tim milikmu.",
             "searchPlaceholder": "cari pengguna/tim",
-            "showUnregistered": "Show unregistered teams",
-            "noRegisteredTeams": "No teams have registered yet.",
-            "noCreatedTeams": "You are currently not in any teams",
+            "showUnregistered": "Tampilkan tim yang tidak terdaftar",
+            "noRegisteredTeams": "Belum ada tim yang terdaftar.",
+            "noCreatedTeams": "Kamu saat ini tidak sedang berada dalam tim mana pun",
             "editTeamInfo": "SUNtING INFO TIM",
             "leaveTeam": "KELUAR DARI TIM",
             "qualifierId": "ID Kualifikasi",
