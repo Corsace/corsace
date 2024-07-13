@@ -11,7 +11,7 @@
     },
     "mca_ayim": {
         "banner": {
-            "merch": "TOKO CENDERA MATA RESMI",
+            "merch": "TOKO CINDERAMATA RESMI",
             "corsace": "HUB EVENT UTAMA"
         },
         "header": {
@@ -58,7 +58,7 @@
             "length": "DURASI TERPANJANG",
             "difficulties": "TINGKAT KESULITAN TERBANYAK",
             "playTime": "TPTAL DURASI (DARI SELURUH TINGKAT KESULITAN) TERPANJANG",
-            "totalRanked": "JUMLAH BEATMAP RANKED",
+            "totalRanked": "TOTAL MAP RANKED",
             "totalDiff": "JUMLAH TINGKAT KESULITAN",
             "submitDates": "WAKTU PENGUNGGAHAN",
             "starRatings": "STAR RATING",
@@ -167,11 +167,11 @@
                 "description": "Storyboarder terbaik tahun ini."
             },
             "marathon": {
-                "name": "Beatmap Maraton Terbaik",
+                "name": "Map Maraton Terbaik",
                 "description": "Beatmap terbaik dengan drain time di atas 5 menit."
             },
             "marathonMan": {
-                "name": "Beatmap Maraton Terbaik",
+                "name": "Map Maraton Terbaik",
                 "description": "Beatmap terbaik dengan drain time di atas 4 menit."
             },
             "hitsounding": {
@@ -183,23 +183,23 @@
                 "description": "Beatmap terbaik yang tingkat kesulitan tertingginya merupakan hasil kolaborasi antar dua orang mapper atau lebih."
             },
             "simple": {
-                "name": "Beatmap Sederhana Terbaik",
+                "name": "Map Sederhana Terbaik",
                 "description": "Beatmap terbaik yang tingkat kesulitan tertingginya merupakan Insane atau lebih rendah."
             },
             "highBPM": {
-                "name": "Beatmap BPM Tinggi Terbaik",
+                "name": "Map BPM Tinggi Terbaik",
                 "description": "Beatmap terbaik yang bertitik berat pada pattern stream berkecepatan tinggi atau singletap."
             },
             "smallCircles": {
-                "name": "Beatmap CS Kecil Terbaik",
+                "name": "Map CS Tinggi Terbaik",
                 "description": "Beatmap terbaik yang tingkat kesulitan tertingginya mengusung circle size 5 atau lebih kecil."
             },
             "heavy13": {
-                "name": "Beatmap Dominan 1/3 Terbaik",
+                "name": "Map Dominan 1/3 Terbaik",
                 "description": "Beatmap terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6)."
             },
             "throwback": {
-                "name": "Beatmap Nostalgia Terbaik",
+                "name": "Map Nostalgia Terbaik",
                 "description": "Beatmap terbaik dengan gaya mapping yang mengusung nuansa nostalgia."
             },
             "mapper": {
@@ -231,23 +231,23 @@
                 "description": "Beatmap dengan persebaran tingkat kesulitan (diffficulty spread) terbaik."
             },
             "experimental": {
-                "name": "Beatmap Eksperimental Terbaik",
-                "description": "Beatmap terbaik yang bertitik berat pada aspek \"tech\" atau off-meta."
+                "name": "Map Eksperimental Terbaik",
+                "description": "Beatmap terbaik yang bertitik berat pada aspek \"tech\" atau non-meta."
             },
             "stream": {
-                "name": "Beatmap Stream Terbaik",
+                "name": "Map Stream Terbaik",
                 "description": "Beatmap terbaik yang mengusung stream berkelanjutan."
             },
             "highBPMTaiko": {
-                "name": "Beatmap BPM Tinggi Terbaik",
+                "name": "Map BPM Tinggi Terbaik",
                 "description": "Beatmap terbaik dengan tempo lagu di atas 240 BPM."
             },
             "lowBPMTaiko": {
-                "name": "Beatmap BPM Rendah Terbaik",
+                "name": "Map BPM Rendah Terbaik",
                 "description": "Beatmap terbaik dengan tempo lagu di bawah 130 BPM."
             },
             "simplistic": {
-                "name": "Beatmap Sederhana Terbaik",
+                "name": "Map Sederhana Terbaik",
                 "description": "Beatmap terbaik yang mengusung desain yang sederhana."
             },
             "sliderVelocity": {
@@ -259,27 +259,27 @@
                 "description": "Beatmap terbaik yang mengusung lagu Featured Artist."
             },
             "longNotes": {
-                "name": "Beatmap Long Note Terbaik",
+                "name": "Map Long Note Terbaik",
                 "description": "Beatmap terbaik yang bertitik berat pada penggunaan LN."
             },
             "longNotes4K": {
-                "name": "Beatmap Long Note 4K Terbaik",
+                "name": "Map Long Note 4K Terbaik",
                 "description": "Beatmap 4K terbaik yang bertitik berat pada penggunaan LN."
             },
             "longNotes7K": {
-                "name": "Beatmap Long Note 7K Terbaik",
+                "name": "Map Long Note 7K Terbaik",
                 "description": "Beatmap 7K terbaik yang bertitik berat pada penggunaan LN."
             },
             "rice": {
-                "name": "Beatmap Rice Terbaik",
+                "name": "Map Rice Terbaik",
                 "description": "Beatmap terbaik yang bertitik berat pada penggunaan Rice."
             },
             "rice4K": {
-                "name": "Beatmap Rice 4K Terbaik",
+                "name": "Map Rice 4K Terbaik",
                 "description": "Beatmap 4K terbaik yang bertitik berat pada penggunaan Rice."
             },
             "rice7K": {
-                "name": "Beatmap Rice 7K Terbaik",
+                "name": "Map Rice 7K Terbaik",
                 "description": "Beatmap 7K terbaik yang bertitik berat pada penggunaan Rice."
             },
             "antiMeta": {
@@ -287,67 +287,67 @@
                 "description": "Beatmap 5K/6K/8K/9K terbaik."
             },
             "7K": {
-                "name": "Beatmap 7K Terbaik",
+                "name": "Map 7K Terbaik",
                 "description": "Beatmap terbaik yang mengusung mode permainan 7K."
             },
             "technical": {
-                "name": "Storyboard Teknis Terbaik",
+                "name": "Best Technical",
                 "description": "Storyboard yang paling memukau secara teknis."
             },
             "gameplay": {
-                "name": "Storyboard Permainan Terbaik",
+                "name": "Best Gameplay",
                 "description": "Storyboard terbaik yang menggunakan elemen permainan di dalamnya."
             },
             "minimalistic": {
-                "name": "Storyboard Minimalis Terbaik",
+                "name": "Best Minimalistic",
                 "description": "Storyboard terbaik yang mengusung elemen desain yang minimalis."
             },
             "narrative": {
-                "name": "Storyboard Naratif Terbaik",
+                "name": "Best Narrative",
                 "description": "Storyboard terbaik yang menceritakan suatu kisah."
             },
             "technicalTaiko": {
-                "name": "Beatmap Tech Terbaik",
+                "name": "Map Technical Terbaik",
                 "description": "Beatmap terbaik yang mengusung kombinasi pattern dan beat snapping yang kompleks."
             },
             "fastTaiko": {
-                "name": "Beatmap Tempo Tinggi Terbaik",
+                "name": "Map Tempo Tinggi Terbaik",
                 "description": "Beatmap terbaik yang bertitik berat pada penggunaan SV tinggi dan berbagai pattern yang menuntut kecepatan tapping."
             },
             "slowTaiko": {
-                "name": "Beatmap Tempo Rendah Terbaik",
-                "description": "Beatmap terbaik yang bertitik berat pada penggunaan pattern tapping yang lambat (slow tapping) dan SV yang rendah."
+                "name": "Map Tempo Rendah Terbaik",
+                "description": "Mapset terbaik yang bertitik berat pada penggunaan SV rendah dan berbagai pattern yang menuntut kesabaran."
             },
             "hybrid": {
-                "name": "Beatmap Hybrid Terbaik",
+                "name": "Map Hybrid Terbaik",
                 "description": "Beatmap terbaik yang mengusung kombinasi antara pattern Rice dan LN."
             },
             "hybrid4K": {
-                "name": "Beatmap Hybrid 4K Terbaik",
+                "name": "Map Hybrid 4K Terbaik",
                 "description": "Beatmap 4K terbaik yang mengusung kombinasi antara pattern Rice dan LN."
             },
             "hybrid7K": {
-                "name": "Beatmap Hybrid 7K Terbaik",
+                "name": "Map Hybrid 7K Terbaik",
                 "description": "Beatmap 7K terbaik yang mengusung kombinasi antara pattern Rice dan LN."
             },
             "highBPMAlternator": {
-                "name": "Beatmap BPM Tinggi / Alternator Terbaik",
-                "description": "Beatmap terbaik yang bertitik berat pada kemampuan tapping dan/atau aim yang sangat cepat. (240+ BPM)"
+                "name": "Map BPM Tinggi / Alternator Terbaik",
+                "description": "Beatmap terbaik yang bertitik berat pada pattern aim dan/atau tapping pada tempo yang sangat cepat. (240+ BPM)"
             },
             "vanilla": {
-                "name": "Beatmap Vanilla Terbaik",
+                "name": "Map Vanilla Terbaik",
                 "description": "Beatmap terbaik yang mengusung desain yang sederhana."
             },
             "complex": {
-                "name": "Beatmap Swing / Ritme Kompleks Terbaik",
+                "name": "Map Swing / Ritme Kompleks Terbaik",
                 "description": "Beatmap terbaik yang bertitik berat pada penggunaan ritme yang tidak lazim, seperti double, 1/3, 1/5, 1/7, dan lain sebagainya."
             },
             "unorthodox": {
-                "name": "Beatmap Gimmick / Non-Ortodoks Terbaik",
+                "name": "Map Gimmick / Non-Ortodoks Terbaik",
                 "description": "Beatmap terbaik yang mengusung berbagai teknik atau ide mapping yang tidak umum dijumpai."
             },
             "sliderTech": {
-                "name": "Beatmap Slider Tech Terbaik",
+                "name": "Map Slider Tech Terbaik",
                 "description": "Beatmap terbaik yang mengusung berbagai elemen tech, desain slider dan manipulasi SV yang pelik, serta pattern stream yang kompleks."
             },
             "mostInspiring": {
@@ -363,43 +363,43 @@
                 "description": "Mereka yang paling berkontribusi dalam menggerakkan komunitas dari belakang layar."
             },
             "simplisticTaiko": {
-                "name": "Beatmap Sederhana Terbaik",
+                "name": "Map Sederhana Terbaik",
                 "description": "Beatmap terbaik yang mengusung desain yang sederhana."
             },
             "technicalCatch": {
-                "name": "Beatmap Tech Terbaik",
+                "name": "Map Technical Terbaik",
                 "description": "Beatmap terbaik yang mengusung berbagai konsep yang mendorong batas permainan osu!catch."
             },
             "antiMetaCatch": {
-                "name": "Beatmap Anti-Meta Terbaik",
+                "name": "Map Anti-Meta Terbaik",
                 "description": "Beatmap terbaik yang mengusung pattern yang penuh gimmick / tidak umum."
             },
             "unconventionalCtb": {
-                "name": "Beatmap dengan AR/CS Non-Konvensional Terbaik",
+                "name": "Map dengan AR/CS Non-Konvensional Terbaik",
                 "description": "Beatmap terbaik yang mengusung nilai AR atau CS yang tidak lazim (~AR <=8.5 atau ~CS >=5 / <=3)."
             },
             "diversity": {
-                "name": "Beatmap Berkeragaman Terbaik",
+                "name": "Map Berkeragaman Terbaik",
                 "description": "Beatmap terbaik yang mengusung berbagai macam skillset / kategori di dalamnya."
             },
             "altSwing": {
-                "name": "Beatmap Alternator / Swing Terbaik",
+                "name": "Map Alternator / Swing Terbaik",
                 "description": "Beatmap terbaik yang mengusung gaya mapping alt atau swing."
             },
             "highDifficulty": {
-                "name": "Beatmap Tingkat Kesulitan Tinggi Terbaik",
+                "name": "Map Tingkat Kesulitan Tinggi Terbaik",
                 "description": "Beatmap terbaik dengan Star Rating yang sangat tinggi (>=8 bintang)."
             },
             "complexOnly": {
-                "name": "Beatmap Kompleks Terbaik",
+                "name": "Map Kompleks Terbaik",
                 "description": "Beatmap terbaik yang bertitik berat pada penggunaan snapping yang tidak umum."
             },
             "unorthodoxTaiko": {
-                "name": "Beatmap Non-Ortodoks Terbaik",
+                "name": "Map Non-Ortodoks Terbaik",
                 "description": "Beatmap terbaik yang mengusung gimmick dan/atau konsep yang tidak lazim."
             },
             "unorthodoxCatch": {
-                "name": "Beatmap Non-Ortodoks Terbaik",
+                "name": "Map Non-Ortodoks Terbaik",
                 "description": "Beatmap terbaik yang mengusung gaya mapping yang bertentangan dengan beatmap lain pada umumnya."
             },
             "mapper4K": {
@@ -645,10 +645,15 @@
                 "invite": "UNDANG",
                 "accept": "TERIMA",
                 "decline": "TOLAK",
-                "error": "TIDAK DAPAT MEMPEROLEH UNDANGAN"
+                "error": "TIDAK DAPAT MEMPEROLEH UNDANGAN",
+                "playerSearch": "PLAYER SEARCH",
+                "currentInvites": "CURRENT INVITES",
+                "corsaceAccount": "Users must have a Corsace account.",
+                "loggingIn": "Users will see their invites after logging in on both osu! and discord."
             },
             "edit": {
                 "teamName": "NAMA TIM",
+                "teamInfo": "TEAM INFORMATION",
                 "teamAbbreviation": "SINGKATAN TIM",
                 "timezone": "ZONA WAKTU",
                 "teamAvatar": "AVATAR TIM",
@@ -692,8 +697,11 @@
             },
             "registration": {
                 "noRegistration": "Tidak terdaftar di turnamen mana pun",
-                "toPlay": "Untuk bermain di Corsace Open, kumpulkan 6-8 anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
+                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan {minTeamSize}-{maxTeamSize} anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
             },
+            "imageReq": "Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.",
+            "inappropriate": "Any team name, and avatar deemed inappropriate by staff must be changed.",
+            "editLock": "Team editing will be locked at the end of the registration period.",
             "teamID": "ID TIM",
             "member": "anggota",
             "members": "anggota",
@@ -703,6 +711,9 @@
             "editQualifierTime": "sunting waktu kualifikasi",
             "deleteTeam": "hapus lobi kualifikasi/urungkan pendaftaran tim",
             "createJoinQualifier": "buat/gabung lobi kualifikasi",
+            "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
+            "needMorePlayers": "You need at least {count} more players",
+            "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "Saat ini tidak terdaftar pada Corsace Open."
         },
         "create": {
