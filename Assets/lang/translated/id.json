@@ -646,14 +646,14 @@
                 "accept": "TERIMA",
                 "decline": "TOLAK",
                 "error": "TIDAK DAPAT MEMPEROLEH UNDANGAN",
-                "playerSearch": "PLAYER SEARCH",
-                "currentInvites": "CURRENT INVITES",
-                "corsaceAccount": "Users must have a Corsace account.",
-                "loggingIn": "Users will see their invites after logging in on both osu! and discord."
+                "playerSearch": "PENCARIAN PEMAIN",
+                "currentInvites": "UNDANGAN SAAT INI",
+                "corsaceAccount": "Pengguna harus memiliki akun Corsace.",
+                "loggingIn": "Pengguna akan dapat melihat undangan mereka setelah mereka terhubung masuk ke osu! dan Discord."
             },
             "edit": {
                 "teamName": "NAMA TIM",
-                "teamInfo": "TEAM INFORMATION",
+                "teamInfo": "INFORMASI TIM",
                 "teamAbbreviation": "SINGKATAN TIM",
                 "timezone": "ZONA WAKTU",
                 "teamAvatar": "AVATAR TIM",
@@ -697,11 +697,11 @@
             },
             "registration": {
                 "noRegistration": "Tidak terdaftar di turnamen mana pun",
-                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan {minTeamSize}-{maxTeamSize} anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
+                "toPlay": "Untuk bermain di Corsace Open, kumpulkan {minTeamSize}-{maxTeamSize} anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
             },
-            "imageReq": "Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.",
-            "inappropriate": "Any team name, and avatar deemed inappropriate by staff must be changed.",
-            "editLock": "Team editing will be locked at the end of the registration period.",
+            "imageReq": "Gambar harus berupa jpg/jpeg/png, memiliki rasio aspek 3:1, dan tidak melebihi 5MB.",
+            "inappropriate": "Segala nama tim dan avatar yang dinilai tidak layak oleh staf akan harus diubah.",
+            "editLock": "Penguncian tim akan dikunci pada akhir periode pendaftaran.",
             "teamID": "ID TIM",
             "member": "anggota",
             "members": "anggota",
@@ -711,9 +711,9 @@
             "editQualifierTime": "sunting waktu kualifikasi",
             "deleteTeam": "hapus lobi kualifikasi/urungkan pendaftaran tim",
             "createJoinQualifier": "buat/gabung lobi kualifikasi",
-            "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
-            "needMorePlayers": "You need at least {count} more players",
-            "needLessPlayers": "You need at least {count} less players",
+            "joinQualRegister": "IKUTI KUALIFIKASI UNTUK MENDAFTAR",
+            "needMorePlayers": "Kamu perlu untuk menambahkan setidaknya {count} pemain",
+            "needLessPlayers": "Kamu perlu untuk mengurangi setidaknya {count} pemain",
             "notRegistered": "Saat ini tidak terdaftar pada Corsace Open."
         },
         "create": {
