@@ -645,10 +645,15 @@
                 "invite": "INVITE",
                 "accept": "ACCEPT",
                 "decline": "DECLINE",
-                "error": "COULD NOT GET INVITES"
+                "error": "COULD NOT GET INVITES",
+                "playerSearch": "PLAYER SEARCH",
+                "currentInvites": "CURRENT INVITES",
+                "corsaceAccount": "Users must have a Corsace account.",
+                "loggingIn": "Users will see their invites after logging in on both osu! and discord."
             },
             "edit": {
                 "teamName": "チーム名",
+                "teamInfo": "TEAM INFORMATION",
                 "teamAbbreviation": "チーム略称",
                 "timezone": "タイムゾーン",
                 "teamAvatar": "チームアバター",
@@ -692,8 +697,11 @@
             },
             "registration": {
                 "noRegistration": "トーナメントに登録していません",
-                "toPlay": "Corsace Openに参加するには、6-8人のメンバーを集めて、予選日時を選択してください"
+                "toPlay": "Corsace Openに参加するには、{minTeamSize}-{maxTeamSize}人のメンバーを集めて、予選日時を選択してください"
             },
+            "imageReq": "Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.",
+            "inappropriate": "Any team name, and avatar deemed inappropriate by staff must be changed.",
+            "editLock": "Team editing will be locked at the end of the registration period.",
             "teamID": "チームID",
             "member": "メンバー",
             "members": "メンバー",
@@ -703,6 +711,9 @@
             "editQualifierTime": "予選時刻の変更",
             "deleteTeam": "チームを解散してQualifierの出場を取り消す",
             "createJoinQualifier": "チームを作成してQualifierに参加",
+            "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
+            "needMorePlayers": "You need at least {count} more players",
+            "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "Corsace Open に登録していません。"
         },
         "create": {
