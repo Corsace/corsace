@@ -645,10 +645,15 @@
                 "invite": "INVITE",
                 "accept": "수락하기",
                 "decline": "거부하기",
-                "error": "초대를 받을 수 없습니다"
+                "error": "초대를 받을 수 없습니다",
+                "playerSearch": "PLAYER SEARCH",
+                "currentInvites": "CURRENT INVITES",
+                "corsaceAccount": "Users must have a Corsace account.",
+                "loggingIn": "Users will see their invites after logging in on both osu! and discord."
             },
             "edit": {
                 "teamName": "팀 이름",
+                "teamInfo": "TEAM INFORMATION",
                 "teamAbbreviation": "팀 약어",
                 "timezone": "시간대",
                 "teamAvatar": "팀 아바타",
@@ -692,8 +697,11 @@
             },
             "registration": {
                 "noRegistration": "토너먼트에 등록되지 않았습니다",
-                "toPlay": "코사스 오픈에서 플레이하기 위해, 6-8명의 팀원을 확보하고 아래에서 퀄리파이어 날짜와 시간을 선택해 주세요."
+                "toPlay": "코사스 오픈에서 플레이하기 위해, {minTeamSize}-{maxTeamSize}명의 팀원을 확보하고 아래에서 퀄리파이어 날짜와 시간을 선택해 주세요."
             },
+            "imageReq": "Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.",
+            "inappropriate": "Any team name, and avatar deemed inappropriate by staff must be changed.",
+            "editLock": "Team editing will be locked at the end of the registration period.",
             "teamID": "팀 ID",
             "member": "멤버",
             "members": "멤버들",
@@ -703,6 +711,9 @@
             "editQualifierTime": "퀄리파이어 시간 수정",
             "deleteTeam": "퀄리파이어 취소/팀 등록 철회",
             "createJoinQualifier": "퀄리파이어 로비 만들기 / 참여하기",
+            "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
+            "needMorePlayers": "You need at least {count} more players",
+            "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "현재 코사스 오픈에 등록되어 있지 않습니다"
         },
         "create": {
