@@ -645,10 +645,15 @@
                 "invite": "INVITE",
                 "accept": "ACCEPT",
                 "decline": "DECLINE",
-                "error": "COULD NOT GET INVITES"
+                "error": "COULD NOT GET INVITES",
+                "playerSearch": "PLAYER SEARCH",
+                "currentInvites": "CURRENT INVITES",
+                "corsaceAccount": "Users must have a Corsace account.",
+                "loggingIn": "Users will see their invites after logging in on both osu! and discord."
             },
             "edit": {
                 "teamName": "TEAM NAME",
+                "teamInfo": "TEAM INFORMATION",
                 "teamAbbreviation": "TEAM ABBREVIATION",
                 "timezone": "TIMEZONE",
                 "teamAvatar": "TEAM AVATAR",
@@ -692,8 +697,11 @@
             },
             "registration": {
                 "noRegistration": "Registered in no tournaments",
-                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+                "toPlay": "To play in Corsace Open, get {minTeamSize}-{maxTeamSize} members, and choose a qualifier date and time below"
             },
+            "imageReq": "Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.",
+            "inappropriate": "Any team name, and avatar deemed inappropriate by staff must be changed.",
+            "editLock": "Team editing will be locked at the end of the registration period.",
             "teamID": "TEAM ID",
             "member": "member",
             "members": "members",
@@ -703,6 +711,9 @@
             "editQualifierTime": "edit qualifier time",
             "deleteTeam": "delete qualifier/unregister team",
             "createJoinQualifier": "create/join qualifier",
+            "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
+            "needMorePlayers": "You need at least {count} more players",
+            "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "Currently not registered in Corsace Open."
         },
         "create": {
