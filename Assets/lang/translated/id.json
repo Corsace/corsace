@@ -11,7 +11,7 @@
     },
     "mca_ayim": {
         "banner": {
-            "merch": "TOKO CINDERAMATA RESMI",
+            "merch": "TOKO CENDERA MATA RESMI",
             "corsace": "HUB EVENT UTAMA"
         },
         "header": {
@@ -47,7 +47,7 @@
                 "2020": "<p>Halo, 2021… Akhirnya kita berjumpa lagi!</p>Setelah penyelenggaraan A Year in Mapping tahun lalu terpaksa batal karena satu dan lain hal, A Year in Mapping 2020 (akhirnya) dapat kembali hadir ke hadapan kalian semua!</p><p>Tidak hanya itu, tahun ini kami juga kembali menerima komentar secara terbuka! Silakan pilih mode permainan yang dikehendaki untuk mulai menjelajah situs A Year in Mapping.</p>",
                 "2021": "<p>2022 telah tiba!</p> <p>A Year in Mapping 2021 hadir untuk merekap berbagai statistik dan rekor yang telah ditorehkan selama setahun ke belakang.</p>",
                 "2022": "<p>Selamat datang di tahun 2023!</p> <p>A Year in Mapping 2022 hadir untuk menyajikan berbagai rekor dan statistik yang telah dibuat atau bahkan dipecahkan selama setahun ke belakang! Dan untuk tahun ini, akhirnya kami hadir (lumayan) tepat waktu!</p>",
-                "2023": "<p>2024 telah tiba!</p> <p>A Year in Mapping 2023 hadir untuk merekap berbagai rekor dan statistik yang ditorehkan atau bahkan dipecahkan selama setahun ke belakang!</p>"
+                "2023": "<p>2024 telah tiba!</p> <p>A Year in Mapping 2023 hadir untuk menyajikan berbagai rekor dan statistik yang telah ditorehkan atau bahkan dipecahkan selama setahun ke belakang!</p>"
             }
         },
         "mapsets": {
@@ -57,8 +57,8 @@
             "favouritesExclHybrid": "FAVORIT (KHUSUS MAP NON-HYBRID) TERBANYAK",
             "length": "DURASI TERPANJANG",
             "difficulties": "TINGKAT KESULITAN TERBANYAK",
-            "playTime": "TPTAL DURASI (DARI SELURUH TINGKAT KESULITAN) TERPANJANG",
-            "totalRanked": "TOTAL MAP RANKED",
+            "playTime": "TOTAL DURASI (DARI SELURUH TINGKAT KESULITAN) TERPANJANG",
+            "totalRanked": "JUMLAH BEATMAP RANKED",
             "totalDiff": "JUMLAH TINGKAT KESULITAN",
             "submitDates": "WAKTU PENGUNGGAHAN",
             "starRatings": "STAR RATING",
@@ -236,7 +236,7 @@
             },
             "stream": {
                 "name": "Map Stream Terbaik",
-                "description": "Beatmap terbaik yang mengusung stream berkelanjutan."
+                "description": "Beatmap terbaik yang mengusung stream yang berkelanjutan."
             },
             "highBPMTaiko": {
                 "name": "Map BPM Tinggi Terbaik",
@@ -295,15 +295,15 @@
                 "description": "Storyboard yang paling memukau secara teknis."
             },
             "gameplay": {
-                "name": "Best Gameplay",
+                "name": "Storyboard Permainan Terbaik",
                 "description": "Storyboard terbaik yang menggunakan elemen permainan di dalamnya."
             },
             "minimalistic": {
-                "name": "Best Minimalistic",
+                "name": "Storyboard Minimalis Terbaik",
                 "description": "Storyboard terbaik yang mengusung elemen desain yang minimalis."
             },
             "narrative": {
-                "name": "Best Narrative",
+                "name": "Storyboard Naratif Terbaik",
                 "description": "Storyboard terbaik yang menceritakan suatu kisah."
             },
             "technicalTaiko": {
@@ -332,7 +332,7 @@
             },
             "highBPMAlternator": {
                 "name": "Map BPM Tinggi / Alternator Terbaik",
-                "description": "Beatmap terbaik yang bertitik berat pada pattern aim dan/atau tapping pada tempo yang sangat cepat. (240+ BPM)"
+                "description": "Beatmap terbaik yang bertitik berat pada kemampuan tapping dan/atau aim yang sangat cepat. (240+ BPM)"
             },
             "vanilla": {
                 "name": "Map Vanilla Terbaik",
@@ -455,7 +455,7 @@
                 "results": "HASIL",
                 "voters": "SUARA"
             },
-            "votingOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses halaman voting MCA! <br> MCA menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suaramu sebanyak-banyaknya! <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, di mana <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya.</span> <br> Selamat memilih, dan jangan lewatkan pengumuman hasil akhir MCA [YEAR] pada saatnya nanti!",
+            "votingOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses halaman voting MCA! <br> Pemungutan suara MCA dilangsungkan menggunakan sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> yang memungkinkan kamu untuk memiih beatmap/pengguna sebanyak-banyaknya! <br> Seluruh suara akan dihitung berdasarkan urutan pilihannya masing-masing, di mana <span class='notice-modal--bold'>pilihan pertamamu akan memiliki prioritas tertinggi!</span> <br> Pilihan pertamamu akan dihitung sebagai suara yang sah hingga pilihan ini tereliminasi, di mana kemudian kami akan mengambil pilihan keduamu, ketigamu, keempatmu, dan seterusnya. <br> Selamat memilih, dan jangan lewatkan pengumuman hasil MCA [YEAR] pada saatnya nanti!",
             "hosted": "DI-HOST OLEH",
             "userID": "ID PENGGUNA"
         },
@@ -485,7 +485,7 @@
             "staff": "STAF",
             "createTeam": "BUAT TIM",
             "myTeams": "tim saya",
-            "invitations": "UNDANGAN",
+            "invitations": "undangan",
             "loginDiscord": "MASUK VIA DISCORD UNTUK MENGELOLA TIM/UNDANGAN",
             "teamInvites": "UNDANGAN TIM",
             "noInvites": "Kamu saat ini tidak memiliki undangan"
@@ -569,7 +569,7 @@
             },
             "prizes": "HADIAH",
             "donateToCorsace": "BERIKAN DONASI KEPADA CORSACE",
-            "supportViaSponsorship": "DUKUNG VIA KEMITRAAN MOMOKAI",
+            "supportViaSponsorship": "DUKUNG CORSACE VIA KEMITRAAN MOMOKAI",
             "generalInfo": "INFORMASI UMUM",
             "teamStructure": "STRUKTUR TIM",
             "qualifiersProcedures": "PROSEDUR KUALIFIKASI",
