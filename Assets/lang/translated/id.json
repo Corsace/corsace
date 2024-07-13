@@ -232,7 +232,7 @@
             },
             "experimental": {
                 "name": "Map Eksperimental Terbaik",
-                "description": "Beatmap terbaik yang bertitik berat pada aspek \"tech\" atau non-meta."
+                "description": "Beatmap terbaik yang bertitik berat pada aspek \"tech\" atau off-meta."
             },
             "stream": {
                 "name": "Map Stream Terbaik",
@@ -291,7 +291,7 @@
                 "description": "Beatmap terbaik yang mengusung mode permainan 7K."
             },
             "technical": {
-                "name": "Best Technical",
+                "name": "Storyboard Teknis Terbaik",
                 "description": "Storyboard yang paling memukau secara teknis."
             },
             "gameplay": {
