@@ -5,12 +5,13 @@
         "welcomeBack": "selamat datang kembali",
         "login": "masuk",
         "register": "daftar",
+        "menu": "menu",
         "changeDiscord": "ubah discord",
         "logout": "keluar"
     },
     "mca_ayim": {
         "banner": {
-            "merch": "TOKO CINDERAMATA RESMI",
+            "merch": "TOKO CEnDERA MATA RESMI",
             "corsace": "HUB EVENT UTAMA"
         },
         "header": {
@@ -26,11 +27,11 @@
             "login": "masuk",
             "message": {
                 "1": "Sepertinya kamu belum terhubung masuk!<br>Silakan masuk dengan akun osu! milikmu untuk mulai menominasikan beatmap dan memberikan suara.",
-                "2": "Kamu juga dapat masuk dengan menggunakan Discord, namun hal ini <b>tidak diwajibkan</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf yang bertugas.</b></span>"
+                "2": "Kamu juga dapat masuk dengan Discord setelahnya, namun hal ini <b>tidak diwajibkan</b> untuk dapat memberikan suara/nominasi.<br>Akses masuk melalui Discord <b>hanya diwajibkan bagi para staf yang bertugas di MCA/AYIM.</b></span>"
             },
-            "authOsu": "klik di sini untuk masuk dengan akun osu! milikmu",
+            "authOsu": "klik di sini untuk masuk dengan akun osu!",
             "authOsuComp": "verifikasi akun osu! berhasil. Halo ",
-            "authDiscord": "klik di sini untuk masuk dengan akun Discord milikmu",
+            "authDiscord": "klik di sini untuk masuk dengan akun Discord",
             "authDiscordComp": "verifikasi akun Discord berhasil. Halo "
         }
     },
@@ -39,26 +40,26 @@
             "records": "REKAM JEJAK",
             "statistics": "STATISTIK",
             "search": "cari mapper",
-            "numberof": "total",
-            "numberwith": "total map dengan",
+            "numberof": "jumlah",
+            "numberwith": "jumlah map dengan",
             "message": {
                 "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat kamu jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
                 "2020": "<p>Halo, 2021… Akhirnya kita berjumpa lagi!</p>Setelah penyelenggaraan A Year in Mapping tahun lalu terpaksa batal karena satu dan lain hal, A Year in Mapping 2020 (akhirnya) dapat kembali hadir ke hadapan kalian semua!</p><p>Tidak hanya itu, tahun ini kami juga kembali menerima komentar secara terbuka! Silakan pilih mode permainan yang dikehendaki untuk mulai menjelajah situs A Year in Mapping.</p>",
                 "2021": "<p>2022 telah tiba!</p> <p>A Year in Mapping 2021 hadir untuk merekap berbagai statistik dan rekor yang telah ditorehkan selama setahun ke belakang.</p>",
                 "2022": "<p>Selamat datang di tahun 2023!</p> <p>A Year in Mapping 2022 hadir untuk menyajikan berbagai rekor dan statistik yang telah dibuat atau bahkan dipecahkan selama setahun ke belakang! Dan untuk tahun ini, akhirnya kami hadir (lumayan) tepat waktu!</p>",
-                "2023": "<p>2024 telah tiba!</p> <p>A Year in Mapping 2023 hadir untuk merekap berbagai rekor dan statistik yang ditorehkan atau bahkan dipecahkan selama setahun ke belakang!</p>"
+                "2023": "<p>2024 telah tiba!</p> <p>A Year in Mapping 2023 hadir untuk menyajikan berbagai rekor dan statistik yang telah ditorehkan atau bahkan dipecahkan selama setahun ke belakang!</p>"
             }
         },
         "mapsets": {
             "name": "MAPSET",
-            "playcount": "TOTAL PLAYCOUNT TERBANYAK",
-            "favourites": "TOTAL FAVORIT TERBANYAK",
-            "favouritesExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID) TERBANYAK",
-            "length": "DURASI LAGU TERPANJANG",
-            "difficulties": "TINGKAT KESULITAN",
-            "playTime": "TOTAL DURASI SELURUH TINGKAT KESULITAN",
-            "totalRanked": "TOTAL MAP RANKED",
-            "totalDiff": "TOTAL TINGKAT KESULITAN",
+            "playcount": "PLAYCOUNT TERBANYAK",
+            "favourites": "FAVORIT TERBANYAK",
+            "favouritesExclHybrid": "FAVORIT (KHUSUS MAP NON-HYBRID) TERBANYAK",
+            "length": "DURASI TERPANJANG",
+            "difficulties": "TINGKAT KESULITAN TERBANYAK",
+            "playTime": "TOTAL DURASI (DARI SELURUH TINGKAT KESULITAN) TERPANJANG",
+            "totalRanked": "JUMLAH BEATMAP RANKED",
+            "totalDiff": "JUMLAH TINGKAT KESULITAN",
             "submitDates": "WAKTU PENGUNGGAHAN",
             "starRatings": "STAR RATING",
             "approachRate": "APPROACH RATE",
@@ -76,26 +77,26 @@
         },
         "mappers": {
             "name": "MAPPER",
-            "mostRanked": "TOTAL BEATMAP RANKED TERBANYAK",
-            "mostDiffs": "TOTAL TINGKAT KESULITAN TERBANYAK",
-            "mostFavs": "TOTAL FAVORIT TERBANYAK",
-            "mostFavsExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID) TERBANYAK",
-            "mostPlayed": "TOTAL PLAYCOUNT TERBANYAK",
+            "mostRanked": "BEATMAP RANKED TERBANYAK",
+            "mostDiffs": "TINGKAT KESULITAN TERBANYAK",
+            "mostFavs": "FAVORIT TERBANYAK",
+            "mostFavsExclHybrid": "FAVORIT (KHUSUS MAP NON-HYBRID) TERBANYAK",
+            "mostPlayed": "PLAYCOUNT TERBANYAK",
             "totalMappers": "TOTAL MAPPER",
             "newMapperAges": "USIA AKUN MAPPER BARU",
             "mapperAges": "USIA AKUN MAPPER",
-            "mapsPerMapperAges": "TOTAL MAP PER MAPPER PER USIA AKUN",
+            "mapsPerMapperAges": "JUMLAH MAP PER MAPPER PER USIA AKUN",
             "bng": "BNG",
             "nat": "NAT",
-            "uniqueMappers": "TOTAL MAPPER KESELURUHAN",
-            "newMappers": "TOTAL MAPPER PENDATANG BARU",
+            "uniqueMappers": "JUMLAH MAPPER",
+            "newMappers": "JUMLAH MAPPER BARU",
             "highestAvgSr": "RATA-RATA SR TERTINGGI",
             "lowestAvgSr": "RATA-RATA SR TERENDAH",
             "mappers": "MAPPER"
         },
         "statistics": {
-            "numberOf": "total",
-            "numberOfMapsWith": "total map dengan",
+            "numberOf": "jumlah",
+            "numberOfMapsWith": "jumlah map dengan",
             "average": "rata-rata"
         },
         "comments": {
@@ -103,12 +104,12 @@
             "info": "Berikanlah komentarmu kepada para mapper di bawah ini! Seluruh komentar yang masuk akan ditampilkan setelah hasil MCA diumumkan.",
             "search": "cari mapper",
             "viewSubmit": "lihat/kirim komentar",
-            "writeHere": "Berikan komentarmu untuk mapper ini!",
+            "writeHere": "Tulis komentar baru untuk mapper ini di sini!",
             "update": "Perbarui",
             "remove": "Hapus",
             "create": "Tulis",
-            "login": "Silakan masuk terlebih dahulu sebelum menulis komentar!",
-            "visible": "(belum tersedia)",
+            "login": "Silakan masuk untuk menulis komentar!",
+            "visible": "(komentar ini belum dapat dilihat)",
             "notice": "Halo! Sepertinya ini kali pertama kamu mengunjungi halaman komentar! <br> Corsace menggalang komentar secara terbuka, yang berarti bahwa... <br> Siapa pun juga (termasuk kamu) dapat menulis komentar bagi siapa saja hingga MCA tahun ini berakhir! <br> Berikanlah apresiasimu kepada para mapper kita beserta karya atau prestasi yang telah mereka buat di tahun [YEAR]!"
         }
     },
@@ -128,15 +129,15 @@
             "recordsLabel": "REKOR",
             "statisticsLabel": "STATISTIK",
             "stage": {
-                "voting": "tahapan voting",
-                "nominating": "tahapan nominasi",
+                "voting": "tahap pemungutan suara",
+                "nominating": "tahap nominasi",
                 "preparation": "tahap persiapan",
                 "stage": "tahap"
             },
             "rankedSets": "TOTAL BEATMAP RANKED",
-            "nominateNow": "berikan nominasimu sekarang !",
-            "voteNow": "gunakan hak suaramu sekarang !",
-            "viewResults": "lihat hasil keseluruhan !",
+            "nominateNow": "berikan nominasimu sekarang!",
+            "voteNow": "gunakan hak suaramu sekarang!",
+            "viewResults": "lihat hasil keseluruhan!",
             "daysLeft": "hari tersisa",
             "message": {
                 "2019": "<p>Mapper's Choice Awards kembali hadir untuk yang keempat kalinya di tahun 2019! Ajang ini merupakan ajang penganugerahan bagi para mapper/modder untuk saling menominasikan dan memilih map/mapper terbaik selama setahun ke belakang dalam berbagai kategori.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Oh ya, pada tahun ini kami juga telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
@@ -231,11 +232,11 @@
             },
             "experimental": {
                 "name": "Map Eksperimental Terbaik",
-                "description": "Beatmap terbaik yang bertitik berat pada aspek \"tech\" atau non-meta."
+                "description": "Beatmap terbaik yang bertitik berat pada aspek \"tech\" atau off-meta."
             },
             "stream": {
                 "name": "Map Stream Terbaik",
-                "description": "Beatmap terbaik yang mengusung stream berkelanjutan."
+                "description": "Beatmap terbaik yang mengusung stream yang berkelanjutan."
             },
             "highBPMTaiko": {
                 "name": "Map BPM Tinggi Terbaik",
@@ -287,22 +288,22 @@
             },
             "7K": {
                 "name": "Map 7K Terbaik",
-                "description": "Beatmap 7K terbaik."
+                "description": "Beatmap terbaik yang mengusung mode permainan 7K."
             },
             "technical": {
-                "name": "Best Technical",
+                "name": "Storyboard Teknis Terbaik",
                 "description": "Storyboard yang paling memukau secara teknis."
             },
             "gameplay": {
-                "name": "Best Gameplay",
+                "name": "Storyboard Permainan Terbaik",
                 "description": "Storyboard terbaik yang menggunakan elemen permainan di dalamnya."
             },
             "minimalistic": {
-                "name": "Best Minimalistic",
+                "name": "Storyboard Minimalis Terbaik",
                 "description": "Storyboard terbaik yang mengusung elemen desain yang minimalis."
             },
             "narrative": {
-                "name": "Best Narrative",
+                "name": "Storyboard Naratif Terbaik",
                 "description": "Storyboard terbaik yang menceritakan suatu kisah."
             },
             "technicalTaiko": {
@@ -331,11 +332,11 @@
             },
             "highBPMAlternator": {
                 "name": "Map BPM Tinggi / Alternator Terbaik",
-                "description": "Beatmap terbaik yang bertitik berat pada pattern aim dan/atau tapping pada tempo yang sangat cepat. (240+ BPM)"
+                "description": "Beatmap terbaik yang bertitik berat pada kemampuan tapping dan/atau aim yang sangat cepat. (240+ BPM)"
             },
             "vanilla": {
                 "name": "Map Vanilla Terbaik",
-                "description": "Beatmap terbaik yang mengusung desain yang sederhana."
+                "description": "Beatmap terbaik yang mengusung teknik mapping yang sederhana dengan hasil yang maksimal."
             },
             "complex": {
                 "name": "Map Swing / Ritme Kompleks Terbaik",
@@ -343,11 +344,11 @@
             },
             "unorthodox": {
                 "name": "Map Gimmick / Non-Ortodoks Terbaik",
-                "description": "Beatmap terbaik yang mengusung ide atau teknik mapping yang tidak umum."
+                "description": "Beatmap terbaik yang mengusung berbagai teknik atau ide mapping yang tidak umum dijumpai."
             },
             "sliderTech": {
                 "name": "Map Slider Tech Terbaik",
-                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada desain slider, manipulasi SV, dan pattern stream yang kompleks."
+                "description": "Beatmap terbaik yang mengusung berbagai elemen tech, desain slider dan manipulasi SV yang pelik, serta pattern stream yang kompleks."
             },
             "mostInspiring": {
                 "name": "Paling Menginspirasi",
@@ -454,7 +455,7 @@
                 "results": "HASIL",
                 "voters": "SUARA"
             },
-            "votingOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses halaman voting MCA! <br> MCA menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suaramu sebanyak-banyaknya! <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, di mana <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya.</span> <br> Selamat memilih, dan jangan lewatkan pengumuman hasil akhir MCA [YEAR] pada saatnya nanti!",
+            "votingOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses halaman voting MCA! <br> Pemungutan suara MCA dilangsungkan menggunakan sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> yang memungkinkan kamu untuk memiih beatmap/pengguna sebanyak-banyaknya! <br> Seluruh suara akan dihitung berdasarkan urutan pilihannya masing-masing, di mana <span class='notice-modal--bold'>pilihan pertamamu akan memiliki prioritas tertinggi!</span> <br> Pilihan pertamamu akan dihitung sebagai suara yang kamu berikan hingga pilihan ini tereliminasi, di mana kami kemudian akan mengambil pilihan keduamu, ketigamu, keempatmu, dan seterusnya. <br> Selamat memilih, dan jangan lewatkan pengumuman hasil MCA [YEAR] pada saatnya nanti!",
             "hosted": "DI-HOST OLEH",
             "userID": "ID PENGGUNA"
         },
@@ -470,7 +471,7 @@
                 "secondThirdChoice": "JML. PILIHAN KE-2/KE-3",
                 "restChoice": "JML. PILIHAN KE-4+"
             },
-            "resultsOverlay": "Halo! Sepertinya ini adalah kali pertamamu mengakses halaman hasil MCA! <br> Seluruh hasil yang tertera pada halaman ini dihitung berdasarkan sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting</a>, yang kemudian diurutkan berdasarkan jumlah pemilih pertama, jumlah pemilih kedua, dan seterusnya!<br> Semoga kamu terpuaskan dengan hasil MCA [YEAR] kali ini! Sampai jumpa lagi di MCA selanjutnya!"
+            "resultsOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses halaman hasil MCA! <br> Hasil berikut ini menampilkan posisi pemilihan beatmap/pengguna berdasarkan sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> yang disertai dengan berapa kali beatmap/pengguna tersebut ditempatkan sebagai pilihan pertama dan berapa kali beatmap/pengguna ini dipilih secara keseluruhan!<br> Semoga hasil MCA [YEAR] kali ini sesuai dengan harapanmu! Sampai jumpa lagi di MCA selanjutnya!"
         }
     },
     "open": {
@@ -483,7 +484,8 @@
             "mappool": "MAPPOOL",
             "staff": "STAF",
             "createTeam": "BUAT TIM",
-            "invitations": "UNDANGAN",
+            "myTeams": "tim saya",
+            "invitations": "undangan",
             "loginDiscord": "MASUK VIA DISCORD UNTUK MENGELOLA TIM/UNDANGAN",
             "teamInvites": "UNDANGAN TIM",
             "noInvites": "Kamu saat ini tidak memiliki undangan"
@@ -493,7 +495,9 @@
             "twitter": "TWITTER",
             "discord": "DISCORD",
             "twitch": "TWITCH",
-            "youtube": "YOUTUBE"
+            "youtube": "YOUTUBE",
+            "github": "GITHUB",
+            "sheet": "SHEET"
         },
         "stages": {
             "qualifiers": "KUALIFIKASI",
@@ -501,12 +505,20 @@
             "runoff bracket": "BRACKET RUNOFF",
             "knockout 1": "KNOCKOUT 1",
             "knockout 2": "KNOCKOUT 2",
+            "week 1": "MINGGU KE-1",
+            "week 2": "MINGGU KE-2",
+            "week 3": "MINGGU KE-3",
+            "week 4": "MINGGU KE-4",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
                 "ro": "(RO)",
                 "ko1": "(KO1)",
-                "ko2": "(KO2)"
+                "ko2": "(KO2)",
+                "w1": "(M1)",
+                "w2": "(M2)",
+                "w3": "(M3)",
+                "w4": "(M4)"
             }
         },
         "home": {
@@ -517,7 +529,7 @@
             "button": {
                 "qualifiersMappool": "MAPPOOL KUALIFIKASI",
                 "mappoolDownload": "Unduhan dan statistik mappool",
-                "register": "TEAM REGISTRATION",
+                "register": "PENDAFTARAN TIM",
                 "registrationsEnd": "Pendaftaran berakhir pada"
             }
         },
@@ -535,7 +547,7 @@
                 "scoringMethod": "METODE PENGHITUNGAN SKOR",
                 "type": "TIPE",
                 "startDate": "TANGGAL MULAI",
-                "endDate": "TANGGAL BERAKHIR",
+                "endDate": "TANGGAL AKHIR",
                 "rounds": "JUMLAH TAHAPAN",
                 "initialSize": "UKURAN AWAL",
                 "finalSize": "UKURAN AKHIR"
@@ -557,15 +569,37 @@
             },
             "prizes": "HADIAH",
             "donateToCorsace": "BERIKAN DONASI KEPADA CORSACE",
-            "supportViaSponsorship": "DUKUNG VIA KEMITRAAN MOMOKAI",
+            "supportViaSponsorship": "DUKUNG CORSACE VIA KEMITRAAN MOMOKAI",
             "generalInfo": "INFORMASI UMUM",
             "teamStructure": "STRUKTUR TIM",
             "qualifiersProcedures": "PROSEDUR KUALIFIKASI",
+            "seeding": "SEEDING",
             "tournamentStructure": "STRUKTUR TURNAMEN",
             "infoGraphic": "INFOGRAFIS",
             "matchProcedures": "PROSEDUR PERTANDINGAN",
+            "freemodRules": "FREEMOD RULES",
+            "disconnections": "DISCONNECTIONS",
             "reportTournament": "LAPORKAN TURNAMEN DI SINI",
-            "subjectToChange": "seluruh peraturan dapat berubah sewaktu-waktu untuk diklarifikasi dan/atau disesuaikan lebih lanjut"
+            "subjectToChange": "seluruh peraturan dapat berubah sewaktu-waktu untuk diklarifikasi dan/atau disesuaikan lebih lanjut",
+            "generalInfoText": "<li>Corsace Open is a <strong>4v4</strong>, <strong>international</strong> tournament open to players of <strong>all ranks</strong></li><li>All matches are played using <strong>Team VS</strong>, <strong>ScoreV2</strong></li><li>All scheduling shall be done in <strong>UTC</strong></li><li>All matches must take place between <strong>Friday 23:59 UTC</strong> and<strong> Sunday 23:59 UTC</strong></li><li>Reschedules must be submitted before <strong>Thursdays at 23:59 UTC</strong> the week a round is to take place. Exceptions are made on a case-by-case basis</li><li>Staff are <strong>prohibited</strong> from playing and/or acting as captains in the tournament with the exception of<strong> streamers</strong>, <strong>commentators</strong>, and <strong>GFX artists</strong></li>",
+            "prizesText": "<li><strong>1st Place</strong>:<ul><li>50% of prizepool split among players and their captain how they wish<li>(Pending) Corsace Open 1st place badge</ul><li><strong>2nd Place</strong>:<ul><li>30% of prizepool split among players and their captain how they wish<li>(Pending) Corsace Open 2nd place badge</ul><li><strong>3rd Place</strong>:<ul><li>20% of prizepool split among players and their captain how they wish<li>(Pending) Corsace Open 3rd place badge</ul>",
+            "teamStructureText": "<li>Teams may consist of <strong>6 - 8</strong> players<li>Team names may consist of 3 - 20 characters with acronyms of 2 - 4 letters along with a team photo<ul><li>Inappropriate pictures, names, and/or acronyms are subject to change at the discretion of administration</ul><li>Teams must designate a <strong>single timezone</strong> to be used for scheduling (EX: UTC-7, UTC+2, UTC-4, etc.)<ul><li>Teams shall be <strong>guaranteed</strong> a match time within the hours of <strong>10:00 - 22:00</strong> in accordance with the timezone used when registering<ul><li>Teams are <strong>expected</strong> to be available for <strong>4</strong> <strong>weekends</strong> to play <strong>1 - 3 matches</strong> that last <strong>45 - 90 minutes</strong> within the <strong>10:00 - 22:00</strong> time frame for Saturday <strong>and</strong> Sunday<li>Due to the guaranteed time, schedules will be made with streamers in mind</ul></ul>",
+            "qualifiersProceduresText": "<li>Teams shall have their own lobby run by the Corsace bot<li>The deadline to play qualifiers to complete registration is <strong>July 28 at 23:59 UTC</strong><li>The mappool consists of <strong>10 maps</strong> (<strong>3 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong>) and shall be played <strong>ONCE</strong>, starting from NM1 and ending in DT3<li>90 second timers are used for teams to swap members and ready up<li>Teams<strong> complete registration</strong> by playing qualifiers<ul class=info_desc__list><li>Rosters are<strong> locked </strong>after play. Changes are <strong>not</strong> allowed under any circumstance<li>Due to this process, teams with players who are <strong>screened out</strong> will automatically be <strong>disqualified</strong></ul><li>Qualifier results are calculated using z-score",
+            "seedingText": "<li><strong>16 teams </strong>qualify and are split into <strong>two tiers</strong><li><strong>Tier 1 </strong>(Seeds 1 - 4)<ul class=info_desc__list><li>Advances and is placed into the Upper Bracket in Week 2<li>Does not play in Week 1</ul><li><strong>Tier 2</strong> (Seeds 5 - 16)<ul class=info_desc__list><li>Moves on to Week 1, it is a group stage consisting of 4 groups of 3 teams</ul>",
+            "tournamentStructureText": {
+                "initialText": "The tournament consists of <strong>4 stages of play: </strong> Week 1, Week 2, Week 3, Week 4",
+                "w1Header": "WEEK 1 (AUG 10 - 11)",
+                "w1": "<li><strong>Groups </strong>(12 teams, 12 matches)<ul class=info_desc__list><li>Group A (Seeds 5, 12, 13)<li>Group B (Seeds 6, 11, 14)<li>Group C (Seeds 7, 10, 15)<li>Group D (Seeds 8, 9, 16)</ul><li><strong>Placements:</strong><ul class=info_desc__list><li>Group placement and W2 seeding is in the following precedence:<ul class=info_desc__list><li>Match W/L Ratio<li>Points Won<li>Difference in Points (Points Won - Points Lost)</ul><li><strong>1st:</strong> Moves into the Middle Bracket of Week 2<li><strong>2nd:</strong> Moves into the Lower Bracket of Week 3<li><strong>3rd:</strong> <red>ELIMINATED</red></ul><li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong> and <strong>1 protect</strong><li>Mappool size (17 maps): <strong>5 NM</strong><strong> / </strong><strong>3 HD</strong><strong> / </strong><strong>3 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong>",
+                "w2Header": "WEEK 2 (AUG 17 - 18)",
+                "w2": "<li>Triple bracket (Upper, Middle, Lower)<li>Upper bracket: Seeds 1 - 4<li>Middle bracket: 1st out of Groups<li>Lower bracket: 2nd out of Groups<li><strong>Round 1 </strong>(12 teams, 6 matches)<ul class=info_desc__list><li>LB Losers are <red>ELIMINATED</red></ul><li><strong>Round 2 </strong>(8 teams, 4 matches)<ul class=info_desc__list><li>UB losers go against MB winners<li>MB losers go against LB winners<li>LB losers are <red>ELIMINATED</red></ul><li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong> and <strong>1 protect</strong><li>Mappool size (17 maps): <strong>5 NM</strong><strong> / </strong><strong>3 HD</strong><strong> / </strong><strong>3 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong>",
+                "w3Header": "WEEK 3 (AUG 24 - 25)",
+                "w3": "<li>Double bracket<li><strong>Round 1 </strong>(8 teams, 4 matches)<ul class=info_desc__list><li>LB Losers are <red>ELIMINATED</red></ul><li><strong>Round 2 </strong>(6 teams, 3 matches)<ul class=info_desc__list><li>UB winners go against each other<li>UB losers go against LB winners<li>LB losers are <red>ELIMINATED</red></ul><li>Matches are <strong>Best of 13</strong> with <strong>2 bans</strong> and <strong>1 protect</strong><li>Mappool size (20 maps): <strong>5 NM</strong><strong> / </strong><strong>4 HD</strong><strong> / </strong><strong>4 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong>",
+                "w4Header": "WEEK 4 (AUG 31 - SEP 1)",
+                "w4": "<li>Single bracket<li>Matches are <strong>Best of 13</strong> with <strong>2 bans</strong> and <strong>1 protect</strong><li>Mappool size (20 maps): <strong>5 NM</strong><strong> / </strong><strong>4 HD</strong><strong> / </strong><strong>4 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong>"
+            },
+            "matchProceduresText": "<li>A referee will create a match at 10 minutes prior to match time<li>There are <strong>no warmups</strong><li>Teams are <strong>expected</strong> to show up on time and prepared to matches<ul class=info_desc__list><li>Captains are expected to <strong>be online</strong> at least 5 minutes <strong>before</strong> the scheduled match time to receive invites from referees</ul><li>Teams that fail to field a roster <strong>5 minutes</strong> after the scheduled match time shall <strong>forfeit</strong><li>There are<strong> no restrictions</strong> on picks or bans<li><strong>NF</strong> is enforced on all maps<li>Captains will roll in matches. The <strong>winner</strong> will <strong>pick first, ban second,</strong> and <strong>protect second</strong><li>Teams have <strong>1 protected map</strong> each<ul class=info_desc__list><li>Protected maps <strong>cannot</strong> be banned but can be picked by either team</ul><li>Teams have <strong>2 bans</strong> throughout bracket stage<li>Each set of bans shall have teams banning <strong>1 map</strong><ul class=info_desc__list><li>The <strong>first set</strong> of bans shall be at the <strong>start</strong> of the match<li>The <strong>second set</strong> of bans shall be after <strong>4 maps</strong> are played<li>Ban order is <strong>ABAB</strong></ul><li>Teams have <strong>90 seconds</strong> to declare <strong>picks, bans, and protects</strong><ul class=info_desc__list><li>If a team takes more time than allotted for any of the above actions, the procedures adopted will be as follows:<ul class=info_desc__list><li><strong>First occurrence:</strong> A 15-second extension is given along with a verbal warning<li><strong>On subsequent occurrences:</strong> A random map will be chosen from the mappool using !roll X, where X is the number of beatmaps remaining in the mappool</ul></ul><li>Teams have <strong>90 seconds</strong> to swap teammates and <strong>lock in their roster</strong><ul class=info_desc__list><li>If a team takes more time than allotted for either action, the procedures adopted will be as follows:<ul class=info_desc__list><li><strong>First occurrence:</strong> A 15-second extension is given along with a verbal warning<li><strong>On subsequent occurrences:</strong> the referee will issue the !mp start 10 command</ul></ul>",
+            "freemodRulesText": "<li><strong>FreeMod Rules</strong>: Allowed mods are <strong>HD</strong> and <strong>HR</strong>. Each team must have <strong>at least</strong> one player with <strong>HD</strong> and one player with <strong>HR</strong> (or HDHR)<ul class=info_desc__list><li><strong>Tiebreakers</strong> are played with <strong>FreeMod</strong> enabled, however, <strong>do not</strong> require players to use a mod</ul>",
+            "disconnectionsText": "<li>In the event of a <strong>disconnection</strong>, an abort/replay may be called if it occurred within the first <strong>30 seconds</strong> of the map. Other than that, common sense will be applied. If <strong>proof</strong> exists of the disconnected player's score (or a rough estimate of their hypothetical score if they finished the map), it will be used. If it is at all <strong>ambiguous</strong>, the player’s score is considered <strong>forfeit</strong>.<li><strong>Disconnections</strong> are considered to be unexpected, game-breaking events <strong>out of a player’s control</strong> (i.e. keyboard/tablet/mouse malfunction, system failure, internet disconnect, etc). Offset, background dim, leaderboard presence, etc. <strong>ARE NOT</strong> considered valid reasons to call for an abort/replay as players may fix these on their own time."
         },
         "qualifiers": {
             "nav": {
@@ -609,18 +643,39 @@
             }
         },
         "teams": {
+            "registeredTeams": "TIM YANG TERDAFTAR",
+            "allTeams": "SELURUH TIM",
             "teamList": "DAFTAR TIM",
+            "teamManagement": "MANAJEMEN TIM",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
+            "loginManagement": "Silakan masuk untuk mengelola tim milikmu.",
             "searchPlaceholder": "cari pengguna/tim",
-            "editTeamInfo": "sunting info tim",
+            "showUnregistered": "Tampilkan tim yang tidak terdaftar",
+            "noRegisteredTeams": "Belum ada tim yang terdaftar.",
+            "noCreatedTeams": "Kamu saat ini tidak sedang berada dalam tim mana pun",
+            "editTeamInfo": "SUNtING INFO TIM",
+            "leaveTeam": "KELUAR DARI TIM",
             "qualifierId": "ID Kualifikasi",
             "placeholders": {
                 "searchUser": "nama pengguna osu!",
                 "name": "nama",
                 "abbreviation": "singkatan"
             },
+            "invites": {
+                "title": "UNDANGAN TIM",
+                "noInvites": "Kamu saat ini tidak memiliki undangan",
+                "invite": "UNDANG",
+                "accept": "TERIMA",
+                "decline": "TOLAK",
+                "error": "TIDAK DAPAT MEMPEROLEH UNDANGAN",
+                "playerSearch": "PENCARIAN PEMAIN",
+                "currentInvites": "UNDANGAN SAAT INI",
+                "corsaceAccount": "Pengguna harus memiliki akun Corsace.",
+                "loggingIn": "Pengguna akan dapat melihat undangan mereka setelah mereka terhubung masuk ke osu! dan Discord."
+            },
             "edit": {
                 "teamName": "NAMA TIM",
+                "teamInfo": "INFORMASI TIM",
                 "teamAbbreviation": "SINGKATAN TIM",
                 "timezone": "ZONA WAKTU",
                 "teamAvatar": "AVATAR TIM",
@@ -631,16 +686,16 @@
                     "invalidTimezone": "Zona waktu tidak valid.",
                     "errorAddingTeamAvatar": "Terdapat kesalahan dalam menambahkan avatar tim:\n{error}",
                     "invalidName": "",
-                    "contactVinxis": "Terdapat kesalahan dalam pencarian. Hubungi VINXIS seiring dengan kesalahan ini. Akses konsol melalui Ctrl + Shift + I untuk keterangan lebih lanjut."
+                    "contactVinxis": "Hubungi VINXIS karena terdapat kesalahan dalam pencarian. Lihat konsol melalui Ctrl + Shift + I untuk rincian lebih lanjut."
                 },
                 "confirm": {
-                    "deleteTeam": "Apakah Anda yakin untuk menghapus tim ini?",
-                    "deleteTeamFinal": "Apakah kamu BENAR-BENAR yakin untuk menghapus tim ini? Tindakan ini tidak dapat diurungkan!",
-                    "removeMember": "Apakah kamu yakin untuk menghapus {username} dari tim kamu?",
-                    "transferCaptain": "Are you sure you want to transfer manager to {username}?",
-                    "invite": "Apakah kamu yakin untuk mengundang {username} ke tim kamu?",
-                    "removeInvite": "Apakah kamu yakin untuk menghapus undangan untuk {username} ke tim kamu?",
-                    "unregister": "Apakah kamu yakin untuk mengurungkan pendaftaran tim kamu dari turnamen ini? Kamu akan dapat kembali mendaftar kapan saja selama tim kamu masih memiliki 6 anggota."
+                    "deleteTeam": "Apakah kamu yakin ingin menghapus tim ini?",
+                    "deleteTeamFinal": "Apakah kamu BENAR-BENAR yakin ingin menghapus tim ini? Tindakan ini tidak dapat diurungkan!",
+                    "removeMember": "Apakah kamu yakin ingin menghapus {username} dari tim kamu?",
+                    "transferCaptain": "Apakah kamu yakin ingin mentransfer posisi kapten kepada {username}?",
+                    "invite": "Apakah kamu yakin ingin mengundang {username} ke tim kamu?",
+                    "removeInvite": "Apakah kamu yakin ingin menghapus undangan untuk {username} ke tim kamu?",
+                    "unregister": "Apakah kamu yakin ingin menarik diri dari turnamen ini? Kamu akan dapat mendaftar ulang kapan saja selama tim kamu masih memiliki 6 anggota."
                 },
                 "save": "SIMPAN",
                 "deleteTeam": "HAPUS TIM"
@@ -648,13 +703,14 @@
             "headers": {
                 "tournaments": "TURNAMEN",
                 "teamStats": "STATISTIK TIM",
-                "teamCaptain": "TEAM MANAGER",
+                "teamCaptain": "KAPTEN TIM",
                 "teamMembers": "ANGGOTA TIM",
                 "editTeamMembers": "sunting anggota tim",
                 "closeTeamMembers": "tutup jendela penyuntingan anggota tim",
                 "becomeMember": "jadi anggota dan ikut bermain",
                 "becomeCaptain": "become manager only",
                 "teamInvites": "UNDANGAN TIM",
+                "teamPage": "HALAMAN TIM",
                 "editTeamInvites": "sunting undangan tim",
                 "closeTeamInvites": "tutup jendela penyuntingan undangan tim",
                 "qualifier": "KUALIFIKASI",
@@ -663,8 +719,11 @@
             },
             "registration": {
                 "noRegistration": "Tidak terdaftar di turnamen mana pun",
-                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan {minTeamSize}-{maxTeamSize} anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
+                "toPlay": "Untuk bermain di Corsace Open, kumpulkan {minTeamSize}-{maxTeamSize} anggota tim dan pilih tanggal dan waktu kualifikasi di bawah ini"
             },
+            "imageReq": "Gambar harus berupa jpg/jpeg/png, memiliki rasio aspek 3:1, dan tidak melebihi 5MB.",
+            "inappropriate": "Segala nama tim dan avatar yang dinilai tidak layak oleh staf akan harus diubah.",
+            "editLock": "Penyuntingan tim akan dikunci pada akhir periode pendaftaran.",
             "teamID": "ID TIM",
             "member": "anggota",
             "members": "anggota",
@@ -674,6 +733,9 @@
             "editQualifierTime": "sunting waktu kualifikasi",
             "deleteTeam": "hapus lobi kualifikasi/urungkan pendaftaran tim",
             "createJoinQualifier": "buat/gabung lobi kualifikasi",
+            "joinQualRegister": "IKUTI KUALIFIKASI UNTUK MENDAFTAR",
+            "needMorePlayers": "Kamu perlu untuk menambahkan setidaknya {count} pemain",
+            "needLessPlayers": "Kamu perlu untuk mengurangi setidaknya {count} pemain",
             "notRegistered": "Saat ini tidak terdaftar pada Corsace Open."
         },
         "create": {
@@ -697,10 +759,10 @@
             "avatarInfo3": "Seluruh nama dan avatar akan disetujui oleh para staf.",
             "avatarInfo4": "Apabila nama tim dan avatar ini dianggap tidak layak, kamu akan diminta untuk mengubahnya.",
             "teamManagement": "MANAJEMEN TIM",
-            "teamCaptains": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamCaptainsFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
-            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmCaptain": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "teamCaptains": "<div><span>Kapten</span> tim (kamu) dapat memilih untuk ikut bermain sekaligus menjadi kapten </div> <div><span>ATAU</span> tidak bermain dan hanya menjadi kapten.</div>",
+            "teamCaptainsFree": "Apabila kamu memilih untuk tidak ikut bermain dan hanya menjadi kapten, kamu <span>tidak</span> akan mengambil slot pemain.",
+            "selectCaptain": "Centang pilihan ini apabila kamu <span>tidak</span> akan ikut bermain dengan tim kamu dan hanya akan bertindak sebagai <span>kapten</span>.",
+            "confirmCaptain": "<div>Dengan mencentang pilihan ini, saya hanya akan bertindak sebagai kapten, dan saya paham bahwa saya tidak akan dapat berpartisipasi</div> <div>dalam pertandingan mana pun.</div>",
             "create": "BUAT TIM"
         },
         "components": {
