@@ -1,7 +1,7 @@
 ---
 title: Começando
 description: Documentação para começar no desenvolvimento da Corsace.
-lastUpdated: 2023-09-10
+lastUpdated: 2024-07-07
 sidebar:
   order: 1
 ---
@@ -15,7 +15,7 @@ If you are looking into translating for Corsace, request access at https://trans
 Please make sure to first [fork the repository](https://github.com/Corsace/Corsace/fork)
 
 :::caution
-We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project.
+We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project outside of the documentation site.
 :::
 
 To clone the repository, run the following command in your terminal/console:
@@ -145,10 +145,17 @@ Usamos três buckets:
 
 - `team-avatars` é um bucket público que armazena avatares de equipe e pode ser servido por um CDN sem autenticação;
 - `mappacks` é um bucket público que armazena mappacks públicos e pode ser servido por um CDN sem autenticação;
-- `mappacks-temp` ié um bucket privado que armazena mappacks privados que não devem ter acesso público.\
-  Mappacks privados não devem ser armazenados permanentemente; uma política de ciclo de vida deve ser adicionada a esse bucket para excluir automaticamente objetos após 1 dia.\
-  Mappacks que devem se tornar públicos são movidos para o bucket `mappacks`.\
-  Mappacks that should become public get moved to the `mappacks` bucket.
+- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
+
+Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.
+
+Mappacks privados não devem ser armazenados permanentemente; uma política de ciclo de vida deve ser adicionada a esse bucket para excluir automaticamente objetos após 1 dia.\
+Mappacks que devem se tornar públicos são movidos para o bucket `mappacks`.
+
+`mappacks-temp` ié um bucket privado que armazena mappacks privados que não devem ter acesso público.\
+Mappacks privados não devem ser armazenados permanentemente; uma política de ciclo de vida deve ser adicionada a esse bucket para excluir automaticamente objetos após 1 dia.\
+Mappacks que devem se tornar públicos são movidos para o bucket `mappacks`.\
+Mappacks that should become public get moved to the `mappacks` bucket.
 
 #### Cloudflare R2
 
