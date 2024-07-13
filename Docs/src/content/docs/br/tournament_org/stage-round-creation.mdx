@@ -1,0 +1,51 @@
+---
+title: Stage/Round Creation
+description: Documentation on creating stages/rounds for a tournament.
+lastUpdated: 2024-07-07
+sidebar:
+  order: 2
+---
+
+## Prerequisite Reading
+
+* [Running Tournaments/Getting Started](../)
+
+## Defining Stages and Rounds
+
+Before moving forward, a distinction needs to be clarified between stages and rounds:
+
+```
+    A stage is a collection of rounds or matches.
+    A round is a collection of matches.
+```
+
+```
+    A stage is typically an entire bracket, or a round robin, or a qualifiers stage.
+    A round is typically within a bracket stage.
+```
+
+For example, if a tournament has qualifiers, and then a double elimination bracket of 32 teams, then:
+
+* The qualifiers would be a stage.
+* The double elimination bracket would be a stage.
+* The double elimination bracket would have multiple rounds, which are:
+  * Round of 32
+  * Round of 16
+  * Quarterfinals
+  * Semifinals
+  * Finals
+  * Grand Finals
+
+## Stage Creation
+
+To create a stage, use the `/stage_create` command in an `admin` channel that you had designated during the [tournament creation](#tournament-creation) section. Ensure you fill in all the required parameters.
+
+:::note
+If you need to recheck which channels were considered `admin` channels, you can use the `/tournament_info` command with the `channels` parameter in `info_type` to get the list of channels and their types.
+:::
+
+When creating a single/double elimination stage, the Corsace Discord bot will automatically decide on and create the rounds for you. You currently cannot create/edit/delete rounds manually, but support for this is planned in the future.
+
+## Next Steps
+
+Once you have created a stage, you can proceed to [creating mappools](./mappool-creation) for the stages and rounds.
