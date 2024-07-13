@@ -645,10 +645,15 @@
                 "invite": "INVITE",
                 "accept": "ACCEPT",
                 "decline": "DECLINE",
-                "error": "COULD NOT GET INVITES"
+                "error": "COULD NOT GET INVITES",
+                "playerSearch": "PLAYER SEARCH",
+                "currentInvites": "CURRENT INVITES",
+                "corsaceAccount": "Users must have a Corsace account.",
+                "loggingIn": "Users will see their invites after logging in on both osu! and discord."
             },
             "edit": {
                 "teamName": "NOME DO TIME",
+                "teamInfo": "TEAM INFORMATION",
                 "teamAbbreviation": "ABREVIAÇÃO DO TIME",
                 "timezone": "FUSO HORÁRIO",
                 "teamAvatar": "AVATAR DO TIME",
@@ -692,8 +697,11 @@
             },
             "registration": {
                 "noRegistration": "Inscrito em nenhum torneio",
-                "toPlay": "Para jogar na Corsace Open, consiga 6-8 membros e escolha uma data e hora de qualificatória abaixo"
+                "toPlay": "Para jogar na Corsace Open, consiga {minTeamSize}-{maxTeamSize} membros e escolha uma data e hora de qualificatória abaixo"
             },
+            "imageReq": "Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.",
+            "inappropriate": "Any team name, and avatar deemed inappropriate by staff must be changed.",
+            "editLock": "Team editing will be locked at the end of the registration period.",
             "teamID": "ID DO TIME",
             "member": "membro",
             "members": "membros",
@@ -703,6 +711,9 @@
             "editQualifierTime": "editar hora da qualificatória",
             "deleteTeam": "apagar qualificatória/desinscrever time",
             "createJoinQualifier": "criar/entrar em qualificatória",
+            "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
+            "needMorePlayers": "You need at least {count} more players",
+            "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "Atualmente não inscrito na Corsace Open."
         },
         "create": {
