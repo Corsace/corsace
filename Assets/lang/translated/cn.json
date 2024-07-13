@@ -645,10 +645,15 @@
                 "invite": "INVITE",
                 "accept": "ACCEPT",
                 "decline": "DECLINE",
-                "error": "COULD NOT GET INVITES"
+                "error": "COULD NOT GET INVITES",
+                "playerSearch": "PLAYER SEARCH",
+                "currentInvites": "CURRENT INVITES",
+                "corsaceAccount": "Users must have a Corsace account.",
+                "loggingIn": "Users will see their invites after logging in on both osu! and discord."
             },
             "edit": {
                 "teamName": "队伍名",
+                "teamInfo": "TEAM INFORMATION",
                 "teamAbbreviation": "队伍缩写",
                 "timezone": "时区",
                 "teamAvatar": "队伍图标",
@@ -692,8 +697,11 @@
             },
             "registration": {
                 "noRegistration": "没有注册任何锦标赛",
-                "toPlay": "如要参加 Corsace Open，你需要 6-8 名队员并选择以下资格赛日期和时间"
+                "toPlay": "如要参加 Corsace Open，你需要 {minTeamSize}-{maxTeamSize} 名队员并选择以下资格赛日期和时间"
             },
+            "imageReq": "Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.",
+            "inappropriate": "Any team name, and avatar deemed inappropriate by staff must be changed.",
+            "editLock": "Team editing will be locked at the end of the registration period.",
             "teamID": "队伍ID",
             "member": "队员",
             "members": "队员",
@@ -703,6 +711,9 @@
             "editQualifierTime": "编辑资格赛时间",
             "deleteTeam": "删除资格赛/未注册的队伍",
             "createJoinQualifier": "创建/参加资格赛",
+            "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
+            "needMorePlayers": "You need at least {count} more players",
+            "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "目前尚未报名 Corsace Open。"
         },
         "create": {
