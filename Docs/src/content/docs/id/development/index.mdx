@@ -1,7 +1,7 @@
 ---
 title: Memulai
 description: Dokumentasi untuk memulai pengembangan Corsace.
-lastUpdated: 2023-09-10
+lastUpdated: 2024-07-07
 sidebar:
   order: 1
 ---
@@ -15,7 +15,7 @@ Apabila kamu ingin membantu untuk menerjemahkan Corsace, kamu dapat meminta akse
 \*Gunakan hak admin pada konsolmu pada saat menjalankan perintah.
 
 :::caution
-Kami SANGAT menyarankan kamu untuk menginstal aplikasi code editor seperti Visual Studio Code](https://code.visualstudio.com/) atau [NotePad++](https://notepad-plus-plus.org/) untuk proyek ini.
+We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project outside of the documentation site.
 :::
 
 Instal node-modules:
@@ -145,10 +145,13 @@ Kami menggunakan tiga bucket:
 
 - `team-avatars` merupakan bucket publik yang menyimpan avatar tim, yang dapat dilayani oleh CDN tanpa autentikasi
 - `mappacks` merupakan bucket publik yang menyimpan paket map publik, yang dapat dilayani oleh CDN tanpa autentikasi
-- `mappacks-temp` merupakan bucket privat yang menyimpan paket beatmap rahasia, yang izin aksesnya tidak terbuka secara publik. 
-  Paket beatmap yang dihasilkan akan terlebih dahulu diunggah ke bucket ini, di mana pengguna yang berkepentingan akan dapat diberikan izin akses melalui URL yang bersifat pre-signed.\
-  Paket beatmap yang bersifat privat tidak ditujukan untuk disimpan secara permanen. Kamu dihimbau untuk mengatur agar paket beatmap ini akan dihapus secara otomatis setelah 1 hari.\
-  Paket beatmap yang ke depannya akan dirilis secara publik akan dipindahkan ke bucket `mappacks`.
+- `mappacks-temp` merupakan bucket pribadi yang menyimpan paket beatmap privat yang tidak ditujukan untuk akses publik  
+
+Paket beatmap yang dihasilkan akan terlebih dahulu diunggah ke bucket ini, di mana para pengguna akan kemudian diberikan akses melalui URL yang telah ditandatangani sebelumnya (pre-signed URL).
+
+Paket beatmap yang bersifat privat tidak ditujukan untuk disimpan secara permanen. Kamu dihimbau untuk mengatur agar paket beatmap ini akan dihapus secara otomatis setelah 1 hari.
+
+Paket beatmap yang ke depannya akan dirilis secara publik akan dipindahkan ke bucket `mappacks`.
 
 #### Cloudflare R2
 

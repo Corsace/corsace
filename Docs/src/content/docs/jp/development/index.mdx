@@ -1,7 +1,7 @@
 ---
 title: Getting Started
 description: Documentation to get started on Corsace development.
-lastUpdated: 2023-09-19
+lastUpdated: 2024-07-07
 sidebar:
   order: 1
 ---
@@ -15,7 +15,7 @@ If you are looking into translating for Corsace, request access at https://trans
 Please make sure to first [fork the repository](https://github.com/Corsace/Corsace/fork)
 
 :::caution
-We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project.
+We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project outside of the documentation site.
 :::
 
 To clone the repository, run the following command in your terminal/console:
@@ -145,12 +145,13 @@ We use three buckets:
 
 - `team-avatars` is a public bucket that stores team avatars, can be served by a CDN without authentication
 - `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
-- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access\
-  Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.\
-  Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.\
-  Mappacks that should become public get moved to the `mappacks` bucket.\
-  Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.\
-  Mappacks that should become public get moved to the `mappacks` bucket.
+- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
+
+Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.
+
+Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.
+
+Mappacks that should become public get moved to the `mappacks` bucket.
 
 #### Cloudflare R2
 
