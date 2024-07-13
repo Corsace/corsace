@@ -57,7 +57,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
 
 In the case where you need a route for your endpoint that will also possibly branch off to other endpoints (that you may also want to make at the same time, or in the future), you would create either a new file, or a new folder with a new file. The choice you make depends on your specific case and context.
 
-##### Examples
+##### Contoh
 
 If you are creating endpoints for teams that will require multiple endpoints for creating, updating, deleting teams, e.t.c, and the base api url would be `/api/teams`, you would create a new file called `teams.ts` in the `Server/api/routes` folder.
 
