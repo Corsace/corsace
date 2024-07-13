@@ -41,14 +41,10 @@
                     {{ $t('open.info.generalInfo') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
-                    <ul class="info_desc__list">
-                        <li>Corsace Open is a <strong>4v4</strong>, <strong>international</strong> tournament open to players of <strong>all ranks</strong></li>
-                        <li>All matches are played using <strong>Team VS</strong>, <strong>ScoreV2</strong></li>
-                        <li>All scheduling shall be done in <strong>UTC</strong></li>
-                        <li>All matches must take place between <strong>Friday 23:59 UTC</strong> and<strong> Sunday 23:59 UTC</strong></li>
-                        <li>Reschedules must be submitted before <strong>Thursdays at 23:59 UTC</strong> the week a round is to take place. Exceptions are made on a case-by-case basis</li>
-                        <li>Staff are <strong>prohibited</strong> from playing and/or acting as captains in the tournament with the exception of<strong> streamers</strong>, <strong>commentators</strong>, and <strong>GFX artists</strong></li>
-                    </ul>
+                    <ul 
+                        class="info_desc__list"
+                        v-html="$t('open.info.generalInfoText')"
+                    />
                 </div>
                 <OpenTitle
                     class="info_section_header"
@@ -56,29 +52,10 @@
                     {{ $t('open.info.prizes') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
-                    <ul class="info_desc__list">
-                        <li>
-                            <strong>1st Place</strong>:
-                            <ul>
-                                <li>50% of prizepool split among players and their captain how they wish</li>
-                                <li>(Pending) Corsace Open 1st place badge</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>2nd Place</strong>:
-                            <ul>
-                                <li>30% of prizepool split among players and their captain how they wish</li>
-                                <li>(Pending) Corsace Open 2nd place badge</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>3rd Place</strong>:
-                            <ul>
-                                <li>20% of prizepool split among players and their captain how they wish</li>
-                                <li>(Pending) Corsace Open 3rd place badge</li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <ul
+                        class="info_desc__list"
+                        v-html="$t('open.info.prizesText')"
+                    />
                 </div>
                 <OpenTitle
                     class="info_section_header"
@@ -86,27 +63,10 @@
                     {{ $t('open.info.teamStructure') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
-                    <ul class="info_desc__list">
-                        <li>Teams may consist of <strong>6 - 8</strong> players </li>
-                        <li>
-                            Team names may consist of 3 - 20 characters with acronyms of 2 - 4 letters along with a team photo
-                            <ul>
-                                <li>Inappropriate pictures, names, and/or acronyms are subject to change at the discretion of administration</li>
-                            </ul>
-                        </li>
-                        <li>
-                            Teams must designate a <strong>single timezone</strong> to be used for scheduling (EX: UTC-7, UTC+2, UTC-4, etc.)
-                            <ul>
-                                <li>
-                                    Teams shall be <strong>guaranteed</strong> a match time within the hours of <strong>10:00 - 22:00</strong> in accordance with the timezone used when registering
-                                    <ul>
-                                        <li>Teams are <strong>expected</strong> to be available for <strong>4</strong> <strong>weekends</strong> to play <strong>1 - 3 matches</strong> that last <strong>45 - 90 minutes</strong> within the <strong>10:00 - 22:00</strong> time frame for Saturday <strong>and</strong> Sunday</li>
-                                        <li>Due to the guaranteed time, schedules will be made with streamers in mind</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <ul
+                        class="info_desc__list"
+                        v-html="$t('open.info.teamStructureText')"
+                    />
                 </div>
                 <OpenTitle
                     class="info_section_header"
@@ -114,37 +74,15 @@
                     {{ $t('open.info.qualifiersProcedures') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
-                    <ul class="info_desc__list">
-                        <li>Teams shall have their own lobby run by the Corsace bot</li>
-                        <li>The deadline to play qualifiers to complete registration is <strong>July 28 at 23:59 UTC</strong></li>
-                        <li>The mappool consists of <strong>10 maps</strong> (<strong>3 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong>) and shall be played <strong>ONCE</strong>, starting from NM1 and ending in DT3</li>
-                        <li>90 second timers are used for teams to swap members and ready up</li>
-                        <li>
-                            Teams<strong> complete registration</strong> by playing qualifiers
-                            <ul class="info_desc__list">
-                                <li>Rosters are<strong> locked </strong>after play. Changes are <strong>not</strong> allowed under any circumstance</li>
-                                <li>Due to this process, teams with players who are <strong>screened out</strong> will automatically be <strong>disqualified</strong></li>
-                            </ul>
-                        </li>
-                        <li>Qualifier results are calculated using z-score</li>
-                    </ul>
-                    <h2>SEEDING</h2>
-                    <ul class="info_desc__list">
-                        <li><strong>16 teams </strong>qualify and are split into <strong>two tiers</strong></li>
-                        <li>
-                            <strong>Tier 1 </strong>(Seeds 1 - 4)
-                            <ul class="info_desc__list">
-                                <li>Advances and is placed into the Upper Bracket in Week 2</li>
-                                <li>Does not play in Week 1</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Tier 2</strong> (Seeds 5 - 16)
-                            <ul class="info_desc__list">
-                                <li>Moves on to Week 1, it is a group stage consisting of 4 groups of 3 teams</li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <ul
+                        class="info_desc__list"
+                        v-html="$t('open.info.qualifiersProceduresText')"
+                    />
+                    <h2>{{ $t('open.info.seeding') }}</h2>
+                    <ul
+                        class="info_desc__list"
+                        v-html="$t('open.info.seedingText')"
+                    />
                 </div>
                 <OpenTitle
                     class="info_section_header"
@@ -152,111 +90,49 @@
                     {{ $t('open.info.tournamentStructure') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
-                    <ul class="info_desc__list">
-                        <li>The tournament consists of <strong>4 stages of play: </strong> Week 1, Week 2, Week 3, Week 4</li>
-                    </ul>
-                    <h2>WEEK 1 (AUG 10 - 11)</h2>
+                    <span v-html="$t('open.info.tournamentStructureText.initialText')" />
+                    <h2>{{ $t('open.info.tournamentStructureText.w1Header') }}</h2>
                     <div class="info_desc__list_wrapper">
-                        <ul class="info_desc__list">
-                            <li>
-                                <strong>Groups </strong>(12 teams, 12 matches)
-                                <ul class="info_desc__list">
-                                    <li>Group A (Seeds 5, 12, 13)</li>
-                                    <li>Group B (Seeds 6, 11, 14)</li>
-                                    <li>Group C (Seeds 7, 10, 15)</li>
-                                    <li>Group D (Seeds 8, 9, 16)</li>
-                                </ul>
-                            </li>
-                            
-                            <li>
-                                <strong>Placements:</strong>
-                                <ul class="info_desc__list">
-                                    <li>
-                                        Group placement and W2 seeding is in the following precedence:
-                                        <ul class="info_desc__list">
-                                            <li>Match W/L Ratio</li>
-                                            <li>Points Won</li>
-                                            <li>Difference in Points (Points Won - Points Lost)</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>1st:</strong> Moves into the Middle Bracket of Week 2</li>
-                                    <li><strong>2nd:</strong> Moves into the Lower Bracket of Week 3</li>
-                                    <li><strong>3rd:</strong> <red>ELIMINATED</red></li>
-                                </ul>
-                            </li>
-                            <li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong> and <strong>1 protect</strong></li>
-                            <li>Mappool size (17 maps): <strong>5 NM</strong><strong> / </strong><strong>3 HD</strong><strong> / </strong><strong>3 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
-                        </ul>
+                        <ul
+                            class="info_desc__list"
+                            v-html="$t('open.info.tournamentStructureText.w1')"
+                        />
                         <img
                             class="info_desc__list_wrapper__image info_desc__list_wrapper__image--small"
                             src="../../Assets/img/site/open/info/w1.png"
                         >
                     </div>
                     <hr class="line--red line--bottom-space">
-                    <h2>WEEK 2 (AUG 17 - 18)</h2>
+                    <h2>{{ $t('open.info.tournamentStructureText.w2Header') }}</h2>
                     <div class="info_desc__list_wrapper">
-                        <ul class="info_desc__list">
-                            <li>Triple bracket (Upper, Middle, Lower)</li>
-                            <li>Upper bracket: Seeds 1 - 4</li>
-                            <li>Middle bracket: 1st out of Groups</li>
-                            <li>Lower bracket: 2nd out of Groups</li>
-                            <li>
-                                <strong>Round 1 </strong>(12 teams, 6 matches)
-                                <ul class="info_desc__list">
-                                    <li>LB Losers are <red>ELIMINATED</red></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <strong>Round 2 </strong>(8 teams, 4 matches)
-                                <ul class="info_desc__list">
-                                    <li>UB losers go against MB winners</li>
-                                    <li>MB losers go against LB winners</li>
-                                    <li>LB losers are <red>ELIMINATED</red></li>
-                                </ul>
-                            </li>
-                            <li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong> and <strong>1 protect</strong></li>
-                            <li>Mappool size (17 maps): <strong>5 NM</strong><strong> / </strong><strong>3 HD</strong><strong> / </strong><strong>3 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
-                        </ul>
+                        <ul
+                            class="info_desc__list"
+                            v-html="$t('open.info.tournamentStructureText.w2')"
+                        />
                         <img 
                             class="info_desc__list_wrapper__image"
                             src="../../Assets/img/site/open/info/w2.png"
                         >
                     </div>
                     <hr class="line--red line--bottom-space">
-                    <h2>WEEK 3 (AUG 24 - 25)</h2>
+                    <h2>{{ $t('open.info.tournamentStructureText.w3Header') }}</h2>
                     <div class="info_desc__list_wrapper">
-                        <ul class="info_desc__list">
-                            <li>Double bracket</li>
-                            <li>
-                                <strong>Round 1 </strong>(8 teams, 4 matches)
-                                <ul class="info_desc__list">
-                                    <li>LB Losers are <red>ELIMINATED</red></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <strong>Round 2 </strong>(6 teams, 3 matches)
-                                <ul class="info_desc__list">
-                                    <li>UB winners go against each other</li>
-                                    <li>UB losers go against LB winners</li>
-                                    <li>LB losers are <red>ELIMINATED</red></li>
-                                </ul>
-                            </li>
-                            <li>Matches are <strong>Best of 13</strong> with <strong>2 bans</strong> and <strong>1 protect</strong></li>
-                            <li>Mappool size (20 maps): <strong>5 NM</strong><strong> / </strong><strong>4 HD</strong><strong> / </strong><strong>4 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
-                        </ul>
+                        <ul
+                            class="info_desc__list"
+                            v-html="$t('open.info.tournamentStructureText.w3')"
+                        />
                         <img 
                             class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
                             src="../../Assets/img/site/open/info/w3.png"
                         >
                     </div>
                     <hr class="line--red line--bottom-space">
-                    <h2>WEEK 4 (AUG 31 - SEP 1)</h2>   
+                    <h2>{{ $t('open.info.tournamentStructureText.w4Header') }}</h2>
                     <div class="info_desc__list_wrapper">     
-                        <ul class="info_desc__list">
-                            <li>Single bracket</li>
-                            <li>Matches are <strong>Best of 13</strong> with <strong>2 bans</strong> and <strong>1 protect</strong></li>
-                            <li>Mappool size (20 maps): <strong>5 NM</strong><strong> / </strong><strong>4 HD</strong><strong> / </strong><strong>4 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
-                        </ul>
+                        <ul
+                            class="info_desc__list"
+                            v-html="$t('open.info.tournamentStructureText.w4')"
+                        />
                         <img 
                             class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
                             src="../../Assets/img/site/open/info/w4.png"
@@ -269,73 +145,20 @@
                     {{ $t('open.info.matchProcedures') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
-                    <ul class="info_desc__list">
-                        <li>A referee will create a match at 10 minutes prior to match time</li>
-                        <li>There are <strong>no warmups</strong></li>
-                        <li>
-                            Teams are <strong>expected</strong> to show up on time and prepared to matches
-                            <ul class="info_desc__list">
-                                <li>Captains are expected to <strong>be online</strong> at least 5 minutes <strong>before</strong> the scheduled match time to receive invites from referees</li>
-                            </ul>
-                        </li>
-                        <li>Teams that fail to field a roster <strong>5 minutes</strong> after the scheduled match time shall <strong>forfeit</strong></li>
-                        <li>There are<strong> no restrictions</strong> on picks or bans</li>
-                        <li><strong>NF</strong> is enforced on all maps</li>
-                        <li>Captains will roll in matches. The <strong>winner</strong> will <strong>pick first, ban second,</strong> and <strong>protect second</strong></li>
-                        <li>
-                            Teams have <strong>1 protected map</strong> each
-                            <ul class="info_desc__list">
-                                <li>Protected maps <strong>cannot</strong> be banned but can be picked by either team</li>
-                            </ul>
-                        </li>
-                        <li>Teams have <strong>2 bans</strong> throughout bracket stage</li>
-                        <li>
-                            Each set of bans shall have teams banning <strong>1 map</strong>
-                            <ul class="info_desc__list">
-                                <li>The <strong>first set</strong> of bans shall be at the <strong>start</strong> of the match</li>
-                                <li>The <strong>second set</strong> of bans shall be after <strong>4 maps</strong> are played</li>
-                                <li>Ban order is <strong>ABAB</strong></li>
-                            </ul>
-                        </li>
-                        <li>
-                            Teams have <strong>90 seconds</strong> to declare <strong>picks, bans, and protects</strong>
-                            <ul class="info_desc__list">
-                                <li>
-                                    If a team takes more time than allotted for any of the above actions, the procedures adopted will be as follows:
-                                    <ul class="info_desc__list">
-                                        <li><strong>First occurrence:</strong> A 15-second extension is given along with a verbal warning</li>
-                                        <li><strong>On subsequent occurrences:</strong> A random map will be chosen from the mappool using !roll X, where X is the number of beatmaps remaining in the mappool</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            Teams have <strong>90 seconds</strong> to swap teammates and <strong>lock in their roster</strong>
-                            <ul class="info_desc__list">
-                                <li>
-                                    If a team takes more time than allotted for either action, the procedures adopted will be as follows:
-                                    <ul class="info_desc__list">
-                                        <li><strong>First occurrence:</strong> A 15-second extension is given along with a verbal warning</li>
-                                        <li><strong>On subsequent occurrences:</strong> the referee will issue the !mp start 10 command</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <h2>FREEMOD RULES</h2>
-                    <ul class="info_desc__list">
-                        <li>
-                            <strong>FreeMod Rules</strong>: Allowed mods are <strong>HD</strong> and <strong>HR</strong>. Each team must have <strong>at least</strong> one player with <strong>HD</strong> and one player with <strong>HR</strong> (or HDHR)
-                            <ul class="info_desc__list">
-                                <li><strong>Tiebreakers</strong> are played with <strong>FreeMod</strong> enabled, however, <strong>do not</strong> require players to use a mod</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <h2>DISCONNECTIONS</h2>
-                    <ul class="info_desc__list">
-                        <li>In the event of a <strong>disconnection</strong>, an abort/replay may be called if it occurred within the first <strong>30 seconds</strong> of the map. Other than that, common sense will be applied. If <strong>proof</strong> exists of the disconnected player's score (or a rough estimate of their hypothetical score if they finished the map), it will be used. If it is at all <strong>ambiguous</strong>, the player&rsquo;s score is considered <strong>forfeit</strong>.</li>
-                        <li><strong>Disconnections</strong> are considered to be unexpected, game-breaking events <strong>out of a player&rsquo;s control</strong> (i.e. keyboard/tablet/mouse malfunction, system failure, internet disconnect, etc). Offset, background dim, leaderboard presence, etc. <strong>ARE NOT</strong> considered valid reasons to call for an abort/replay as players may fix these on their own time.</li>
-                    </ul>
+                    <ul
+                        class="info_desc__list"
+                        v-html="$t('open.info.matchProceduresText')"
+                    />
+                    <h2>{{ $t('open.info.freemodRules') }}</h2>
+                    <ul
+                        class="info_desc__list"
+                        v-html="$t('open.info.freemodRulesText')"
+                    />
+                    <h2>{{ $t('open.info.disconnections') }}</h2>
+                    <ul
+                        class="info_desc__list"
+                        v-html="$t('open.info.disconnectionsText')"
+                    />
                     <ContentButton 
                         class="content_button--red info_report_button content_button--margin"
                         link="https://pif.ephemeral.ink/tournament-reports"
@@ -573,7 +396,7 @@
             >
                 <div class="info_desc">
                     <div class="info_desc__text">
-                        Could not find tournament
+                        {{ $t('open.info.error') }}
                     </div>
                 </div>
                 <div class="info_stages">
