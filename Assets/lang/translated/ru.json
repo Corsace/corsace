@@ -478,7 +478,7 @@
         "navbar": {
             "home": "ГЛАВНАЯ",
             "info": "ИНФО",
-            "qualifiers": "КВАЛИФИКАЦИИ",
+            "qualifiers": "ОТБОРОЧНЫЕ",
             "teams": "КОМАНДЫ",
             "schedule": "РАСПИСАНИЕ",
             "mappool": "МАППУЛ",
@@ -535,7 +535,7 @@
         },
         "info": {
             "title": "ИНФОРМАЦИЯ",
-            "condensed": "КРАТКАЯ ИНФОРМАЦИЯ",
+            "condensed": "СОКРАЩЕННАЯ ИНФОРМАЦИЯ",
             "error": "Не удалось найти турнир",
             "matchInfo": {
                 "matchSize": "РАЗМЕР МАТЧА",
@@ -582,7 +582,7 @@
         "qualifiers": {
             "nav": {
                 "mappool": "МАППУЛ",
-                "qualifiers": "КВАЛИФИКАЦИИ",
+                "qualifiers": "ОТБОРОЧНЫЕ",
                 "scores": "ОЧКИ"
             },
             "mappool": {
@@ -645,10 +645,15 @@
                 "invite": "ПРИГЛАСИТЬ",
                 "accept": "ПРИНЯТЬ",
                 "decline": "ОТКЛОНИТЬ",
-                "error": "COULD NOT GET INVITES"
+                "error": "COULD NOT GET INVITES",
+                "playerSearch": "PLAYER SEARCH",
+                "currentInvites": "CURRENT INVITES",
+                "corsaceAccount": "Users must have a Corsace account.",
+                "loggingIn": "Users will see their invites after logging in on both osu! and discord."
             },
             "edit": {
                 "teamName": "НАЗВАНИЕ КОМАНДЫ",
+                "teamInfo": "TEAM INFORMATION",
                 "teamAbbreviation": "АББРЕВИАТУРА КОМАНДЫ",
                 "timezone": "ЧАСОВОЙ ПОЯС",
                 "teamAvatar": "АВАТАРКА КОМАНДЫ",
@@ -692,8 +697,11 @@
             },
             "registration": {
                 "noRegistration": "Не зарегистрирован ни в одном турнире",
-                "toPlay": "Чтобы играть в Corsace Open, наберите 6-8 игроков и выберите ниже время и дату квалификации"
+                "toPlay": "Чтобы играть в Corsace Open, наберите {minTeamSize}-{maxTeamSize} членов и выберите ниже время и дату отборочного матча"
             },
+            "imageReq": "Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.",
+            "inappropriate": "Any team name, and avatar deemed inappropriate by staff must be changed.",
+            "editLock": "Team editing will be locked at the end of the registration period.",
             "teamID": "ID КОМАНДЫ",
             "member": "член",
             "members": "члены",
@@ -703,6 +711,9 @@
             "editQualifierTime": "изменить время квалификации",
             "deleteTeam": "удалить квалификацию/отменить регистрацию команды",
             "createJoinQualifier": "создать/присоединиться к отборочному матчу",
+            "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
+            "needMorePlayers": "You need at least {count} more players",
+            "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "В данный момент не зарегистрирован в Corsace Open."
         },
         "create": {
@@ -720,7 +731,7 @@
             "fileSizeLimit": "максимальный размер 5мб. поддерживаемые типы файлов: .jpg .png",
             "fileSizeError": "размер файла слишком большой! пожалуйста, загрузите изображение меньшего размера",
             "fileTypeError": "неверный тип файла! пожалуйста, загрузите .jpg или .png",
-            "preview": "ПРЕВЬЮ",
+            "preview": "ПРЕДПРОСМОТР",
             "avatarInfo1": "Для аватарки рекомендуется использовать изображение с <span>соотношением сторон 3:1</span>.",
             "avatarInfo2": "Капитаны могут изменять названия команд и аватарки до окончания регистрации.",
             "avatarInfo3": "Все названия и аватарки будут утверждены организаторами.",
