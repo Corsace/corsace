@@ -11,7 +11,7 @@
     },
     "mca_ayim": {
         "banner": {
-            "merch": "TOKO CENDERA MATA RESMI",
+            "merch": "TOKO CEnDERA MATA RESMI",
             "corsace": "HUB EVENT UTAMA"
         },
         "header": {
@@ -29,9 +29,9 @@
                 "1": "Sepertinya kamu belum terhubung masuk!<br>Silakan masuk dengan akun osu! milikmu untuk mulai menominasikan beatmap dan memberikan suara.",
                 "2": "Kamu juga dapat masuk dengan Discord setelahnya, namun hal ini <b>tidak diwajibkan</b> untuk dapat memberikan suara/nominasi.<br>Akses masuk melalui Discord <b>hanya diwajibkan bagi para staf yang bertugas di MCA/AYIM.</b></span>"
             },
-            "authOsu": "klik di sini untuk masuk dengan akun osu! milikmu",
+            "authOsu": "klik di sini untuk masuk dengan akun osu!",
             "authOsuComp": "verifikasi akun osu! berhasil. Halo ",
-            "authDiscord": "klik di sini untuk masuk dengan akun Discord milikmu",
+            "authDiscord": "klik di sini untuk masuk dengan akun Discord",
             "authDiscordComp": "verifikasi akun Discord berhasil. Halo "
         }
     },
@@ -336,7 +336,7 @@
             },
             "vanilla": {
                 "name": "Map Vanilla Terbaik",
-                "description": "Beatmap terbaik yang mengusung desain yang sederhana."
+                "description": "Beatmap terbaik yang mengusung teknik mapping yang sederhana dengan hasil yang maksimal."
             },
             "complex": {
                 "name": "Map Swing / Ritme Kompleks Terbaik",
@@ -471,7 +471,7 @@
                 "secondThirdChoice": "JML. PILIHAN KE-2/KE-3",
                 "restChoice": "JML. PILIHAN KE-4+"
             },
-            "resultsOverlay": "Halo! Sepertinya ini adalah kali pertamamu mengakses halaman hasil MCA! <br> Seluruh hasil yang tertera pada halaman ini dihitung berdasarkan sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting</a>, yang kemudian diurutkan berdasarkan jumlah pemilih pertama, jumlah pemilih kedua, dan seterusnya!<br> Semoga kamu terpuaskan dengan hasil MCA [YEAR] kali ini! Sampai jumpa lagi di MCA selanjutnya!"
+            "resultsOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses halaman hasil MCA! <br> Hasil berikut ini menampilkan posisi pemilihan beatmap/pengguna berdasarkan sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> yang disertai dengan berapa kali beatmap/pengguna tersebut ditempatkan sebagai pilihan pertama dan berapa kali beatmap/pengguna ini dipilih secara keseluruhan!<br> Semoga hasil MCA [YEAR] kali ini sesuai dengan harapanmu! Sampai jumpa lagi di MCA selanjutnya!"
         }
     },
     "open": {
@@ -664,16 +664,16 @@
                     "invalidTimezone": "Zona waktu tidak valid.",
                     "errorAddingTeamAvatar": "Terdapat kesalahan dalam menambahkan avatar tim:\n{error}",
                     "invalidName": "",
-                    "contactVinxis": "Terdapat kesalahan dalam pencarian. Hubungi VINXIS seiring dengan kesalahan ini. Akses konsol melalui Ctrl + Shift + I untuk keterangan lebih lanjut."
+                    "contactVinxis": "Hubungi VINXIS karena terdapat kesalahan dalam pencarian. Lihat konsol melalui Ctrl + Shift + I untuk rincian lebih lanjut."
                 },
                 "confirm": {
-                    "deleteTeam": "Apakah Anda yakin untuk menghapus tim ini?",
-                    "deleteTeamFinal": "Apakah kamu BENAR-BENAR yakin untuk menghapus tim ini? Tindakan ini tidak dapat diurungkan!",
-                    "removeMember": "Apakah kamu yakin untuk menghapus {username} dari tim kamu?",
+                    "deleteTeam": "Apakah kamu yakin ingin menghapus tim ini?",
+                    "deleteTeamFinal": "Apakah kamu BENAR-BENAR yakin ingin menghapus tim ini? Tindakan ini tidak dapat diurungkan!",
+                    "removeMember": "Apakah kamu yakin ingin menghapus {username} dari tim kamu?",
                     "transferCaptain": "Apakah kamu yakin ingin mentransfer posisi kapten kepada {username}?",
-                    "invite": "Apakah kamu yakin untuk mengundang {username} ke tim kamu?",
-                    "removeInvite": "Apakah kamu yakin untuk menghapus undangan untuk {username} ke tim kamu?",
-                    "unregister": "Apakah kamu yakin untuk mengurungkan pendaftaran tim kamu dari turnamen ini? Kamu akan dapat kembali mendaftar kapan saja selama tim kamu masih memiliki 6 anggota."
+                    "invite": "Apakah kamu yakin ingin mengundang {username} ke tim kamu?",
+                    "removeInvite": "Apakah kamu yakin ingin menghapus undangan untuk {username} ke tim kamu?",
+                    "unregister": "Apakah kamu yakin ingin menarik diri dari turnamen ini? Kamu akan dapat mendaftar ulang kapan saja selama tim kamu masih memiliki 6 anggota."
                 },
                 "save": "SIMPAN",
                 "deleteTeam": "HAPUS TIM"
@@ -697,11 +697,11 @@
             },
             "registration": {
                 "noRegistration": "Tidak terdaftar di turnamen mana pun",
-                "toPlay": "Untuk bermain di Corsace Open, kumpulkan {minTeamSize}-{maxTeamSize} anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
+                "toPlay": "Untuk bermain di Corsace Open, kumpulkan {minTeamSize}-{maxTeamSize} anggota tim dan pilih tanggal dan waktu kualifikasi di bawah ini"
             },
             "imageReq": "Gambar harus berupa jpg/jpeg/png, memiliki rasio aspek 3:1, dan tidak melebihi 5MB.",
             "inappropriate": "Segala nama tim dan avatar yang dinilai tidak layak oleh staf akan harus diubah.",
-            "editLock": "Penguncian tim akan dikunci pada akhir periode pendaftaran.",
+            "editLock": "Penyuntingan tim akan dikunci pada akhir periode pendaftaran.",
             "teamID": "ID TIM",
             "member": "anggota",
             "members": "anggota",
