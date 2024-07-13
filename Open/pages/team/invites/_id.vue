@@ -22,12 +22,12 @@
                 class="invites_team__search"
             >
                 <div class="invites_team__search_input">
-                    <span class="invites_team--title">PLAYER SEARCH</span>
+                    <span class="invites_team--title">{{ $t('open.teams.invites.playerSearch') }}</span>
                     <SearchBar
                         :placeholder="`${$t('open.teams.placeholders.searchUser')}`"
                         @update:search="search($event)"
                     />
-                    Users must have a Corsace account.<br>Users will see their invites after logging in on both osu! and discord.
+                    {{ $t('open.teams.invites.corsaceAccount') }}<br>{{ $t('open.teams.invites.loggingIn') }}
                 </div>
                 <span class="invites_team--title">RESULTS</span>
                 <div class="invites_team__search_results">
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="invites_team__current_invites">
-                <span class="invites_team--title">CURRENT INVITES</span>
+                <span class="invites_team--title">{{ $t('open.teams.invites.currentInvites') }}</span>
                 <div class="invites_team__current_list">
                     <div
                         v-for="invite in teamInvites"

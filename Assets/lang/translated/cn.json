@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "没有注册任何锦标赛",
-                "toPlay": "如要参加 Corsace Open，你需要 6-8 名队员并选择以下资格赛日期和时间"
+                "toPlay": "如要参加 Corsace Open，你需要 {minTeamSize}-{maxTeamSize} 名队员并选择以下资格赛日期和时间"
             },
             "teamID": "队伍ID",
             "member": "队员",

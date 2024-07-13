@@ -46,7 +46,7 @@
             </OpenTitle>
             <div class="team__fields">
                 <div class="team__section">
-                    TEAM AVATAR
+                    {{ $t('open.teams.edit.teamAvatar') }}
                     <div class="team__avatar_section">
                         <img 
                             class="team__avatar"
@@ -70,15 +70,15 @@
                             </ContentButton>
                         </div> -->
                         <div v-if="isCaptain">
-                            <p>Images must be in jpg/jpeg/png, 3:1 aspect ratio, and does not exceed 5MB.</p>
-                            <p>Any team name, and avatar deemed inappropriate by staff must be changed.</p>
-                            <p>Team editing will be locked at the end of the registration period.</p>
+                            <p>{{ $t('open.teams.imageReq') }}</p>
+                            <p>{{ $t('open.teams.inappropriate') }}</p>
+                            <p>{{ $t('open.teams.editLock') }}</p>
                         </div>
                     </div>
                 </div>
                 <hr class="line--red">
                 <div class="team__section">
-                    TEAM INFORMATION
+                    {{ $t('open.teams.edit.teamInfo') }}
                     <div class="team__info_section">
                         <div>
                             <span class="team__info_section--header">{{ $t('open.teams.headers.tournaments') }}</span>
@@ -88,7 +88,7 @@
                             <div v-else>
                                 {{ $t('open.teams.registration.noRegistration') }}
                                 <br>
-                                {{ myTeams?.some(t => t.ID === teamData?.ID) ? $t('open.teams.registration.toPlay') : '' }}
+                                {{ myTeams?.some(t => t.ID === teamData?.ID) ? $t('open.teams.registration.toPlay', {minTeamSize: tournament?.minTeamSize, maxTeamSize: tournament?.maxTeamSize}) : '' }}
                             </div>
                         </div>
                         <div>
@@ -128,7 +128,7 @@
                 </div>
                 <div class="team__section team__players_section">
                     <div class="team__players_header">
-                        <span class="team__players_header--title">PLAYERS</span>
+                        <span class="team__players_header--title">{{ $t('open.teams.members').toString().toUpperCase() }}</span>
                         <ContentButton
                             v-if="isCaptain && teamData.qualifier && !teamData.qualifier.mp"
                             class="content_button--red content_button--noflex"
@@ -147,7 +147,7 @@
                             v-else-if="isCaptain && tournament && !teamData.qualifier?.mp"
                             class="content_button--red content_button--noflex content_button--disabled"
                         >
-                            JOIN QUALIFIERS {{ teamData.members.length < tournament.minTeamSize ? "(You need at least " + (tournament.minTeamSize - teamData.members.length) + " more players)" : teamData.members.length > tournament.maxTeamSize ? "(You need at least " + (teamData.members.length - tournament.maxTeamSize) + " less players)" : "" }}
+                            {{ $t('open.teams.joinQualRegister') }} {{ teamData.members.length < tournament.minTeamSize ? $t('open.teams.needMorePlayers', { count: tournament.minTeamSize - teamData.members.length }) : teamData.members.length > tournament.maxTeamSize ? $t('open.teams.needLessPlayers', { count: teamData.members.length - tournament.maxTeamSize }) : '' }}
                         </ContentButton>
                     </div>
                     <div class="team__players">

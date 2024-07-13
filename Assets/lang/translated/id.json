@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "Tidak terdaftar di turnamen mana pun",
-                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan 6-8 anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
+                "toPlay": "Untuk mengikuti Corsace Open, kumpulkan {minTeamSize}-{maxTeamSize} anggota tim dan pilih tanggal dan waktu kualikasi di bawah ini"
             },
             "teamID": "ID TIM",
             "member": "anggota",

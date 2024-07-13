@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "トーナメントに登録していません",
-                "toPlay": "Corsace Openに参加するには、6-8人のメンバーを集めて、予選日時を選択してください"
+                "toPlay": "Corsace Openに参加するには、{minTeamSize}-{maxTeamSize}人のメンバーを集めて、予選日時を選択してください"
             },
             "teamID": "チームID",
             "member": "メンバー",

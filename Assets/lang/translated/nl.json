@@ -663,7 +663,7 @@
             },
             "registration": {
                 "noRegistration": "Registered in no tournaments",
-                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+                "toPlay": "To play in Corsace Open, get {minTeamSize}-{maxTeamSize} members, and choose a qualifier date and time below"
             },
             "teamID": "TEAM ID",
             "member": "member",

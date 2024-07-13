@@ -68,7 +68,7 @@
                         <template #title>
                             {{ $t('open.home.button.register') }}
                         </template>
-                        {{ $t('open.home.button.registrationsEnd').toString().replace("{time}", new Date(tournament?.registrations.end || "").toLocaleString('en-US', options)) }}
+                        {{ $t('open.home.button.registrationsEnd', { time: new Date(tournament?.registrations.end || "").toLocaleString('en-US', options) }) }}
                     </OpenFrontPageButton>
                     <div class="index_portal__text-content">
                         {{ $t('open.home.presentedBy') }}
