@@ -117,7 +117,7 @@ To go through each variable:
 
 There are special cases where endpoints may not follow the general structure. Such cases could be redirects, or for more specific server-side use cases such as for the passport login system, or github webhook responses. In such cases, the general structure may not apply, and you may deviate as necessary to fit the specific use case.
 
-In cases where the endpoints are meant to be used by Corsace services only, you should add the following before creating any endpoints so that the endpoints are protected by internal basic authentication:
+Dalam kasus di mana endpoint ini hanya akan digunakan oleh layanan Corsace, kamu disarankan untuk menambahkan kode berikut sebelum membuat endpoint sehingga endpoint yang ada akan terlindung oleh autentikasi internal dasar:
 
 ```ts
 ...
