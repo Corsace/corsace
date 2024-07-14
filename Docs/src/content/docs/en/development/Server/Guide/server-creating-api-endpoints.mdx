@@ -141,5 +141,3 @@ ormConfig.initialize()
 Make sure that the line containing `ormConfig.initialize()` is placed after all the routers have been mounted, as the initialization of the ORM is dependent on the routers being mounted first.
 
 Afterwards, the endpoint(s) created should be accessible through the base api url appended with the endpoint path whenever you run the `api` service. For example, if the base api url is `http://localhost:3000/api`, and the endpoint path is `/team`, the endpoint should now be accessible at `http://localhost:3000/api/team`.
-import { any } from "async"
-
