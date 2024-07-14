@@ -1,7 +1,7 @@
 ---
 title: Server + CronRunner - Creating API Endpoints
 description: Creating a new API endpoint for the API Server 
-lastUpdated: 2024-07-12
+lastUpdated: 2024-07-13
 sidebar:
     order: 3110
 ---
@@ -111,6 +111,20 @@ To go through each variable:
 
 There are special cases where endpoints may not follow the general structure. Such cases could be redirects, or for more specific server-side use cases such as for the passport login system, or github webhook responses. In such cases, the general structure may not apply, and you may deviate as necessary to fit the specific use case.
 
+In cases where the endpoints are meant to be used by Corsace services only, you should add the following before creating any endpoints so that the endpoints are protected by internal basic authentication:
+```ts
+...
+import koaBasicAuth from "koa-basic-auth";
+...
+[ROUTERNAME]Router.$use(koaBasicAuth({
+    name: config.interOpAuth.username,
+    pass: config.interOpAuth.password,
+}));
+
+[ROUTERNAME]Router.$get<[RETURN TYPE]>("/[ENDPOINT]", (ctx) => { ... });
+...
+```
+
 ## Installing Server Endpoint
 
 In `Server/index.ts`, you would import the router you have created and append it to the server's middleware like so:
@@ -127,3 +141,5 @@ ormConfig.initialize()
 Make sure that the line containing `ormConfig.initialize()` is placed after all the routers have been mounted, as the initialization of the ORM is dependent on the routers being mounted first.
 
 Afterwards, the endpoint(s) created should be accessible through the base api url appended with the endpoint path whenever you run the `api` service. For example, if the base api url is `http://localhost:3000/api`, and the endpoint path is `/team`, the endpoint should now be accessible at `http://localhost:3000/api/team`.
+import { any } from "async"
+
