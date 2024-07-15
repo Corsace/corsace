@@ -255,6 +255,7 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
     const tournament = await Tournament
         .createQueryBuilder("tournament")
         .leftJoinAndSelect("tournament.teams", "team")
+        .innerJoinAndSelect("tournament.mode", "mode")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getOne();
 
