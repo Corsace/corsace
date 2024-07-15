@@ -588,11 +588,11 @@
             "seedingText": "<li><strong>16 teams </strong>qualify and are split into <strong>two tiers</strong><li><strong>Tier 1 </strong>(Seeds 1 - 4)<ul class=info_desc__list><li>Advances and is placed into the Upper Bracket in Week 2<li>Does not play in Week 1</ul><li><strong>Tier 2</strong> (Seeds 5 - 16)<ul class=info_desc__list><li>Moves on to Week 1, it is a group stage consisting of 4 groups of 3 teams</ul>",
             "tournamentStructureText": {
                 "initialText": "The tournament consists of <strong>4 stages of play: </strong> Week 1, Week 2, Week 3, Week 4",
-                "w1Header": "WEEK 1 (AUG 10 - 11)",
+                "w1Header": "НЕДЕЛЯ 1 (10 - 11 Авг.)",
                 "w1": "<li><strong>Groups </strong>(12 teams, 12 matches)<ul class=info_desc__list><li>Group A (Seeds 5, 12, 13)<li>Group B (Seeds 6, 11, 14)<li>Group C (Seeds 7, 10, 15)<li>Group D (Seeds 8, 9, 16)</ul><li><strong>Placements:</strong><ul class=info_desc__list><li>Group placement and W2 seeding is in the following precedence:<ul class=info_desc__list><li>Match W/L Ratio<li>Points Won<li>Difference in Points (Points Won - Points Lost)</ul><li><strong>1st:</strong> Moves into the Middle Bracket of Week 2<li><strong>2nd:</strong> Moves into the Lower Bracket of Week 3<li><strong>3rd:</strong> <red>ELIMINATED</red></ul><li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong> and <strong>1 protect</strong><li>Mappool size (17 maps): <strong>5 NM</strong><strong> / </strong><strong>3 HD</strong><strong> / </strong><strong>3 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong>",
-                "w2Header": "WEEK 2 (AUG 17 - 18)",
+                "w2Header": "НЕДЕЛЯ 2 (17 - 18 Авг.)",
                 "w2": "<li>Triple bracket (Upper, Middle, Lower)<li>Upper bracket: Seeds 1 - 4<li>Middle bracket: 1st out of Groups<li>Lower bracket: 2nd out of Groups<li><strong>Round 1 </strong>(12 teams, 6 matches)<ul class=info_desc__list><li>LB Losers are <red>ELIMINATED</red></ul><li><strong>Round 2 </strong>(8 teams, 4 matches)<ul class=info_desc__list><li>UB losers go against MB winners<li>MB losers go against LB winners<li>LB losers are <red>ELIMINATED</red></ul><li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong> and <strong>1 protect</strong><li>Mappool size (17 maps): <strong>5 NM</strong><strong> / </strong><strong>3 HD</strong><strong> / </strong><strong>3 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong>",
-                "w3Header": "WEEK 3 (AUG 24 - 25)",
+                "w3Header": "НЕДЕЛЯ 3 (24 - 25 авг.)",
                 "w3": "<li>Double bracket<li><strong>Round 1 </strong>(8 teams, 4 matches)<ul class=info_desc__list><li>LB Losers are <red>ELIMINATED</red></ul><li><strong>Round 2 </strong>(6 teams, 3 matches)<ul class=info_desc__list><li>UB winners go against each other<li>UB losers go against LB winners<li>LB losers are <red>ELIMINATED</red></ul><li>Matches are <strong>Best of 13</strong> with <strong>2 bans</strong> and <strong>1 protect</strong><li>Mappool size (20 maps): <strong>5 NM</strong><strong> / </strong><strong>4 HD</strong><strong> / </strong><strong>4 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong>",
                 "w4Header": "WEEK 4 (AUG 31 - SEP 1)",
                 "w4": "<li>Single bracket<li>Matches are <strong>Best of 13</strong> with <strong>2 bans</strong> and <strong>1 protect</strong><li>Mappool size (20 maps): <strong>5 NM</strong><strong> / </strong><strong>4 HD</strong><strong> / </strong><strong>4 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong>"
@@ -644,7 +644,7 @@
         },
         "teams": {
             "registeredTeams": "REGISTERED TEAMS",
-            "allTeams": "ALL TEAMS",
+            "allTeams": "ВСЕ КОМАНДЫ",
             "teamList": "СПИСОК КОМАНД",
             "teamManagement": "УПРАВЛЕНИЕ КОМАНДОЙ",
             "error": "НЕ УДАЛОСЬ НАЙТИ СПИСОК КОМАНД",
@@ -668,14 +668,14 @@
                 "accept": "ПРИНЯТЬ",
                 "decline": "ОТКЛОНИТЬ",
                 "error": "COULD NOT GET INVITES",
-                "playerSearch": "PLAYER SEARCH",
+                "playerSearch": "ПОИСК ИГРОКОВ",
                 "currentInvites": "CURRENT INVITES",
                 "corsaceAccount": "Users must have a Corsace account.",
                 "loggingIn": "Users will see their invites after logging in on both osu! and discord."
             },
             "edit": {
                 "teamName": "НАЗВАНИЕ КОМАНДЫ",
-                "teamInfo": "TEAM INFORMATION",
+                "teamInfo": "ИНФОРМАЦИЯ О КОМАНДЕ",
                 "teamAbbreviation": "АББРЕВИАТУРА КОМАНДЫ",
                 "timezone": "ЧАСОВОЙ ПОЯС",
                 "teamAvatar": "АВАТАРКА КОМАНДЫ",
