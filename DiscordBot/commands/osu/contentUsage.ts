@@ -51,7 +51,7 @@ const data = new SlashCommandBuilder()
 
 const contentUsage: Command = {
     data,
-    alternativeNames: ["contentusage", "content-usage", "usage_content", "usage-content", "usage-content", "cu", "osucontentusage", "osu-content-usage", "osu_artist_content_usage", "osu-artist-content-usage", "ocu", "oacu"],
+    alternativeNames: ["contentusage", "content-usage", "usage_content", "usage-content", "cu", "osucontentusage", "osu-content-usage", "osu_artist_content_usage", "osu-artist-content-usage", "ocu", "oacu"],
     category: "osu",
     run,
 };

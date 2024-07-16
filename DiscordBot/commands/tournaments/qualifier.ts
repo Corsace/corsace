@@ -367,7 +367,7 @@ interface parameters {
 
 const qualifier: Command = {
     data,
-    alternativeNames: ["tournamentqualifier", "tournament-qualifier", "schedule_qualifier", "schedule-qualifier", "schedulequalifier", "squalifier", "s_qualifier", "s-qualifier", "schedulequal", "schedule_qual", "schedule-qual", "qualifierschedule", "qualifier_schedule", "qualifier-schedule", "scheduleq", "schedule_q", "schedule-q", "sq", "tqualifier", "t_qualifier", "t-qualifier", "tournamentqual", "tournament_qual", "tournament-qual", "qualifiertournament", "qualifier_tournament", "qualifier-tournament", "tournamentq", "tournament_q", "tournament-q", "tq"],
+    alternativeNames: ["tournamentqualifier", "tournament-qualifier", "schedule_qualifier", "schedule-qualifier", "schedulequalifier", "squalifier", "s_qualifier", "s-qualifier", "schedulequal", "schedule_qual", "schedule-qual", "qualifierschedule", "qualifier_schedule", "qualifier-schedule", "scheduleq", "schedule_q", "schedule-q", "sq", "tqualifier", "t_qualifier", "t-qualifier", "tournamentqual", "tournament_qual", "tournament-qual", "qualifiertournament", "qualifier_tournament", "qualifier-tournament", "tournamentq", "tournament_q", "tournament-q", "tq", "qualifier_team", "teams_qualifier", "team_qualifier", "qualifier-teams", "qualifier-team", "teams-qualifier", "team-qualifier", "teamsqualifier", "teamqualifier", "qualifierteams", "qualifierteam", "qualifiert", "teams", "teamss", "steam", "steams"],
     category: "tournaments",
     run,
 };
