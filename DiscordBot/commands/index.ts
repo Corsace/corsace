@@ -6,6 +6,7 @@ import tournamentEdit from "./tournaments/edit";
 import tournamentInfo from "./tournaments/info";
 import tournamentKey from "./tournaments/key";
 import tournamentList from "./tournaments/list";
+import tournamentQualifier from "./tournaments/qualifier";
 import tournamentRole from "./tournaments/role";
 import tournamentScreening from "./tournaments/screening";
 import tournamentTeams from "./tournaments/teams";
@@ -42,7 +43,6 @@ import stageScores from "./tournaments/stage/scores";
 import teamAvatar from "./tournaments/team/avatar";
 import teamInvite from "./tournaments/team/invite";
 import teamList from "./tournaments/team/list";
-import teamQualifier from "./tournaments/team/qualifier";
 
 import inviteAccept from "./tournaments/team/invite/accept";
 import inviteDecline from "./tournaments/team/invite/decline";
@@ -91,6 +91,7 @@ commands.push(tournamentEdit);
 commands.push(tournamentInfo);
 commands.push(tournamentKey);
 commands.push(tournamentList);
+commands.push(tournamentQualifier);
 commands.push(tournamentRole);
 commands.push(tournamentScreening);
 commands.push(tournamentTeams);
@@ -131,7 +132,6 @@ commands.push(stageScores);
 commands.push(teamAvatar);
 commands.push(teamInvite);
 commands.push(teamList);
-commands.push(teamQualifier);
 
 // invite commands
 commands.push(inviteAccept);

@@ -1,30 +1,30 @@
 import { ChatInputCommandInteraction, GuildMember, Message, SlashCommandBuilder } from "discord.js";
-import { Command } from "../..";
-import { Team } from "../../../../Models/tournaments/team";
-import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
-import { User } from "../../../../Models/user";
-import getFromList from "../../../functions/getFromList";
-import getTeams from "../../../../Server/functions/get/getTeams";
-import getTournament from "../../../functions/tournamentFunctions/getTournament";
-import getUser from "../../../../Server/functions/get/getUser";
-import channelID from "../../../functions/channelID";
-import commandUser from "../../../functions/commandUser";
-import { loginResponse } from "../../../functions/loginResponse";
-import { extractDate, extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
-import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
-import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
-import { extractParameters } from "../../../functions/parameterFunctions";
-import respond from "../../../functions/respond";
-import confirmCommand from "../../../functions/confirmCommand";
-import { Tournament } from "../../../../Models/tournaments/tournament";
-import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
-import { StageType } from "../../../../Interfaces/stage";
-import { cron } from "../../../../Server/cron";
-import { CronJobType } from "../../../../Interfaces/cron";
-import { discordClient } from "../../../../Server/discord";
-import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
-import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
-import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
+import { Command } from "..";
+import { Team } from "../../../Models/tournaments/team";
+import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
+import { User } from "../../../Models/user";
+import getFromList from "../../functions/getFromList";
+import getTeams from "../../../Server/functions/get/getTeams";
+import getTournament from "../../functions/tournamentFunctions/getTournament";
+import getUser from "../../../Server/functions/get/getUser";
+import channelID from "../../functions/channelID";
+import commandUser from "../../functions/commandUser";
+import { loginResponse } from "../../functions/loginResponse";
+import { extractDate, extractTargetText } from "../../functions/tournamentFunctions/paramaterExtractionFunctions";
+import { securityChecks } from "../../functions/tournamentFunctions/securityChecks";
+import { discordStringTimestamp } from "../../../Server/utils/dateParse";
+import { extractParameters } from "../../functions/parameterFunctions";
+import respond from "../../functions/respond";
+import confirmCommand from "../../functions/confirmCommand";
+import { Tournament } from "../../../Models/tournaments/tournament";
+import { Matchup, preInviteTime } from "../../../Models/tournaments/matchup";
+import { StageType } from "../../../Interfaces/stage";
+import { cron } from "../../../Server/cron";
+import { CronJobType } from "../../../Interfaces/cron";
+import { discordClient } from "../../../Server/discord";
+import { MatchupMessage } from "../../../Models/tournaments/matchupMessage";
+import { TournamentRoleType, unallowedToPlay } from "../../../Interfaces/tournament";
+import { MatchupSet } from "../../../Models/tournaments/matchupSet";
 
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {
@@ -343,8 +343,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 }
 
 const data = new SlashCommandBuilder()
-    .setName("qualifier_team")
-    .setDescription("Schedule your team (or a team if you are an organizer) to play qualifiers")
+    .setName("tournament_qualifier")
+    .setDescription("Schedule yourself/your team (or a user/team if you are an organizer) to play qualifiers")
     .addStringOption(option =>
         option.setName("date")
             .setDescription("The UTC date and/or time (E.g. YYYY-MM-DD HH:MM UTC) / UNIX epoch to play qualifiers in")
@@ -365,12 +365,11 @@ interface parameters {
     tournament?: string,
 }
 
-const teamQualifier: Command = {
+const qualifier: Command = {
     data,
-    alternativeNames: ["teams_qualifier", "team_qualifier", "qualifier-teams", "qualifier-team", "teams-qualifier", "team-qualifier", "teamsqualifier", "teamqualifier", "qualifierteams", "qualifierteam", "qualifiert", "tqualifier", "teams", "teamss", "steam", "steams"],
+    alternativeNames: ["tournamentqualifier", "tournament-qualifier", "schedule_qualifier", "schedule-qualifier", "schedulequalifier", "squalifier", "s_qualifier", "s-qualifier", "schedulequal", "schedule_qual", "schedule-qual", "qualifierschedule", "qualifier_schedule", "qualifier-schedule", "scheduleq", "schedule_q", "schedule-q", "sq", "tqualifier", "t_qualifier", "t-qualifier", "tournamentqual", "tournament_qual", "tournament-qual", "qualifiertournament", "qualifier_tournament", "qualifier-tournament", "tournamentq", "tournament_q", "tournament-q", "tq"],
     category: "tournaments",
-    subCategory: "teams",
     run,
 };
 
-export default teamQualifier;
+export default qualifier;
