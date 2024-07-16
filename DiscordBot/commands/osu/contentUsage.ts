@@ -6,6 +6,7 @@ import { getContentUsageData } from "../../../Server/osu/osuWikiCache";
 import { distance } from "fastest-levenshtein";
 import { EmbedBuilder } from "../../functions/embedBuilder";
 
+const text = "<https://osu.ppy.sh/wiki/Rules/Content_usage_permissions> Contains information for baseline artist content usage permissions";
 const colours: Record<"allowed" | "disallowed" | "unknown" | "allowed with exceptions", number> = {
     "allowed": 0x00ff00,
     "disallowed": 0xff0000,
@@ -16,7 +17,7 @@ const colours: Record<"allowed" | "disallowed" | "unknown" | "allowed with excep
 async function run (m: Message | ChatInputCommandInteraction) {
     const artistParam = extractParameter(m, { name: "artist", paramType: "string" }, 1);
     if (!artistParam || typeof artistParam !== "string") {
-        await respond(m, "Please provide an artist to search for.");
+        await respond(m, `Please provide an artist to search for.\n${text}`);
         return;
     }
 
@@ -28,7 +29,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .setTitle(artistParam)
             .setDescription("Artist not found.")
             .setColor(colours.unknown);
-        await respond(m, "", embed);
+        await respond(m, text, embed);
         return;
     }
 
@@ -36,7 +37,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setTitle(artist.name)
         .setDescription(`${artist.link ? `[osu! Link](${artist.link})\n` : ""}**Status:** ${artist.status}${artist.notes ? `\n**Notes:** ${artist.notes}` : ""}`)
         .setColor(colours[artist.status]);
-    await respond(m, "", embed);
+    await respond(m, text, embed);
 }
 
 const data = new SlashCommandBuilder()
