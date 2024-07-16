@@ -40,7 +40,7 @@ export async function getContentUsageData () {
     const wikiPage = wikiData.find(w => w.path === path);
     if (wikiPage && new Date().getTime() - wikiPage.lastRetrieved.getTime() < refreshTime)
         return contentUsageData;
-    
+
     const { markdown } = await getWikiPage(path);
 
     const lines = markdown.split("\n");
@@ -58,6 +58,27 @@ export async function getContentUsageData () {
         if (match[5] && lines.find(l => l.startsWith(`[^${match[5]}]:`)))
             notes += lines.find(l => l.startsWith(`[^${match[5]}]:`))!.replace(`[^${match[5]}]: `, "");
         contentUsageData.push({ name, link, status, notes });
+    }
+
+    // Safety checks, since this is kinda scraping, may break at any time.
+    const unknownStatus = contentUsageData.filter(c => c.status === "unknown");
+    if (unknownStatus.length > 0) {
+        throw new Error(`Detected ${unknownStatus.length} unknown content usage statuses.`);
+    }
+
+    const allowedStatus = contentUsageData.filter(c => c.status === "allowed");
+    if (allowedStatus.length < 300) {
+        throw new Error(`Detected ${allowedStatus.length} allowed content usage statuses.`);
+    }
+
+    const allowedWithExceptionsStatus = contentUsageData.filter(c => c.status === "allowed with exceptions");
+    if (allowedWithExceptionsStatus.length > 20) {
+        throw new Error(`Detected ${allowedWithExceptionsStatus.length} allowed with exceptions content usage statuses.`);
+    }
+
+    const disallowedStatus = contentUsageData.filter(c => c.status === "disallowed");
+    if (disallowedStatus.length > 20) {
+        throw new Error(`Detected ${disallowedStatus.length} disallowed content usage statuses.`);
     }
 
     return contentUsageData;
