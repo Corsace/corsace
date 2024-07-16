@@ -644,6 +644,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMap.map = beatmap;
         matchupMap.order = mapsPlayed.length;
         await matchupMap.save();
+        matchup.sets![matchup.sets!.length - 1].maps!.push(matchupMap);
 
         matchupMap.scores = await Promise.all(scores.map(async (score) => {
             const user = users.find(u => u.osu.userID === score.userId.toString());
