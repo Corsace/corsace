@@ -59,6 +59,7 @@ import help from "./utility/help";
 import ping from "./utility/ping";
 
 import beatmap from "./osu/beatmap";
+import contentUsage from "./osu/contentUsage";
 import influence from "./osu/influence";
 import influenceAdd from "./osu/influenceAdd";
 import influenceRemove from "./osu/influenceRemove";
@@ -151,6 +152,7 @@ commands.push(ping);
 
 // osu! commands
 commands.push(beatmap);
+commands.push(contentUsage);
 commands.push(influence);
 commands.push(influenceAdd);
 commands.push(influenceRemove);
