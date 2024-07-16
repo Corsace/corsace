@@ -10,6 +10,16 @@ export default async function respond (m: Message | ChatInputCommandInteraction,
         embeds = [pages[currPage]];
     }
 
+    if (content && content.length > 4000) {
+        if (!files)
+            files = [];
+        files.push({
+            name: "content.txt",
+            attachment: Buffer.from(content),
+        });
+        content = undefined;
+    }
+
     let message: Message;
     if (m instanceof Message)
         message = await m.reply({ content, embeds, components, files });
