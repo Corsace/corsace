@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { RateLimiter } from "limiter";
-import { osuV2Token, osuAPIV2Options, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend, osuV2Me } from "../../Interfaces/osuAPIV2";
+import { osuV2Token, osuAPIV2Options, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend, osuV2Me, osuV2WikiPage } from "../../Interfaces/osuAPIV2";
 import { User } from "../../Models/user";
 
 // For any properties missing in the typings, go to Interfaces/osuAPIV2.ts and add only the properties you need there.
@@ -58,6 +58,10 @@ export class osuAPIV2 {
 
     public getUserFriends (accessToken: string): Promise<osuV2Friend[]> {
         return this.get<osuV2Friend[]>("/friends", accessToken);
+    }
+
+    public async getWikiPage (path: string, locale?: string, accessToken?: string): Promise<osuV2WikiPage> {
+        return this.get<osuV2WikiPage>(`/wiki/${locale ?? "en"}/${path}`, accessToken ?? await this.getClientCredentials());
     }
 
     public async sendMessage (userID: string, message: string): Promise<boolean> {

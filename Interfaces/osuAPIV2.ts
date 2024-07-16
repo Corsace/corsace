@@ -85,5 +85,15 @@ export interface osuV2PlayedBeatmaps {
     beatmapsets: osuV2Beatmapset[];
     cursor_string: string;
     total: number;
+}
 
+export interface osuV2WikiPage {
+    available_locals: string[];
+    layout: string;
+    locale: string;
+    markdown: string;
+    path: string;
+    subtitle?: string;
+    tags: string[];
+    title: string;
 }
