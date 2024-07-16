@@ -41,7 +41,7 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
                         if (!beatmaps[0].beatmap)
                             return reject(new Error("Beatmap doesn't exist CONTACT CORSACE IMMEDIATELY"));
 
-                        await mpChannel.sendMessage("OK U GUYS ARE TAKING TOO LON g im picking a random map for all of u to play now GL");
+                        await mpChannel.sendMessage("OK U GUYS ARE TAKING TOO LON g im picking the next map for all of u to play now GL");
                         const slotMod = pool.slots.find(slot => slot.maps.some(map => map.beatmap?.ID === beatmaps[0].beatmap?.ID))!;
                         mpChannel.removeListener("message", messageHandler);
                         return resolve([beatmaps[0].beatmap, slotMod.allowedMods, typeof slotMod.allowedMods !== "number" || typeof slotMod.uniqueModCount === "number" || typeof slotMod.userModCount === "number"]);
