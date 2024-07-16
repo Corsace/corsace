@@ -102,7 +102,7 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
 
             // TODO: Not sure how to handle this currently... uh
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            mpChannel.sendMessage("time to pick the next map");
+            mpChannel.sendMessage("time to pick the next map (type for example NM1 to play NM1)");
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             mpLobby.startTimer(matchup.stage!.tournament.mapTimer ?? 90);
             mpChannel.on("message", messageHandler);
