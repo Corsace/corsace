@@ -3,6 +3,9 @@ import { createHmac, timingSafeEqual } from "crypto";
 import { config } from "node-config-ts";
 import axios from "axios";
 
+// List of allowed events as per https://discord.com/developers/docs/resources/webhook#execute-githubcompatible-webhook
+const ALLOWED_EVENTS = ["commit_comment", "create", "delete", "fork", "issue_comment", "issues", "member", "public", "pull_request", "pull_request_review", "pull_request_review_comment", "push", "release", "watch", "check_run", "check_suite", "discussion", "discussion_comment"];
+
 const githubRouter  = new CorsaceRouter();
 
 // any is used here to send the discord github webhook data back to github as a response
@@ -32,6 +35,12 @@ githubRouter.$post<any>("/", async (ctx) => {
         body.workflow_run?.pull_requests?.[0]?.head?.ref ||
         body.workflow_run?.check_suite?.head_branch;
     if (ref && config.github.ignoredBranches?.includes(ref)) {
+        ctx.status = 200;
+        return;
+    }
+
+    // Check if the event is allowed
+    if (!ALLOWED_EVENTS.includes(ctx.get("X-GitHub-Event").toLowerCase())) {
         ctx.status = 200;
         return;
     }
