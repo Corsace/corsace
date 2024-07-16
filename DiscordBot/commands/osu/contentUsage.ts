@@ -2,12 +2,12 @@ import { Message, ChatInputCommandInteraction, SlashCommandBuilder } from "disco
 import { Command } from "..";
 import { extractParameter } from "../../functions/parameterFunctions";
 import respond from "../../functions/respond";
-import { getContentUsageData } from "../../../Server/osu/osuWikiCache";
+import { getContentUsageData, contentUsageStatus } from "../../../Server/osu/osuWikiCache";
 import { distance } from "fastest-levenshtein";
 import { EmbedBuilder } from "../../functions/embedBuilder";
 
 const text = "<https://osu.ppy.sh/wiki/Rules/Content_usage_permissions> Contains information for baseline artist content usage permissions";
-const colours: Record<"allowed" | "disallowed" | "unknown" | "allowed with exceptions", number> = {
+const colours: Record<contentUsageStatus, number> = {
     "allowed": 0x00ff00,
     "disallowed": 0xff0000,
     "unknown": 0x000000,

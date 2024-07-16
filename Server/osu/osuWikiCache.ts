@@ -1,6 +1,8 @@
 import { osuV2WikiPage } from "../../Interfaces/osuAPIV2";
 import { osuV2Client } from "./index";
 
+export type contentUsageStatus = "allowed" | "disallowed" | "unknown" | "allowed with exceptions";
+
 const refreshTime = 1000 * 60 * 60; // 1 hour
 
 const wikiData: {
@@ -12,11 +14,11 @@ const wikiData: {
 let contentUsageData: {
     name: string;
     link?: string;
-    status: "allowed" | "disallowed" | "unknown" | "allowed with exceptions";
+    status: contentUsageStatus;
     notes?: string;
 }[] = [];
 
-const wikiStatusToContentUsageStatus: Record<string, "allowed" | "disallowed" | "unknown" | "allowed with exceptions"> = {
+const wikiStatusToContentUsageStatus: Record<string, contentUsageStatus> = {
     "true": "allowed",
     "false": "disallowed",
     "partial": "allowed with exceptions",
