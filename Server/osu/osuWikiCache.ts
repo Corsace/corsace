@@ -1,6 +1,8 @@
 import { osuV2WikiPage } from "../../Interfaces/osuAPIV2";
 import { osuV2Client } from "./index";
 
+const refreshTime = 1000 * 60 * 60; // 1 hour
+
 const wikiData: {
     lastRetrieved: Date;
     data: osuV2WikiPage;
@@ -22,7 +24,7 @@ const wikiStatusToContentUsageStatus: Record<string, "allowed" | "disallowed" | 
 
 export async function getWikiPage (path: string, locale?: string) {
     let wikiPage = wikiData.find(w => w.path === path);
-    if (!wikiPage?.data || !wikiPage.lastRetrieved || new Date().getTime() - wikiPage.lastRetrieved.getTime() > 1000 * 60 * 60 * 24) {
+    if (!wikiPage?.data || !wikiPage.lastRetrieved || new Date().getTime() - wikiPage.lastRetrieved.getTime() >= refreshTime) {
         wikiPage = {
             lastRetrieved: new Date(),
             data: await osuV2Client.getWikiPage(path, locale),
@@ -36,7 +38,7 @@ export async function getContentUsageData () {
     const path = "Rules/Content_usage_permissions";
 
     const wikiPage = wikiData.find(w => w.path === path);
-    if (wikiPage && wikiPage.lastRetrieved.getTime() - new Date().getTime() < 1000 * 60 * 60 * 24)
+    if (wikiPage && new Date().getTime() - wikiPage.lastRetrieved.getTime() < refreshTime)
         return contentUsageData;
     
     const { markdown } = await getWikiPage(path);
