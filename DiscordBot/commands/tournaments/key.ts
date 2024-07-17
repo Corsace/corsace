@@ -9,6 +9,7 @@ import { securityChecks } from "../../functions/tournamentFunctions/securityChec
 import { TournamentChannelType, TournamentRoleType } from "../../../Interfaces/tournament";
 import { QueryFailedError } from "typeorm";
 import { Tournament } from "../../../Models/tournaments/tournament";
+import { extractTargetText } from "../../functions/tournamentFunctions/paramaterExtractionFunctions";
 
 async function regenerateKey (tournament: Tournament): Promise<string> {
     const newKey = pseudoRandomBytes(36).toString("hex").toUpperCase();
@@ -36,7 +37,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!await securityChecks(m, true, true, [TournamentChannelType.Admin], [TournamentRoleType.Organizer]))
         return;
 
-    const tournamentParam = extractParameter(m, { name: "tournament", paramType: "string" }, 1);
+    const tournamentParam = extractParameter(m, { name: "tournament", paramType: "string", customHandler: extractTargetText }, 1);
 
     const tournament = await getTournament(m, typeof tournamentParam === "string" ? tournamentParam : channelID(m), typeof tournamentParam === "string" ? "name" : "channel", undefined, true, true);
     if (!tournament)

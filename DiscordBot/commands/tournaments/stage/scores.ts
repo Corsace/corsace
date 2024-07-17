@@ -8,6 +8,7 @@ import { loginResponse } from "../../../functions/loginResponse";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import getStage from "../../../functions/tournamentFunctions/getStage";
 import { extractParameter } from "../../../functions/parameterFunctions";
+import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -26,7 +27,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!tournament)
         return;
 
-    const stageParam = extractParameter(m, { name: "stage", paramType: "string" }, 1);
+    const stageParam = extractParameter(m, { name: "stage", paramType: "string", customHandler: extractTargetText }, 1);
 
     const stage = await getStage(m, tournament, false, typeof stageParam === "string" ? stageParam : tournament.ID, typeof stageParam === "string" ? "name" : "tournamentID");
     if (!stage)

@@ -5,6 +5,7 @@ import respond from "../../functions/respond";
 import { getContentUsageData, contentUsageStatus } from "../../../Server/osu/osuWikiCache";
 import { distance } from "fastest-levenshtein";
 import { EmbedBuilder } from "../../functions/embedBuilder";
+import { extractTargetText } from "../../functions/tournamentFunctions/paramaterExtractionFunctions";
 
 const text = "<https://osu.ppy.sh/wiki/Rules/Content_usage_permissions> Contains information for baseline artist content usage permissions";
 const colours: Record<contentUsageStatus, number> = {
@@ -15,7 +16,7 @@ const colours: Record<contentUsageStatus, number> = {
 };
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    const artistParam = extractParameter(m, { name: "artist", paramType: "string" }, 1);
+    const artistParam = extractParameter(m, { name: "artist", paramType: "string", customHandler: extractTargetText }, 1);
     if (!artistParam || typeof artistParam !== "string") {
         await respond(m, `Please provide an artist to search for.\n${text}`);
         return;

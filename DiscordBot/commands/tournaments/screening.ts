@@ -5,12 +5,13 @@ import { extractParameter } from "../../functions/parameterFunctions";
 import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
 import respond from "../../functions/respond";
+import { extractTargetText } from "../../functions/tournamentFunctions/paramaterExtractionFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const tournamentParam = extractParameter(m, { name: "tournament", paramType: "string" }, 1);
+    const tournamentParam = extractParameter(m, { name: "tournament", paramType: "string", customHandler: extractTargetText }, 1);
 
     const tournament = await getTournament(m, typeof tournamentParam === "string" ? tournamentParam : channelID(m), typeof tournamentParam === "string" ? "name" : "channel", undefined, true, true);
     if (!tournament)

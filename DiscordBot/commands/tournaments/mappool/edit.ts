@@ -18,6 +18,7 @@ import { discordClient } from "../../../../Server/discord";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { EmbedBuilder } from "../../../functions/embedBuilder";
+import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -32,7 +33,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const pool = extractParameter(m, { name: "pool", paramType: "string" }, 1);
+    const pool = extractParameter(m, { name: "pool", paramType: "string", customHandler: extractTargetText }, 1);
     if (!pool || !(typeof pool === "string")) {
         await respond(m, "Provide a mappool");
         return;

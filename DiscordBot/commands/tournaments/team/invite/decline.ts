@@ -7,6 +7,7 @@ import commandUser from "../../../../functions/commandUser";
 import getTeamInvites from "../../../../../Server/functions/get/getTeamInvites";
 import getUser from "../../../../../Server/functions/get/getUser";
 import { loginResponse } from "../../../../functions/loginResponse";
+import { extractTargetText } from "../../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -18,7 +19,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const name = extractParameter(m, { name: "name", paramType: "string" }, 1);
+    const name = extractParameter(m, { name: "name", paramType: "string", customHandler: extractTargetText }, 1);
     if (!name || typeof name !== "string") {
         await respond(m, "Provide an actual team name");
         return;
