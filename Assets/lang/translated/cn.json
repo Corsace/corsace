@@ -530,7 +530,7 @@
                 "qualifiersMappool": "资格赛图池",
                 "mappoolDownload": "图池下载和数据",
                 "register": "TEAM REGISTRATION",
-                "registrationsEnd": "注册截止至"
+                "registrationsEnd": "注册截止至 {time}"
             }
         },
         "info": {

@@ -530,7 +530,7 @@
                 "qualifiersMappool": "QUALIFIERS MAPPOOL",
                 "mappoolDownload": "Mappool download and statistics",
                 "register": "TEAM REGISTRATION",
-                "registrationsEnd": " {time}"
+                "registrationsEnd": " Registrations end {time}"
             }
         },
         "info": {

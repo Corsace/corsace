@@ -530,7 +530,7 @@
                 "qualifiersMappool": "予選マッププール",
                 "mappoolDownload": "マッププールのダウンロードと詳細",
                 "register": "チーム登録",
-                "registrationsEnd": "登録期間終了"
+                "registrationsEnd": "登録期間終了 {time}"
             }
         },
         "info": {

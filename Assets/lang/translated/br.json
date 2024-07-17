@@ -530,7 +530,7 @@
                 "qualifiersMappool": "MAPPOOL DAS QUALIFICATÓRIAS",
                 "mappoolDownload": "Baixar mappool e estatísticas",
                 "register": "TEAM REGISTRATION",
-                "registrationsEnd": "Fim das inscrições em"
+                "registrationsEnd": "Fim das inscrições em {time}"
             }
         },
         "info": {

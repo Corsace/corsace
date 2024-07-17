@@ -530,7 +530,7 @@
                 "qualifiersMappool": "МАППУЛ КВАЛИФИКАЦИИ",
                 "mappoolDownload": "Скачать маппул и статистика",
                 "register": "РЕГИСТРАЦИЯ КОМАНДЫ",
-                "registrationsEnd": "Регистрация заканчивается"
+                "registrationsEnd": "Регистрация заканчивается {time}"
             }
         },
         "info": {

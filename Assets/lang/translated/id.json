@@ -530,7 +530,7 @@
                 "qualifiersMappool": "MAPPOOL KUALIFIKASI",
                 "mappoolDownload": "Unduhan dan statistik mappool",
                 "register": "PENDAFTARAN TIM",
-                "registrationsEnd": "Pendaftaran berakhir pada"
+                "registrationsEnd": "Pendaftaran berakhir pada {time}"
             }
         },
         "info": {
