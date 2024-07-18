@@ -3,7 +3,7 @@
     "flag": "https://osu.ppy.sh/images/flags/NL.png",
     "header": {
         "welcomeBack": "welkom terug",
-        "login": "inloggen",
+        "login": "{site} inloggen",
         "register": "registreren",
         "menu": "menu",
         "changeDiscord": "discord veranderen",
@@ -530,7 +530,7 @@
                 "qualifiersMappool": "QUALIFIERS MAPPOOL",
                 "mappoolDownload": "Mappool download and statistics",
                 "register": "TEAM REGISTRATION",
-                "registrationsEnd": "Registrations end {time}"
+                "registrationsEnd": "Registrations end"
             }
         },
         "info": {
