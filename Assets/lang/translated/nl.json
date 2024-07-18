@@ -3,7 +3,7 @@
     "flag": "https://osu.ppy.sh/images/flags/NL.png",
     "header": {
         "welcomeBack": "welkom terug",
-        "login": "inloggen",
+        "login": "{site} inloggen",
         "register": "registreren",
         "menu": "menu",
         "changeDiscord": "discord veranderen",

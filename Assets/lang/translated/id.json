@@ -3,7 +3,7 @@
     "flag": "https://osu.ppy.sh/images/flags/ID.png",
     "header": {
         "welcomeBack": "selamat datang kembali",
-        "login": "masuk",
+        "login": "{site} masuk",
         "register": "daftar",
         "menu": "menu",
         "changeDiscord": "ubah discord",

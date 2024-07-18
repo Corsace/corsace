@@ -3,7 +3,7 @@
     "flag": "https://osu.ppy.sh/images/flags/RU.png",
     "header": {
         "welcomeBack": "добро пожаловать",
-        "login": "войти",
+        "login": "{site} войти",
         "register": "зарегистрироваться",
         "menu": "меню",
         "changeDiscord": "сменить дискорд",

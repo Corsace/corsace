@@ -3,7 +3,7 @@
     "flag": "https://osu.ppy.sh/images/flags/GR.png",
     "header": {
         "welcomeBack": "Γειά σου",
-        "login": "Σύνδεση",
+        "login": "{site} Σύνδεση",
         "register": "Εγγράψου",
         "menu": "menu",
         "changeDiscord": "Αλλαγή του discord",

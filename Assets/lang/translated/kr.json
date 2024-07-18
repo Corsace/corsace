@@ -3,7 +3,7 @@
     "flag": "https://osu.ppy.sh/images/flags/KR.png",
     "header": {
         "welcomeBack": "환영합니다",
-        "login": "로그인",
+        "login": "{site} 로그인",
         "register": "등록",
         "menu": "menu",
         "changeDiscord": "디스코드 계정 변경",

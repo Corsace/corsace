@@ -78,7 +78,7 @@
                             v-if="!loggedInUser.discord || !loggedInUser.discord.userID"
                             :href="`/api/login/discord?site=${site}&redirect=${$route.fullPath}`"
                         >
-                            <MenuItem>discord {{ $t('header.login') }}</MenuItem>
+                            <MenuItem>{{ $t('header.login', { site: "discord" }) }}</MenuItem>
                         </a>
                         <a 
                             v-else
@@ -105,7 +105,7 @@
                 :class="`header-login__link--${viewTheme} header-login__link--${site}`"
                 :href="`/api/login/osu?site=${site}&redirect=${$route.fullPath}`"
             >
-                osu! {{ site === "open" ? $t('header.login').toString().toUpperCase() : $t('header.login') }}
+                {{ site !== "open" ? $t('header.login', { site: "osu!" }) : $t('header.login', { site: "osu!" }).toString().split("osu!").map(p => p === "osu!" ? p : p.toUpperCase()).join('osu!') }}
             </a>
         </div>
     </div>
