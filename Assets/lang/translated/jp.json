@@ -3,7 +3,7 @@
     "flag": "https://osu.ppy.sh/images/flags/JP.png",
     "header": {
         "welcomeBack": "おかえりなさい",
-        "login": "ログイン",
+        "login": "{site} ログイン",
         "register": "新規登録",
         "menu": "メニュー",
         "changeDiscord": "Discordを変更",
