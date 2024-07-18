@@ -3,7 +3,7 @@
     "flag": "https://osu.ppy.sh/images/flags/ID.png",
     "header": {
         "welcomeBack": "selamat datang kembali",
-        "login": "masuk",
+        "login": "{site} masuk",
         "register": "daftar",
         "menu": "menu",
         "changeDiscord": "ubah discord",
@@ -648,7 +648,7 @@
             "teamList": "DAFTAR TIM",
             "teamManagement": "MANAJEMEN TIM",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
-            "loginManagement": "Silakan masuk untuk mengelola tim yang kamu miliki.",
+            "loginManagement": "Silakan masuk untuk mengelola tim milikmu.",
             "searchPlaceholder": "cari pengguna/tim",
             "showUnregistered": "Tampilkan tim yang tidak terdaftar",
             "noRegisteredTeams": "Belum ada tim yang terdaftar.",
