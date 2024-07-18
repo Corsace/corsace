@@ -3,7 +3,7 @@
     "flag": "https://osu.ppy.sh/images/flags/FR.png",
     "header": {
         "welcomeBack": "bon retour",
-        "login": "se connecter",
+        "login": "{site} se connecter",
         "register": "s'inscrire",
         "menu": "menu",
         "changeDiscord": "changer discord",
