@@ -15,25 +15,25 @@ export interface StaffState {
     requests: StaffGuestRequest[];
 }
 
-export const staffState = (): StaffState => ({
+export const state = (): StaffState => ({
     mca: null,
     categories: [],
     requests: [],
 });
 
 export const mutations: MutationTree<StaffState> = {
-    setMca (state, mca) {
-        state.mca = mca;
+    setMca (staffState, mca) {
+        staffState.mca = mca;
     },
-    setCategories (state, categories) {
-        state.categories = categories || [];
+    setCategories (staffState, categories) {
+        staffState.categories = categories || [];
     },
-    setRequests (state, requests) {
-        state.requests = requests || [];
+    setRequests (staffState, requests) {
+        staffState.requests = requests || [];
     },
-    updateRequest (state, payload: UpdateRequestData) {
-        const i = state.requests.findIndex(r => r.ID === payload.id);
-        if (i !== -1) state.requests[i].status = payload.status;
+    updateRequest (staffState, payload: UpdateRequestData) {
+        const i = staffState.requests.findIndex(r => r.ID === payload.id);
+        if (i !== -1) staffState.requests[i].status = payload.status;
     },
 };
 

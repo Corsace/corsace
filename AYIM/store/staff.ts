@@ -11,13 +11,13 @@ export interface StaffState {
     mca: MCAInfo | null;
 }
 
-export const staffState = (): StaffState => ({
+export const state = (): StaffState => ({
     mca: null,
 });
 
 export const mutations: MutationTree<StaffState> = {
-    setMca (state, mca) {
-        state.mca = mca;
+    setMca (staffState, mca) {
+        staffState.mca = mca;
     },
 };
 

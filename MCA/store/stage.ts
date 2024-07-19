@@ -29,7 +29,7 @@ interface StageState {
     showVoteChoiceBox: boolean;
 }
 
-export const stageState = (): StageState => ({
+export const state = (): StageState => ({
     selected: false,
     section: "",
     selectedCategory: null,
@@ -56,121 +56,121 @@ export const stageState = (): StageState => ({
 });
 
 export const mutations: MutationTree<StageState> = {
-    loading (state, bool) {
-        state.loading = bool;
+    loading (stageState, bool) {
+        stageState.loading = bool;
     },
-    selected (state, bool) {
-        state.selected = bool;
+    selected (stageState, bool) {
+        stageState.selected = bool;
     },
-    updateStage (state, stage: StageType) {
-        state.stage = stage;
+    updateStage (stageState, stage: StageType) {
+        stageState.stage = stage;
     },
-    updateCategories (state, categories) {
-        state.categories = categories || [];
+    updateCategories (stageState, categories) {
+        stageState.categories = categories || [];
     },
-    updateVotes (state, votes) {
-        state.votes = votes || [];
+    updateVotes (stageState, votes) {
+        stageState.votes = votes || [];
     },
-    addVote (state, vote) {
+    addVote (stageState, vote) {
         if (vote)
-            state.votes.push(vote);
+            stageState.votes.push(vote);
     },
-    addNomination (state, nomination) {
+    addNomination (stageState, nomination) {
         if (nomination)
-            state.nominations.push(nomination);
+            stageState.nominations.push(nomination);
     },
-    removeNomination (state, nominationId: number) {
-        const i = state.nominations.findIndex(n => n.ID === nominationId);
+    removeNomination (stageState, nominationId: number) {
+        const i = stageState.nominations.findIndex(n => n.ID === nominationId);
 
         if (i !== -1) {
-            state.nominations.splice(i, 1);
+            stageState.nominations.splice(i, 1);
         }
     },
-    updateNominations (state, nominations) {
-        state.nominations = nominations || [];
+    updateNominations (stageState, nominations) {
+        stageState.nominations = nominations || [];
     },
-    updateCount (state, count) {
-        state.count = count || 0;
+    updateCount (stageState, count) {
+        stageState.count = count || 0;
     },
-    updateBeatmaps (state, beatmaps) {
-        state.beatmaps = beatmaps || [];
+    updateBeatmaps (stageState, beatmaps) {
+        stageState.beatmaps = beatmaps || [];
     },
-    updateUsers (state, users) {
-        state.users = users || [];
+    updateUsers (stageState, users) {
+        stageState.users = users || [];
     },
-    updateBeatmapsetResults (state, beatmaps) {
-        state.beatmapsetResults = beatmaps || [];
+    updateBeatmapsetResults (stageState, beatmaps) {
+        stageState.beatmapsetResults = beatmaps || [];
     },
-    updateUserResults (state, users) {
-        state.userResults = users || [];
+    updateUserResults (stageState, users) {
+        stageState.userResults = users || [];
     },
-    updateSelectedCategory (state, category) {
-        state.selectedCategory = category;
+    updateSelectedCategory (stageState, category) {
+        stageState.selectedCategory = category;
     },
-    updateSection (state, section: SectionCategory) {
-        if (state.section !== section)
-            state.section = section;
+    updateSection (stageState, section: SectionCategory) {
+        if (stageState.section !== section)
+            stageState.section = section;
     },
-    updateQuery (state, query) {
-        state.query = {
-            ...state.query,
+    updateQuery (stageState, query) {
+        stageState.query = {
+            ...stageState.query,
             ...query,
         };
     },
-    updateFavourites (state, favourites: boolean) {
-        state.favourites = favourites;
+    updateFavourites (stageState, favourites: boolean) {
+        stageState.favourites = favourites;
     },
-    updatePlayed (state, played: boolean) {
-        state.played = played;
+    updatePlayed (stageState, played: boolean) {
+        stageState.played = played;
     },
-    reset (state, sectionReset: boolean) {
+    reset (stageState, sectionReset: boolean) {
         if (sectionReset) {
-            state.query = {
+            stageState.query = {
                 category: 0,
                 option: "",
                 order: "ASC",
                 text: "",
                 skip: 0,
             } as StageQuery;
-            state.favourites = false;
-            state.played = false;
+            stageState.favourites = false;
+            stageState.played = false;
         }
-        state.section = "beatmaps";
-        state.selectedCategory = null;
-        state.beatmaps = [];
-        state.users = [];
-        state.count = 0;
+        stageState.section = "beatmaps";
+        stageState.selectedCategory = null;
+        stageState.beatmaps = [];
+        stageState.users = [];
+        stageState.count = 0;
     },
-    toggleVoteChoiceBox (state) {
-        state.showVoteChoiceBox = !state.showVoteChoiceBox;
+    toggleVoteChoiceBox (stageState) {
+        stageState.showVoteChoiceBox = !stageState.showVoteChoiceBox;
     },
 };
 
 export const getters: GetterTree<StageState, RootState> = {
-    relatedCandidacies (state): Vote[] | Nomination[] {
-        if (!state.selectedCategory)
+    relatedCandidacies (stageState): Vote[] | Nomination[] {
+        if (!stageState.selectedCategory)
             return [];
 
-        const arr = state.stage === "nominating" ? state.nominations : state.votes;
+        const arr = stageState.stage === "nominating" ? stageState.nominations : stageState.votes;
 
         // Type doesnt here
-        return (arr as Vote[]).filter(v => v.category.ID === state.selectedCategory?.id);
+        return (arr as Vote[]).filter(v => v.category.ID === stageState.selectedCategory?.id);
     },
 
-    categoriesInfo (state): CategoryStageInfo[] {
-        if (state.stage === "voting")
-            return state.categories.map(c => {
+    categoriesInfo (stageState): CategoryStageInfo[] {
+        if (stageState.stage === "voting")
+            return stageState.categories.map(c => {
                 const info = {
                     ...c,
-                    count: state.votes.filter(v => v.category.ID === c.id).length,
+                    count: stageState.votes.filter(v => v.category.ID === c.id).length,
                 };
                 info.maxNominations = 100;
                 return info;
             });
 
-        return state.categories.map(c => ({
+        return stageState.categories.map(c => ({
             ...c,
-            count: state.nominations.filter(n => n.category.ID === c.id).length,
+            count: stageState.nominations.filter(n => n.category.ID === c.id).length,
         }));
     },
 };
@@ -179,14 +179,14 @@ export const actions: ActionTree<StageState, RootState> = {
     updateStage ({ commit }, stage: StageType) {
         commit("updateStage", stage);
     },
-    async setInitialData ({ state, commit, dispatch, rootState }) {
+    async setInitialData ({ state: stageState, commit, dispatch, rootState }) {
         const mcaState = (rootState as any)["mca-ayim"] as RootState;
         if (!mcaState.mca?.year) {
             await this.$router.push("/");
             return;
         }
 
-        const { data } = await this.$axios.get<MCAStageData | { error: string }>(`/api/${state.stage}/${mcaState.mca?.year}`);
+        const { data } = await this.$axios.get<MCAStageData | { error: string }>(`/api/${stageState.stage}/${mcaState.mca?.year}`);
 
         if ("error" in data) {
             console.error(data.error);
@@ -202,8 +202,8 @@ export const actions: ActionTree<StageState, RootState> = {
 
         if ("nominations" in data && data.nominations?.length && data.nominations.some(n => !n.isValid))
             alert("Some nominations were denied, contact a staff member if you already haven't!");
-        else if (state.stage === "results")
-            await dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && (category.mode === mcaState.selectedMode || category.mode === "storyboard"))[0]);
+        else if (stageState.stage === "results")
+            await dispatch("updateSelectedCategory", stageState.categories.filter(category => category.type === "Beatmapsets" && (category.mode === mcaState.selectedMode || category.mode === "storyboard"))[0]);
     },
     async updateSelectedCategory ({ commit, dispatch }, category) {
         commit("updateSelectedCategory", category);
@@ -224,8 +224,8 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("updatePlayed", played);
         await dispatch("search");
     },
-    async search ({ state, commit, rootState }, skipping = false) {
-        if (!state.selectedCategory)
+    async search ({ state: stageState, commit, rootState }, skipping = false) {
+        if (!stageState.selectedCategory)
             return;
 
         let skip = 0;
@@ -233,14 +233,14 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("loading", true);
 
         if (skipping) {
-            if (state.selectedCategory.type === "Users") skip = state.users.length;
-            else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
+            if (stageState.selectedCategory.type === "Users") skip = stageState.users.length;
+            else if (stageState.selectedCategory.type === "Beatmapsets") skip = stageState.beatmaps.length;
         }
 
         const { data } = await this.$axios.get<{
             list: BeatmapsetInfo[] | BeatmapInfo[] | UserChoiceInfo[],
             count: number,
-        }>(`/api/${state.stage}/${(rootState as any)["mca-ayim"].mca?.year}/search?mode=${state.selectedCategory.mode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
+        }>(`/api/${stageState.stage}/${(rootState as any)["mca-ayim"].mca?.year}/search?mode=${stageState.selectedCategory.mode}&category=${stageState.selectedCategory.id}&option=${stageState.query.option}&order=${stageState.query.order}&favourites=${stageState.favourites}&played=${stageState.played}&text=${stageState.query.text}&skip=${skip}`);
         if (!data.success)
             return alert(data.error);
 
@@ -251,31 +251,31 @@ export const actions: ActionTree<StageState, RootState> = {
         if (!data.list)
             return;
 
-        if (state.stage === "results") {
-            if (state.selectedCategory.type === "Users")
+        if (stageState.stage === "results") {
+            if (stageState.selectedCategory.type === "Users")
                 commit("updateUserResults", data.list);
-            else if (state.selectedCategory.type === "Beatmapsets")
+            else if (stageState.selectedCategory.type === "Beatmapsets")
                 commit("updateBeatmapsetResults", data.list);
-        } else if (state.selectedCategory.type === "Users") {
+        } else if (stageState.selectedCategory.type === "Users") {
             let users = data.list as UserChoiceInfo[];
-            if (skipping) users = [...state.users, ...data.list as UserChoiceInfo[]];
+            if (skipping) users = [...stageState.users, ...data.list as UserChoiceInfo[]];
             commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
-        } else if (state.selectedCategory.type === "Beatmapsets") {
+        } else if (stageState.selectedCategory.type === "Beatmapsets") {
             let beatmaps = data.list as BeatmapsetInfo[];
-            if (skipping) beatmaps = [...state.beatmaps, ...data.list as BeatmapsetInfo[]];
+            if (skipping) beatmaps = [...stageState.beatmaps, ...data.list as BeatmapsetInfo[]];
             commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
         }
     },
     reset ({ commit }, sectionReset = false) {
         commit("reset", sectionReset);
     },
-    async createNomination ({ commit, state }, nomineeId: number) {
-        if (!state.selectedCategory) return;
+    async createNomination ({ commit, state: stageState }, nomineeId: number) {
+        if (!stageState.selectedCategory) return;
 
         commit("selected", true);
         try {
             const { data } = await this.$axios.post(`/api/nominating/create`, {
-                categoryId: state.selectedCategory.id,
+                categoryId: stageState.selectedCategory.id,
                 nomineeId,
             });
 
@@ -292,8 +292,8 @@ export const actions: ActionTree<StageState, RootState> = {
             alert(e);
         }
     },
-    async removeNomination ({ commit, state }, nominationId: number) {
-        if (!state.selectedCategory) return;
+    async removeNomination ({ commit, state: stageState }, nominationId: number) {
+        if (!stageState.selectedCategory) return;
 
         commit("selected", true);
         try {
@@ -314,13 +314,13 @@ export const actions: ActionTree<StageState, RootState> = {
             alert(e);
         }
     },
-    async createVote ({ commit, state }, payload: { nomineeId: number, vote: number }) {
-        if (!state.selectedCategory) return;
+    async createVote ({ commit, state: stageState }, payload: { nomineeId: number, vote: number }) {
+        if (!stageState.selectedCategory) return;
 
         commit("selected", true);
         try {
             const { data } = await this.$axios.post(`/api/voting/create`, {
-                category: state.selectedCategory.id,
+                category: stageState.selectedCategory.id,
                 nomineeId: payload.nomineeId,
                 choice: payload.vote,
             });

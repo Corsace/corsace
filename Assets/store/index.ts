@@ -9,41 +9,41 @@ export interface BaseState {
     viewTheme: "light" | "dark";
 }
 
-export const baseState = (): BaseState => ({
+export const state = (): BaseState => ({
     site: "",
     loggedInUser: null,
     viewTheme: "light", 
 });
 
 export const mutations: MutationTree<BaseState> = {
-    setLoggedInUser (state, user) {
-        state.loggedInUser = user;
+    setLoggedInUser (baseState, user) {
+        baseState.loggedInUser = user;
     },
-    setViewTheme (state, defaultTheme: "light" | "dark") {
+    setViewTheme (baseState, defaultTheme: "light" | "dark") {
         const localTheme = localStorage.getItem("theme");
 
         if (localTheme && themeRegex.test(localTheme))
-            state.viewTheme = localTheme as "light" | "dark";
+            baseState.viewTheme = localTheme as "light" | "dark";
         else
-            state.viewTheme = defaultTheme;
+            baseState.viewTheme = defaultTheme;
     },
-    updateViewTheme (state, theme) {
+    updateViewTheme (baseState, theme) {
         if (themeRegex.test(theme)) {
-            state.viewTheme = theme;
+            baseState.viewTheme = theme;
             localStorage.setItem("theme", theme);
         }
     },
-    setSite (state, site) {
-        state.site = site;
+    setSite (baseState, site) {
+        baseState.site = site;
     },
 };
 
 export const getters: GetterTree<BaseState, BaseState> = {
-    isHeadStaff (state): boolean {
-        if (!state.loggedInUser) return false;
+    isHeadStaff (baseState): boolean {
+        if (!baseState.loggedInUser) return false;
 
-        return state.loggedInUser.staff.corsace || 
-            state.loggedInUser.staff.headStaff;
+        return baseState.loggedInUser.staff.corsace || 
+            baseState.loggedInUser.staff.headStaff;
     },
 };
 
