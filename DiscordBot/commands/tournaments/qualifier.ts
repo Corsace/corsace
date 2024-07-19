@@ -167,7 +167,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (!team)
                 return;
         } else {
-            const tournamentTeamFilter = teams.filter(t => t.tournaments.some(tournament => tournament.ID === tournament.ID));
+            const tournamentTeamFilter = teams.filter(t => t.tournaments.some(tourney => tourney.ID === tournament.ID));
             if (tournamentTeamFilter.length > 1) {
                 await respond(m, `User \`${user.osu.username}\` is in multiple teams for this tournament which SHOULD NEVER HAPPEN CONTACT VINXIS`);
                 return;
