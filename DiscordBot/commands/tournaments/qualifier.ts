@@ -232,7 +232,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         try {
             const tournamentServer = m.guild ?? await discordClient.guilds.fetch(tournament.server);
             await tournamentServer.members.fetch();
-            const discordMembers = teamMembers.map(m => tournamentServer.members.resolve(m.discord.userID));
+            const discordMembers = teamMembers.map(member => tournamentServer.members.resolve(member.discord.userID));
             const memberStaff: GuildMember[] = [];
             for (const discordMember of discordMembers) {
                 if (!discordMember)
@@ -241,7 +241,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     memberStaff.push(discordMember);
             }
             if (memberStaff.length > 0) {
-                await respond(m, `Some members are staffing and are thus not allowed to play in this tournament:\n\`${memberStaff.map(m => m.displayName).join(", ")}\``);
+                await respond(m, `Some members are staffing and are thus not allowed to play in this tournament:\n\`${memberStaff.map(member => member.displayName).join(", ")}\``);
                 return;
             }
 
@@ -267,9 +267,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .getMany();
 
         const tournamentMembers = tournamentTeams.flatMap(t => [t.captain, ...t.members]);
-        const alreadyRegistered = teamMembers.filter(member => tournamentMembers.some(m => m.ID === member.ID));
+        const alreadyRegistered = teamMembers.filter(member => tournamentMembers.some(tMember => tMember.ID === member.ID));
         if (alreadyRegistered.length > 0) {
-            await respond(m, `Some members are already registered in this tournament:\n\`${alreadyRegistered.map(m => m.osu.username).join(", ")}\``);
+            await respond(m, `Some members are already registered in this tournament:\n\`${alreadyRegistered.map(member => member.osu.username).join(", ")}\``);
             return;
         }
 
@@ -309,7 +309,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .innerJoin("matchupMessage.matchup", "matchup")
             .where("matchup.ID = :ID", { ID: matchup.ID })
             .getMany();
-        await Promise.all(messages.map(m => m.remove()));
+        await Promise.all(messages.map(message => message.remove()));
         matchup.messages = null;
 
         const sets = await MatchupSet
@@ -320,7 +320,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .where("matchup.ID = :ID", { ID: matchup.ID })
             .getMany();
         await Promise.all(sets.flatMap(set => set.maps?.flatMap(map => map.scores.map(s => s.remove()))));
-        await Promise.all(sets.flatMap(set => set.maps?.map(m => m.remove())));
+        await Promise.all(sets.flatMap(set => set.maps?.map(map => map.remove())));
         await Promise.all(sets.map(s => s.remove()));
 
         matchup.sets = null;

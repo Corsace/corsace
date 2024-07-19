@@ -27,9 +27,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const csv = teams.map(t => {
         const members = t.members;
-        if (!members.some(m => m.ID === t.captain.ID))
+        if (!members.some(member => member.ID === t.captain.ID))
             members.push(t.captain);
-        return members.map(m => `${m.osu.username},${t.name},${m.osu.userID}`).join("\n");
+        return members.map(member => `${member.osu.username},${t.name},${member.osu.userID}`).join("\n");
     }).join("\n");
 
     await respond(m, "Here's the screening sheet to send to osu! staff.", undefined, undefined, [{

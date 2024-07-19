@@ -20,7 +20,7 @@ export interface OpenState {
     staffList: StaffList[] | null;
 }
 
-export const state = (): OpenState => ({
+export const openState = (): OpenState => ({
     title: "",
     tournament: null,
     teamList: null,

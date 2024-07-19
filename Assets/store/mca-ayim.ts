@@ -25,7 +25,7 @@ export interface RootState {
     showGuestDifficultyModal: boolean,
 }
 
-export const state = (): RootState => ({
+export const rootState = (): RootState => ({
     loggedInMCAUser: null,
     mca: null,
     allMCA: [],
@@ -171,15 +171,15 @@ export const actions: ActionTree<RootState, RootState> = {
             commit("setLoggedInMCAUser", data.user);
     },
     async setMCA ({ commit }, year: number) {
-        const { data } = await this.$axios.get<{ mca: MCA }>(`/api/mca?year=${year}`);
+        const { data: dataYear } = await this.$axios.get<{ mca: MCA }>(`/api/mca?year=${year}`);
 
-        if (data.success)
-            commit("setMCA", data.mca);
+        if (dataYear.success)
+            commit("setMCA", dataYear.mca);
         else {
-            const { data } = await this.$axios.get<{ mca: MCAInfo[] }>(`/api/mca/all`);
+            const { data: dataInfo } = await this.$axios.get<{ mca: MCAInfo[] }>(`/api/mca/all`);
             commit("setMCA", {});
-            if (data.success)
-                commit("setAllMCA", data.mca);
+            if (dataInfo.success)
+                commit("setAllMCA", dataInfo.mca);
         }
     },
     async setInitialData ({ dispatch }, year: number) {

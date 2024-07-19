@@ -170,7 +170,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     const abortMap = async (player: BanchoLobbyPlayer | BanchoUser) => {
         const id = player instanceof BanchoLobbyPlayer ? player.user.id.toString() : player.id.toString();
         const username = player instanceof BanchoLobbyPlayer ? player.user.username : player.username;
-        const team = matchup.teams!.find(team => team.members.some(m => m.osu.userID === id));
+        const team = matchup.teams!.find(t => t.members.some(m => m.osu.userID === id));
         if (
             (team &&
                 (

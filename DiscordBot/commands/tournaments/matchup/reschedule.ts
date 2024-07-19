@@ -152,10 +152,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        const matchupList = matchups.map((matchup) => {
+        const matchupList = matchups.map((match) => {
             return {
-                ID: matchup.ID,
-                name: `${matchup.team1?.name ?? "N/A"} vs ${matchup.team2?.name ?? "N/A"} in ${matchup.stage?.name ?? "N/A"}`,
+                ID: match.ID,
+                name: `${match.team1?.name ?? "N/A"} vs ${match.team2?.name ?? "N/A"} in ${match.stage?.name ?? "N/A"}`,
             };
         });
         const matchupListResult = await getFromList(m, matchupList, "matchup", tournamentParam ?? channelID(m));
@@ -164,7 +164,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        matchup = matchups.find((matchup) => matchup.ID === matchupListResult.ID)!;
+        matchup = matchups.find((match) => match.ID === matchupListResult.ID)!;
     }
 
     if (matchup.previousMatchups && matchup.previousMatchups.length > 0) {

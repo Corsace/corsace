@@ -164,11 +164,11 @@ async function addSlot (m: Message | ChatInputCommandInteraction, params: parame
     await deletePack("mappacksTemp", mappool);
 
     await mappool.save();
-    for (const slot of mappool.slots) {
-        slot.mappool = mappool;
-        await slot.save();
-        for (const map of slot.maps) {
-            map.slot = slot;
+    for (const s of mappool.slots) {
+        s.mappool = mappool;
+        await s.save();
+        for (const map of s.maps) {
+            map.slot = s;
             await map.save();
         }
     }

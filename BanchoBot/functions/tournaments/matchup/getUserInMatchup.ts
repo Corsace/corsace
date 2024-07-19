@@ -22,7 +22,7 @@ export default async function getUserInMatchup (users: User[], message: BanchoMe
         return users.find(user => user.osu.userID === "3")!;
     }
 
-    const user = users.find(user => user.osu.userID === message.user.id.toString());
+    const user = users.find(u => u.osu.userID === message.user.id.toString());
     if (user)
         return user;
 

@@ -9,7 +9,7 @@ export interface BaseState {
     viewTheme: "light" | "dark";
 }
 
-export const state = (): BaseState => ({
+export const baseState = (): BaseState => ({
     site: "",
     loggedInUser: null,
     viewTheme: "light", 

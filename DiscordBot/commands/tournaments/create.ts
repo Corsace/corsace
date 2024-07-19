@@ -215,17 +215,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const qualifiersRegex = new RegExp(/-q Y/);
     const qualifiers = (m instanceof Message && qualifiersRegex.test(m.content)) || (m instanceof ChatInputCommandInteraction && m.options.getBoolean("qualifiers"));
     if (qualifiers) {
-        const qualifiers = new Stage();
-        qualifiers.name = "Qualifiers";
-        qualifiers.abbreviation = "QL";
-        qualifiers.createdBy = creator;
-        qualifiers.order = 1;
-        qualifiers.stageType = StageType.Qualifiers;
-        qualifiers.timespan = {
+        const qualifierStage = new Stage();
+        qualifierStage.name = "Qualifiers";
+        qualifierStage.abbreviation = "QL";
+        qualifierStage.createdBy = creator;
+        qualifierStage.order = 1;
+        qualifierStage.stageType = StageType.Qualifiers;
+        qualifierStage.timespan = {
             start: new Date(tournament.registrations.end.getTime() + 14 * 24 * 60 * 60 * 1000),
             end: new Date(tournament.registrations.end.getTime() + 21 * 24 * 60 * 60 * 1000),
         };
-        tournament.stages = [qualifiers];
+        tournament.stages = [qualifierStage];
     }
 
     const message = await respond(m, "Ok let's g o");

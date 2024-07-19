@@ -58,7 +58,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        const tournamentChannel = tournamentChannels.find(tournamentChannel => tournamentChannel.channelID === channel);
+        const tournamentChannel = tournamentChannels.find(tc => tc.channelID === channel);
         if (!tournamentChannel) {
             await respond(m, `This channel is already not a tournament channel for ${tournament.name}`);
             return;
@@ -98,7 +98,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    let tournamentChannel = tournamentChannels.find(tournamentChannel => tournamentChannel.channelID === channel);
+    let tournamentChannel = tournamentChannels.find(tc => tc.channelID === channel);
     if (tournamentChannel) {
         await respond(m, `This channel's already a tournament channel for ${tournament.name}, it's a \`${TournamentChannelType[tournamentChannel.channelType]}\` channel`);
         return;

@@ -11,7 +11,7 @@ export interface StaffState {
     mca: MCAInfo | null;
 }
 
-export const state = (): StaffState => ({
+export const staffState = (): StaffState => ({
     mca: null,
 });
 

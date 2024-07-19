@@ -15,7 +15,7 @@ export interface StaffState {
     requests: StaffGuestRequest[];
 }
 
-export const state = (): StaffState => ({
+export const staffState = (): StaffState => ({
     mca: null,
     categories: [],
     requests: [],

@@ -45,16 +45,16 @@ async function execute (job: CronJobData) {
     for (const map of maps) {
         if (!map.jobPost) continue;
 
-        const job = map.jobPost;
+        const jobPost = map.jobPost;
         map.jobPost = null;
         await map.save();
-        await job.remove();
+        await jobPost.remove();
 
-        if (!job.jobBoardThread)
+        if (!jobPost.jobBoardThread)
             continue;
         
         try {
-            const thread = await discordClient.channels.fetch(job.jobBoardThread) as ThreadChannel | null;
+            const thread = await discordClient.channels.fetch(jobPost.jobBoardThread) as ThreadChannel | null;
             if (thread) {
                 const forumChannel = thread.parent as ForumChannel;
                 const closedTag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "closed")?.id;

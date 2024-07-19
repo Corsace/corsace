@@ -52,7 +52,7 @@ export async function jobBoardCreate (t: ThreadChannel, { m, creator, tournament
 
         const thread = await discordClient.channels.fetch(jobPost.jobBoardThread) as ThreadChannel | null;
         if (thread) {
-            const tag = (thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id;
+            const tag = (thread.parent as ForumChannel).availableTags.find(threadTag => threadTag.name.toLowerCase() === "closed")?.id;
             if (tag) await thread.setAppliedTags([tag], "This thread is remade.");
             await thread.setArchived(true, "This thread is remade.");
         }

@@ -8,7 +8,7 @@ export interface StreamState {
     scores: MatchupScore[] | null;
 }
 
-export const state = (): StreamState => ({
+export const streamState = (): StreamState => ({
     key: null,
     tournamentID: null,
     scores: null,

@@ -59,9 +59,9 @@ export default (subSite: string): Partial<NuxtConfig> => {
         ],
         build: {
             optimizeCSS: true,
-            extend (config) {
-                config.resolve!.alias!["@s-sass"] = path.join(__dirname, "../Assets/sass");
-                config.resolve!.alias!["../../Assets/components"] = path.join(__dirname, "../Assets/components");
+            extend (c) {
+                c.resolve!.alias!["@s-sass"] = path.join(__dirname, "../Assets/sass");
+                c.resolve!.alias!["../../Assets/components"] = path.join(__dirname, "../Assets/components");
             },
         },
         dir: {

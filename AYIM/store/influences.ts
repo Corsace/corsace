@@ -8,7 +8,7 @@ export interface InfluenceState {
     root: Record<string, any> | null;
 }
 
-export const state = (): InfluenceState => ({
+export const influenceState = (): InfluenceState => ({
     users: [],
     root: null,
 });

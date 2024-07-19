@@ -29,7 +29,7 @@ interface StageState {
     showVoteChoiceBox: boolean;
 }
 
-export const state = (): StageState => ({
+export const stageState = (): StageState => ({
     selected: false,
     section: "",
     selectedCategory: null,
