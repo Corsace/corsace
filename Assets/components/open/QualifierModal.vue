@@ -111,6 +111,9 @@ export default class QualifierModal extends Vue {
         if (!res.success)
             alert(res.error);
 
+        if (!this.teamSync?.qualifier)
+            alert("Your team has been successfully registered to the Corsace Open!\nYou can change your qualifier time whenever you wish before the actual matchup time.");
+
         this.loading = false;
 
         if (res.success)

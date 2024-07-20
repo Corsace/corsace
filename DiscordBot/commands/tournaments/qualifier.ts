@@ -339,7 +339,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    await respond(m, `The qualifier for \`${team.name}\` is now ${discordStringTimestamp(date)}`);
+    await respond(m, `The qualifier for \`${team.name}\` is now ${discordStringTimestamp(date)}\n\nYou can reschedule with the same command anytime before the match starts if needed.`);
 }
 
 const data = new SlashCommandBuilder()

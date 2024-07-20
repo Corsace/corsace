@@ -126,6 +126,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     const setOrder = mapOrder?.map(order => order.set)
         .filter((set, index, self) => self.indexOf(set) === index)
         .map(set => ({ set, maps: mapOrder?.filter(map => map.set === set) })) ?? [];
+    const abortText = `(${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? matchup.teams!.length === 1 ? matchup.stage!.tournament.teamAbortLimit - aborts.get(matchup.teams![0].ID)! : matchup.stage!.tournament.teamAbortLimit : "unlimited"} aborts allowed per team, and must be within ${matchup.stage!.tournament.abortThreshold ?? 30} seconds after map start)`;
     let picking: string | null = null;
     let banning: string | null = null;
     let protecting: string | null = null;
@@ -335,7 +336,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     if (!autoStart)
                         return;
                     await kickExtraPlayers(matchup, playersInLobby, mpLobby);
-                    await mpChannel.sendMessage(`reminder: !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
+                    await mpChannel.sendMessage(`reminder: !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby ${abortText}`);
                     await mpLobby.startMatch(5);
                     mapTimerStarted = true;
                     autoStart = false;
@@ -570,7 +571,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         }
 
         log(matchup, "All players readied up for the next map");
-        await mpChannel.sendMessage(`as a reminder, !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
+        await mpChannel.sendMessage(`as a reminder, !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby ${abortText}`);
         await mpLobby.startMatch(5);
         mapTimerStarted = true;
     });
@@ -901,7 +902,7 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
         const discordChannel = discordClient.channels.cache.get(generalChannel.channelID);
         if (discordChannel instanceof TextChannel) {
             const invMessage = await discordChannel.send({
-                content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match by \`${auto ? "Corsace" : runBy}\`, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!${auto ? `\n\nThe following commands work in lobby:\n\`!panic\` will notify organizers/currently assigned refs if anything goes absurdly wrong and stop auto-running the lobby\n\`!abort\` allows u to abort a map within the allowed time after a map start, and for the allowed amount of times a team is allowed to abort\n\`!start\` allows a captain to start the matchup before the match time if the captain appears in the lobby beforehand` : ""}\n\nIf ur not part of the matchup, the button wont work for u .`,
+                content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match by \`${auto ? "Corsace" : runBy}\`, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!${auto ? `\n\n**IF YOU INCORRECTLY SCHEDULED THIS MATCHUP AND WANTED ANOTHER TIME, PLEASE PING AN ORGANIZER TO RUN \`tournament_qualifier\` WITH YOUR CORRECT DESIRED TIME. THIS WILL CLOSE THE CURRENT LOBBY.**\n\nThe following commands work in lobby:\n\`!panic\` will notify organizers/currently assigned refs if anything goes absurdly wrong and stop auto-running the lobby\n\`!abort\` allows u to abort a map within the allowed time after a map start, and for the allowed amount of times a team is allowed to abort (${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? matchup.stage!.tournament.teamAbortLimit : "unlimited"} aborts per team, and must be within ${typeof matchup.stage!.tournament.abortThreshold === "number" ? matchup.stage!.tournament.abortThreshold : "30"} seconds after map start)\n\`!start\` allows a captain to start the matchup before the match time if the captain appears in the lobby beforehand` : ""}\n\nIf ur not part of the matchup, the button wont work for u .`,
                 components: [row],
             });
 
