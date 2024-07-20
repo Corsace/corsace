@@ -5,7 +5,7 @@ import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType, ScoringMethod, MapOrderTeam } from "../../../../Interfaces/stage";
 import { osuClient } from "../../../../Server/osu";
-import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoUser } from "bancho.js";
+import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoMessage, BanchoUser } from "bancho.js";
 import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
@@ -200,6 +200,32 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         }
     };
 
+    // Functionality to panic
+    const panic = async (message?: BanchoMessage) => {
+        state.matchups[matchup.ID].autoRunning = false;
+
+        if (!refCollector?.channelId) {
+            await mpChannel.sendMessage(`no ref channel ID found, auto-lobby is stopped. Get the organizers/referees of the tournament to continue the match manually`);
+            return;
+        }
+        const discordChannel = discordClient.channels.cache.get(refCollector.channelId);
+        if (!(discordChannel instanceof TextChannel)) {
+            await mpChannel.sendMessage(`no ref discord channel found, auto-lobby is stopped. Get the organizers/referees of the tournament to continue the match manually`);
+            return;
+        }
+
+        const refereeRole = await TournamentRole
+            .createQueryBuilder("role")
+            .innerJoinAndSelect("role.tournament", "tournament")
+            .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
+            .andWhere("role.roleType = '6'")
+            .getOne();
+
+        await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message ? `${message.user.username} ran` : "Starting a map with an empty lobby has caused"} the \`PANIC\` command for their matchup\n\nAuto-running lobby has stopped`);
+
+        await mpChannel.sendMessage(`stopped auto-lobby, refs and organizers of the tourney are notified`);
+    };
+
     mpChannel.on("message", async (message) => {
         if (!state.matchups[matchup.ID])
             return;
@@ -366,28 +392,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             ) && 
             state.matchups[matchup.ID].autoRunning
         ) {
-            state.matchups[matchup.ID].autoRunning = false;
-
-            if (!refCollector?.channelId) {
-                await mpChannel.sendMessage(`no ref channel ID found, auto-lobby is stopped. Get the organizers/referees of the tournament to continue the match manually`);
-                return;
-            }
-            const discordChannel = discordClient.channels.cache.get(refCollector.channelId);
-            if (!(discordChannel instanceof TextChannel)) {
-                await mpChannel.sendMessage(`no ref discord channel found, auto-lobby is stopped. Get the organizers/referees of the tournament to continue the match manually`);
-                return;
-            }
-
-            const refereeRole = await TournamentRole
-                .createQueryBuilder("role")
-                .innerJoinAndSelect("role.tournament", "tournament")
-                .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
-                .andWhere("role.roleType = '6'")
-                .getOne();
-
-            await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} ran the \`PANIC\` command for their matchup\n\nAuto-running lobby has stopped`);
-
-            await mpChannel.sendMessage(`stopped auto-lobby, refs and organizers of the tourney are notified`);
+            await panic(message);
         } else if (
             (
                 message.message === "!start" ||
@@ -617,6 +622,13 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             }
         } else 
             mapsPlayed.push(beatmap);
+
+        // Panic if lobby is empty
+        if (playersInLobby.length === 0) {
+            await panic();
+            return;
+        }
+
         playersPlaying = playersInLobby;
 
         await publish(centrifugoChannel, { type: "matchStarted" });
