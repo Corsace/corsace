@@ -126,7 +126,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     const setOrder = mapOrder?.map(order => order.set)
         .filter((set, index, self) => self.indexOf(set) === index)
         .map(set => ({ set, maps: mapOrder?.filter(map => map.set === set) })) ?? [];
-    const abortText = `(${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? matchup.teams!.length === 1 ? matchup.stage!.tournament.teamAbortLimit - aborts.get(matchup.teams![0].ID)! : matchup.stage!.tournament.teamAbortLimit : "unlimited"} aborts allowed per team, and must be within ${matchup.stage!.tournament.abortThreshold ?? 30} seconds after map start)`;
+    const abortText = `(${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? matchup.teams && matchup.teams.length === 1 ? matchup.stage!.tournament.teamAbortLimit - aborts.get(matchup.teams[0].ID)! : matchup.stage!.tournament.teamAbortLimit : "unlimited"} aborts allowed per team, and must be within ${matchup.stage!.tournament.abortThreshold ?? 30} seconds after map start)`;
     let picking: string | null = null;
     let banning: string | null = null;
     let protecting: string | null = null;
