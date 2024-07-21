@@ -731,7 +731,7 @@
             "averageRank": "Peringkat Rata-Rata",
             "averagePP": "PP Rata-Rata",
             "editQualifierTime": "sunting waktu kualifikasi",
-            "deleteTeam": "hapus lobi kualifikasi/urungkan pendaftaran tim",
+            "deleteQualifier": "hapus kualifikasi/urungkan pendaftaran tim",
             "createJoinQualifier": "buat/gabung lobi kualifikasi",
             "joinQualRegister": "IKUTI KUALIFIKASI UNTUK MENDAFTAR",
             "needMorePlayers": "Kamu perlu untuk menambahkan setidaknya {count} pemain",

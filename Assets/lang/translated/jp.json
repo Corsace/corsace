@@ -731,7 +731,7 @@
             "averageRank": "平均ランク",
             "averagePP": "平均PP",
             "editQualifierTime": "予選時刻の変更",
-            "deleteTeam": "チームを解散してQualifierの出場を取り消す",
+            "deleteQualifier": "delete qualifier/unregister team",
             "createJoinQualifier": "チームを作成してQualifierに参加",
             "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
             "needMorePlayers": "You need at least {count} more players",
