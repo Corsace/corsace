@@ -731,7 +731,7 @@
             "averageRank": "Средний Ранк",
             "averagePP": "Средние PP",
             "editQualifierTime": "изменить время квалификации",
-            "deleteTeam": "удалить квалификацию/отменить регистрацию команды",
+            "deleteQualifier": "delete qualifier/unregister team",
             "createJoinQualifier": "создать/присоединиться к отборочному матчу",
             "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
             "needMorePlayers": "You need at least {count} more players",
