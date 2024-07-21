@@ -221,7 +221,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             .andWhere("role.roleType = '6'")
             .getOne();
 
-        await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\`PANIC\` has been triggered\nReason: \`${reason ?? "UNKNOWN"}\`\n\nAuto-running lobby has stopped\n\nLatest 10 messages:\n\`\`\`${matchup.messages!.slice(-10).map(message => `${message.timestamp.toLocaleString("en-US", { timeZone: "UTC" })} | ${message.user.osu.username}: ${message.content}`).join("\n")}\`\`\``);
+        await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n\`PANIC\` has been triggered\nReason: \`${reason ?? "UNKNOWN"}\`\n\nAuto-running lobby has stopped\n\nLatest 10 messages:\n\`\`\`${matchup.messages!.slice(-10).map(message => `${message.timestamp.toLocaleString("en-US", { timeZone: "UTC" })} | ${message.user.osu.username}: ${message.content}`).join("\n")}\`\`\``);
         await mpChannel.sendMessage(`stopped auto-lobby, refs and organizers of the tourney are notified`);
     };
 
