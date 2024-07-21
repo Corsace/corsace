@@ -731,7 +731,7 @@
             "averageRank": "평균 순위",
             "averagePP": "평균 PP",
             "editQualifierTime": "퀄리파이어 시간 수정",
-            "deleteTeam": "퀄리파이어 취소/팀 등록 철회",
+            "deleteQualifier": "delete qualifier/unregister team",
             "createJoinQualifier": "퀄리파이어 로비 만들기 / 참여하기",
             "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
             "needMorePlayers": "You need at least {count} more players",
