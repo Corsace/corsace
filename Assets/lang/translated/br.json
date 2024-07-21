@@ -731,7 +731,7 @@
             "averageRank": "Média de Rank",
             "averagePP": "Média de PP",
             "editQualifierTime": "editar hora da qualificatória",
-            "deleteTeam": "apagar qualificatória/desinscrever time",
+            "deleteQualifier": "delete qualifier/unregister team",
             "createJoinQualifier": "criar/entrar em qualificatória",
             "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
             "needMorePlayers": "You need at least {count} more players",
