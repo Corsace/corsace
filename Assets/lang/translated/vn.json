@@ -731,7 +731,7 @@
             "averageRank": "Average Rank",
             "averagePP": "Average PP",
             "editQualifierTime": "edit qualifier time",
-            "deleteTeam": "delete qualifier/unregister team",
+            "deleteQualifier": "delete qualifier/unregister team",
             "createJoinQualifier": "create/join qualifier",
             "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
             "needMorePlayers": "You need at least {count} more players",
