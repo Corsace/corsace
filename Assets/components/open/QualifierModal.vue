@@ -111,7 +111,7 @@ export default class QualifierModal extends Vue {
         if (!res.success)
             alert(res.error);
 
-        if (!this.teamSync?.qualifier)
+        if (res.success && !this.teamSync?.qualifier)
             alert("Your team has been successfully registered to the Corsace Open!\nYou can change your qualifier time whenever you wish before the actual matchup time.");
 
         this.loading = false;
@@ -132,7 +132,7 @@ export default class QualifierModal extends Vue {
             return;
         }
 
-        if (date.getTime() === this.teamSync.qualifier?.date.getTime()) {
+        if (this.teamSync.qualifier?.date && date.getTime() === new Date(this.teamSync.qualifier.date).getTime()) {
             alert("You have not changed the qualifier time.");
             this.loading = false;
             return;

@@ -9,7 +9,7 @@
                 <span class="team--acronym">({{ teamData.abbreviation }})</span>
                 {{ $t('open.teams.teamID') }} #{{ teamData.ID }}
                 <template 
-                    v-if="isCaptain"
+                    v-if="isCaptain && !teamData.qualifier?.mp"
                     #right
                 >
                     <ContentButton
@@ -26,7 +26,7 @@
                     </ContentButton>
                 </template>
                 <template
-                    v-else-if="myTeams?.some(t => t.ID === teamData.ID)"
+                    v-else-if="myTeams?.some(t => t.ID === teamData.ID) && !teamData.qualifier?.mp"
                     #right
                 >
                     <ContentButton
@@ -111,7 +111,7 @@
                                 :to="'/qualifier/' + teamData.qualifier.ID"
                             >
                                 <div>{{ $t("open.teams.qualifierId") }} #{{ teamData.qualifier.ID }}</div>
-                                <div>{{ teamData.qualifier.date.toLocaleString('en-US', optionsUTC) }} ({{ teamData.qualifier.date.toLocaleString('en-US', options) }})</div>
+                                <div>{{ new Date(teamData.qualifier.date).toLocaleString('en-US', optionsUTC) }} ({{ new Date(teamData.qualifier.date).toLocaleString('en-US', options) }})</div>
                             </NuxtLink>
                             <div v-else-if="isCaptain && tournament">
                                 <div class="team_fields--clickable">
@@ -134,10 +134,10 @@
                             class="content_button--red content_button--noflex"
                             @click.native="unregister"
                         >
-                            {{ $t('open.teams.deleteTeam') }}
+                            {{ $t('open.teams.deleteQualifier') }}
                         </ContentButton>
                         <ContentButton
-                            v-else-if="isCaptain && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
+                            v-if="isCaptain && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
                             class="content_button--red content_button--noflex"
                             @click.native="editQualifier = !editQualifier" 
                         >
@@ -836,15 +836,16 @@ export default class Team extends Vue {
     }
 
     &__delete {
-        position: absolute;
+        position: sticky;
+        padding: 20px;
         bottom: 0;
         left: 0;
         right: 0;
-        margin-bottom: 20px;
         color: $open-red;
         letter-spacing: 0.23em;
         cursor: pointer;
         text-align: center;
+        background: linear-gradient(0deg, #131313, #131313, transparent);
     }
 }
 </style>
