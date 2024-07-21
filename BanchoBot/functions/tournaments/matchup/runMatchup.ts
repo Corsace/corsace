@@ -201,7 +201,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     };
 
     // Functionality to panic
-    const panic = async (message?: BanchoMessage) => {
+    const panic = async (reason?: string) => {
         state.matchups[matchup.ID].autoRunning = false;
 
         if (!refCollector?.channelId) {
@@ -221,8 +221,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             .andWhere("role.roleType = '6'")
             .getOne();
 
-        await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message ? `${message.user.username} ran` : "Starting a map with an empty lobby has caused"} the \`PANIC\` command for their matchup\n\nAuto-running lobby has stopped`);
-
+        await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\`PANIC\` has been triggered\nReason: \`${reason ?? "UNKNOWN"}\`\n\nAuto-running lobby has stopped\n\nLatest 10 messages:\n\`\`\`${matchup.messages!.slice(-10).map(message => `${message.timestamp.toLocaleString("en-US", { timeZone: "UTC" })} | ${message.user.osu.username}: ${message.content}`).join("\n")}\`\`\``);
         await mpChannel.sendMessage(`stopped auto-lobby, refs and organizers of the tourney are notified`);
     };
 
@@ -392,7 +391,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             ) && 
             state.matchups[matchup.ID].autoRunning
         ) {
-            await panic(message);
+            await panic(`${message.user.username} ran !panic`);
         } else if (
             (
                 message.message === "!start" ||
@@ -614,8 +613,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (!beatmap) {
             if (state.matchups[matchup.ID].autoRunning) {
                 await mpLobby.abortMatch();
-                await mpChannel.sendMessage("cant find the map in the pool(s), contact Corsace IMMEDIATELY");
-                log(matchup, `Couldn't find map ${mpLobby.beatmapId} in the pools`);
+                await panic(`Couldn't find beatmap ID ${mpLobby.beatmapId} in the pools`);
+                log(matchup, `Couldn't find beatmap ${mpLobby.beatmapId} in the pools, panicking`);
                 return;
             } else {
                 await mpChannel.sendMessage("cant find the map in the pool(s) but not aborting since auto-lobby is off. Crashing is possible. Contact Corsace IMMEDIATELY");
@@ -625,7 +624,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         // Panic if lobby is empty
         if (playersInLobby.length === 0) {
-            await panic();
+            await mpLobby.abortMatch();
+            await panic("Map started with no players in the lobby");
+            log(matchup, `Lobby is empty, panicking`);
             return;
         }
 
