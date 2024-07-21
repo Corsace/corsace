@@ -731,7 +731,7 @@
             "averageRank": "平均排名",
             "averagePP": "平均表现分",
             "editQualifierTime": "编辑资格赛时间",
-            "deleteTeam": "删除资格赛/未注册的队伍",
+            "deleteQualifier": "delete qualifier/unregister team",
             "createJoinQualifier": "创建/参加资格赛",
             "joinQualRegister": "JOIN QUALIFIERS TO REGISTER",
             "needMorePlayers": "You need at least {count} more players",
