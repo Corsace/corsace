@@ -39,7 +39,12 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
         const buffer = await entry.buffer();
 
         if (entry.type === "File" && entry.props.path.endsWith(".osu") && !foundBeatmap) {
-            beatmap = parseBeatmap(Uint8Array.from(buffer));
+            try {
+                beatmap = parseBeatmap(Uint8Array.from(buffer));
+            } catch (e) {
+                await m.reply(`Can't parse the beatmap. Make sure the link is valid. Error below:\n\`\`\`${e}\`\`\``);
+                return;
+            }
             beatmapAttributes = parseBeatmapAttributes(undefined, Uint8Array.from(buffer));
             beatmapStrains = parseBeatmapStrains(Uint8Array.from(buffer), undefined, mods);
 
