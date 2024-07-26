@@ -177,6 +177,13 @@
                                     >
                                         CAPTAIN
                                     </div>
+                                    <div
+                                        v-else-if="isCaptain"
+                                        class="team__players_player--captain_transfer"
+                                        @click.prevent="transferCaptain(member)"
+                                    >
+                                        TRANSFER CAPTAIN
+                                    </div>
                                 </div>
                             </div>
                             <div class="team__players_player--rank">
@@ -814,6 +821,15 @@ export default class Team extends Vue {
                 font-size: 12px;
                 font-stretch: condensed;
                 font-weight: normal;
+
+                &_transfer {
+                    cursor: pointer;
+                    color: $open-red;
+                    position: absolute;
+                    top: -20px;
+                    left: 0;
+                    white-space: nowrap;
+                }
             }
 
             &--rank {
