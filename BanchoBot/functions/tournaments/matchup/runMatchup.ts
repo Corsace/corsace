@@ -424,7 +424,11 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 message.message === "!auto" ||
                 message.message === "!mp auto"
             ) &&
-            message.user.id === undefined &&
+            (
+                message.user.id === undefined ||
+                message.user.id === 29191632 ||
+                !users.some(u => u.osu.userID === message.user.id.toString())
+            ) &&
             !state.matchups[matchup.ID].autoRunning
         ) {
             state.matchups[matchup.ID].autoRunning = true;
