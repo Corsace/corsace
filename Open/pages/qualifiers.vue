@@ -68,14 +68,6 @@
                     #right
                 >
                     <Clock />
-                    <ContentButton 
-                        v-if="team && loggedInUser && team.captain.ID === loggedInUser.ID && !team.qualifier"
-                        class="content_button--header_button"
-                        :class="{ 'content_button--disabled': !team || !tournament || tournament.minTeamSize > team.members.length || tournament.maxTeamSize < team.members.length }"
-                        @click.native="togglePopup()"
-                    >
-                        {{ $t('open.qualifiers.create') }}
-                    </ContentButton>
                     <BaseModal
                         v-if="isOpen"
                         @click.native="togglePopup()"
