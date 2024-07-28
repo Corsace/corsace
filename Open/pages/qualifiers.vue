@@ -209,18 +209,12 @@ export default class Qualifiers extends Vue {
 @import '@s-sass/_variables';
 
 .qualifiers {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
 
     &__main_content {
         align-self: center;
         position: relative;
         width: 75vw;
         padding: 35px;
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
-    }
-
-    &__qualifiers {
-        overflow: auto;
     }
 
     &__header_subtext {

@@ -4,18 +4,16 @@
         class="schedule_matchbox"
     >
         <div class="schedule_matchbox_date">
-            <div class="schedule_matchbox_date__timezone">
+            <div class="schedule_matchbox_date__ID">
                 ID: {{ matchupSync.ID }}
             </div>
             <div class="schedule_matchbox_date__month">
                 {{ formatDate(matchupSync.date) }}
             </div>
-            <div class="schedule_matchbox_date__time">
-                {{ formatTime(matchupSync.date) }}
-            </div>
-            <div class="schedule_matchbox_date__timezone">
-                UTC
-            </div>
+            <OpenMatchupTime
+                :date="matchupSync.date"
+                timezone="UTC"
+            />
         </div>
         <div class="schedule_matchbox_teams">
             <ScheduleMatchBoxTeam :team="matchupSync.teams?.[0]" />
@@ -48,13 +46,17 @@
 
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
-import IconButton from "./IconButton.vue";
-import ScheduleMatchBoxTeam from "./ScheduleMatchBoxTeam.vue";
+
 import { MatchupList } from "../../../Interfaces/matchup";
+
+import IconButton from "./IconButton.vue";
+import OpenMatchupTime from "./OpenMatchupTime.vue";
+import ScheduleMatchBoxTeam from "./ScheduleMatchBoxTeam.vue";
 
 @Component({
     components: {
         IconButton,
+        OpenMatchupTime,
         ScheduleMatchBoxTeam,
     },
 })
@@ -66,12 +68,6 @@ export default class ScheduleMatchBox extends Vue {
         const day = date.getUTCDate();
         const monthIndex = date.getUTCMonth();
         return `${months[monthIndex]} ${day < 10 ? "0" : ""}${day}`;
-    }
-
-    formatTime (date: Date): string {
-        const hours = date.getUTCHours();
-        const minutes = date.getUTCMinutes();
-        return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
     }
 }
 </script>
@@ -110,25 +106,17 @@ export default class ScheduleMatchBox extends Vue {
         align-items: center;
         white-space: nowrap;
 
+        &__ID {
+            font-size: 12px;
+            font-weight: 600;
+            color: $open-red;
+        }
+
         &__month {
             font-size: 21px;
             font-weight: 700;
             font-stretch: condensed;
             color: rgba(235, 235, 235, 1);
-        }
-        
-        &__time {
-            font-size: 40px;
-            font-weight: 700;
-            font-stretch: condensed;
-            letter-spacing: 0em;
-            text-align: center;
-        }
-        
-        &__timezone {
-            font-size: 12px;
-            font-weight: 600;
-            color: $open-red;
         }
     }
 

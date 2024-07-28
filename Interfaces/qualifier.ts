@@ -1,9 +1,10 @@
 import { MatchupScore } from "./matchup";
+import { BaseTeam, TeamList } from "./team";
 
 export interface BaseQualifier {
     ID: number;
     date: Date;
-    team?: QualifierTeam;
+    team?: TeamList;
 }
 
 export interface Qualifier extends BaseQualifier {
@@ -12,12 +13,6 @@ export interface Qualifier extends BaseQualifier {
         ID: number;
         username: string;
     }
-    teams: QualifierTeam[];
+    teams: BaseTeam[];
     mp?: number | null;
-}
-
-export interface QualifierTeam {
-    ID: number;
-    name: string;
-    avatarURL?: string | null;
 }

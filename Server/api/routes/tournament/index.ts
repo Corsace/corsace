@@ -276,6 +276,10 @@ tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifier
     const qualifiers = await Matchup
         .createQueryBuilder("matchup")
         .innerJoinAndSelect("matchup.teams", "team")
+        .innerJoinAndSelect("team.members", "members")
+        .leftJoinAndSelect("members.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "modeDivision")
+        .innerJoinAndSelect("team.captain", "captain")
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .where("tournament.ID = :ID", { ID })
@@ -292,14 +296,32 @@ tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifier
             if (!q.teams)
                 return [qualData];
 
-            return q.teams.map<BaseQualifier>(t => ({
-                ...qualData,
-                team: {
-                    ID: t.ID,
-                    name: t.name,
-                    avatarURL: t.avatarURL,
-                },
-            }));
+            return q.teams.map<BaseQualifier>(t => {
+                let members = t.members;
+                if (!members.some((member) => member.ID === t.captain.ID))
+                    members = [t.captain, ...members];
+                return {
+                    ...qualData,
+                    team: {
+                        ID: t.ID,
+                        name: t.name,
+                        avatarURL: t.avatarURL,
+                        pp: t.pp,
+                        rank: t.rank,
+                        BWS: t.BWS,
+                        members: members.map<TeamMember>((member) => {
+                            return {
+                                ID: member.ID,
+                                username: member.osu.username,
+                                osuID: member.osu.userID,
+                                country: member.country,
+                                isCaptain: member.ID === t.captain.ID,
+                                rank: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
+                            };
+                        }),
+                    },
+                };
+            });
         }),
     };
 });

@@ -5,35 +5,50 @@
             :key="qualifierGroupedByDate.date.getTime()"
             class="qualifiers_view_day"
         >
-            <div class="qualifiers_views_day__date">
+            <div class="qualifiers_view_day__date">
                 <div class="qualifiers_view_day__date_text">
                     {{ qualifierGroupedByDate.date.toLocaleString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' }) }}
                 </div>
             </div>
-            <hr class="line--even-space line--red">
             <NuxtLink
                 v-for="qualifier in qualifierGroupedByDate.qualifiers" 
                 :key="qualifier.ID"
                 :to="`/qualifier/${qualifier.ID}`"
-                class="qualifiers_view_day__team"
+                class="qualifiers_view_day__qualifier"
             >
-                <div class="qualifiers_view_day__team_name">
-                    <img 
-                        :src="qualifier.team?.avatarURL || require('../../img/site/open/team/default.png')"
+                <div class="qualifiers_view_day__team">
+                    <OpenMatchupTime
+                        class="qualifiers_view_day__time"
+                        :date="qualifier.date"
+                        timezone="UTC"
+                    />
+                    <div
+                        v-if="qualifier.team" 
+                        class="qualifiers_view_day__team_info"
                     >
-                    <div>{{ qualifier.team?.name || "NO TEAM" }}</div>
-                </div>
-                <div class="qualifiers_view_day__team_time">
-                    <div class="qualifiers_view_day__team_time__element">
-                        {{ qualifier.date.getUTCHours() }}:{{ qualifier.date.getUTCMinutes() < 10 ? `0${qualifier.date.getUTCMinutes()}` : qualifier.date.getUTCMinutes() }} UTC
-                    </div>
-                    <div class="qualifiers_view_day__team_time__button">
-                        <!-- <ContentButton 
-                            class="content_button content_button--disabled"
-                            @click.native="togglePopup()"
-                        >
-                            JOIN
-                        </ContentButton> -->
+                        <div
+                            class="qualifiers_view_day__team_avatar" 
+                            :style="{ 'backgroundImage': `url(${qualifier.team.avatarURL || require('../../img/site/open/team/default.png')})` }"
+                        />
+                        <div class="qualifiers_view_day__team_name">
+                            {{ qualifier.team?.name || "NO TEAM" }}
+                        </div>
+                        <div class="qualifiers_view_day__team_members">
+                            <div
+                                v-for="member in qualifier.team.members"
+                                :key="member.ID"
+                                class="qualifiers_view_day__team_member"
+                            >
+                                <div
+                                    v-if="member.isCaptain"
+                                    class="qualifiers_view_day__team_member--leader"
+                                />
+                                {{ member.username }}
+                                <div class="qualifiers_view_day__team_member--rank">
+                                    #{{ Math.round(member.rank) }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </NuxtLink>
@@ -57,14 +72,14 @@ import { BaseQualifier } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
 
 import BaseModal from "../BaseModal.vue";
-import ContentButton from "./ContentButton.vue";
+import OpenMatchupTime from "./OpenMatchupTime.vue";
 
 const openModule = namespace("open");
 
 @Component({
     components: {
-        ContentButton,
         BaseModal,
+        OpenMatchupTime,
     },
 })
 export default class QualifiersView extends Vue {
@@ -112,88 +127,127 @@ export default class QualifiersView extends Vue {
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
+    gap: 22px;
 
-        &_day {
+    &_day {
         display: flex;
         flex-direction: column;
         width: 100%;
-        padding: 10px 15px 10px 15px;
-        background-image: url('../../img/site/open/checkers-bg.png'), linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
-        background-repeat: no-repeat;
-        background-position: bottom 0px right 0px;
-        box-shadow: 0px 4px 4px 0px #00000040;
-        margin-bottom: 20px;
+        gap: 22px;
 
         &__date {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            background: $open-red;
+            padding: 6px 20px;
 
             &_text {
                 display: flex;
                 align-items: center;
-                font-family: $font-ggsans;
-                font-weight: 500;
-                font-size: $font-xl;
-                font-style: bold;
+                font-family: $font-zurich;
+                font-weight: bold;
+                font-style: italic;
+                font-size: $font-xxxl;
+                color: $open-dark;
                 vertical-align: middle;
+                text-transform: uppercase;
             }
         }
 
-        &__team {
+        &__qualifier {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            margin-bottom: 10px;
+            height: 75px;
 
             &:hover {
                 text-decoration: none;
             }
+        }
 
-            &_name {
-                display: flex;
-                align-items: center;
+        &__time {
+            padding: 18px;
+        }
 
-                & img {
-                    height: 2rem;
-                    width: 6rem;
-                    object-fit: cover;
-                }
+        &__team {
+            display: flex;
+            align-items: center;
+            width: 100%;
 
-                & div {
-                    font-family: $font-ggsans;
-                    font-weight: 500;
-                    font-size: $font-lg;
-                    display: flex;
-                    align-items: center;
-                    vertical-align: middle;
-                    margin-left: 50px;
-                }
-            }
+            font-family: $font-univers;
+            font-weight: bold;
+            font-size: $font-xxl;
 
-            &_time {
+            &_info {
+                height: 100%;
+                width: 60%;
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                justify-content: center;
+                position: relative;
+            }
 
-                &__element {
-                    font-family: $font-ggsans;
-                    font-weight: 500;
-                    font-size: $font-lg;
-                    display: flex;
-                    align-items: center;
-                    vertical-align: middle;
-                    height: 3.5rem;
+            &_avatar {
+                width: 225px;
+                height: 100%;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+
+            &_name {
+                width: calc(100% - 225px);
+                height: 100%;
+                background: linear-gradient(to right, $open-red 0%, #BB4D62 19%,transparent 100%);
+                display: flex;
+                align-items: center;
+                padding-left: 43px;
+            }
+
+            &_members {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(to right, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.9) 80%, transparent 100%);
+                color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-content: flex-start;
+                flex-wrap: wrap;
+                row-gap: 7px;
+                column-gap: 50px;
+                padding-left: 20px;
+                opacity: 0;
+                z-index: 1;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+
+            &_member {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: $font-sm;
+                font-weight: normal;
+                width: 130px;
+                position: relative;
+
+                &--leader {
+                    position: absolute;
+                    left: -15px;
+                    width: 10px;
+                    height: 10px;
+                    background: url('../../img/site/open/team/captain.svg') no-repeat;
+                    background-size: contain;
                 }
 
-                &__button {
-                    height: 3.5rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 5rem;
-                    margin-left: 25px;
+                &--rank {
+                    font-weight: bold;
+                    color: $open-red;
                 }
             }
         }
