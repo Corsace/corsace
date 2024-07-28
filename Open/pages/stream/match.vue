@@ -525,11 +525,11 @@ export default class Match extends Vue {
 
                     &--mapper {
                         background-color: $open-red;
-                        color: #131313;
+                        color: $open-dark;
                     }
 
                     &--difficulty {
-                        background-color: #131313;
+                        background-color: $open-dark;
                         color: #EBEBEB;
                     }
 
