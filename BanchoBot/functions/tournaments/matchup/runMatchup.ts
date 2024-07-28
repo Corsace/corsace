@@ -752,6 +752,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 if (end) {
                     await mpChannel.sendMessage(`no more maps to play, closing lobby in ${leniencyTime / 1000} seconds`);
                     await pause(leniencyTime);
+                    if (!state.matchups[matchup.ID].autoRunning)
+                        return;
                     await mpLobby.closeLobby();
                     return;
                 }
