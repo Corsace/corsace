@@ -222,7 +222,7 @@ export default class Mappool extends Vue {
 <style lang="scss">
 @import '@s-sass/_variables';
 .mappool {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
+    background: linear-gradient(180deg, #1F1F1F 0%, $open-dark 100%);
     overflow: auto;
 
     &__main_content {

@@ -80,7 +80,7 @@ export default class MappoolMapBanner extends Vue {
     display: flex;
     flex-direction: row;
     height: 106px;
-    background: linear-gradient(0deg, #131313, #131313);
+    background: linear-gradient(0deg, $open-dark, $open-dark);
 
     &:hover {
         text-decoration: none;
@@ -148,7 +148,7 @@ export default class MappoolMapBanner extends Vue {
             &--mapper, &--difficulty {
                 font-family: $font-swis721;
                 font-weight: 700;
-                color: #131313;
+                color: $open-dark;
                 padding: 1.75px 3.5px;
                 font-size: $font-sm;
                 align-self: center;

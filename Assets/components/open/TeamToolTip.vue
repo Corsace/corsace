@@ -64,7 +64,7 @@ export default class TeamToolTip extends Vue {
     flex-direction: column;
     z-index: 10;
 
-    background: #131313;
+    background: $open-dark;
 
     border: 1px solid #353535;
 
@@ -138,7 +138,7 @@ export default class TeamToolTip extends Vue {
             letter-spacing: 0em;
             text-align: right;
 
-            // text-shadow: 0 0 1px #131313;
+            // text-shadow: 0 0 1px $open-dark;
             text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         }
 

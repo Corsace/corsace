@@ -779,7 +779,7 @@ export default class Team extends Vue {
             display: flex;
             gap: 12px;
             background-color: #FAFAFA;
-            color: #131313;
+            color: $open-dark;
             width: 215px;
 
             &:hover {
@@ -861,7 +861,7 @@ export default class Team extends Vue {
         letter-spacing: 0.23em;
         cursor: pointer;
         text-align: center;
-        background: linear-gradient(0deg, #131313, #131313, transparent);
+        background: linear-gradient(0deg, $open-dark, $open-dark, transparent);
     }
 }
 </style>

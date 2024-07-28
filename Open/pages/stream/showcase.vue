@@ -295,7 +295,7 @@ $x-axis-height: 25px;
                 &--mapper, &--difficulty {
                     font-family: $font-swis721;
                     font-weight: 700;
-                    color: #131313;
+                    color: $open-dark;
                     padding: 1.75px 3.5px;
                     font-size: $font-lg;
                     vertical-align: middle;
@@ -360,7 +360,7 @@ $x-axis-height: 25px;
                 font-family: $font-swis721;
                 font-size: 21px;
                 font-weight: bold;
-                color: #131313;
+                color: $open-dark;
                 background-color: $open-red;
                 padding: 6px;
                 line-height: normal;

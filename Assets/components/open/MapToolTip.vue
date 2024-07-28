@@ -63,7 +63,7 @@ export default class MapToolTip extends Vue {
     display: flex;
     flex-direction: column;
 
-    background: #131313;
+    background: $open-dark;
     border: 1px solid #353535;
 
     width: 250px;
@@ -170,7 +170,7 @@ export default class MapToolTip extends Vue {
                 &--mapper, &--difficulty {
                     font-family: $font-swis721;
                     font-weight: 700;
-                    color: #131313;
+                    color: $open-dark;
                     padding: 1px 1px;
                     font-size: $font-xsm;
                 }

@@ -84,7 +84,7 @@ export default class ScheduleMatchBox extends Vue {
     position: relative;
     display: flex;
     flex-direction: row;
-    background: linear-gradient(0deg, #131313, #131313), linear-gradient(0deg, #383838, #383838);
+    background: linear-gradient(0deg, $open-dark, $open-dark), linear-gradient(0deg, #383838, #383838);
     border: 1px solid rgba(56, 56, 56, 1);
     height: 153px;
     width: 100%;
@@ -135,7 +135,7 @@ export default class ScheduleMatchBox extends Vue {
     &_teams {
         display: flex;
         width: 100%;
-        color: #131313;
+        color: $open-dark;
         background-color: #FAFAFA;
 
         &__side {
