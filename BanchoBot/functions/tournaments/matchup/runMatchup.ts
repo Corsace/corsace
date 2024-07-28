@@ -401,6 +401,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 !started && 
                 (
                     message.user.id === undefined ||
+                    message.user.id === 29191632 ||
+                    !users.some(u => u.osu.userID === message.user.id.toString()) ||
                     earlyStart
                 )
             )
