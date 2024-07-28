@@ -579,6 +579,7 @@ export default class Info extends Vue {
 
         &_header {
             width: 100%;
+            margin: 20px 0;
         }
     }
 
@@ -612,6 +613,7 @@ export default class Info extends Vue {
 
         &__text {
             text-align: center;
+            line-height: $font-xxl;
 
             &--noAlign {
                 text-align: left;
