@@ -16,7 +16,7 @@ import { discordStringTimestamp } from "../../../Server/utils/dateParse";
 import { extractParameters } from "../../functions/parameterFunctions";
 import respond from "../../functions/respond";
 import confirmCommand from "../../functions/confirmCommand";
-import { Tournament } from "../../../Models/tournaments/tournament";
+import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import { Matchup, preInviteTime } from "../../../Models/tournaments/matchup";
 import { StageType } from "../../../Interfaces/stage";
 import { cron } from "../../../Server/cron";
@@ -72,7 +72,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const tournament = await getTournament(m, typeof tournamentParam === "string" ? tournamentParam : channelID(m), typeof tournamentParam === "string" ? "name" : "channel", undefined, true);
+    const tournament = await getTournament(m, typeof tournamentParam === "string" ? tournamentParam : channelID(m), typeof tournamentParam === "string" ? "name" : "channel", [TournamentStatus.NotStarted, TournamentStatus.Registrations], true);
     if (!tournament)
         return;
 
