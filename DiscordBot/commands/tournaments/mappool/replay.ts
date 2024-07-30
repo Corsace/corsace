@@ -17,6 +17,7 @@ import { MappoolReplay } from "../../../../Models/tournaments/mappools/mappoolRe
 import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import { cleanLink } from "../../../../Server/utils/link";
+import { judgementKeys, replayParse } from "../../../functions/replayParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -43,13 +44,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const params = await extractParameters<parameters>(m, [
         { name: "pool" , paramType: "string" },
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
-        { name: "score", paramType: "integer" },
         { name: "target", paramType: "string", customHandler: extractTargetText, optional: true },
     ]);
     if (!params)
         return;
 
-    const { pool, slot, order, score, target } = params;
+    const { pool, slot, order, target } = params;
 
     const components = await mappoolComponents(m, pool, slot, order ?? true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, undefined, undefined, undefined, true);
     if (!components || !("mappoolMap" in components)) {
@@ -69,18 +69,37 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
     }
 
+    const parsedReplay = await replayParse(m, link, mappoolMap);
+    if (!parsedReplay)
+        return;
+
+    if (judgementKeys.some(key => parsedReplay.judgements[key] === undefined)) {
+        await respond(m, `Replay is missing the following hit judgement counts: \`${judgementKeys.filter(key => parsedReplay.judgements[key] === undefined).join(", ")}\``);
+        return;
+    }
+
     if (mappoolMap.replay)
         await mappoolMap.replay.remove();
 
     const replay = new MappoolReplay();
     replay.createdBy = user;
     replay.link = link;
-    replay.score = score;
     replay.mappoolMap = mappoolMap;
+    replay.replayMD5 = parsedReplay.replay_hash;
+    replay.beatmapMD5 = parsedReplay.beatmap_hash;
+    replay.score = parsedReplay.score;
+    replay.maxCombo = parsedReplay.max_combo;
+    replay.perfect = parsedReplay.perfect;
+    replay.count300 = parsedReplay.judgements.count_300!;
+    replay.count100 = parsedReplay.judgements.count_100!;
+    replay.count50 = parsedReplay.judgements.count_50!;
+    replay.countGeki = parsedReplay.judgements.count_geki!;
+    replay.countKatu = parsedReplay.judgements.count_katu!;
+    replay.misses = parsedReplay.judgements.miss!;
     await replay.save();
 
-    await respond(m, `Submitted replay for \`${mappoolSlot}\` with an epic score of \`${score}\``);
-    await mappoolLog(tournament, "submitReplay", user, `Replay was submitted to slot \`${mappoolSlot}\` in mappool \`${mappool.name}\` with a score of \`${score}\``);
+    await respond(m, `Submitted replay for \`${mappoolSlot}\` with an epic score of \`${parsedReplay.score}\``);
+    await mappoolLog(tournament, "submitReplay", user, `Replay was submitted to slot \`${mappoolSlot}\` in mappool \`${mappool.name}\` with a score of \`${parsedReplay.score}\``);
     return;
 }
 
@@ -94,10 +113,6 @@ const data = new SlashCommandBuilder()
     .addStringOption(option =>
         option.setName("slot")
             .setDescription("The slot to submit to.")
-            .setRequired(true))
-    .addIntegerOption(option =>
-        option.setName("score")
-            .setDescription("The score you got.")
             .setRequired(true))
     .addAttachmentOption(option =>
         option.setName("replay")
@@ -113,7 +128,6 @@ interface parameters {
     pool: string;
     slot: string;
     order?: number;
-    score: number;
     target?: string,
 }
 
