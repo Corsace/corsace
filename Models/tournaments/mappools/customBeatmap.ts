@@ -14,6 +14,9 @@ export class CustomBeatmap extends BaseEntity {
     @Column({ nullable: true })
         background?: string;
 
+    @Column({ length: 32, nullable: true })
+        md5?: string;
+
     @Column()
         artist!: string;
 
