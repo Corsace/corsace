@@ -87,8 +87,8 @@
                             v-for="row in shownQualifierScoreViews"
                             :key="row.ID"
                             :class="{ 
-                                'scores__table--tier1': tiers && row.placement <= 8 && syncView === 'teams',
-                                'scores__table--tier2': tiers && row.placement > 8 && row.placement <= 24 && syncView === 'teams',
+                                'scores__table--tier1': tierSync && row.placement <= 4 && syncView === 'teams',
+                                'scores__table--tier2': tierSync && row.placement > 4 && row.placement <= 16 && syncView === 'teams',
                             }"
                         >
                             <td>#{{ row.placement }}</td>
@@ -156,7 +156,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, PropSync, Prop } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { MatchupScore, MatchupScoreView, computeScoreViews, mapNames, scoreFilters, scoreSortType } from "../../../Interfaces/matchup";
 import { Tournament } from "../../../Interfaces/tournament";
@@ -179,7 +179,7 @@ export default class ScoresView extends Vue {
 
     @PropSync("view", { type: String }) syncView!: "players" | "teams";
     @PropSync("pool", { default: null }) readonly selectedMappool!: Mappool | null;
-    @Prop(Boolean) readonly tiers!: boolean;
+    @PropSync("tiers", { type: Boolean, default: false }) readonly tierSync!: boolean;
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State scores!: MatchupScore[] | null;
