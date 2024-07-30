@@ -17,7 +17,7 @@ import { MappoolSlot } from "../../Models/tournaments/mappools/mappoolSlot";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
 import customBeatmapToNodesu from "../../Server/functions/tournaments/mappool/customBeatmapToNodesu";
-import { ParserBeatmap, parseBeatmap,  parseBeatmapAttributes, ParserBeatmapAttributes, parseBeatmapStrains, ParserStrains } from "wasm-replay-parser-rs";
+import { ParserBeatmap, parseBeatmap,  parseBeatmapAttributes, ParserBeatmapAttributes, parseBeatmapStrains, ParserStrains } from "corsace-parser";
 
 export async function beatmapParse (m: Message | ChatInputCommandInteraction, diff: string, link: string, mods = 0) {
     let beatmap: ParserBeatmap | undefined = undefined;
