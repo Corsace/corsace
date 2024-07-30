@@ -1,11 +1,8 @@
 import { Judgements, parseReplay, Replay } from "wasm-replay-parser-rs";
 import { download } from "../../Server/utils/download";
 import respond from "./respond";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Message, MessageComponentInteraction } from "discord.js";
+import { ChatInputCommandInteraction, Message } from "discord.js";
 import { MappoolMap } from "../../Models/tournaments/mappools/mappoolMap";
-import commandUser from "./commandUser";
-import { randomUUID } from "crypto";
-import { timedOut } from "./messageInteractionFunctions";
 
 export const judgementKeys: (keyof Judgements)[] = [
     "count_300",
