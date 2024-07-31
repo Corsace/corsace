@@ -15,7 +15,7 @@
             style="position: fixed; transition: none; z-index: 10;"
         >
             <MapToolTip
-                v-if="filteredMap"
+                v-if="maphover && filteredMap"
                 :map="filteredMap"
             />
         </div>
