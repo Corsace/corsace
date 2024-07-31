@@ -98,6 +98,7 @@ export interface MatchupScoreViewBase {
     name: string;
     team?: string;
     teamID?: number;
+    teamAvatar?: string | null;
     avatar?: string | null;
     scores: MatchupScoreViewScore[];
     best: string;
@@ -211,6 +212,7 @@ export function computeScoreViews (
             if (team) {
                 scoreView.team = team.teamName;
                 scoreView.teamID = team.teamID;
+                scoreView.teamAvatar = team.teamAvatar;
             }
         }
         scoreViews.push(scoreView);
