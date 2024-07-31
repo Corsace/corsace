@@ -13,14 +13,17 @@
             class="teams_list__main_content"
         >
             <OpenTitle>
-                {{ unregisteredTeams ? $t('open.teams.allTeams') : $t('open.teams.registeredTeams') }}
+                {{ $t('open.teams.teamList') }}
                 <template #right>
+                    <OpenFilter
+                        :curr-filter.sync="currentFilter"
+                        :filters="filters"
+                    />
                     <ContentButton
-                        v-if="!unregisteredTeams"
-                        class="content_button--red content_button--nowrap"
-                        @click.native="getUnregisteredTeams"
+                        class="teams_list__button content_button--red content_button--font_sm"
+                        @click.native="showUnregistered = !showUnregistered"
                     >
-                        {{ $t('open.teams.showUnregistered') }}
+                        {{ showUnregistered ? $t('open.teams.showAll') : $t('open.teams.showRegistered') }}
                     </ContentButton>
                     <SearchBar
                         :placeholder="`${$t('open.teams.searchPlaceholder')}`"
@@ -51,17 +54,6 @@
                 class="teams_list__main_content"
             >
                 {{ $t('open.teams.noRegisteredTeams') }}
-            </div>
-            <div
-                v-if="unregisteredTeams"
-                id="unregisteredTeams"
-                class="teams_list__main_content_list"
-            >
-                <OpenCardTeam
-                    v-for="team in unregisteredTeams"
-                    :key="team.ID"
-                    :team="team"
-                />
             </div>
         </div>
         <div 
@@ -128,6 +120,7 @@ import { Tournament } from "../../Interfaces/tournament";
 import { Team, TeamList } from "../../Interfaces/team";
 import { UserInfo } from "../../Interfaces/user";
 
+import OpenFilter from "../../Assets/components/open/OpenFilter.vue";
 import SearchBar from "../../Assets/components/SearchBar.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
@@ -138,6 +131,7 @@ const openModule = namespace("open");
 
 @Component({
     components: {
+        OpenFilter,
         SearchBar,
         OpenTitle,
         ContentButton,
@@ -173,6 +167,21 @@ export default class Teams extends Mixins(CentrifugeMixin) {
     @openModule.State teamList!: TeamList[] | null;
 
     loading = true;
+    showUnregistered = false;
+    filters = ["A-Z", "Z-A", "ID (ASC)", "ID (DESC)", "RANK (ASC)", "RANK (DESC)", "BWS AVG. (ASC)", "BWS AVG. (DESC)", "TEAM SIZE (ASC)", "TEAM SIZE (DESC)"];
+    filterFunctions: Record<typeof this.filters[number], (a: TeamList, b: TeamList) => number> = {
+        "A-Z": (a, b) => a.name.localeCompare(b.name),
+        "Z-A": (a, b) => b.name.localeCompare(a.name),
+        "ID (ASC)": (a, b) => a.ID - b.ID,
+        "ID (DESC)": (a, b) => b.ID - a.ID,
+        "RANK (ASC)": (a, b) => a.rank - b.rank,
+        "RANK (DESC)": (a, b) => b.rank - a.rank,
+        "BWS AVG. (ASC)": (a, b) => a.BWS - b.BWS,
+        "BWS AVG. (DESC)": (a, b) => b.BWS - a.BWS,
+        "TEAM SIZE (ASC)": (a, b) => a.members.length - b.members.length,
+        "TEAM SIZE (DESC)": (a, b) => b.members.length - a.members.length,
+    };
+    currentFilter = "A-Z";
     searchValue = "";
     page: "list" | "management" = "list";
     unregisteredTeams: TeamList[] | null = null;
@@ -180,45 +189,39 @@ export default class Teams extends Mixins(CentrifugeMixin) {
     get filteredTeams () {
         if (this.page === "management")
             return this.myTeams ?? [];
+        let teams = [...(this.teamList ?? [])];
+        if (this.showUnregistered && this.unregisteredTeams)
+            teams = [...teams, ...this.unregisteredTeams];
         if (!this.searchValue)
-            return this.teamList ?? [];
-        return this.teamList?.filter(team => 
+            return teams.sort((a, b) => this.filterFunctions[this.currentFilter](a, b));
+
+        return teams.filter(team => 
             team.name.toLowerCase().includes(this.searchValue.toLowerCase()) ||
             team.members.some(member => member.username.toLowerCase().includes(this.searchValue.toLowerCase())) ||
             team.ID.toString().includes(this.searchValue.toLowerCase()) ||
             team.members.some(member => member.ID.toString().includes(this.searchValue.toLowerCase())) ||
             team.members.some(member => member.osuID.toLowerCase().includes(this.searchValue.toLowerCase()))
-        ) ?? [];
+        ).sort((a, b) => this.filterFunctions[this.currentFilter](a, b));
     }
 
     async mounted () {
         if (this.$route.query.s === "my")
             this.page = "management";
         this.loading = true;
-        if (this.tournament)
+        if (this.tournament) {
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
+            const { data } = await this.$axios.get<{ teams: TeamList[] }>(`/api/tournament/${this.tournament.ID}/unregisteredTeams`);
+            if (!data.success) {
+                alert("Failed to get unregistered teams, check console for more information");
+                console.error(data.error);
+                return;
+            }
+            this.unregisteredTeams = data.teams;
+        }
         this.loading = false;
 
         if (this.tournament)
             await this.initCentrifuge(`teams:${this.tournament.ID}`);
-    }
-
-    async getUnregisteredTeams () {
-        this.loading = true;
-        const { data } = await this.$axios.get<{ teams: TeamList[] }>(`/api/tournament/${this.tournament?.ID}/unregisteredTeams`);
-        if (!data.success) {
-            alert("Failed to get unregistered teams, check console for more information");
-            console.error(data.error);
-            return;
-        }
-        this.unregisteredTeams = data.teams;
-        this.loading = false;
-
-        const teamsList = document.getElementsByClassName("teams_list")[0];
-        teamsList.scrollTo({
-            top: document.getElementById("unregisteredTeams")?.offsetTop ?? teamsList.scrollHeight,
-            behavior: "smooth",
-        });
     }
 
     handleData (ctx: ExtendedPublicationContext) {
@@ -232,6 +235,12 @@ export default class Teams extends Mixins(CentrifugeMixin) {
 @import '@s-sass/_variables';
 
 .teams_list {
+
+    &__button {
+        min-width: 150px;
+        text-transform: uppercase;
+        padding: 0;
+    }
 
     &__main_content {
         align-self: center;
