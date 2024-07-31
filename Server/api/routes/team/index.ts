@@ -60,6 +60,8 @@ teamRouter.$get<{ teams: TeamInterface[] }>("/", isLoggedInDiscord, async (ctx) 
 });
 
 teamRouter.$get<{ teams: TeamInterface[] }>("/all", async (ctx) => {
+    const offset = parseInt(parseQueryParam(ctx.query.offset) ?? "") || 0;
+    const limit = parseInt(parseQueryParam(ctx.query.limit) ?? "") || 0;
     const teamQ = Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.captain", "captain")
@@ -68,10 +70,9 @@ teamRouter.$get<{ teams: TeamInterface[] }>("/all", async (ctx) => {
         .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("team.tournaments", "tournament");
 
-    if (parseQueryParam(ctx.query.offset) && !isNaN(parseInt(parseQueryParam(ctx.query.offset)!)))
-        teamQ.skip(parseInt(parseQueryParam(ctx.query.offset)!));
-    if (parseQueryParam(ctx.query.limit) && !isNaN(parseInt(parseQueryParam(ctx.query.limit)!)))
-        teamQ.take(parseInt(parseQueryParam(ctx.query.limit)!));
+    teamQ.skip(offset);
+    if (limit)
+        teamQ.take(limit);
 
     const teams = await teamQ.getMany();
 

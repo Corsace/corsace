@@ -65,8 +65,8 @@ commentsRouter.$get<{
         return;
     }
     const modeID = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
-    const userId = parseInt(parseQueryParam(ctx.query.user) ?? "");
-    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
+    const userId = parseInt(parseQueryParam(ctx.query.user) ?? "") || 0;
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") || new Date().getUTCFullYear();
 
     if (year >= 2020) {
         ctx.body = {
