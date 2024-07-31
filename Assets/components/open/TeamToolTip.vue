@@ -48,7 +48,6 @@ import { TeamList } from "../../../Interfaces/team";
     components: {
     },
 })
-
 export default class TeamToolTip extends Vue {
     @PropSync("team", { type: Object }) teamSync!: TeamList;
     @PropSync("player", { type: Object, default: true}) playerSync!: boolean;

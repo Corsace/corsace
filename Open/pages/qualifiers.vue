@@ -210,8 +210,8 @@ export default class Qualifiers extends Vue {
     }
 
     &__header_subtext {
-        font-family: $font-swis721;
-        font-weight: 400;
+        font-weight: bold;
+        font-stretch: condensed;
         font-size: $font-sm;
         text-align: right;
         color: #909090;

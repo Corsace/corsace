@@ -39,12 +39,11 @@
 import { Vue, Component, PropSync } from "vue-property-decorator";
 import { MappoolMap } from "../../../Interfaces/mappool";
 import { censor, profanityFilter } from "../../../Interfaces/comment";
+
 @Component({
     components: {
     },
 })
-
-
 export default class MapToolTip extends Vue {
     @PropSync("map", { type: Object }) mapSync!: MappoolMap;
 
