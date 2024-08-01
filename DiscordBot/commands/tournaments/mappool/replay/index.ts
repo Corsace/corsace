@@ -1,23 +1,23 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
-import { Command } from "../../index";
-import { loginResponse } from "../../../functions/loginResponse";
-import { unFinishedTournaments } from "../../../../Models/tournaments/tournament";
-import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
-import { extractParameters } from "../../../functions/parameterFunctions";
-import { getLink } from "../../../functions/getLink";
-import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
-import respond from "../../../functions/respond";
-import getUser from "../../../../Server/functions/get/getUser";
-import commandUser from "../../../functions/commandUser";
-import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
-import channelID from "../../../functions/channelID";
-import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
-import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
-import { MappoolReplay } from "../../../../Models/tournaments/mappools/mappoolReplay";
-import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
-import getStaff from "../../../functions/tournamentFunctions/getStaff";
-import { cleanLink } from "../../../../Server/utils/link";
-import { judgementKeys, replayParse } from "../../../functions/replayParse";
+import { Command } from "../../../index";
+import { loginResponse } from "../../../../functions/loginResponse";
+import { unFinishedTournaments } from "../../../../../Models/tournaments/tournament";
+import { securityChecks } from "../../../../functions/tournamentFunctions/securityChecks";
+import { extractParameters } from "../../../../functions/parameterFunctions";
+import { getLink } from "../../../../functions/getLink";
+import { postProcessSlotOrder } from "../../../../functions/tournamentFunctions/parameterPostProcessFunctions";
+import respond from "../../../../functions/respond";
+import getUser from "../../../../../Server/functions/get/getUser";
+import commandUser from "../../../../functions/commandUser";
+import mappoolComponents from "../../../../functions/tournamentFunctions/mappoolComponents";
+import channelID from "../../../../functions/channelID";
+import { TournamentRoleType, TournamentChannelType } from "../../../../../Interfaces/tournament";
+import mappoolLog from "../../../../functions/tournamentFunctions/mappoolLog";
+import { MappoolReplay } from "../../../../../Models/tournaments/mappools/mappoolReplay";
+import { extractTargetText } from "../../../../functions/tournamentFunctions/paramaterExtractionFunctions";
+import getStaff from "../../../../functions/tournamentFunctions/getStaff";
+import { cleanLink } from "../../../../../Server/utils/link";
+import { judgementKeys, replayParse } from "../../../../functions/replayParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -135,7 +135,7 @@ const mappoolReplay: Command = {
     data,
     alternativeNames: [ "replay_mappool", "mappool-replay", "replay-mappool", "mappoolreplay", "replaymappool", "replayp", "preplay", "pool_replay", "replay_pool", "pool-replay", "replay-pool", "poolreplay", "replaypool", "mappool_r", "r_mappool", "mappool-r", "r-mappool", "mappoolr", "rmappool", "rp", "pr", "pool_r", "r_pool", "pool-r", "r-pool", "poolr", "rpool" ],
     category: "tournaments",
-    subCategory: "mappools",
+    subCategory: "mappools/replay",
     run,
 };
 
