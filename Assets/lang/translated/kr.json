@@ -643,14 +643,13 @@
             }
         },
         "teams": {
-            "registeredTeams": "REGISTERED TEAMS",
-            "allTeams": "ALL TEAMS",
             "teamList": "팀 목록",
             "teamManagement": "팀 관리",
             "error": "팀 목록을 가져올 수 없습니다",
             "loginManagement": "팀을 관리하려면 로그인하세요",
             "searchPlaceholder": "팀/유저 검색",
-            "showUnregistered": "Show unregistered teams",
+            "showAll": "all teams",
+            "showRegistered": "registered only",
             "noRegisteredTeams": "No teams have registered yet.",
             "noCreatedTeams": "You are currently not in any teams",
             "editTeamInfo": "팀 정보 수정",

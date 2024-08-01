@@ -643,14 +643,13 @@
             }
         },
         "teams": {
-            "registeredTeams": "REGISTERED TEAMS",
-            "allTeams": "ALL TEAMS",
             "teamList": "LISTA DE TIMES",
             "teamManagement": "TEAM MANAGEMENT",
             "error": "NÃO FOI POSSÍVEL PEGAR A LISTA DE TIMES",
             "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "procurar por usuário/time",
-            "showUnregistered": "Show unregistered teams",
+            "showAll": "all teams",
+            "showRegistered": "registered only",
             "noRegisteredTeams": "No teams have registered yet.",
             "noCreatedTeams": "You are currently not in any teams",
             "editTeamInfo": "editar informações do time",

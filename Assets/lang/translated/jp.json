@@ -643,14 +643,13 @@
             }
         },
         "teams": {
-            "registeredTeams": "REGISTERED TEAMS",
-            "allTeams": "ALL TEAMS",
             "teamList": "チームリスト",
             "teamManagement": "TEAM MANAGEMENT",
             "error": "チームリストを取得できませんでした",
             "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "ユーザー/チームを検索",
-            "showUnregistered": "Show unregistered teams",
+            "showAll": "all teams",
+            "showRegistered": "registered only",
             "noRegisteredTeams": "No teams have registered yet.",
             "noCreatedTeams": "You are currently not in any teams",
             "editTeamInfo": "チーム情報を編集",

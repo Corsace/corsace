@@ -643,14 +643,13 @@
             }
         },
         "teams": {
-            "registeredTeams": "TIM YANG TERDAFTAR",
-            "allTeams": "SELURUH TIM",
             "teamList": "DAFTAR TIM",
             "teamManagement": "MANAJEMEN TIM",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
             "loginManagement": "Silakan masuk untuk mengelola tim milikmu.",
             "searchPlaceholder": "cari pengguna/tim",
-            "showUnregistered": "Tampilkan tim yang tidak terdaftar",
+            "showAll": "seluruh tim",
+            "showRegistered": "hanya yang terdaftar",
             "noRegisteredTeams": "Belum ada tim yang terdaftar.",
             "noCreatedTeams": "Kamu saat ini tidak sedang berada dalam tim mana pun",
             "editTeamInfo": "SUNtING INFO TIM",

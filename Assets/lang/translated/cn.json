@@ -643,14 +643,13 @@
             }
         },
         "teams": {
-            "registeredTeams": "REGISTERED TEAMS",
-            "allTeams": "ALL TEAMS",
             "teamList": "队伍列表",
             "teamManagement": "TEAM MANAGEMENT",
             "error": "无法获得队伍名单",
             "loginManagement": "Log in to manage your teams.",
             "searchPlaceholder": "搜索用户/队伍",
-            "showUnregistered": "Show unregistered teams",
+            "showAll": "all teams",
+            "showRegistered": "registered only",
             "noRegisteredTeams": "No teams have registered yet.",
             "noCreatedTeams": "You are currently not in any teams",
             "editTeamInfo": "编辑队伍信息",
