@@ -1,4 +1,4 @@
-import { Judgements, parseReplay, Replay } from "wasm-replay-parser-rs";
+import { Judgements, parseReplay, Replay } from "corsace-parser";
 import { download } from "../../Server/utils/download";
 import respond from "./respond";
 import { ChatInputCommandInteraction, Message } from "discord.js";
