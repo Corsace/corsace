@@ -14,7 +14,8 @@
                     class="staff_row"
                 >
                     <div class="staff_row__title">
-                        {{ staffRow.role.toUpperCase() }}<br>({{ getRoleTypeName(staffRow.roleType).toUpperCase() }} ROLE)
+                        {{ staffRow.role.toUpperCase() }} ({{ getRoleTypeName(staffRow.roleType).toUpperCase() }} ROLE)
+                        <hr class="line--red line--no-space">
                     </div>
                     <div class="staff_row_members">
                         <a 
@@ -28,6 +29,7 @@
                                 class="staff_row_members_card__headshot"
                                 :style="{ 'backgroundImage': `url(${staffMember.avatar})` }"
                             />
+                            <div class="staff_row_members_card__line" />
                             <div class="staff_row_members_card_details">
                                 <div class="staff_row_members_card_details__username">
                                     {{ staffMember.username }}
@@ -127,17 +129,15 @@ $flex-gap: 25px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: $flex-gap;
-        gap: $flex-gap;
         
         &__title {
             font-size: $font-base;
-            font-weight: 600;
-            text-align: center;
+            font-weight: bold;
             text-overflow: ellipsis;
             overflow: hidden;
-            width: 150px;
+            width: 100%;
             color: $open-red;
+            margin-bottom: 10px;
         }
 
         &_members {
@@ -152,11 +152,11 @@ $flex-gap: 25px;
                 flex-basis: calc(25% - $flex-gap*0.75); // 4 cards per row, 3 gaps of 25px per row
                 text-overflow: ellipsis;
                 overflow: hidden;
-                height: 95px;
+                height: 75px;
                 flex-direction: row;
                 align-items: center;
 
-                border: 1px solid rgba(42, 44, 45, 1);
+                background-color: white;
 
                 &:hover {
                     text-decoration: none;
@@ -164,13 +164,18 @@ $flex-gap: 25px;
                 }
                 
                 &__headshot {
-                    height: 93px;
-                    width: 74px;
-                    border-right: 1px solid $open-red;
+                    height: 100%;
+                    width: 75px;
 
                     background-size: cover;
                     background-repeat: no-repeat;
                     background-position: center;
+                }
+
+                &__line {
+                    width: 10px;
+                    height: 100%;
+                    background-color: $open-red;
                 }
 
                 &_details {
@@ -183,8 +188,8 @@ $flex-gap: 25px;
                     white-space: nowrap;
 
                     &__username {
-                        font-size: $font-lg;
-                        font-weight: 700;
+                        color: $open-dark;
+                        font-weight: bold;
                         line-height: 29px;
                         letter-spacing: 0em;
                         text-align: left;
@@ -202,8 +207,9 @@ $flex-gap: 25px;
                     }
 
                     &__not_logged_in {
-                        font-size: $font-sm;
-                        font-weight: 700;
+                        font-size: $font-xsm;
+                        font-weight: bold;
+                        font-stretch: condensed;
                         line-height: 16px;
                         letter-spacing: 0em;
                         text-align: left;
