@@ -643,14 +643,13 @@
             }
         },
         "teams": {
-            "registeredTeams": "REGISTERED TEAMS",
-            "allTeams": "ВСЕ КОМАНДЫ",
             "teamList": "СПИСОК КОМАНД",
             "teamManagement": "УПРАВЛЕНИЕ КОМАНДОЙ",
             "error": "НЕ УДАЛОСЬ НАЙТИ СПИСОК КОМАНД",
             "loginManagement": "Войдите, чтобы управлять командами.",
             "searchPlaceholder": "искать пользователя/команду",
-            "showUnregistered": "Show unregistered teams",
+            "showAll": "all teams",
+            "showRegistered": "registered only",
             "noRegisteredTeams": "No teams have registered yet.",
             "noCreatedTeams": "You are currently not in any teams",
             "editTeamInfo": "изменить информацию о команде",
