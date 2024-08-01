@@ -47,10 +47,9 @@ export default class StageSelector extends Vue {
         flex-direction: column;
         justify-content: flex-end;
         text-align: right;
-        font-family: $font-swis721;
         font-size: $font-sm;
+        font-stretch: condensed;
         color: #909090; // This color is not in variables
-        font-weight: 400;
         width: min-content;
     }
 
@@ -58,7 +57,8 @@ export default class StageSelector extends Vue {
         display: flex;
         flex-direction: center;
         justify-content: space-between;
-        width: 130px;
+        gap: 30px;
+
         &__left {
             cursor: pointer;
             width: 0;
@@ -73,6 +73,7 @@ export default class StageSelector extends Vue {
             font-size: $font-base;
             font-weight: 700;
             color: $open-red;
+            letter-spacing: 0.18em;
         }
 
         &__right {

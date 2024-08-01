@@ -1,58 +1,61 @@
 <template>
     <a
-        v-if="mappoolMap"
-        :href="mappoolMap.beatmap?.ID ? `https://osu.ppy.sh/b/${mappoolMap.beatmap.ID}` : undefined" 
+        v-if="mappoolMapSync"
+        :href="mappoolMapSync.beatmap?.ID ? `https://osu.ppy.sh/b/${mappoolMapSync.beatmap.ID}` : undefined" 
         class="mappool_map_banner"
         target="_blank"
         rel="noopener noreferrer"
     >
         <div 
-            class="mappool_map_banner__text"
-            :style="`background-image: url(https://assets.ppy.sh/beatmaps/${mappoolMap.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`"
+            class="mappool_map_banner__background"
+            :style="`background-image: url(https://assets.ppy.sh/beatmaps/${mappoolMapSync.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`"
+        />
+        <div 
+            class="mappool_map_banner__slotOrder"
+            :style="{ backgroundColor: slotColourSync, color: getContrastColourText }"
         >
-            {{ slotAcronym }}{{ onlyMap ? "" : mappoolMap.order }}
+            {{ slotAcronymSync }}{{ onlyMapSync ? "" : mappoolMapSync.order }}
         </div>
-
         <div class="mappool_map_banner__info">
             <div class="mappool_map_banner__song_data">
                 <div class="mappool_map_banner__title">
-                    {{ censorMethod(mappoolMap.beatmap?.beatmapset?.title || mappoolMap.customBeatmap?.title || '') }}
+                    {{ censorMethod(mappoolMapSync.beatmap?.beatmapset?.title || mappoolMapSync.customBeatmap?.title || '') }}
                 </div>
                 <div class="mappool_map_banner__artist">
-                    {{ censorMethod(mappoolMap.beatmap?.beatmapset?.artist || mappoolMap.customBeatmap?.artist || '') }}
+                    {{ censorMethod(mappoolMapSync.beatmap?.beatmapset?.artist || mappoolMapSync.customBeatmap?.artist || '') }}
                 </div>
             </div>
-            <hr class="line--red line--banner">
             <div class="mappool_map_banner__osu_data">
-                <div class="mappool_map_banner__osu_data_text">
-                    <div class="mappool_map_banner__osu_data_text--mapper">
-                        {{ $t("open.qualifiers.mappool.banner.mapper") }}
-                    </div>
-                    <div class="mappool_map_banner__osu_data_text--truncated">
-                        {{ mappoolMap.customMappers?.map(mapper => mapper.osu.username).join(", ") || mappoolMap.beatmap?.beatmapset?.creator?.osu.username || '' }}
-                    </div>
-                </div>
                 <div class="mappool_map_banner__osu_data_text">
                     <div class="mappool_map_banner__osu_data_text--difficulty">
                         {{ $t("open.qualifiers.mappool.banner.difficulty") }}
                     </div>
                     <div class="mappool_map_banner__osu_data_text--truncated">
-                        {{ censorMethod(mappoolMap.beatmap?.difficulty || mappoolMap.customBeatmap?.difficulty || '') }}
+                        {{ censorMethod(mappoolMapSync.beatmap?.difficulty || mappoolMapSync.customBeatmap?.difficulty || '') }}
+                    </div>
+                </div>
+                <div class="mappool_map_banner__osu_data_text">
+                    <div class="mappool_map_banner__osu_data_text--mapper">
+                        {{ $t("open.qualifiers.mappool.banner.mapper") }}
+                    </div>
+                    <div class="mappool_map_banner__osu_data_text--truncated">
+                        {{ mappoolMapSync.customMappers?.map(mapper => mapper.osu.username).join(", ") || mappoolMapSync.beatmap?.beatmapset?.creator?.osu.username || '' }}
                     </div>
                 </div>
             </div>
         </div>
         <MappoolMapStats 
-            :mappool-map="mappoolMap"
+            :mappool-map="mappoolMapSync"
         />
     </a>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 import MappoolMapStats from "./MappoolMapStats.vue";
 import { MappoolMap } from "../../../Interfaces/mappool";
 import { censor, profanityFilter } from "../../../Interfaces/comment";
+import { contrastColourText } from "../../../Interfaces/mods";
 
 @Component({
     components: {
@@ -61,12 +64,17 @@ import { censor, profanityFilter } from "../../../Interfaces/comment";
 })
 
 export default class MappoolMapBanner extends Vue {
-    @Prop({ type: Object }) readonly mappoolMap: MappoolMap | undefined;
-    @Prop({ type: String, default: "" }) readonly slotAcronym!: string;
-    @Prop({ type: Boolean, default: false }) readonly onlyMap!: boolean;
+    @PropSync("mappoolMap", { type: Object }) readonly mappoolMapSync: MappoolMap | undefined;
+    @PropSync("slotAcronym", { type: String, default: "" }) readonly slotAcronymSync!: string;
+    @PropSync("onlyMap", { type: Boolean, default: false }) readonly onlyMapSync!: boolean;
+    @PropSync("slotColour", { default: "" }) readonly slotColourSync!: string;
 
     censorMethod (input: string): string {
         return censor(input, profanityFilter);
+    }
+
+    get getContrastColourText () {
+        return contrastColourText(this.slotColourSync);
     }
 }
 </script>
@@ -76,7 +84,7 @@ export default class MappoolMapBanner extends Vue {
 @import '@s-sass/_variables';
 
 .mappool_map_banner {
-    margin: 5px 0px;
+    position: relative;
     display: flex;
     flex-direction: row;
     height: 106px;
@@ -86,14 +94,7 @@ export default class MappoolMapBanner extends Vue {
         text-decoration: none;
     }
 
-    &__text {
-        font-family: $font-swis721;
-        font-weight: 700;
-        font-size: $font-title;
-        text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
-        text-align: center;
-        vertical-align: middle;
-        position: relative;
+    &__background {
         width: 50%;
         display: flex;
         justify-content: center;
@@ -103,23 +104,36 @@ export default class MappoolMapBanner extends Vue {
         background-size: cover;
         background-repeat: no-repeat;
     }
-    
+
+    &__slotOrder {
+        position: relative;
+        line-height: 0;
+        padding: 0 calc(0.75 * $font-title) 0 calc(0.4 * $font-title);
+        font-size: $font-title;
+        font-weight: bold;
+        font-stretch: condensed;
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+    }
 
     &__info {
-        background: #171B1E;
-        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: white;
+        font-weight: bold;
+        color: black;
+        width: 66%;
         max-width: 491px;
-        padding-left: 15px;
+        padding: 5px 12px;
     }
 
     &__song_data {
         display: flex;
         flex-direction: column;
-        padding: 5px 15px 0px 0px;
     }
 
     &__title {
-        font-weight: 700;
         font-size: $font-lg;
         white-space: nowrap;
         overflow: hidden;
@@ -127,39 +141,22 @@ export default class MappoolMapBanner extends Vue {
     }
 
     &__artist {
-        font-weight: 500;
-        font-style: italic;
+        color: $open-red;
     }
 
     &__osu_data {
-        display: flex;
-        flex-direction: row;
         justify-content: flex-start;
-        padding: 4px 15px 5px 0px;
-        min-width: 30%;
 
         &_text {
             display: flex;
             flex-direction: row;
+            font-size: $font-sm;
             gap: 10px;
-            font-weight: 500;
-            width: 205px;
 
             &--mapper, &--difficulty {
-                font-family: $font-swis721;
-                font-weight: 700;
-                color: $open-dark;
-                padding: 1.75px 3.5px;
-                font-size: $font-sm;
+                color: $open-red;
+                font-size: $font-xsm;
                 align-self: center;
-            }
-
-            &--mapper {
-                background-color: $open-red;
-            }
-
-            &--difficulty {
-                background-color: $white;
             }
 
             &--truncated { 

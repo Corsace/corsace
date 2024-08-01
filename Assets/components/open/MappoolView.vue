@@ -5,8 +5,8 @@
     >
         <MappoolSlotDropdown
             v-for="slot in poolData.slots"
-            :slot="slot"
             :key="slot.ID"
+            :slot-colour="slotMod(slot)"
         >
             {{ slot.name.toUpperCase() }}
             <template #content>
@@ -16,6 +16,7 @@
                     :mappool-map="map"
                     :slot-acronym="slot.acronym.toUpperCase()"
                     :only-map="slot.maps.length === 1"
+                    :slot-colour="slotMod(slot)"
                 />
             </template>
         </MappoolSlotDropdown>
@@ -26,7 +27,8 @@
 import { Vue, Component, PropSync } from "vue-property-decorator";
 import MappoolSlotDropdown from "./MappoolSlotDropdown.vue";
 import MappoolMapBanner from "./MappoolMapBanner.vue";
-import { Mappool } from "../../../Interfaces/mappool";
+import { Mappool, MappoolSlot } from "../../../Interfaces/mappool";
+import { freemodRGB, freemodButFreerRGB, modsToRGB } from "../../../Interfaces/mods";
 
 @Component({
     components: {
@@ -36,13 +38,26 @@ import { Mappool } from "../../../Interfaces/mappool";
 })
 export default class MappoolView extends Vue {
     @PropSync("pool", { default: null }) readonly poolData!: Mappool | null;
+
+    slotMod (slot: MappoolSlot): string {
+        if (slot.allowedMods === null && slot.userModCount === null && slot.uniqueModCount === null)
+            return this.RGBValuesToRGBCSS(freemodButFreerRGB);
+
+        if (slot.userModCount !== null || slot.uniqueModCount !== null)
+            return this.RGBValuesToRGBCSS(freemodRGB);
+
+        return this.RGBValuesToRGBCSS(modsToRGB(slot.allowedMods));
+    }
+
+    RGBValuesToRGBCSS (values: [number, number, number]) {
+        return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
+    } 
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_variables';
 
-.mappool_view {
-    padding-top: 20px;
-}
+// .mappool_view {}
 </style>
+

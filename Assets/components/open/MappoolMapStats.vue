@@ -7,7 +7,6 @@
         >
             <img
                 :src="require(`../../img/site/open/mappool/${stat.image}.svg`)"
-                class="mappool_map_stats-table__img"
             >
             {{ 
                 formatStat(stat)
@@ -37,13 +36,12 @@ export default class MappoolMapStats extends Vue {
     @PropSync("mappoolMap", { default: null }) readonly map!: MappoolMap | null;
 
     stats: Stat[] = [
-        { image: "LEN", property: "totalLength", decimals: 0 },
-        { image: "BPM", property: "BPM", decimals: 0 },
         { image: "SR", property: "totalSR", decimals: 2 },
+        { image: "BPM", property: "BPM", decimals: 0 },
+        { image: "LEN", property: "totalLength", decimals: 0 },
         { image: "CS", property: "circleSize", decimals: 1 },
         { image: "AR", property: "approachRate", decimals: 1 },
         { image: "OD", property: "overallDifficulty", decimals: 1 },
-        { image: "HP", property: "hpDrain", decimals: 1 },
     ];
 
     formatStat (stat: Stat): string {
@@ -85,35 +83,25 @@ export default class MappoolMapStats extends Vue {
 @import '@s-sass/_variables';
 
 .mappool_map_stats {
-    background-image: url('../../img/site/open/checkers-bg.png');
-    mix-blend-mode: Difference;
-    background-repeat: no-repeat;
-    background-position: bottom 0px right 0px;
-    min-width: 30%;
+    min-width: 20%;
 
     padding: 8px 20px;
 
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
     flex-wrap: wrap;
-    gap: 15px;
 
     &__stat {
-        flex: 1 0 25%;
+        flex: 1 0 33%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        font-stretch: condensed;
+        font-weight: normal;
     }
 }
 
-.mappool_map_stats-table {
-    width: 100%;
-    height: 100%;
-    padding: 5px 5px;
-
-    &__row {
-        font-weight: 500;
-        text-align: center;
-    }
-
-    &__img {
-        vertical-align: -10%;
-    }
-}
 </style>
