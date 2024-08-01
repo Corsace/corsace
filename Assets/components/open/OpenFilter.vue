@@ -9,7 +9,7 @@
             </div>
             <div class="open_filter__selected__arrow_holder">
                 <div
-                    class="open_filter__selected__arrow"
+                    class="triangle open_filter__selected__arrow"
                     :class="{ 'open_filter__selected__arrow--active': visibleDropdown }"
                 />
             </div>
@@ -69,9 +69,6 @@ export default class OpenFilter extends Vue {
 
         &__arrow {
             position: relative;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-top: 10px solid $open-dark;
 
             &--active {
                 border-top: 0;
