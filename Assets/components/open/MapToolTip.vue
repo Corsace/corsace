@@ -9,18 +9,18 @@
         <div class="map_tooltip_info">
             <div class="map_tooltip_info__wrapper">
                 <div class="map_tooltip_info__header">
-                    {{ $t("open.qualifiers.mappool.banner.mapper") }}
-                </div>
-                <div class="map_tooltip_info__text">
-                    {{ mapSync.customMappers?.map(mapper => mapper.osu.username).join(", ") || mapSync.beatmap?.beatmapset?.creator?.osu.username || '' }}
-                </div>
-            </div>
-            <div class="map_tooltip_info__wrapper">
-                <div class="map_tooltip_info__header">
                     {{ $t("open.qualifiers.mappool.banner.difficulty") }}
                 </div>
                 <div class="map_tooltip_info__text">
                     {{ censorMethod(mapSync.beatmap?.difficulty || mapSync.customBeatmap?.difficulty || '') }}
+                </div>
+            </div>
+            <div class="map_tooltip_info__wrapper">
+                <div class="map_tooltip_info__header">
+                    {{ $t("open.qualifiers.mappool.banner.mapper") }}
+                </div>
+                <div class="map_tooltip_info__text">
+                    {{ mapSync.customMappers?.map(mapper => mapper.osu.username).join(", ") || mapSync.beatmap?.beatmapset?.creator?.osu.username || '' }}
                 </div>
             </div>
             <div class="map_tooltip_info__wrapper map_tooltip_info__wrapper--left">
