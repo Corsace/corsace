@@ -60,7 +60,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 },
             ]);
         } catch (e) {
-            await respond(m, `Can't download **${pool}**\nosu.direct is proly currently down. Error below:\n\`\`\`\n${e}\`\`\``);
+            await respond(m, `Can't download **${pool} ${mappoolSlot}**\nosu.direct is proly currently down. Error below:\n\`\`\`\n${e}\`\`\``);
         }
 
         return;
@@ -74,7 +74,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const { slotMod } = components;
 
         await respond(m, slotMod.maps.map(map => {
-            const link = map.beatmap ? `https://osu.direct/api/d/${map.beatmap.beatmapsetID}` : map.customBeatmap ? map.customBeatmap.link : undefined;
+            const link = map.beatmap ? `https://osu.direct/api/d/${map.beatmap.beatmapsetID}` : map.customBeatmap?.link;
             return `**${slotMod.acronym.toUpperCase()}${slotMod.maps.length === 1 ? "" : map.order}**: ${link ?? "No beatmap"}`;
         }).join("\n"));
 
