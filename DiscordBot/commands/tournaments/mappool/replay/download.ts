@@ -118,7 +118,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         const md5 = map.beatmap?.md5 ?? map.customBeatmap?.md5;
         return `**${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}**:\nMap: ${link}\nReplay: ${mapReplay.link}${md5 !== mapReplay.beatmapMD5 ? `\nThis replay may be for a different beatmap!\nMap MD5: ${md5}\nReplay MD5: ${mapReplay.beatmapMD5}` : ""}}`;
-    }).join("\n\n")).join("\n"));
+    }).join("\n\n")).join("\n\n"));
 }
 
 const data = new SlashCommandBuilder()
