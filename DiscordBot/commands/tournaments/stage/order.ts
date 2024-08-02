@@ -114,7 +114,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
-            if (order.map(o => o.set).filter((v, i, a) => a.indexOf(v) === i).length % 2 === 0) {
+            if (order.map(o => o.set).filter((v, j, a) => a.indexOf(v) === j).length % 2 === 0) {
                 await i.reply("U have an even number of sets which is impossible to have a clear winner for the match.");
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;

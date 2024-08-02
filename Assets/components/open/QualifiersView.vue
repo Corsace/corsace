@@ -103,7 +103,7 @@ export default class QualifiersView extends Vue {
         const qualifiersGroupedByDate: { date: Date, qualifiers: BaseQualifier[] }[] = [];
         for (const qualifier of this.qualifierList) {
             const date = new Date(qualifier.date);
-            const qualifiersGroupedByDateIndex = qualifiersGroupedByDate.findIndex((qualifiersGroupedByDate) => qualifiersGroupedByDate.date.getUTCDate() === date.getUTCDate() && qualifiersGroupedByDate.date.getUTCMonth() === date.getUTCMonth() && qualifiersGroupedByDate.date.getUTCFullYear() === date.getUTCFullYear());
+            const qualifiersGroupedByDateIndex = qualifiersGroupedByDate.findIndex((qual) => qual.date.getUTCDate() === date.getUTCDate() && qual.date.getUTCMonth() === date.getUTCMonth() && qual.date.getUTCFullYear() === date.getUTCFullYear());
             if (qualifiersGroupedByDateIndex === -1) {
                 qualifiersGroupedByDate.push({
                     date,

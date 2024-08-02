@@ -15,12 +15,12 @@ export const state = (): StreamState => ({
 });
 
 export const mutations: MutationTree<StreamState> = {
-    setKey (state, data: { key: string, tournamentID?: number }) {
-        state.key = data.key;
-        state.tournamentID = data.tournamentID ?? null;
+    setKey (streamState, data: { key: string, tournamentID?: number }) {
+        streamState.key = data.key;
+        streamState.tournamentID = data.tournamentID ?? null;
     },
-    setScores (state, scores: MatchupScore[] | undefined) {
-        state.scores = scores ?? null;
+    setScores (streamState, scores: MatchupScore[] | undefined) {
+        streamState.scores = scores ?? null;
     },
 };
 
@@ -29,8 +29,8 @@ export const getters: GetterTree<StreamState, OpenState> = {
 
 export const actions: ActionTree<StreamState, OpenState> = {
     async setScores ({ commit }, stageID) {
-        const state = this.state as any;
-        const { data } = await this.$axios.get<{ scores: MatchupScore[] }>(`/api/${stageID}/scores?key=${state.stream.key}`);
+        const generalState = this.state as any;
+        const { data } = await this.$axios.get<{ scores: MatchupScore[] }>(`/api/${stageID}/scores?key=${generalState.stream.key}`);
 
         if (data.success)
             commit("setScores", data.scores);

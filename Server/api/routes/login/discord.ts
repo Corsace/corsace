@@ -76,9 +76,9 @@ discordRouter.$get("/callback", async (ctx: CorsaceContext<object>, next) => {
                         roles: [config.discord.roles.corsace.verified, config.discord.roles.corsace.streamAnnouncements],
                     });
                 }
-            } catch (err) {
-                if (!(err instanceof DiscordAPIError) || err.code !== 50007)
-                    console.log(`An error occurred in adding a user to the server / changing their nickname: ${err}`);
+            } catch (e) {
+                if (!(e instanceof DiscordAPIError) || e.code !== 50007)
+                    console.log(`An error occurred in adding a user to the server / changing their nickname: ${e}`);
             }
 
             ctx.login(user);

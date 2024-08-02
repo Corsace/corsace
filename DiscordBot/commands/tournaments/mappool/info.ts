@@ -46,7 +46,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .setTitle(`Mappools for ${tournament.name}`)
             .addFields(mappools.map(mappool => ({
                 name: `**${mappool.name}**`,
-                value: `${mappool.slots.map(slot => `${slot.name}: ${slot.maps.length}`).join("\n")}\n${mappool.isPublic ? `Link: ${mappool.mappackLink}` : ""}`,
+                value: `${mappool.slots.map(poolSlot => `${poolSlot.name}: ${poolSlot.maps.length}`).join("\n")}\n${mappool.isPublic ? `Link: ${mappool.mappackLink}` : ""}`,
                 inline: true,
             })))
             .setColor(modeColour(tournament.mode.ID - 1))
@@ -74,7 +74,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         if (mappoolMap.beatmap) {
             const set = (await osuClient.beatmaps.getBySetId(mappoolMap.beatmap.beatmapsetID, Mode.all, undefined, undefined, slotMod.allowedMods ?? 0) as APIBeatmap[]);
-            const apiMap = set.find(m => m.beatmapId === mappoolMap.beatmap!.ID)!;
+            const apiMap = set.find(setMap => setMap.beatmapId === mappoolMap.beatmap!.ID)!;
 
             const mappoolMapEmbed = await beatmapEmbed(apiMap, modsToAcronym(slotMod.allowedMods ?? 0), set);
             mappoolMapEmbed.embed.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.embed.author!.name}`;
@@ -115,9 +115,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
         .setTitle(`Info for ${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
         .setDescription(`**ID:** ${mappool.ID}\n**Target SR:** ${mappool.targetSR}\n**Mappack Link:** ${mappool.mappackLink ?? "N/A"}\n**Mappack Expiry:** ${mappool.mappackExpiry ? discordStringTimestamp(mappool.mappackExpiry) : "N/A"}`)
-        .addFields(mappool.slots.map(slot => ({
-            name: `**${slot.name}**`,
-            value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap?.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : "N/A"}`).join("\n"),
+        .addFields(mappool.slots.map(poolSlot => ({
+            name: `**${poolSlot.name}**`,
+            value: poolSlot.maps.map(map => `**${poolSlot.acronym}${poolSlot.maps.length === 1 ? "" : map.order}:** ${map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap?.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : "N/A"}`).join("\n"),
             inline: true,
         })))
         .setColor(modeColour(tournament.mode.ID - 1))

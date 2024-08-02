@@ -86,7 +86,7 @@ export default async function mappoolComponents (
         return { tournament, mappool, slotMod, stage, staff };
 
     // Get mappoolMap
-    const mappoolMap = map === true ? slotMod.maps[0] : slotMod.maps.find(m => m.order === map);
+    const mappoolMap = map === true ? slotMod.maps[0] : slotMod.maps.find(slotMap => slotMap.order === map);
     if (!mappoolMap) {
         await respond(m, `Can't find **${slot}${slotMod.maps.length === 1 ? "" : map}**`);
         return;

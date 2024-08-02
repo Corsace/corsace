@@ -187,11 +187,11 @@ export default class Votes extends Vue {
 
     get selectedCategoryInfo (): UserVote[] | ResultVote[] {
         if (this.viewOption === "voters") {
-            const group = this.votesByCategory.find(group => group.category === this.selectedCategoryId);
+            const group = this.votesByCategory.find(voteGroup => voteGroup.category === this.selectedCategoryId);
             return group?.userVotes ?? [];
         }
 
-        const group = this.resultsByCategory.find(group => group.category === this.selectedCategoryId);
+        const group = this.resultsByCategory.find(resultGroup => resultGroup.category === this.selectedCategoryId);
         return group?.results ?? [];
     }
 

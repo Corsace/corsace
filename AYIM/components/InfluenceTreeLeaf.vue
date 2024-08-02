@@ -68,9 +68,9 @@ export default class InfluenceTreeLeaf extends Vue {
             this.search(userId);
         }
 
-        const i = this.expandedInfluencesFor.findIndex(i => i == userId);
-        if (i !== -1) {
-            this.expandedInfluencesFor.splice(i, 1);
+        const index = this.expandedInfluencesFor.findIndex(i => i == userId);
+        if (index !== -1) {
+            this.expandedInfluencesFor.splice(index, 1);
         } else {
             this.expandedInfluencesFor.push(userId);
         }

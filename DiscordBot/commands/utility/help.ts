@@ -86,7 +86,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (commands.filter((v, i, s) => s.findIndex(c => c.category === v.category) === i).map(c => c.category).some(category => category.toLowerCase() === arg.toLowerCase())) {
-        const category = commands.filter((v, i, s) => s.findIndex(c => c.category === v.category) === i).map(c => c.category).find(category => category.toLowerCase() === arg.toLowerCase());
+        const category = commands.filter((v, i, s) => s.findIndex(c => c.category === v.category) === i).map(c => c.category).find(cat => cat.toLowerCase() === arg.toLowerCase());
         embed.addFields({
             name: `${category} commands:`,
             value: commands.filter(cmd => cmd.category === category).map(cmd => `\`${cmd.data.name}\`,`).join(" "),

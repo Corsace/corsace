@@ -290,7 +290,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
     }
 
     // TODO: Remove ! after reactive koa typing is functional
-    const slot = state.matchups[ctx.state.matchupID].matchup.stage!.mappool!.flatMap(pool => pool.slots).find(slot => slot.maps.some(map => map.ID === mapID));
+    const slot = state.matchups[ctx.state.matchupID].matchup.stage!.mappool!.flatMap(pool => pool.slots).find(poolSlot => poolSlot.maps.some(map => map.ID === mapID));
     if (!slot) {
         ctx.body = {
             success: false,
@@ -299,7 +299,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
         return;
     }
 
-    const map = slot.maps.find(map => map.ID === mapID);
+    const map = slot.maps.find(mapSlot => mapSlot.ID === mapID);
     if (!map) {
         ctx.body = {
             success: false,

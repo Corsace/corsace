@@ -283,8 +283,8 @@ export default class Create extends Vue {
 
         // Get image and put into previewBase64
         const reader = new FileReader();
-        reader.onload = (e) => {
-            this.previewBase64 = e.target?.result as string;
+        reader.onload = (loadEvent) => {
+            this.previewBase64 = loadEvent.target?.result as string;
         };
         reader.readAsDataURL(this.image);
     }

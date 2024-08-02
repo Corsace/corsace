@@ -84,7 +84,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const maps = mappool.slots.flatMap(slot => slot.maps);
+    const maps = mappool.slots.flatMap(poolSlot => poolSlot.maps);
 
     await Promise.all(maps.map(map => archiveJobThread(map)));
 

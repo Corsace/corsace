@@ -135,12 +135,12 @@ nominatingRouter.$post<{ nomination: Nomination }, MCAYearState>("/:year?/create
             }
             // Check if the category has filters since this is a beatmap search
             if (category.filter) {
-                if (category.filter.minLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter!.minLength!))
+                if (category.filter.minLength && !beatmapset.beatmaps.some(setMap => setMap.hitLength >= category.filter!.minLength!))
                     return ctx.body = {
                         success: false,
                         error: "Beatmapset does not exceed minimum length requirement!", 
                     };
-                if (category.filter.maxLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter!.maxLength!))
+                if (category.filter.maxLength && !beatmapset.beatmaps.some(setMap => setMap.hitLength <= category.filter!.maxLength!))
                     return ctx.body = {
                         success: false,
                         error: "Beatmapset exceeds maximum length requirement!", 
@@ -155,22 +155,22 @@ nominatingRouter.$post<{ nomination: Nomination }, MCAYearState>("/:year?/create
                         success: false,
                         error: "Beatmapset exceeds maximum BPM requirement!", 
                     };
-                if (category.filter.minSR && !beatmapset.beatmaps.some(beatmap => beatmap.totalSR >= category.filter!.minSR!))
+                if (category.filter.minSR && !beatmapset.beatmaps.some(setMap => setMap.totalSR >= category.filter!.minSR!))
                     return ctx.body = {
                         success: false,
                         error: "Beatmapset does not exceed minimum SR requirement!", 
                     };
-                if (category.filter.maxSR && beatmapset.beatmaps.some(beatmap => beatmap.totalSR >= category.filter!.maxSR!))
+                if (category.filter.maxSR && beatmapset.beatmaps.some(setMap => setMap.totalSR >= category.filter!.maxSR!))
                     return ctx.body = {
                         success: false,
                         error: "Beatmapset exceeds maximum SR requirement!", 
                     };
-                if (category.filter.minCS && beatmapset.beatmaps.find(beatmap => beatmap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize < category.filter.minCS)
+                if (category.filter.minCS && beatmapset.beatmaps.find(setMap => setMap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize < category.filter.minCS)
                     return ctx.body = {
                         success: false,
                         error: "Beatmapset does not exceed minimum CS requirement!", 
                     };
-                if (category.filter.maxCS && beatmapset.beatmaps.find(beatmap => beatmap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize > category.filter.maxCS)
+                if (category.filter.maxCS && beatmapset.beatmaps.find(setMap => setMap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize > category.filter.maxCS)
                     return ctx.body = {
                         success: false,
                         error: "Beatmapset exceeds maximum CS requirement!", 

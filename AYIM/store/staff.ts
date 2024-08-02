@@ -16,8 +16,8 @@ export const state = (): StaffState => ({
 });
 
 export const mutations: MutationTree<StaffState> = {
-    setMca (state, mca) {
-        state.mca = mca;
+    setMca (staffState, mca) {
+        staffState.mca = mca;
     },
 };
 

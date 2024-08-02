@@ -64,7 +64,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        const tournamentRole = tournamentRoles.find(tournamentRole => tournamentRole.roleID === role);
+        const tournamentRole = tournamentRoles.find(tr => tr.roleID === role);
         if (!tournamentRole) {
             await respond(m, `This role is already not a tournament role for ${tournament.name}`);
             return;
@@ -97,7 +97,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    let tournamentRole = tournamentRoles.find(tournamentRole => tournamentRole.roleID === role);
+    let tournamentRole = tournamentRoles.find(tr => tr.roleID === role);
     if (tournamentRole) {
         await respond(m, `This role's already a tournament role for ${tournament.name}, it's a \`${TournamentRoleType[tournamentRole.roleType]}\` role`);
         return;

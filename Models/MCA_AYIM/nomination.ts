@@ -33,7 +33,7 @@ export class Nomination extends BaseEntity {
     @RelationId((nomination: Nomination) => nomination.beatmapset)
         beatmapsetID?: number;
     
-    @ManyToOne(() => Beatmapset, Beatmapset => Beatmapset.nominationsReceived, {
+    @ManyToOne(() => Beatmapset, set => set.nominationsReceived, {
         eager: true,
     })
         beatmapset?: Beatmapset;
@@ -41,7 +41,7 @@ export class Nomination extends BaseEntity {
     @RelationId((nomination: Nomination) => nomination.beatmap)
         beatmapID?: number;
     
-    @ManyToOne(() => Beatmap, Beatmap => Beatmap.nominationsReceived, {
+    @ManyToOne(() => Beatmap, map => map.nominationsReceived, {
         eager: true,
     })
         beatmap?: Beatmap;

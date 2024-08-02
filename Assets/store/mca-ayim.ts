@@ -35,12 +35,12 @@ export const state = (): RootState => ({
 });
 
 export const mutations: MutationTree<RootState> = {
-    setLoggedInMCAUser (state, user) {
-        state.loggedInMCAUser = user;
+    setLoggedInMCAUser (rootState, user) {
+        rootState.loggedInMCAUser = user;
     },
-    setMCA (state, mca: MCA) {
+    setMCA (rootState, mca: MCA) {
         if (mca.year)
-            state.mca = {
+            rootState.mca = {
                 year: mca.year,
                 nomination: {
                     start: new Date(mca.nomination.start),
@@ -53,63 +53,63 @@ export const mutations: MutationTree<RootState> = {
                 results: new Date(mca.results),
             };
         else
-            state.mca = null;
+            rootState.mca = null;
     },
 
-    setAllMCA (state, mcas: MCAInfo[]) {
-        state.allMCA = mcas;
+    setAllMCA (rootState, mcas: MCAInfo[]) {
+        rootState.allMCA = mcas;
     },
 
-    setSelectedMode (state) {
+    setSelectedMode (rootState) {
         const localMode = localStorage.getItem("mode");
 
         if (localMode && modeRegex.test(localMode)) {
-            state.selectedMode = localMode;
+            rootState.selectedMode = localMode;
             document.documentElement.style.setProperty("--selected-mode", `var(--${localMode})`);
         }
     },
-    updateSelectedMode (state, mode) {
+    updateSelectedMode (rootState, mode) {
         if (modeRegex.test(mode) || mode === "") {
-            state.selectedMode = mode;
+            rootState.selectedMode = mode;
             localStorage.setItem("mode", mode);
             document.documentElement.style.setProperty("--selected-mode", `var(--${mode})`);
         }
     },
 
-    addGuestRequest (state, request: GuestRequest) {
-        if (!request || !state.loggedInMCAUser) return;
+    addGuestRequest (rootState, request: GuestRequest) {
+        if (!request || !rootState.loggedInMCAUser) return;
 
-        state.loggedInMCAUser.guestRequests.push(request);
+        rootState.loggedInMCAUser.guestRequests.push(request);
     },
-    updateGuestRequest (state, request: GuestRequest) {
-        if (!request || !state.loggedInMCAUser) return;
+    updateGuestRequest (rootState, request: GuestRequest) {
+        if (!request || !rootState.loggedInMCAUser) return;
 
-        const i = state.loggedInMCAUser.guestRequests.findIndex(r => r.ID === request.ID);
-        if (i !== -1) Vue.set(state.loggedInMCAUser.guestRequests, i, request);
+        const i = rootState.loggedInMCAUser.guestRequests.findIndex(r => r.ID === request.ID);
+        if (i !== -1) Vue.set(rootState.loggedInMCAUser.guestRequests, i, request);
     },
-    toggleGuestDifficultyModal (state) {
-        state.showGuestDifficultyModal = !state.showGuestDifficultyModal;
+    toggleGuestDifficultyModal (rootState) {
+        rootState.showGuestDifficultyModal = !rootState.showGuestDifficultyModal;
     },
 };
 
 export const getters: GetterTree<RootState, RootState> = {
-    phase (state): MCAPhase | undefined {
-        if (!state.mca) return undefined;
+    phase (rootState): MCAPhase | undefined {
+        if (!rootState.mca) return undefined;
 
         let phase: PhaseType = "preparation";
         const newDate = new Date();
         let startDate: Date = newDate;
         let endDate: Date = newDate;
         
-        if (newDate > state.mca.nomination.start && newDate < state.mca.nomination.end) {
+        if (newDate > rootState.mca.nomination.start && newDate < rootState.mca.nomination.end) {
             phase = "nominating";
-            startDate = state.mca.nomination.start;
-            endDate = state.mca.nomination.end;
-        } else if (newDate > state.mca.voting.start && newDate < state.mca.voting.end) {
+            startDate = rootState.mca.nomination.start;
+            endDate = rootState.mca.nomination.end;
+        } else if (newDate > rootState.mca.voting.start && newDate < rootState.mca.voting.end) {
             phase = "voting";
-            startDate = state.mca.voting.start;
-            endDate = state.mca.voting.end;
-        } else if (newDate > state.mca.results) {
+            startDate = rootState.mca.voting.start;
+            endDate = rootState.mca.voting.end;
+        } else if (newDate > rootState.mca.results) {
             phase = "results";
         }
 
@@ -117,34 +117,34 @@ export const getters: GetterTree<RootState, RootState> = {
             phase,
             startDate: new Date(startDate),
             endDate: new Date(endDate),
-            year: state.mca.year,
+            year: rootState.mca.year,
         };
     },
-    isMCAStaff (state): boolean {
-        if (!state.loggedInMCAUser) return false;
+    isMCAStaff (rootState): boolean {
+        if (!rootState.loggedInMCAUser) return false;
 
-        return state.loggedInMCAUser.staff.corsace || 
-            state.loggedInMCAUser.staff.headStaff || 
-            state.loggedInMCAUser.mcaStaff.standard ||
-            state.loggedInMCAUser.mcaStaff.taiko ||
-            state.loggedInMCAUser.mcaStaff.mania ||
-            state.loggedInMCAUser.mcaStaff.fruits ||
-            state.loggedInMCAUser.mcaStaff.storyboard;
+        return rootState.loggedInMCAUser.staff.corsace || 
+            rootState.loggedInMCAUser.staff.headStaff || 
+            rootState.loggedInMCAUser.mcaStaff.standard ||
+            rootState.loggedInMCAUser.mcaStaff.taiko ||
+            rootState.loggedInMCAUser.mcaStaff.mania ||
+            rootState.loggedInMCAUser.mcaStaff.fruits ||
+            rootState.loggedInMCAUser.mcaStaff.storyboard;
     },
-    isHeadStaff (state): boolean {
-        if (!state.loggedInMCAUser) return false;
+    isHeadStaff (rootState): boolean {
+        if (!rootState.loggedInMCAUser) return false;
 
-        return state.loggedInMCAUser.staff.corsace || 
-            state.loggedInMCAUser.staff.headStaff;
+        return rootState.loggedInMCAUser.staff.corsace || 
+            rootState.loggedInMCAUser.staff.headStaff;
     },
-    isEligibleFor (state) {
+    isEligibleFor (rootState) {
         return (mode: string): boolean => {
-            if (state.loggedInMCAUser?.staff?.headStaff) {
+            if (rootState.loggedInMCAUser?.staff?.headStaff) {
                 return true;
             }
     
-            if (state.loggedInMCAUser?.eligibility) {
-                const eligibility = state.loggedInMCAUser?.eligibility?.find(e => e.year === state.mca?.year);
+            if (rootState.loggedInMCAUser?.eligibility) {
+                const eligibility = rootState.loggedInMCAUser?.eligibility?.find(e => e.year === rootState.mca?.year);
                 if (eligibility && mode in ModeDivisionType)
                     return eligibility[mode as keyof typeof ModeDivisionType] === true;
             }
@@ -152,14 +152,14 @@ export const getters: GetterTree<RootState, RootState> = {
             return false;
         };
     },
-    inactiveModes (state): string[] {
-        if (!state.loggedInMCAUser) return [];
+    inactiveModes (rootState): string[] {
+        if (!rootState.loggedInMCAUser) return [];
 
-        const eligibility = state.loggedInMCAUser.eligibility.find(e => e.year === state.mca?.year);
+        const eligibility = rootState.loggedInMCAUser.eligibility.find(e => e.year === rootState.mca?.year);
 
-        if (!eligibility) return state.modes;
+        if (!eligibility) return rootState.modes;
 
-        return state.modes.filter(m => m in eligibility ? !eligibility[m as keyof typeof ModeDivisionType] : false);
+        return rootState.modes.filter(m => m in eligibility ? !eligibility[m as keyof typeof ModeDivisionType] : false);
     },
 };
 
@@ -171,15 +171,15 @@ export const actions: ActionTree<RootState, RootState> = {
             commit("setLoggedInMCAUser", data.user);
     },
     async setMCA ({ commit }, year: number) {
-        const { data } = await this.$axios.get<{ mca: MCA }>(`/api/mca?year=${year}`);
+        const { data: dataYear } = await this.$axios.get<{ mca: MCA }>(`/api/mca?year=${year}`);
 
-        if (data.success)
-            commit("setMCA", data.mca);
+        if (dataYear.success)
+            commit("setMCA", dataYear.mca);
         else {
-            const { data } = await this.$axios.get<{ mca: MCAInfo[] }>(`/api/mca/all`);
+            const { data: dataInfo } = await this.$axios.get<{ mca: MCAInfo[] }>(`/api/mca/all`);
             commit("setMCA", {});
-            if (data.success)
-                commit("setAllMCA", data.mca);
+            if (dataInfo.success)
+                commit("setAllMCA", dataInfo.mca);
         }
     },
     async setInitialData ({ dispatch }, year: number) {
@@ -196,8 +196,8 @@ export const actions: ActionTree<RootState, RootState> = {
         commit("updateSelectedMode", mode);
     },
 
-    async submitGuestRequest ({ commit, state }, payload: GuestRequestPayload) {
-        if (!state.mca) return;
+    async submitGuestRequest ({ commit, state: rootState }, payload: GuestRequestPayload) {
+        if (!rootState.mca) return;
 
         const { data } = await this.$axios.post<{ guestReq: GuestRequest }>(`/api/guestRequests/create`, {
             mode: payload.mode,
@@ -211,8 +211,8 @@ export const actions: ActionTree<RootState, RootState> = {
 
         commit("addGuestRequest", data.guestReq);
     },
-    async updateGuestRequest ({ commit, state }, payload: UpdateGuestRequestPayload) {
-        if (!state.mca) return;
+    async updateGuestRequest ({ commit, state: rootState }, payload: UpdateGuestRequestPayload) {
+        if (!rootState.mca) return;
 
         const { data } = await this.$axios.post<{ request: GuestRequest }>(`/api/guestRequests/${payload.id}/update`, {
             mode: payload.mode,

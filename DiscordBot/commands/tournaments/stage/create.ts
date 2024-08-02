@@ -223,10 +223,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             roundSize /= 2;
 
             if (roundSize === 1 && stage.stageType === StageType.Doubleelimination) {
-                const round = new Round();
-                round.name = "Grand Finals";
-                round.abbreviation = "GF";
-                rounds.push(round);
+                const gfRound = new Round();
+                gfRound.name = "Grand Finals";
+                gfRound.abbreviation = "GF";
+                rounds.push(gfRound);
             }
         }
         stage.rounds = rounds;

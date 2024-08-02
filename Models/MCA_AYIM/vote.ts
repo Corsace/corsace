@@ -26,12 +26,12 @@ export class Vote extends BaseEntity {
     })
         user?: User;
 
-    @ManyToOne(() => Beatmapset, Beatmapset => Beatmapset.votesReceived, {
+    @ManyToOne(() => Beatmapset, set => set.votesReceived, {
         eager: true,
     })
         beatmapset?: Beatmapset;
 
-    @ManyToOne(() => Beatmap, Beatmap => Beatmap.votesReceived, {
+    @ManyToOne(() => Beatmap, map => map.votesReceived, {
         eager: true,
     })
         beatmap?: Beatmap;

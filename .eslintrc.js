@@ -33,7 +33,7 @@ module.exports = {
         "@typescript-eslint/no-unsafe-member-access": "off",
         "@typescript-eslint/no-unsafe-call": "off",
         "@typescript-eslint/no-unsafe-argument": "off",
-        // 
+        //
         "@typescript-eslint/prefer-nullish-coalescing": ["warn", {
             "ignoreConditionalTests": true,
         }],
@@ -43,10 +43,11 @@ module.exports = {
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-shadow": "error",
 
         "vue/no-v-html": "off",
         "vue/html-indent": [
-            "error", 
+            "error",
             4,
         ],
 

@@ -164,7 +164,7 @@ export default class Nominations extends Vue {
     }
 
     get selectedCategoryNominations (): StaffNomination[] {
-        const group = this.nominationsByCategory.find(group => group.categoryId === this.selectedCategoryId);
+        const group = this.nominationsByCategory.find(nominationGroup => nominationGroup.categoryId === this.selectedCategoryId);
         return group?.userNominations ?? [];
     }
 
