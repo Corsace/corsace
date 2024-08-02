@@ -18,6 +18,8 @@ import { extractTargetText } from "../../../../functions/tournamentFunctions/par
 import getStaff from "../../../../functions/tournamentFunctions/getStaff";
 import { cleanLink } from "../../../../../Server/utils/link";
 import { judgementKeys, replayParse } from "../../../../functions/replayParse";
+import { osuClient } from "../../../../../Server/osu";
+import { Beatmap } from "nodesu";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -67,6 +69,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
         user = await getStaff(m, tournament, target, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers]);
         if (!user)
             return;
+    }
+
+    // If mappoolMap.beatmap, check if its set is ranked/approved/loved or not
+    // If not, update MD5
+    if (mappoolMap.beatmap && mappoolMap.beatmap.beatmapset.rankedStatus.valueOf() < 1) {
+        const apiRes = (await osuClient.beatmaps.getByBeatmapId(mappoolMap.beatmap.ID.toString())) as Beatmap[];
+        const apiBeatmap = apiRes.find(map => map.beatmapId === mappoolMap.beatmap!.ID);
+        if (apiBeatmap && mappoolMap.beatmap.md5 !== apiBeatmap.fileMd5) {
+            mappoolMap.beatmap.md5 = apiBeatmap.fileMd5;
+            await mappoolMap.save();
+        }
     }
 
     const parsedReplay = await replayParse(m, link, mappoolMap);
