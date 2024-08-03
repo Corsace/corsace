@@ -29,7 +29,7 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
         const { data } = await axios.get(link, { responseType: "stream" });
         axiosData = data;
     } catch (e) {
-        await m.reply("Can't download the map. Make sure the link is valid");
+        await respond(m, "Can't download the map. Make sure the link is valid");
         return;
     }
     const zip = axiosData.pipe(Parse({ forceStream: true }));
@@ -37,16 +37,17 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
     for await (const _entry of zip) {
         const entry = _entry as Entry;
         const buffer = await entry.buffer();
+        const bytes = Uint8Array.from(buffer);
 
         if (entry.type === "File" && entry.props.path.endsWith(".osu") && !foundBeatmap) {
             try {
-                beatmap = parseBeatmap(Uint8Array.from(buffer));
+                beatmap = parseBeatmap(bytes);
             } catch (e) {
-                await m.reply(`Can't parse the beatmap. Make sure the link is valid. Error below:\n\`\`\`${e}\`\`\``);
+                await respond(m, `Can't parse the beatmap. Make sure the link is valid. Error below:\n\`\`\`${e}\`\`\``);
                 return;
             }
-            beatmapAttributes = parseBeatmapAttributes(undefined, Uint8Array.from(buffer));
-            beatmapStrains = parseBeatmapStrains(Uint8Array.from(buffer), undefined, mods);
+            beatmapAttributes = parseBeatmapAttributes(undefined, bytes);
+            beatmapStrains = parseBeatmapStrains(bytes, undefined, mods);
 
             if (diff !== "" && beatmap.diff_name.toLowerCase() !== diff.toLowerCase())
                 continue;
@@ -127,6 +128,7 @@ export async function parsedBeatmapToCustom (
 
     mappoolMap.customBeatmap.link = link;
     mappoolMap.customBeatmap.background = beatmapData.background;
+    mappoolMap.customBeatmap.md5 = beatmap.hash;
     mappoolMap.customBeatmap.artist = artist;
     mappoolMap.customBeatmap.title = title;
     mappoolMap.customBeatmap.BPM = parseFloat(bpm.toFixed(2));
