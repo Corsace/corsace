@@ -147,6 +147,7 @@ export class Team extends BaseEntity {
             tournaments,
             qualifier: qualifier ? {
                 ID: qualifier.ID,
+                matchID: qualifier.matchID,
                 date: qualifier.date,
                 mp: qualifier.mp,
             } : undefined,
