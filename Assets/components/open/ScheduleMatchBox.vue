@@ -25,7 +25,7 @@
             >
                 VS
             </div>
-            <ScheduleMatchBoxTeam :team="matchupSync.teams?.[0]" />
+            <ScheduleMatchBoxTeam :team="matchupSync.teams?.[1]" />
         </div>
         <div class="schedule_matchbox_links">
             <IconButton link="https://www.twitch.tv/corsace">
