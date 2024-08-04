@@ -27,6 +27,7 @@ const matchupRouter  = new CorsaceRouter();
 
 interface postMatchup {
     ID: number;
+    matchID: string;
     isLowerBracket?: boolean;
     potentials?: boolean;
     date?: string;
@@ -146,6 +147,9 @@ function validatePOSTMatchups (matchups: Partial<postMatchup>[]): asserts matchu
     for (const matchup of matchups) {
         if (typeof matchup.ID !== "number" || isNaN(matchup.ID) || matchup.ID < 1)
             throw new Error(`Invalid matchup ID provided: ${matchup.ID}`);
+
+        if (typeof matchup.matchID !== "string" || matchup.matchID.length === 0)
+            throw new Error(`Invalid matchup matchID provided: ${matchup.matchID}`);
 
         if (matchup.date && (isNaN(parseDateOrTimestamp(matchup.date).getTime()) || parseDateOrTimestamp(matchup.date).getTime() < 0))
             throw new Error(`Invalid matchup date provided: ${matchup.date}`);
@@ -343,6 +347,7 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
         for (const matchup of matchups) {
 
             let dbMatchup = new Matchup();
+            dbMatchup.matchID = matchup.matchID;
             dbMatchup.isLowerBracket = matchup.isLowerBracket ?? false;
             if (idToMatchup.has(matchup.ID)) {
                 dbMatchup = idToMatchup.get(matchup.ID)!;

@@ -11,6 +11,7 @@ export default async function dbMatchupToInterface (dbMatchup: Matchup, roundOrS
 
     return {
         ID: dbMatchup.ID,
+        matchID: dbMatchup.matchID,
         date: dbMatchup.date,
         mp: dbMatchup.mp,
         teams: await Promise.all(dbMatchup.teams?.map(team => team.teamInterface()) ?? []),

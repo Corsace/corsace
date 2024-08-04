@@ -5,7 +5,7 @@
     >
         <div class="schedule_matchbox_date">
             <div class="schedule_matchbox_date__ID">
-                ID: {{ matchupSync.ID }}
+                ID: {{ matchupSync.matchID }}
             </div>
             <div class="schedule_matchbox_date__month">
                 {{ formatDate(matchupSync.date) }}
@@ -25,7 +25,7 @@
             >
                 VS
             </div>
-            <ScheduleMatchBoxTeam :team="matchupSync.teams?.[0]" />
+            <ScheduleMatchBoxTeam :team="matchupSync.teams?.[1]" />
         </div>
         <div class="schedule_matchbox_links">
             <IconButton link="https://www.twitch.tv/corsace">
@@ -67,7 +67,7 @@ export default class ScheduleMatchBox extends Vue {
         const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
         const day = date.getUTCDate();
         const monthIndex = date.getUTCMonth();
-        return `${months[monthIndex]} ${day < 10 ? "0" : ""}${day}`;
+        return `${months[monthIndex]} ${day < 10 ? "0" : ""}${day} (${date.toLocaleString("en-US", { weekday: "short" }).toUpperCase()})`;
     }
 }
 </script>
@@ -107,7 +107,7 @@ export default class ScheduleMatchBox extends Vue {
         white-space: nowrap;
 
         &__ID {
-            font-size: 12px;
+            font-size: 18px;
             font-weight: 600;
             color: $open-red;
         }

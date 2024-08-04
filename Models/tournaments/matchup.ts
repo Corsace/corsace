@@ -14,6 +14,9 @@ export class Matchup extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
+    @Column({ type: "varchar", default: "" })
+        matchID!: string;
+
     @Column({ type: "int", nullable: true })
         mp?: number | null;
 

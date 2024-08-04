@@ -6,6 +6,7 @@ import { Mappool, MappoolMap } from "./mappool";
 
 export interface BaseMatchup {
     ID: number;
+    matchID: string;
     date: Date;
     mp?: number | null;
 }
