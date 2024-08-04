@@ -633,6 +633,8 @@
                     "worst": "TERBURUK"
                 },
                 "categorySelect": "PILIH KATEGORI",
+                "lockedPlacement": "Locked final placement",
+                "unlockedPlacement": "Current sort placement",
                 "players": "PEMAIN",
                 "teams": "TIM"
             },
