@@ -633,6 +633,8 @@
                     "worst": "最差"
                 },
                 "categorySelect": "类别选择",
+                "lockedPlacement": "Locked final placement",
+                "unlockedPlacement": "Current sort placement",
                 "players": "玩家",
                 "teams": "队伍"
             },
