@@ -218,6 +218,31 @@ body {
     &--open {
         background: $open-dark;
         font-family: 'Univers', 'sans-serif';
+
+        & * {
+            &::-webkit-scrollbar {
+                height: 10px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: #333333;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: #555555;
+            }
+
+            &::-webkit-scrollbar-thumb:hover {
+                background: #777777;
+            }
+
+            &::-webkit-scrollbar-thumb:active {
+                background: #999999;
+            }
+
+            scrollbar-color: #555555 #333333;
+            scrollbar-width: thin;
+        }
     }
     height: 100%;
     display: flex;

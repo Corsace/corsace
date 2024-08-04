@@ -37,8 +37,24 @@
                 </div>
             </div>
             <hr class="line--red line--bottom-space">
-            <div class="scores__wrapper">
-                <table class="scores__table">
+            <!-- Top scrollbar container -->
+            <div 
+                ref="scrollWrapperTop"
+                class="scores__wrapper"
+            >
+                <div
+                    ref="fake"
+                    class="scores__wrapper_fake"
+                />
+            </div>
+            <div
+                ref="scrollWrapperBottom"
+                class="scores__wrapper"
+            >
+                <table
+                    ref="table"
+                    class="scores__table"
+                >
                     <tbody>
                         <tr>
                             <th> {{ $t('open.qualifiers.scores.nav.placement') }} </th>
@@ -91,7 +107,7 @@
                                 'scores__table--tier2': tierSync && (keepPlacementLocked ? row.placement > 4 && row.placement <= 16 : i >= 4 && i < 16) && syncView === 'teams',
                             }"
                         >
-                            <td>#{{ keepPlacementLocked ? row.placement : i + 1 }}</td>
+                            <td>#{{ keepPlacementLocked ? row.placement : sortDir === "asc" ? shownQualifierScoreViews.length - i : i + 1 }}</td>
                             <!-- THE TEAM / PLAYER COLUMN -->
                             <a
                                 :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
@@ -218,6 +234,25 @@ export default class ScoresView extends Vue {
         if (this.tournament && (!this.teamList || this.teamList.length === 0))
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
         this.loading = false;
+
+        const topScroll = this.$refs.scrollWrapperTop as HTMLElement;
+        const bottomScroll = this.$refs.scrollWrapperBottom as HTMLElement;
+
+        topScroll.onscroll = () => {
+            bottomScroll.scrollLeft = topScroll.scrollLeft;
+        };
+
+        bottomScroll.onscroll = () => {
+            topScroll.scrollLeft = bottomScroll.scrollLeft;
+        };
+
+        // Set fake width to match table width every time the table width changes
+        const table = this.$refs.table as HTMLElement;
+        const fake = this.$refs.fake as HTMLElement;
+        const observer = new ResizeObserver(() => {
+            fake.style.width = `${table.clientWidth}px`;
+        });
+        observer.observe(table);
     }
     hover = false;
     maphover = false;
@@ -338,17 +373,20 @@ export default class ScoresView extends Vue {
     &__wrapper {
         padding: 0;
         height: 100%;
-        margin-top: 15px;
         border-left: 1px solid #383838;
         border-right: 1px solid #383838;
-        overflow: scroll;
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
+        overflow-x: auto;
+
+        &:first-of-type {
+            margin-top: 15px;
+        }
+
+        &_fake {
+            width: 100%;
+            height: 1px;
+        }
     }
 
-    &__wrapper::-webkit-scrollbar {
-        display: none; /*Chrome*/
-    }
     &__table th {
         border-bottom: 1px solid #383838;
         border-left: 1px solid #383838;
@@ -382,30 +420,6 @@ export default class ScoresView extends Vue {
         border-collapse: collapse;
         box-sizing: border-box;
         white-space: nowrap;
-        overflow-x: auto;
-
-        &::-webkit-scrollbar {
-            height: 10px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: #333333;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: #555555;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-            background: #777777;
-        }
-
-        &::-webkit-scrollbar-thumb:active {
-            background: #999999;
-        }
-
-        scrollbar-color: #555555 #333333;
-        scrollbar-width: thin;
         
         &_team {
             background-size: 100%, 50%;
