@@ -47,7 +47,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
         .andWhere("matchup.invalid = 0")
         .getMany();
 
-    matchups.sort((a, b) => a.ID - b.ID);
+    matchups.sort((a, b) => a.date.getTime() - b.date.getTime());
     matchups = matchups.filter((matchup) =>
         matchup.potentialFor &&
         matchups.filter((m) => m.potentialFor && m.potentialFor.ID === matchup.potentialFor!.ID).length === 1 ?

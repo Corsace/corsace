@@ -117,7 +117,7 @@ $flex-gap: 25px;
         padding: 35px;
 
         &_staff_list {
-            padding-top: 20px;
+            padding: 20px 0;
             display: flex;
             flex-direction: column;
             justify-content: space-around;

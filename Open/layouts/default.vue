@@ -2,7 +2,7 @@
     <div class="layout layout--open">
         <DevBanner 
             v-if="devBanner"
-            @close="devBanner = false"
+            @close="hideBanner()"
         />
         <the-header
             class="header"
@@ -250,7 +250,7 @@ export default class Default extends Mixins(CentrifugeMixin) {
 
     @openModule.State teamInvites!: BaseTeam[] | null;
 
-    devBanner = true;
+    devBanner = false;
     isSmall = false;
 
     async mounted () {
@@ -262,6 +262,11 @@ export default class Default extends Mixins(CentrifugeMixin) {
         }
 
         await this.$store.dispatch("setViewTheme", "dark");
+        
+        // Get devBanner from localStorage, will be a number equivalent to Date.now() if it exists, if it doesn't exist, or if it's been past the value, then show the banner
+        const devBannerTime = localStorage.getItem("devBanner");
+        if (!devBannerTime || parseInt(devBannerTime) < Date.now())
+            this.devBanner = true;
 
         if (!this.loggedInUser)
             return;
@@ -272,6 +277,11 @@ export default class Default extends Mixins(CentrifugeMixin) {
     handleData (ctx: ExtendedPublicationContext) {
         if (ctx.data.type === "invite")
             this.$store.commit("open/addInvite", ctx.data.team);
+    }
+
+    hideBanner () {
+        localStorage.setItem("devBanner", (Date.now() + 604800000).toString());
+        this.devBanner = false;
     }
 }
 </script>
