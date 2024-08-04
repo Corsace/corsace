@@ -83,10 +83,17 @@
                     >
                         {{ $t('open.qualifiers.scores.teams') }}
                     </ContentButton>
+                    <ContentButton
+                        class="content_button--red content_button--font_sm"
+                        @click.native="placementLock = !placementLock"
+                    >
+                        {{ placementLock ? $t('open.qualifiers.scores.lockedPlacement') : $t('open.qualifiers.scores.unlockedPlacement') }}
+                    </ContentButton>
                 </div>
                 <ScoresView
                     v-if="mappools?.[0]?.isPublic"
                     :view="scoreView"
+                    :placement-lock="false"
                     :pool="mappools[0]"
                 />
             </div>
@@ -165,6 +172,7 @@ const openModule = namespace("open");
 export default class Qualifier extends Vue {
 
     scoreView: "teams" | "players"  = "players";
+    placementLock = false;
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State myTeams!: Team[] | null;

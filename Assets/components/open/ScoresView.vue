@@ -84,14 +84,14 @@
                         </tr>
                         <!-- TODO: Don't hardcode tiers -->
                         <tr
-                            v-for="row in shownQualifierScoreViews"
+                            v-for="(row, i) in shownQualifierScoreViews"
                             :key="row.ID"
                             :class="{ 
-                                'scores__table--tier1': tierSync && row.placement <= 4 && syncView === 'teams',
-                                'scores__table--tier2': tierSync && row.placement > 4 && row.placement <= 16 && syncView === 'teams',
+                                'scores__table--tier1': tierSync && (keepPlacementLocked ? row.placement <= 4 : i < 4) && syncView === 'teams',
+                                'scores__table--tier2': tierSync && (keepPlacementLocked ? row.placement > 4 && row.placement <= 16 : i >= 4 && i < 16) && syncView === 'teams',
                             }"
                         >
-                            <td>#{{ row.placement }}</td>
+                            <td>#{{ keepPlacementLocked ? row.placement : i + 1 }}</td>
                             <!-- THE TEAM / PLAYER COLUMN -->
                             <a
                                 :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
@@ -171,6 +171,7 @@ const openModule = namespace("open");
 export default class ScoresView extends Vue {
 
     @PropSync("view", { type: String }) syncView!: "players" | "teams";
+    @PropSync("placementLock", { type: Boolean, default: false }) keepPlacementLocked!: boolean;
     @PropSync("pool", { default: null }) readonly selectedMappool!: Mappool | null;
     @PropSync("tiers", { type: Boolean, default: false }) readonly tierSync!: boolean;
 

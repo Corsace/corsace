@@ -633,6 +633,8 @@
                     "worst": "WORST"
                 },
                 "categorySelect": "CATEGORY SELECT",
+                "lockedPlacement": "Locked final placement",
+                "unlockedPlacement": "Current sort placement",
                 "players": "PLAYERS",
                 "teams": "TEAMS"
             },

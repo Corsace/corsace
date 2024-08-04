@@ -62,6 +62,12 @@
                     >
                         {{ $t('open.qualifiers.scores.teams') }}
                     </ContentButton>
+                    <ContentButton
+                        class="content_button--red content_button--font_sm"
+                        @click.native="placementLock = !placementLock"
+                    >
+                        {{ placementLock ? $t('open.qualifiers.scores.lockedPlacement') : $t('open.qualifiers.scores.unlockedPlacement') }}
+                    </ContentButton>
                 </template>
                 <template 
                     v-else-if="page === 'qualifiers'"
@@ -88,6 +94,7 @@
                 v-else-if="page === 'scores' && mappools?.[0].isPublic"
                 tiers
                 :view="scoreView"
+                :placement-lock="placementLock"
                 :pool="mappools[0]"
             />
             <QualifiersView
@@ -156,6 +163,7 @@ export default class Qualifiers extends Vue {
     calledMappool = false;
     page: "mappool" | "qualifiers" | "scores" = "qualifiers";
     scoreView: "players" | "teams" = "teams";
+    placementLock = false;
 
     @State loggedInUser!: UserInfo | null;
 

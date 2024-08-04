@@ -88,6 +88,12 @@
                     >
                         {{ $t('open.qualifiers.scores.teams') }}
                     </ContentButton>
+                    <ContentButton
+                        class="content_button--red content_button--font_sm"
+                        @click.native="placementLock = !placementLock"
+                    >
+                        {{ placementLock ? $t('open.qualifiers.scores.lockedPlacement') : $t('open.qualifiers.scores.unlockedPlacement') }}
+                    </ContentButton>
                 </template>
             </OpenTitle>
             <div v-if="page === 'mappool' && mappools?.length !== 0">
@@ -106,6 +112,7 @@
                     v-for="mappool in mappools"
                     :key="mappool.ID"
                     :view="scoreView"
+                    :placement-lock="placementLock"
                     :pool="mappool"
                 />
             </div>
@@ -164,6 +171,7 @@ const openModule = namespace("open");
 export default class Mappool extends Vue {
     page: "mappool" | "scores" = "mappool";
     scoreView: "players" | "teams" = "teams";
+    placementLock = false;
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State mappools!: MappoolInterface[] | null;
