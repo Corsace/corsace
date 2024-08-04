@@ -103,8 +103,8 @@
                             v-for="(row, i) in shownQualifierScoreViews"
                             :key="row.ID"
                             :class="{ 
-                                'scores__table--tier1': tierSync && (keepPlacementLocked ? row.placement <= 4 : i < 4) && syncView === 'teams',
-                                'scores__table--tier2': tierSync && (keepPlacementLocked ? row.placement > 4 && row.placement <= 16 : i >= 4 && i < 16) && syncView === 'teams',
+                                'scores__table--tier1': tierSync && validPlacement(i, 4) && syncView === 'teams',
+                                'scores__table--tier2': tierSync && !validPlacement(i, 4) && validPlacement(i, 16) && syncView === 'teams',
                             }"
                         >
                             <td>#{{ keepPlacementLocked ? row.placement : sortDir === "asc" ? shownQualifierScoreViews.length - i : i + 1 }}</td>
@@ -311,6 +311,15 @@ export default class ScoresView extends Vue {
             groupedScores.push(this.scores.filter(s => s.teamID === teamID));
 
         return groupedScores;
+    }
+
+    validPlacement (index: number, max: number): boolean {
+        const row = this.shownQualifierScoreViews[index];
+        if (this.keepPlacementLocked)
+            return row.placement <= max;
+        if (this.sortDir === "asc")
+            return index >= (this.shownQualifierScoreViews.length - max);
+        return index < max;
     }
 
 }
