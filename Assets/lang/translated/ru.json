@@ -633,6 +633,8 @@
                     "worst": "ХУДШИЙ"
                 },
                 "categorySelect": "ВЫБОР КАТЕГОРИИ",
+                "lockedPlacement": "Locked final placement",
+                "unlockedPlacement": "Current sort placement",
                 "players": "ИГРОКИ",
                 "teams": "КОМАНДЫ"
             },
