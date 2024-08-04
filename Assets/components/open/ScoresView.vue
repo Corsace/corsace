@@ -384,6 +384,7 @@ export default class ScoresView extends Vue {
         &_fake {
             width: 100%;
             height: 1px;
+            transition: none;
         }
     }
 
