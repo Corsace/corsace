@@ -8,7 +8,7 @@ export class CustomBeatmap extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, length: 512 })
         link?: string;
 
     @Column({ nullable: true })
