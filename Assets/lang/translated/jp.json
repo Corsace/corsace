@@ -633,6 +633,8 @@
                     "worst": "ワースト"
                 },
                 "categorySelect": "カテゴリー選択",
+                "lockedPlacement": "Locked final placement",
+                "unlockedPlacement": "Current sort placement",
                 "players": "プレイヤー",
                 "teams": "チーム"
             },
