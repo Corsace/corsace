@@ -16,7 +16,7 @@ export class MappoolReplay extends BaseEntity {
     })
         createdBy!: User;
 
-    @Column()
+    @Column({ length: 512 })
         link!: string;
 
     @Column({ length: 32, nullable: true })
