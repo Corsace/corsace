@@ -59,14 +59,21 @@ export default class StageSelector extends Vue {
         justify-content: space-between;
         gap: 30px;
 
-        &__left {
+        &__left, &__right {
             cursor: pointer;
             width: 0;
             height: 0;
             border-style: solid;
+            border-radius: 2px;
+        }
+
+        &__left {
             border-width: 12.5px 24px 12.5px 0;
             border-color: transparent $open-red transparent transparent;
-            border-radius: 2px;
+
+            &:hover {
+                border-color: transparent #CD2443 transparent transparent;
+            }
         }
 
         &__selected {
@@ -77,13 +84,12 @@ export default class StageSelector extends Vue {
         }
 
         &__right {
-            cursor: pointer;
-            width: 0;
-            height: 0;
-            border-style: solid;
             border-width: 12.5px 0 12.5px 24px;
             border-color: transparent transparent transparent $open-red;
-            border-radius: 2px;
+
+            &:hover {
+                border-color: transparent transparent transparent #CD2443;
+            }
         }
     }
 }

@@ -1,44 +1,45 @@
 <template>
     <div class="open_filter">
+        FILTERS
         <div
-            class="open_filter__selected"
+            class="open_filter__icon"
             @click="visibleDropdown = !visibleDropdown"
         >
-            <div class="open_filter__selected__text">
-                {{ currFilterSync }}
-            </div>
-            <div class="open_filter__selected__arrow_holder">
-                <div
-                    class="triangle open_filter__selected__arrow"
-                    :class="{ 'open_filter__selected__arrow--active': visibleDropdown }"
-                />
-            </div>
-        </div>
-        <div
-            v-if="visibleDropdown"
-            class="open_filter__dropdown"
-        >
+            <div class="open_filter__icon_square" />
+            <div class="open_filter__icon_square" />
+            <div class="open_filter__icon_square" />
+            <div class="open_filter__icon_square" />
             <div
-                v-for="filter in filtersSync"
-                :key="filter"
-                class="open_filter__dropdown__item"
-                :class="{ 'open_filter__dropdown__item--active': currFilterSync === filter }"
-                @click="currFilterSync = filter; visibleDropdown = false"
+                v-if="visibleDropdown"
+                class="open_filter__dropdown"
             >
-                {{ filter }}
+                <div class="open_filter__dropdown_triangle_up" />
+                <div class="open_filter__dropdown_header">
+                    <div>VIEW</div>
+                    <div>SORT</div>
+                </div>
+                <div
+                    class="open_filter__dropdown__content"
+                    @click.stop
+                >
+                    <div class="open_filter__dropdown__view_content">
+                        <slot name="view" />
+                    </div>
+                    <div class="open_filter__dropdown__sort_content">
+                        <slot name="sort" />
+                    </div>
+                </div>
+                <div class="open_filter__dropdown_footer" />
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, PropSync } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 
 @Component({})
 export default class OpenFilter extends Vue {
-    @PropSync("currFilter", { type: String }) currFilterSync!: string;
-    @PropSync("filters", { type: Array }) filtersSync!: string[];
-
     visibleDropdown = false;
 }
 </script>
@@ -47,68 +48,142 @@ export default class OpenFilter extends Vue {
 @import '@s-sass/_variables';
 
 .open_filter {
-    background-color: $open-red;
-    position: relative;
     white-space: nowrap;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-stretch: condensed;
+    font-size: $font-sm;
+    gap: inherit;
 
-    &__selected {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    &__icon {
         cursor: pointer;
-        color: $open-dark;
-        font-weight: bold;
-        font-size: $font-base;
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: calc(100% - 2 * 25% * 100 / 60);
+        align-items: center;
+        height: 50%;
+        aspect-ratio: 1 / 1;
 
-        &__text {
-            padding: 5px 20px;
-            &:hover {
-                background-color: #CD2443;
-            }
+        &_square {
+            width: calc(25% * 100 / 60);
+            height: calc(25% * 100 / 60);
+            background-color: $open-red;
         }
 
-        &__arrow {
-            position: relative;
-
-            &--active {
-                border-top: 0;
-                border-bottom: 10px solid $open-dark;
-            }
-
-            &_holder {
-                display: flex;
-                align-items: center;
-                height: 100%;
-                padding: 10px;
-                background-color: $open-red;
-
-                &:hover {
-                    background-color: #CD2443;
-                }
-            }
+        &:hover {
+            & .open_filter__icon_square {
+                background-color: #CD2443;
+            }   
         }
     }
 
     &__dropdown {
+        cursor: default;
         position: absolute;
         top: calc(100% + 10px);
-        right: 0;
-        font-weight: bold;
+        font-stretch: normal;
         color: $open-dark;
-        background-color: $open-red;
         display: flex;
+        align-items: center;
         flex-direction: column;
-        gap: 1px;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         z-index: 3;
 
-        &__item {
-            padding: 10px 20px;
-            cursor: pointer;
-            text-align: left;
+        &_triangle_up {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid white;
+        }
 
-            &--active, &:hover {
-                background-color: #CD2443;
+        &_header {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 20px;
+            gap: 125px;
+            background-color: white;
+            color: $open-red;
+            font-weight: bold;
+            font-size: $font-base;
+        }
+
+        &__content {
+            display: flex;
+            justify-content: space-between;
+            background-color: $open-red;
+            color: $open-dark;
+            width: 100%;
+            overflow: hidden;
+            padding: 10px 20px;
+        }
+
+        &__view_content, &__sort_content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            & div {
+                cursor: pointer;
+                text-transform: uppercase;
             }
+        }
+
+        &__view_content {
+            
+
+            & .open_filter__selected::before {
+                left: -10px;
+            }
+        }
+
+        &__sort_content {
+            align-items: flex-end;
+
+            & .open_filter__selected::before {
+                right: -10px;
+            }
+        }
+
+        &_footer {
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #171B1E 0%, #2F2F2F 100%);
+        }
+    }
+
+    &__selected {
+        position: relative;
+        font-weight: bold;
+
+        &::before {
+            content: '';
+            position: absolute;
+            height: 5px;
+            aspect-ratio: 1/1;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+
+            background-color: $open-dark;
+        }
+    }
+
+    &__arrows {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        font-size: $font-xsm;
+        line-height: 1em;
+        color: #CD2443;
+        left: -15px;
+        top: 0;
+
+        &--selected {
+            color: $open-dark;
         }
     }
 }
