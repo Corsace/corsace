@@ -104,7 +104,8 @@ export interface MatchupScoreViewBase {
     scores: MatchupScoreViewScore[];
     best: string;
     worst: string;
-    placement: number;
+    truePlacement: number;
+    sortPlacement: number;
 }
 
 export type MatchupScoreView = MatchupScoreViewBase & MatchupScoreFilterValues;
@@ -204,7 +205,8 @@ export function computeScoreViews (
             }),
             best: "",
             worst: "",
-            placement: -1,
+            truePlacement: -1,
+            sortPlacement: -1,
         } as MatchupScoreView;
         scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
@@ -279,6 +281,14 @@ export function computeScoreViews (
         score.zScore = nonZeroScores.reduce((a, b) => a + b.zScore, 0);    
     });
 
+    // Sort by current filter
+    scoreViews.sort((a, b) => {
+        if (mapSort !== -1 && a.scores[mapSort])
+            return sortDir === "asc" ? a.scores[mapSort][currentFilter] - b.scores[mapSort][currentFilter] : b.scores[mapSort][currentFilter] - a.scores[mapSort][currentFilter];
+
+        return sortDir === "asc" ? a[currentFilter] - b[currentFilter] : b[currentFilter] - a[currentFilter];
+    });
+
     // Add best/worst values, and placement
     scoreViews.forEach(score => {
         score.scores.forEach(s => {
@@ -286,17 +296,13 @@ export function computeScoreViews (
             if (score && s[currentFilter] === score[currentFilter as keyof typeof score])
                 s.isBest = true;
         });
-        score.placement = scoreViews.filter(s => s.zScore > score.zScore).length + 1;
+        score.truePlacement = scoreViews.filter(s => s.zScore > score.zScore).length + 1;
+        if (mapSort !== -1 && score.scores[mapSort])
+            score.sortPlacement = scoreViews.filter(s => s.scores[mapSort][currentFilter] > score.scores[mapSort][currentFilter]).length + 1;
+        else
+            score.sortPlacement = scoreViews.filter(s => s[currentFilter] > score[currentFilter]).length + 1;
         score.best = score.scores.reduce((a, b) => a[currentFilter] > b[currentFilter] ? a : b).map,
         score.worst = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a[currentFilter] < b[currentFilter] ? a : b).map;
-    });
-
-    // Sort by current filter
-    scoreViews.sort((a, b) => {
-        if (mapSort !== -1 && a.scores[mapSort])
-            return sortDir === "asc" ? a.scores[mapSort][currentFilter] - b.scores[mapSort][currentFilter] : b.scores[mapSort][currentFilter] - a.scores[mapSort][currentFilter];
-
-        return sortDir === "asc" ? a[currentFilter] - b[currentFilter] : b[currentFilter] - a[currentFilter];
     });
 
     return scoreViews;

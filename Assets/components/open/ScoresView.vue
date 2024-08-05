@@ -100,14 +100,14 @@
                         </tr>
                         <!-- TODO: Don't hardcode tiers -->
                         <tr
-                            v-for="(row, i) in shownQualifierScoreViews"
+                            v-for="row in shownQualifierScoreViews"
                             :key="row.ID"
                             :class="{ 
-                                'scores__table--tier1': tierSync && validPlacement(i, 4) && syncView === 'teams',
-                                'scores__table--tier2': tierSync && !validPlacement(i, 4) && validPlacement(i, 16) && syncView === 'teams',
+                                'scores__table--tier1': tierSync && (keepPlacementLocked ? row.truePlacement <= 4 : row.sortPlacement <= 4) && syncView === 'teams',
+                                'scores__table--tier2': tierSync && (keepPlacementLocked ? row.truePlacement > 4 && row.truePlacement <= 16 : row.sortPlacement > 4 && row.sortPlacement <= 16) && syncView === 'teams'
                             }"
                         >
-                            <td>#{{ keepPlacementLocked ? row.placement : sortDir === "asc" ? shownQualifierScoreViews.length - i : i + 1 }}</td>
+                            <td>#{{ keepPlacementLocked ? row.truePlacement : row.sortPlacement }}</td>
                             <!-- THE TEAM / PLAYER COLUMN -->
                             <a
                                 :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
