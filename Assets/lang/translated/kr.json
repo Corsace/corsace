@@ -739,6 +739,17 @@
             "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "현재 코사스 오픈에 등록되어 있지 않습니다"
         },
+        "schedule": {
+            "title": "SCHEDULE",
+            "all": "ALL",
+            "upcoming": "UPCOMING",
+            "ongoing": "ONGOING",
+            "past": "PAST",
+            "hidePotentials": "HIDE POTENTIALS",
+            "myMatches": "MY MATCHES",
+            "myMatchesStaff": "MY MATCHES / STAFF",
+            "matchID": "MATCH ID"
+        },
         "create": {
             "title": "팀 만들기",
             "info1": "에 등록이 마감됩니다",
@@ -773,7 +784,23 @@
                 "unregistered": "등록되지 않음",
                 "bws": "BWS"
             },
-            "stageSelector": "스테이지 선택"
+            "stageSelector": "스테이지 선택",
+            "filter": {
+                "name": "FILTERS",
+                "sorts": {
+                    "A-Z": "A-Z",
+                    "ID": "ID",
+                    "RANK": "RANK",
+                    "BWS AVG": "BWS AVG",
+                    "TEAM SIZE": "TEAM SIZE",
+                    "DATETIME": "DATETIME",
+                    "MATCHID": "MATCH ID",
+                    "RANK AVERAGE": "RANK AVERAGE",
+                    "BWS AVERAGE": "BWS AVERAGE",
+                    "RANK DIFF": "RANK DIFF",
+                    "BWS DIFF": "BWS DIFF"
+                }
+            }
         },
         "staff": {
             "title": "스태프",
