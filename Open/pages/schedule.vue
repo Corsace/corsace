@@ -87,8 +87,8 @@
                                         v-for="matchID in visibleMatchIDs"
                                         :key="matchID"
                                         class="schedule__matchID_filter__selection"
-                                        :class="{ 'schedule__matchID_filter__selection--selected': selectedMatchIDs.includes(matchID) }"
-                                        @click="selectedMatchIDs = selectedMatchIDs.includes(matchID) ? selectedMatchIDs.filter(id => id !== matchID) : [...selectedMatchIDs, matchID]"
+                                        :class="{ 'schedule__matchID_filter__selection--selected': selectedMatchIDs[matchID] }"
+                                        @click="selectedMatchIDs[matchID] = !selectedMatchIDs[matchID]"
                                     >
                                         {{ matchID }}
                                     </div>
@@ -216,7 +216,7 @@ export default class Schedule extends Vue {
     get filteredMatchups () {
         if (!this.matchupList) return [];
         return this.matchupList.filter(matchup => {
-            if (matchup.matchID && !this.selectedMatchIDs.includes(matchup.matchID[0])) return false;
+            if (matchup.matchID && !this.selectedMatchIDs[matchup.matchID[0]]) return false;
             if (this.myMatches && !matchup.teams?.some(team => team.members.some(player => player.ID === this.loggedInUser?.ID))) return false;
             if (this.myStaff) return false;
             if (this.hidePotentials && matchup.potential) return false;
@@ -232,13 +232,14 @@ export default class Schedule extends Vue {
                 return false;
             if (this.view === "ALL") return true;
             if (this.view === "UPCOMING") return matchup.date.getTime() > Date.now();
+            if (this.view === "ONGOING") return matchup.date.getTime() < Date.now() && !matchup.mp;
             if (this.view === "PAST") return matchup.date.getTime() < Date.now();
             return false;
         }).sort((a, b) => this.sortFunctions[this.currentSort](a, b) * (this.sortDir === "ASC" ? 1 : -1));
     }
 
     visibleMatchIDs: string[] = [];
-    selectedMatchIDs: string[] = [];
+    selectedMatchIDs: Record<string, boolean> = {};
 
     @Watch("selectedStage")
     async stageMatchups () {
@@ -259,8 +260,8 @@ export default class Schedule extends Vue {
             if (matchup.matchID)
                 matchupIDSet.add(matchup.matchID[0]);
         }
-        this.visibleMatchIDs = Array.from(matchupIDSet);
-        this.selectedMatchIDs = this.visibleMatchIDs;
+        this.visibleMatchIDs = Array.from(matchupIDSet).sort();
+        this.selectedMatchIDs = this.visibleMatchIDs.reduce((acc, id) => ({ ...acc, [id]: true }), {});
     }
 
     async pause (ms: number) {
