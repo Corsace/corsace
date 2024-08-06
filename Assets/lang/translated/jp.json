@@ -739,6 +739,17 @@
             "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "Corsace Open に登録していません。"
         },
+        "schedule": {
+            "title": "SCHEDULE",
+            "all": "ALL",
+            "upcoming": "UPCOMING",
+            "ongoing": "ONGOING",
+            "past": "PAST",
+            "hidePotentials": "HIDE POTENTIALS",
+            "myMatches": "MY MATCHES",
+            "myMatchesStaff": "MY MATCHES / STAFF",
+            "matchID": "MATCH ID"
+        },
         "create": {
             "title": "チームを作成",
             "info1": "登録期間は次の時刻に終了します",
@@ -773,7 +784,23 @@
                 "unregistered": "未登録",
                 "bws": "BWS"
             },
-            "stageSelector": "ステージ選択"
+            "stageSelector": "ステージ選択",
+            "filter": {
+                "name": "FILTERS",
+                "sorts": {
+                    "A-Z": "A-Z",
+                    "ID": "ID",
+                    "RANK": "RANK",
+                    "BWS AVG": "BWS AVG",
+                    "TEAM SIZE": "TEAM SIZE",
+                    "DATETIME": "DATETIME",
+                    "MATCHID": "MATCH ID",
+                    "RANK AVERAGE": "RANK AVERAGE",
+                    "BWS AVERAGE": "BWS AVERAGE",
+                    "RANK DIFF": "RANK DIFF",
+                    "BWS DIFF": "BWS DIFF"
+                }
+            }
         },
         "staff": {
             "title": "スタッフ",
