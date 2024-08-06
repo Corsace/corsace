@@ -37,7 +37,7 @@ const messageCommandParameterMethods: { [K in keyof ParamTypeMap]: <T>(name: str
     // Add more methods as needed
 };
 
-type customHandlerType = (m: Message | ChatInputCommandInteraction, index: number) => string | number | boolean | Date | null | undefined;
+type customHandlerType = (m: Message | ChatInputCommandInteraction, index: number, commandName: string) => string | number | boolean | Date | null | undefined;
 
 interface parameterOptions<T> {
     name: Extract<keyof T, string>,
@@ -112,7 +112,7 @@ function extractThreadParameter<T> (channel: ThreadChannel, parameterOption: par
  */
 export function extractParameter<T> (m: Message | ChatInputCommandInteraction, parameterOption: parameterOptions<T>, index: number) {
     if (parameterOption.customHandler)
-        return parameterOption.customHandler(m, index);
+        return parameterOption.customHandler(m, index, parameterOption.name);
 
     if (m instanceof Message)
         return messageCommandParameterMethods[parameterOption.paramType](separateArgs(m.content)[index], parameterOption);
