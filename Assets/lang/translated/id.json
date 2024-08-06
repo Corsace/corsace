@@ -739,6 +739,17 @@
             "needLessPlayers": "Kamu perlu untuk mengurangi setidaknya {count} pemain",
             "notRegistered": "Saat ini tidak terdaftar pada Corsace Open."
         },
+        "schedule": {
+            "title": "SCHEDULE",
+            "all": "ALL",
+            "upcoming": "UPCOMING",
+            "ongoing": "ONGOING",
+            "past": "PAST",
+            "hidePotentials": "HIDE POTENTIALS",
+            "myMatches": "MY MATCHES",
+            "myMatchesStaff": "MY MATCHES / STAFF",
+            "matchID": "MATCH ID"
+        },
         "create": {
             "title": "BUAT TIM",
             "info1": "Pendaftaran akan berakhir pada",
@@ -773,7 +784,23 @@
                 "unregistered": "BELUM TERDAFTAR",
                 "bws": "BWS"
             },
-            "stageSelector": "PILIH TAHAPAN"
+            "stageSelector": "PILIH TAHAPAN",
+            "filter": {
+                "name": "FILTERS",
+                "sorts": {
+                    "A-Z": "A-Z",
+                    "ID": "ID",
+                    "RANK": "RANK",
+                    "BWS AVG": "BWS AVG",
+                    "TEAM SIZE": "TEAM SIZE",
+                    "DATETIME": "DATETIME",
+                    "MATCHID": "MATCH ID",
+                    "RANK AVERAGE": "RANK AVERAGE",
+                    "BWS AVERAGE": "BWS AVERAGE",
+                    "RANK DIFF": "RANK DIFF",
+                    "BWS DIFF": "BWS DIFF"
+                }
+            }
         },
         "staff": {
             "title": "STAF",
