@@ -633,7 +633,7 @@
                     "worst": "TERBURUK"
                 },
                 "categorySelect": "PILIH KATEGORI",
-                "lockedPlacement": "Klasemen akhir",
+                "lockedPlacement": "Klasemen final",
                 "unlockedPlacement": "Klasemen saat ini",
                 "players": "PEMAIN",
                 "teams": "TIM"
@@ -740,15 +740,15 @@
             "notRegistered": "Saat ini tidak terdaftar pada Corsace Open."
         },
         "schedule": {
-            "title": "SCHEDULE",
-            "all": "ALL",
-            "upcoming": "UPCOMING",
-            "ongoing": "ONGOING",
-            "past": "PAST",
-            "hidePotentials": "HIDE POTENTIALS",
-            "myMatches": "MY MATCHES",
-            "myMatchesStaff": "MY MATCHES / STAFF",
-            "matchID": "MATCH ID"
+            "title": "JADWAL",
+            "all": "SEMUA",
+            "upcoming": "AKAN DATANG",
+            "ongoing": "SEDANG BERLANGSUNG",
+            "past": "TELAH USAI",
+            "hidePotentials": "SEMBUNYIKAN PERTANDINGAN POTENSIAL",
+            "myMatches": "PERTANDINGAN SAYA",
+            "myMatchesStaff": "PERTANDINGAN SAYA / STAF",
+            "matchID": "ID PERTANDINGAN"
         },
         "create": {
             "title": "BUAT TIM",
@@ -786,19 +786,19 @@
             },
             "stageSelector": "PILIH TAHAPAN",
             "filter": {
-                "name": "FILTERS",
+                "name": "FILTER",
                 "sorts": {
                     "A-Z": "A-Z",
                     "ID": "ID",
-                    "RANK": "RANK",
-                    "BWS AVG": "BWS AVG",
-                    "TEAM SIZE": "TEAM SIZE",
-                    "DATETIME": "DATETIME",
-                    "MATCHID": "MATCH ID",
-                    "RANK AVERAGE": "RANK AVERAGE",
-                    "BWS AVERAGE": "BWS AVERAGE",
-                    "RANK DIFF": "RANK DIFF",
-                    "BWS DIFF": "BWS DIFF"
+                    "RANK": "PERINGKAT",
+                    "BWS AVG": "BWS RATA-RATA",
+                    "TEAM SIZE": "UKURAN TIM",
+                    "DATETIME": "TANGGAL DAN WAKTU",
+                    "MATCHID": "ID PERTANDINGAN",
+                    "RANK AVERAGE": "RATA-RATA PERINGKAT",
+                    "BWS AVERAGE": "RATA-RATA BWS",
+                    "RANK DIFF": "SELISIH PERINGKAT",
+                    "BWS DIFF": "SELISIH BWS"
                 }
             }
         },
