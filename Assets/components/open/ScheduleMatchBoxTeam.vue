@@ -33,7 +33,7 @@
             </div>
             <div class="schedule_matchbox_team_details_teamrank">
                 <div class="schedule_matchbox_team--title schedule_matchbox_team--title_soft">
-                    RANK
+                    {{ $t('open.components.openCardTeam.rank') }}
                 </div>
                 <div class="schedule_matchbox_team_details_teamrank__rank">
                     {{ Math.round(teamSync.rank) }}
@@ -41,7 +41,7 @@
             </div>
             <div class="schedule_matchbox_team_details_teambws">
                 <div class="schedule_matchbox_team--title schedule_matchbox_team--title_soft">
-                    TEAM BWS AVG
+                    {{ $t('open.components.openCardTeam.teambwsAverage') }}
                 </div>
                 <div class="schedule_matchbox_team_details_teambws__bws">
                     {{ Math.round(teamSync.BWS) }}

@@ -1,9 +1,10 @@
 <template>
     <div class="open_filter">
-        FILTERS
+        {{ $t("open.components.filter.name") }}
         <div
             class="open_filter__icon"
             @click="visibleDropdown = !visibleDropdown"
+            @mousemove="diamondToSelectedValue('left'); diamondToSelectedValue('right')"
         >
             <div class="open_filter__icon_square" />
             <div class="open_filter__icon_square" />
@@ -20,13 +21,30 @@
                 </div>
                 <div
                     class="open_filter__dropdown__content"
+                    @mousemove.stop
                     @click.stop
                 >
-                    <div class="open_filter__dropdown__view_content">
+                    <div 
+                        class="open_filter__dropdown__view_content"
+                        @mousemove="updateDiamondPosition('left', $event)"
+                        @mouseleave="diamondToSelectedValue('left')"
+                    >
+                        <div
+                            ref="diamondLeft"
+                            class="open_filter__diamond open_filter__diamond--left"
+                        />
                         <slot name="view" />
                     </div>
-                    <div class="open_filter__dropdown__sort_content">
+                    <div
+                        class="open_filter__dropdown__sort_content"
+                        @mousemove="updateDiamondPosition('right', $event)"
+                        @mouseleave="diamondToSelectedValue('right')"
+                    >
                         <slot name="sort" />
+                        <div
+                            ref="diamondRight"
+                            class="open_filter__diamond open_filter__diamond--right"
+                        />
                     </div>
                 </div>
                 <div class="open_filter__dropdown_footer" />
@@ -41,6 +59,31 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({})
 export default class OpenFilter extends Vue {
     visibleDropdown = false;
+
+    updateDiamondPosition (side: string, event: MouseEvent) {
+        const diamond = side === "left" ? this.$refs.diamondLeft : this.$refs.diamondRight;
+        if (diamond instanceof HTMLElement) {
+            const parent = diamond.parentElement!;
+            const parentRect = parent.getBoundingClientRect();
+            const offsetY = event.clientY - parentRect.top;
+            diamond.style.top = `${offsetY}px`;
+        }
+    }
+
+    diamondToSelectedValue (side: string) {
+        const diamond = side === "left" ? this.$refs.diamondLeft : this.$refs.diamondRight;
+        if (diamond instanceof HTMLElement) {
+            // Check if the data in the slot has an html element with a class of open_filter__selected
+            const selected = diamond.parentElement!.querySelector(".open_filter__selected");
+            if (selected instanceof HTMLElement) {
+                const parent = diamond.parentElement!;
+                const parentRect = parent.getBoundingClientRect();
+                const selectedRect = selected.getBoundingClientRect();
+                const offsetY = selectedRect.top - parentRect.top + selectedRect.height / 2;
+                diamond.style.top = `${offsetY}px`;
+            }
+        }
+    }
 }
 </script>
 
@@ -114,7 +157,6 @@ export default class OpenFilter extends Vue {
 
         &__content {
             display: flex;
-            justify-content: space-between;
             background-color: $open-red;
             color: $open-dark;
             width: 100%;
@@ -123,9 +165,12 @@ export default class OpenFilter extends Vue {
         }
 
         &__view_content, &__sort_content {
+            position: relative;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            width: 50%;
+            white-space: normal;
 
             & div {
                 cursor: pointer;
@@ -134,19 +179,11 @@ export default class OpenFilter extends Vue {
         }
 
         &__view_content {
-            
-
-            & .open_filter__selected::before {
-                left: -10px;
-            }
+            align-items: flex-start;
         }
 
         &__sort_content {
             align-items: flex-end;
-
-            & .open_filter__selected::before {
-                right: -10px;
-            }
         }
 
         &_footer {
@@ -156,20 +193,32 @@ export default class OpenFilter extends Vue {
         }
     }
 
+    &__diamond {
+        position: absolute;
+        height: 5px;
+        aspect-ratio: 1/1;
+        transform: translateY(-50%) rotate(45deg);
+        background-color: $open-dark;
+        transition: none;
+
+        &--left {
+            left: -10px;
+        }
+
+        &--right {
+            right: -10px;
+        }
+    }
+
+    &__separator {
+        height: 1px;
+        width: 100%;
+        background-color: $open-dark;
+    }
+
     &__selected {
         position: relative;
         font-weight: bold;
-
-        &::before {
-            content: '';
-            position: absolute;
-            height: 5px;
-            aspect-ratio: 1/1;
-            top: 50%;
-            transform: translateY(-50%) rotate(45deg);
-
-            background-color: $open-dark;
-        }
     }
 
     &__arrows {
@@ -177,10 +226,14 @@ export default class OpenFilter extends Vue {
         display: flex;
         flex-direction: column;
         font-size: $font-xsm;
-        line-height: 1em;
+        line-height: 0.75em;
         color: #CD2443;
-        left: -15px;
+        left: -12px;
         top: 0;
+
+        & div {
+            transform: scaleX(1.25) scaleY(0.75);
+        }
 
         &--selected {
             color: $open-dark;

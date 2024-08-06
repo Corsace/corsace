@@ -32,13 +32,13 @@
                         </template>
                         <template #sort>
                             <div
-                                v-for="filter in filters"
-                                :key="filter"
-                                :class="{ 'open_filter__selected': currentFilter === filter }"
-                                @click="currentFilter === filter ? (sortDir = sortDir === 'ASC' ? 'DESC' : 'ASC') : (currentFilter = filter)"
+                                v-for="sort in sorts"
+                                :key="sort"
+                                :class="{ 'open_filter__selected': currentSort === sort }"
+                                @click="currentSort === sort ? (sortDir = sortDir === 'ASC' ? 'DESC' : 'ASC') : (currentSort = sort)"
                             >
                                 <div
-                                    v-if="currentFilter === filter"
+                                    v-if="currentSort === sort"
                                     class="open_filter__arrows"
                                 >
                                     <div :class="{ 'open_filter__arrows--selected': sortDir === 'ASC' }">
@@ -48,7 +48,7 @@
                                         ▼
                                     </div>
                                 </div>
-                                {{ filter }}
+                                {{ $t(`open.components.filter.sorts.${sort}`) }}
                             </div>
                         </template>
                     </OpenFilter>
@@ -196,15 +196,15 @@ export default class Teams extends Mixins(CentrifugeMixin) {
     loading = true;
     showUnregistered = false;
     sortDir: "ASC" | "DESC" = "ASC";
-    filters = ["A-Z", "ID", "RANK", "BWS AVG", "TEAM SIZE"] as const;
-    filterFunctions: Record<typeof this.filters[number], (a: TeamList, b: TeamList) => number> = {
-        "A-Z": (a, b) => a.name.localeCompare(b.name),
-        "ID": (a, b) => a.ID - b.ID,
+    sorts = ["RANK", "BWS AVG", "A-Z", "ID", "TEAM SIZE"] as const;
+    sortFunctions: Record<typeof this.sorts[number], (a: TeamList, b: TeamList) => number> = {
         "RANK": (a, b) => a.rank - b.rank,
         "BWS AVG": (a, b) => a.BWS - b.BWS,
+        "A-Z": (a, b) => a.name.localeCompare(b.name),
+        "ID": (a, b) => a.ID - b.ID,
         "TEAM SIZE": (a, b) => a.members.length - b.members.length,
     };
-    currentFilter: typeof this.filters[number] = "A-Z";
+    currentSort: typeof this.sorts[number] = "A-Z";
     searchValue = "";
     page: "list" | "management" = "list";
     unregisteredTeams: TeamList[] | null = null;
@@ -216,7 +216,7 @@ export default class Teams extends Mixins(CentrifugeMixin) {
         if (this.showUnregistered && this.unregisteredTeams)
             teams = [...teams, ...this.unregisteredTeams];
         if (!this.searchValue) // consider asc/desc
-            return teams.sort((a, b) => this.sortDir === "ASC" ? this.filterFunctions[this.currentFilter](a, b) : this.filterFunctions[this.currentFilter](b, a)); 
+            return teams.sort((a, b) => this.sortDir === "ASC" ? this.sortFunctions[this.currentSort](a, b) : this.sortFunctions[this.currentSort](b, a)); 
 
         return teams.filter(team => 
             team.name.toLowerCase().includes(this.searchValue.toLowerCase()) ||
@@ -224,7 +224,7 @@ export default class Teams extends Mixins(CentrifugeMixin) {
             team.ID.toString().includes(this.searchValue.toLowerCase()) ||
             team.members.some(member => member.ID.toString().includes(this.searchValue.toLowerCase())) ||
             team.members.some(member => member.osuID.toLowerCase().includes(this.searchValue.toLowerCase()))
-        ).sort((a, b) => this.sortDir === "ASC" ? this.filterFunctions[this.currentFilter](a, b) : this.filterFunctions[this.currentFilter](b, a));
+        ).sort((a, b) => this.sortFunctions[this.currentSort](a, b) * (this.sortDir === "ASC" ? 1 : -1));
     }
 
     async mounted () {
