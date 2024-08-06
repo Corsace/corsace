@@ -103,6 +103,9 @@
                     :pool="mappool"
                 />
             </div>
+            <div v-else-if="loading">
+                {{ $t("open.status.loading").toString().toLowerCase() }}...
+            </div>
             <div v-else-if="page === 'mappool'">
                 {{ $t("open.qualifiers.mappool.notAvailable") }}
             </div>
@@ -169,6 +172,7 @@ const openModule = namespace("open");
     },
 })
 export default class Mappool extends Vue {
+    loading = false;
     page: "mappool" | "scores" = "mappool";
     scoreView: "players" | "teams" = "teams";
     placementLock = false;
@@ -186,9 +190,11 @@ export default class Mappool extends Vue {
 
     @Watch("selectedStage")
     async stageScoresAndMappools () {
+        this.loading = true;
         if (!this.selectedStage) {
             this.$store.commit("open/setMappools", []);
             this.$store.commit("open/setScores", []);
+            this.loading = false;
             return;
         }
         
@@ -202,6 +208,7 @@ export default class Mappool extends Vue {
         await this.$store.dispatch("open/setMappools", this.selectedStage?.ID);
         if (this.page === "scores")
             await this.$store.dispatch("open/setScores", this.selectedStage?.ID);
+        this.loading = false;
     }
 
     async changePage (page: "mappool" | "scores") {
