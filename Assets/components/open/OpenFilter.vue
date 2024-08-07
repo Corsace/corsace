@@ -3,8 +3,7 @@
         {{ $t("open.components.filter.name") }}
         <div
             class="open_filter__icon"
-            @click="visibleDropdown = !visibleDropdown"
-            @mousemove="diamondToSelectedValue('left'); diamondToSelectedValue('right')"
+            @click="toggleDropdown()"
         >
             <div class="open_filter__icon_square" />
             <div class="open_filter__icon_square" />
@@ -21,30 +20,21 @@
                 </div>
                 <div
                     class="open_filter__dropdown__content"
-                    @mousemove.stop
                     @click.stop
                 >
-                    <div 
-                        class="open_filter__dropdown__view_content"
-                        @mousemove="updateDiamondPosition('left', $event)"
-                        @mouseleave="diamondToSelectedValue('left')"
-                    >
+                    <div class="open_filter__dropdown__view_content">
                         <div
                             ref="diamondLeft"
                             class="open_filter__diamond open_filter__diamond--left"
                         />
                         <slot name="view" />
                     </div>
-                    <div
-                        class="open_filter__dropdown__sort_content"
-                        @mousemove="updateDiamondPosition('right', $event)"
-                        @mouseleave="diamondToSelectedValue('right')"
-                    >
-                        <slot name="sort" />
+                    <div class="open_filter__dropdown__sort_content">
                         <div
                             ref="diamondRight"
                             class="open_filter__diamond open_filter__diamond--right"
                         />
+                        <slot name="sort" />
                     </div>
                 </div>
                 <div class="open_filter__dropdown_footer" />
@@ -60,17 +50,18 @@ import { Vue, Component } from "vue-property-decorator";
 export default class OpenFilter extends Vue {
     visibleDropdown = false;
 
-    updateDiamondPosition (side: string, event: MouseEvent) {
+    updateDiamondPosition (side: "left" | "right", div: HTMLElement) {
         const diamond = side === "left" ? this.$refs.diamondLeft : this.$refs.diamondRight;
         if (diamond instanceof HTMLElement) {
             const parent = diamond.parentElement!;
             const parentRect = parent.getBoundingClientRect();
-            const offsetY = event.clientY - parentRect.top;
+            const divRect = div.getBoundingClientRect();
+            const offsetY = divRect.top - parentRect.top + divRect.height / 2;
             diamond.style.top = `${offsetY}px`;
         }
     }
 
-    diamondToSelectedValue (side: string) {
+    diamondToSelectedValue (side: "left" | "right") {
         const diamond = side === "left" ? this.$refs.diamondLeft : this.$refs.diamondRight;
         if (diamond instanceof HTMLElement) {
             // Check if the data in the slot has an html element with a class of open_filter__selected
@@ -83,6 +74,36 @@ export default class OpenFilter extends Vue {
                 diamond.style.top = `${offsetY}px`;
             }
         }
+    }
+
+    setListeners (element: HTMLElement, side: "left" | "right") {
+        const updatePosition = () => this.updateDiamondPosition(side, element);
+        const resetPosition = () => this.diamondToSelectedValue(side);
+
+        element.addEventListener("mouseenter", updatePosition);
+        element.addEventListener("mouseleave", resetPosition);
+    }
+
+    toggleDropdown () {
+        this.visibleDropdown = !this.visibleDropdown;
+        this.$nextTick(() => {
+            if (!(this.$refs.diamondLeft instanceof HTMLElement) || !(this.$refs.diamondRight instanceof HTMLElement))
+                return;
+
+            this.diamondToSelectedValue("left");
+            this.diamondToSelectedValue("right");
+            
+            Array.from(this.$refs.diamondLeft.parentElement!.children).filter(c => {
+                if (!(c instanceof HTMLElement))
+                    return false;
+                return !c.classList.contains("open_filter__diamond");
+            }).forEach((c) => this.setListeners(c as HTMLElement, "left"));
+            Array.from(this.$refs.diamondRight.parentElement!.children).filter(c => {
+                if (!(c instanceof HTMLElement))
+                    return false;
+                return !c.classList.contains("open_filter__diamond");
+            }).forEach((c) => this.setListeners(c as HTMLElement, "right"));
+        });
     }
 }
 </script>
@@ -199,7 +220,6 @@ export default class OpenFilter extends Vue {
         aspect-ratio: 1/1;
         transform: translateY(-50%) rotate(45deg);
         background-color: $open-dark;
-        transition: none;
 
         &--left {
             left: -10px;
