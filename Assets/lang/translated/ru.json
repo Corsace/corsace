@@ -740,7 +740,6 @@
             "notRegistered": "В данный момент не зарегистрирован в Corsace Open."
         },
         "schedule": {
-            "title": "SCHEDULE",
             "all": "ALL",
             "upcoming": "UPCOMING",
             "ongoing": "ONGOING",
@@ -748,7 +747,19 @@
             "hidePotentials": "HIDE POTENTIALS",
             "myMatches": "MY MATCHES",
             "myMatchesStaff": "MY MATCHES / STAFF",
-            "matchID": "MATCH ID"
+            "matchID": "MATCH ID",
+            "group": "GROUP",
+            "invertSelection": "INVERT SELECTION",
+            "nav": {
+                "schedule": "SCHEDULE",
+                "brackets": "BRACKETS"
+            },
+            "brackets": {
+                "standings": "STANDINGS",
+                "matches": "MATCHES",
+                "toBracket": "CLICK FOR BRACKET VIEW",
+                "upcoming": "UPCOMING"
+            }
         },
         "create": {
             "title": "СОЗДАНИЕ КОМАНДЫ",
