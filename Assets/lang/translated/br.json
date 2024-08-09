@@ -739,6 +739,28 @@
             "needLessPlayers": "You need at least {count} less players",
             "notRegistered": "Atualmente não inscrito na Corsace Open."
         },
+        "schedule": {
+            "all": "ALL",
+            "upcoming": "UPCOMING",
+            "ongoing": "ONGOING",
+            "past": "PAST",
+            "hidePotentials": "HIDE POTENTIALS",
+            "myMatches": "MY MATCHES",
+            "myMatchesStaff": "MY MATCHES / STAFF",
+            "matchID": "MATCH ID",
+            "group": "GROUP",
+            "invertSelection": "INVERT SELECTION",
+            "nav": {
+                "schedule": "SCHEDULE",
+                "brackets": "BRACKETS"
+            },
+            "brackets": {
+                "standings": "STANDINGS",
+                "matches": "MATCHES",
+                "toBracket": "CLICK FOR BRACKET VIEW",
+                "upcoming": "UPCOMING"
+            }
+        },
         "create": {
             "title": "CRIAR UM TIME",
             "info1": "As inscrições vão acabar em",
@@ -773,7 +795,23 @@
                 "unregistered": "NÃO INSCRITO",
                 "bws": "BWS"
             },
-            "stageSelector": "SELEÇÃO DE FASE"
+            "stageSelector": "SELEÇÃO DE FASE",
+            "filter": {
+                "name": "FILTERS",
+                "sorts": {
+                    "A-Z": "A-Z",
+                    "ID": "ID",
+                    "RANK": "RANK",
+                    "BWS AVG": "BWS AVG",
+                    "TEAM SIZE": "TEAM SIZE",
+                    "DATETIME": "DATETIME",
+                    "MATCHID": "MATCH ID",
+                    "RANK AVERAGE": "RANK AVERAGE",
+                    "BWS AVERAGE": "BWS AVERAGE",
+                    "RANK DIFF": "RANK DIFF",
+                    "BWS DIFF": "BWS DIFF"
+                }
+            }
         },
         "staff": {
             "title": "STAFF",
