@@ -30,6 +30,13 @@
                     {{ $t("open.navbar.info") }}
                 </NuxtLink>
                 <NuxtLink
+                    v-if="staffInfo?.userRoles.includes(0) || staffInfo?.userRoles.includes(6)"
+                    to="/referee"
+                    class="header__nav-item"
+                >
+                    {{ $t("open.navbar.referee") }}
+                </NuxtLink>
+                <NuxtLink
                     to="/qualifiers" 
                     class="header__nav-item"
                 >
@@ -224,6 +231,7 @@ import CentrifugeMixin from "../../Assets/mixins/centrifuge";
 
 import { UserInfo } from "../../Interfaces/user";
 import { BaseTeam } from "../../Interfaces/team";
+import { OpenStaffInfo } from "../../Interfaces/staff";
 
 import DevBanner from "../../Assets/components/DevBanner.vue";
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
@@ -249,6 +257,7 @@ export default class Default extends Mixins(CentrifugeMixin) {
     @State loggedInUser!: null | UserInfo;
 
     @openModule.State teamInvites!: BaseTeam[] | null;
+    @openModule.State staffInfo!: OpenStaffInfo | null;
 
     devBanner = false;
     isSmall = false;
