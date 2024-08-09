@@ -740,7 +740,6 @@
             "notRegistered": "현재 코사스 오픈에 등록되어 있지 않습니다"
         },
         "schedule": {
-            "title": "SCHEDULE",
             "all": "ALL",
             "upcoming": "UPCOMING",
             "ongoing": "ONGOING",
@@ -748,7 +747,19 @@
             "hidePotentials": "HIDE POTENTIALS",
             "myMatches": "MY MATCHES",
             "myMatchesStaff": "MY MATCHES / STAFF",
-            "matchID": "MATCH ID"
+            "matchID": "MATCH ID",
+            "group": "GROUP",
+            "invertSelection": "INVERT SELECTION",
+            "nav": {
+                "schedule": "SCHEDULE",
+                "brackets": "BRACKETS"
+            },
+            "brackets": {
+                "standings": "STANDINGS",
+                "matches": "MATCHES",
+                "toBracket": "CLICK FOR BRACKET VIEW",
+                "upcoming": "UPCOMING"
+            }
         },
         "create": {
             "title": "팀 만들기",
