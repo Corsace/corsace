@@ -60,7 +60,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
 
     const params = await extractParameters<parameters>(m, [
-        { name: "matchup", paramType: "integer" },
+        { name: "matchup", paramType: "string" },
         { name: "staff_type", paramType: "string", optional: true },
         { name: "user", paramType: "string", customHandler: extractTargetText, optional: true },
     ]); 
@@ -99,6 +99,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("matchup.commentators", "commentators")
         .leftJoinAndSelect("matchup.streamer", "streamer")
         .where("matchup.ID = :ID", { ID: matchupID })
+        .orWhere("matchup.matchID = :ID", { ID: matchupID })
         .getOne();
 
     if (!matchup) {
@@ -178,7 +179,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 const data = new SlashCommandBuilder()
     .setName("matchup_staff")
     .setDescription("Assign or remove yourself (or someone else if organizer) as staff for a matchup")
-    .addIntegerOption(option =>
+    .addStringOption(option =>
         option.setName("matchup")   
             .setDescription("The ID of the matchup to assign/remove yourself as a staff")
             .setRequired(true))
@@ -205,7 +206,7 @@ const data = new SlashCommandBuilder()
     .setDMPermission(false);
 
 interface parameters {
-    matchup: number,
+    matchup: string,
     staff_type: staffType,
     user?: string,
 }
