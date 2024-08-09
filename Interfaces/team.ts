@@ -5,6 +5,7 @@ import { BaseTournament } from "./tournament";
 export interface BaseTeam {
     ID: number;
     name: string;
+    abbreviation: string;
     avatarURL?: string | null;
 }
 

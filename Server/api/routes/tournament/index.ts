@@ -167,6 +167,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
             return {
                 ID: t.ID,
                 name: t.name,
+                abbreviation: t.abbreviation,
                 avatarURL: t.avatarURL,
                 pp: t.pp,
                 BWS: t.BWS,
@@ -222,6 +223,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/unregisteredTeams",
             return {
                 ID: t.ID,
                 name: t.name,
+                abbreviation: t.abbreviation,
                 avatarURL: t.avatarURL,
                 pp: t.pp,
                 BWS: t.BWS,
@@ -305,6 +307,7 @@ tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifier
                     team: {
                         ID: t.ID,
                         name: t.name,
+                        abbreviation: t.abbreviation,
                         avatarURL: t.avatarURL,
                         pp: t.pp,
                         rank: t.rank,

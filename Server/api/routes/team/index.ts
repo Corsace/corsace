@@ -380,6 +380,7 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
     const teamList: TeamList = {
         ID: team.ID,
         name: team.name,
+        abbreviation: team.abbreviation,
         avatarURL: team.avatarURL,
         pp: team.pp,
         BWS: team.BWS,

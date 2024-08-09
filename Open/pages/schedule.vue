@@ -1,10 +1,18 @@
 <template>
     <div class="schedule">
+        <SubHeader
+            :selections="[
+                { text: $t('open.schedule.nav.schedule'), value: 'schedule' },
+                { text: $t('open.schedule.nav.brackets'), value: 'brackets' },
+            ]"
+            :current-page="page"
+            @update:page="changePage"
+        />
         <div class="schedule_main_content">
             <OpenTitle>
-                {{ $t("open.schedule.title") }} - <span class="schedule_main_content__abbreviation">{{ selectedStage?.abbreviation.toUpperCase() || '' }}</span>
+                {{ $t(`open.schedule.nav.${page}`) }} - <span class="schedule_main_content__abbreviation">{{ selectedStage?.abbreviation.toUpperCase() || '' }}</span>
                 <template #right>
-                    <OpenFilter>
+                    <OpenFilter v-if="page === 'schedule'">
                         <template #view>
                             <div
                                 :class="{ 'open_filter__selected': view === 'ALL' }"
@@ -32,6 +40,7 @@
                             </div>
                             <div class="open_filter__separator" />
                             <div
+                                style="word-spacing: 1000px;"
                                 :style="{ fontWeight: hidePotentials ? 'bold' : 'normal' }"
                                 @click="hidePotentials = !hidePotentials"
                             >
@@ -80,6 +89,12 @@
                             >
                                 {{ $t("open.schedule.matchID") }}
                                 <div
+                                    style="text-align: right;"
+                                    @click="selectedMatchIDs = visibleMatchIDs.reduce((acc, id) => ({ ...acc, [id]: !selectedMatchIDs[id] }), {})"
+                                >
+                                    {{ $t("open.schedule.invertSelection") }}
+                                </div>
+                                <div
                                     class="schedule__matchID_filter_container"
                                     style="cursor: default;"
                                 >
@@ -89,6 +104,27 @@
                                         class="schedule__matchID_filter__selection"
                                         :class="{ 'schedule__matchID_filter__selection--selected': selectedMatchIDs[matchID] }"
                                         @click="selectedMatchIDs[matchID] = !selectedMatchIDs[matchID]"
+                                    >
+                                        {{ matchID }}
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </OpenFilter>
+                    <OpenFilter v-else-if="page === 'brackets' && selectedStage?.stageType === 3">
+                        <template #view>
+                            <div style="cursor: default;">
+                                {{ $t("open.schedule.group") }}
+                                <div
+                                    class="schedule__matchID_filter_container"
+                                    style="cursor: default;"
+                                >
+                                    <div
+                                        v-for="matchID in visibleMatchIDs"
+                                        :key="matchID"
+                                        class="schedule__matchID_filter__selection"
+                                        :class="{ 'schedule__matchID_filter__selection--selected': currGroup === matchID }"
+                                        @click="currGroup = matchID"
                                     >
                                         {{ matchID }}
                                     </div>
@@ -111,6 +147,7 @@
                         </template>
                     </StageSelector>
                     <SearchBar
+                        v-if="page === 'schedule'"
                         :placeholder="`${$t('open.teams.searchPlaceholder')}`"
                         @update:search="searchValue = $event"
                     />
@@ -125,11 +162,41 @@
                     </ContentButton>
                 </template>
             </OpenTitle>
-            <div class="schedule_main_content_matches">
+            <div
+                v-if="loading"
+            >
+                {{ $t('open.status.loading') }}...
+            </div>
+            <div
+                v-if="page === 'schedule'"
+                class="schedule_main_content_matches"
+            >
                 <ScheduleMatchBox
                     v-for="matchup in filteredMatchups"
                     :key="matchup.ID"
                     :matchup="matchup"
+                />
+            </div>
+            <div
+                v-else-if="page === 'brackets'"
+                ref="bracketContainer"
+                class="schedule_main_content_brackets"
+            >
+                <div class="schedule_main_content_brackets__scrollbar_container">
+                    <div
+                        ref="bracketScroll"
+                        class="schedule_main_content_brackets__scrollbar"
+                        draggable
+                        @dragstart="scrollStart"
+                        @drag="scrollBracket"
+                        @dragend="reAddScroll"
+                    />
+                </div>
+                <RoundRobinView
+                    v-if="selectedStage?.stageType === 3"
+                    :matchups="matchupList"
+                    :current="currGroup"
+                    @change="currGroup = $event"
                 />
             </div>
         </div>
@@ -146,6 +213,8 @@ import ScheduleMatchBox from "../../Assets/components/open/ScheduleMatchBox.vue"
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import OpenFilter from "../../Assets/components/open/OpenFilter.vue";
 import SearchBar from "../../Assets/components/SearchBar.vue";
+import SubHeader from "../../Assets/components/open/SubHeader.vue";
+import RoundRobinView from "../../Assets/components/open/RoundRobinView.vue";
 
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage, StageType } from "../../Interfaces/stage";
@@ -162,6 +231,8 @@ const openModule = namespace("open");
         ContentButton,
         OpenFilter,
         SearchBar,
+        SubHeader,
+        RoundRobinView,
     },
     head () {
         return {
@@ -190,9 +261,11 @@ export default class Schedule extends Vue {
     @openModule.State tournament!: Tournament | null;
     @openModule.State matchupList!: MatchupList[] | null;
 
+    loading = false;
     stageList: Stage[] = [];
     index = 0;
     searchValue = "";
+    page: "schedule" | "brackets" = "schedule";
     view: "ALL" | "UPCOMING" | "ONGOING" | "PAST" = "ALL";
     hidePotentials = false;
     myMatches = false;
@@ -240,6 +313,7 @@ export default class Schedule extends Vue {
 
     visibleMatchIDs: string[] = [];
     selectedMatchIDs: Record<string, boolean> = {};
+    currGroup = "";
 
     @Watch("selectedStage")
     async stageMatchups () {
@@ -248,10 +322,11 @@ export default class Schedule extends Vue {
             return;
         }
         
+        this.loading = true;
         const ID = this.selectedStage.ID;
         this.$store.commit("open/setMatchups", []);
 
-        await this.pause(500);
+        await this.pause(250);
         if (ID !== this.selectedStage.ID) return;
 
         await this.$store.dispatch("open/setMatchups", this.selectedStage?.ID);
@@ -262,10 +337,20 @@ export default class Schedule extends Vue {
         }
         this.visibleMatchIDs = Array.from(matchupIDSet).sort();
         this.selectedMatchIDs = this.visibleMatchIDs.reduce((acc, id) => ({ ...acc, [id]: true }), {});
+        this.currGroup = this.visibleMatchIDs[0];
+        this.loading = false;
     }
 
     async pause (ms: number) {
         return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    changePage (page: "schedule" | "brackets") {
+        if (page === this.page)
+            return;
+        if (page === "brackets" && !this.selectedStage)
+            return;
+        this.page = page;
     }
 
     mounted () {
@@ -273,6 +358,61 @@ export default class Schedule extends Vue {
         this.index = this.stageList.findIndex(stage => stage.timespan.end.getTime() > Date.now());
         if (this.index === -1)
             this.index = this.stageList.length - 1;
+    }
+
+    updated () {
+        const bracketContainer = this.$refs.bracketContainer;
+        const bracketScroll = this.$refs.bracketScroll;
+        if (bracketContainer instanceof HTMLElement && bracketScroll instanceof HTMLElement) {
+            bracketContainer.onscroll = null;
+            if (bracketContainer.scrollWidth === bracketContainer.clientWidth)
+                bracketScroll.style.display = "none";
+            else
+                bracketScroll.style.display = "block";
+            if (!bracketContainer.children[1])
+                return;
+            const childWidth = bracketContainer.children[1].scrollWidth;
+            bracketScroll.parentElement!.style.width = `${childWidth}px`;
+            bracketContainer.onscroll = () => {
+                bracketScroll.style.left = `${Math.max(0, Math.min(bracketContainer.scrollLeft / bracketContainer.scrollWidth * childWidth, childWidth))}px`;
+            };
+        }
+    }
+
+    scrollStart (event: Event) {
+        if (!(event instanceof DragEvent) || !event.dataTransfer)
+            return;
+        event.dataTransfer.setData("text", "scroll");
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.dropEffect = "move";
+        const bracketContainer = this.$refs.bracketContainer;
+        if (bracketContainer instanceof HTMLElement)
+            bracketContainer.onscroll = null;
+    }
+
+    scrollBracket (event: Event) {
+        if (!(event instanceof DragEvent))
+            return;
+        
+        event.dataTransfer!.dropEffect = "move";
+        const bracketContainer = this.$refs.bracketContainer;
+        const bracketScroll = this.$refs.bracketScroll;
+        if (bracketContainer instanceof HTMLElement && bracketScroll instanceof HTMLElement) {
+            const rect = bracketContainer.getBoundingClientRect();
+            const left = Math.min(Math.max(0, event.x - rect.x - 0.05 * rect.width), 0.95 * rect.width);
+            bracketScroll.style.left = `${left}px`;
+            bracketContainer.scrollLeft = left / rect.width * (bracketContainer.scrollWidth - bracketContainer.clientWidth);
+        }
+    }
+
+    reAddScroll () {
+        const bracketContainer = this.$refs.bracketContainer;
+        if (bracketContainer instanceof HTMLElement)
+            bracketContainer.onscroll = () => {
+                const bracketScroll = this.$refs.bracketScroll;
+                if (bracketScroll instanceof HTMLElement)
+                    bracketScroll.style.left = `${bracketContainer.scrollLeft / (bracketContainer.scrollWidth - bracketContainer.clientWidth) * bracketContainer.clientWidth}px`;
+            };
     }
 }
 
@@ -300,11 +440,34 @@ export default class Schedule extends Vue {
             width: 100vw;
         }
 
-        &_matches{
+        &_matches {
             display: flex;
             flex-direction: column;
             margin-top: 20px;
             gap: 20px;
+        }
+
+        &_brackets {
+            margin-top: 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: relative;
+
+            &__scrollbar {
+                position: absolute;
+                border-radius: 5px;
+                background-color: #272727;
+                width: 5%;
+                height: 10px;
+                transition: none;
+                box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+
+                &_container {
+                    width: 100%;
+                    position: relative;
+                    z-index: 3;
+                }
+            }
         }
     }
 

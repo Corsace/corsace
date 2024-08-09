@@ -55,6 +55,7 @@ qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) 
         teams: qualifier.teams?.map<BaseTeam>(t => ({
             ID: t.ID,
             name: t.name,
+            abbreviation: t.abbreviation,
             avatarURL: t.avatarURL,
         })) ?? [],
         scores: [],

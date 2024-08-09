@@ -91,6 +91,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                     return {
                         ID: team.ID,
                         name: team.name,
+                        abbreviation: team.abbreviation,
                         avatarURL: team.avatarURL,
                         pp: team.pp,
                         rank: team.rank,

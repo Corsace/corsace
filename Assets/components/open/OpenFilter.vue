@@ -57,6 +57,7 @@ export default class OpenFilter extends Vue {
             const parentRect = parent.getBoundingClientRect();
             const divRect = div.getBoundingClientRect();
             const offsetY = divRect.top - parentRect.top + divRect.height / 2;
+            diamond.style.opacity = "1";
             diamond.style.top = `${offsetY}px`;
         }
     }
@@ -71,8 +72,10 @@ export default class OpenFilter extends Vue {
                 const parentRect = parent.getBoundingClientRect();
                 const selectedRect = selected.getBoundingClientRect();
                 const offsetY = selectedRect.top - parentRect.top + selectedRect.height / 2;
+                diamond.style.opacity = "1";
                 diamond.style.top = `${offsetY}px`;
-            }
+            } else
+                diamond.style.opacity = "0";
         }
     }
 
@@ -104,6 +107,13 @@ export default class OpenFilter extends Vue {
                 return !c.classList.contains("open_filter__diamond");
             }).forEach((c) => this.setListeners(c as HTMLElement, "right"));
         });
+    }
+
+    updated () {
+        if (this.visibleDropdown) {
+            this.diamondToSelectedValue("left");
+            this.diamondToSelectedValue("right");
+        }
     }
 }
 </script>
