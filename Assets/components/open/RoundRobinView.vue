@@ -238,7 +238,7 @@ export default class RoundRobinView extends Vue {
                 teams,
                 collapsed: true,
             };
-        });
+        }).sort((a, b) => a.id > b.id ? 1 : -1);
     }
 
     updated () {
