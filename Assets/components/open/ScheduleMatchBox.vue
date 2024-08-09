@@ -67,7 +67,7 @@ export default class ScheduleMatchBox extends Vue {
         const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
         const day = date.getUTCDate();
         const monthIndex = date.getUTCMonth();
-        return `${months[monthIndex]} ${day < 10 ? "0" : ""}${day} (${date.toLocaleString("en-US", { weekday: "short" }).toUpperCase()})`;
+        return `${months[monthIndex]} ${day < 10 ? "0" : ""}${day} (${date.toLocaleString("en-US", { weekday: "short", timeZone: "UTC" }).toUpperCase()})`;
     }
 }
 </script>
