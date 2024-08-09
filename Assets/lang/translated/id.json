@@ -740,7 +740,6 @@
             "notRegistered": "Saat ini tidak terdaftar pada Corsace Open."
         },
         "schedule": {
-            "title": "JADWAL",
             "all": "SEMUA",
             "upcoming": "AKAN DATANG",
             "ongoing": "SEDANG BERLANGSUNG",
@@ -748,7 +747,19 @@
             "hidePotentials": "SEMBUNYIKAN PERTANDINGAN POTENSIAL",
             "myMatches": "PERTANDINGAN SAYA",
             "myMatchesStaff": "PERTANDINGAN SAYA / STAF",
-            "matchID": "ID PERTANDINGAN"
+            "matchID": "ID PERTANDINGAN",
+            "group": "GROUP",
+            "invertSelection": "INVERT SELECTION",
+            "nav": {
+                "schedule": "SCHEDULE",
+                "brackets": "BRACKETS"
+            },
+            "brackets": {
+                "standings": "STANDINGS",
+                "matches": "MATCHES",
+                "toBracket": "CLICK FOR BRACKET VIEW",
+                "upcoming": "UPCOMING"
+            }
         },
         "create": {
             "title": "BUAT TIM",
