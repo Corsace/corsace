@@ -2,7 +2,7 @@ import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { Tournament } from "../../Interfaces/tournament";
 import { BaseTeam, TeamList, Team, TeamInvites } from "../../Interfaces/team";
 import { BaseQualifier } from "../../Interfaces/qualifier";
-import { StaffList } from "../../Interfaces/staff";
+import { OpenStaffInfo, StaffList } from "../../Interfaces/staff";
 import { MatchupList, MatchupScore } from "../../Interfaces/matchup";
 import { Mappool } from "../../Interfaces/mappool";
 
@@ -17,6 +17,7 @@ export interface OpenState {
     matchupList: MatchupList[] | null;
     mappools: Mappool[] | null;
     scores: MatchupScore[] | null;
+    staffInfo: OpenStaffInfo | null;
     staffList: StaffList[] | null;
 }
 
@@ -31,6 +32,7 @@ export const state = (): OpenState => ({
     matchupList: null,
     mappools: null,
     scores: null,
+    staffInfo: null,
     staffList: null,
 });
 
@@ -144,6 +146,9 @@ export const mutations: MutationTree<OpenState> = {
     setScores (state, scores: MatchupScore[] | undefined) {
         state.scores = scores ?? null;
     },
+    setStaffInfo (state, info: OpenStaffInfo | undefined) {
+        state.staffInfo = info ?? null;
+    },
     setStaffList (state, staff: StaffList[] | undefined) {
         state.staffList = staff ?? null;
     },
@@ -153,12 +158,13 @@ export const getters: GetterTree<OpenState, OpenState> = {
 };
 
 export const actions: ActionTree<OpenState, OpenState> = {
-    async setTournament ({ commit }, year) {
+    async setTournament ({ commit, dispatch }, year) {
         const { data } = await this.$axios.get<{ tournament: Tournament }>(`/api/tournament/open/${year}`);
 
         if (data.success) {
             commit("setTournament", data.tournament);
             commit("setTitle", data.tournament.year);
+            await dispatch("setStaffInfo", data.tournament.ID);
         }
     },
     async setTeamList ({ commit }, tournamentID) {
@@ -219,6 +225,12 @@ export const actions: ActionTree<OpenState, OpenState> = {
 
         if (data.success)
             commit("setScores", data.scores);
+    },
+    async setStaffInfo ({ commit }, tournamentID) {
+        const { data } = await this.$axios.get<{ info: OpenStaffInfo }>(`/api/tournament/${tournamentID}/staffInfo`);
+
+        if (data.success)
+            commit("setStaffInfo", data.info);
     },
     async setStaffList ({ commit }, tournamentID) {
         const { data } = await this.$axios.get<{ staff: StaffList[] }>(`/api/tournament/${tournamentID}/staff`);

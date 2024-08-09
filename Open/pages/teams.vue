@@ -222,7 +222,6 @@ export default class Teams extends Mixins(CentrifugeMixin) {
             team.name.toLowerCase().includes(this.searchValue.toLowerCase()) ||
             team.members.some(member => member.username.toLowerCase().includes(this.searchValue.toLowerCase())) ||
             team.ID.toString().includes(this.searchValue.toLowerCase()) ||
-            team.members.some(member => member.ID.toString().includes(this.searchValue.toLowerCase())) ||
             team.members.some(member => member.osuID.toLowerCase().includes(this.searchValue.toLowerCase()))
         ).sort((a, b) => this.sortFunctions[this.currentSort](a, b) * (this.sortDir === "ASC" ? 1 : -1));
     }

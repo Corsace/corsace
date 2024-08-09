@@ -3,6 +3,7 @@ import { Round } from "./round";
 import { Team, TeamList } from "./team";
 import { User } from "./user";
 import { Mappool, MappoolMap } from "./mappool";
+import { BaseStaffMember } from "./staff";
 
 export interface BaseMatchup {
     ID: number;
@@ -15,6 +16,9 @@ export interface MatchupList extends BaseMatchup {
     vod?:   string | null;
     potential?: string;
     teams: TeamList[] | null;
+    referee?: BaseStaffMember;
+    streamer?: BaseStaffMember;
+    commentators?: BaseStaffMember[];
 }
 
 export interface Matchup extends BaseMatchup {

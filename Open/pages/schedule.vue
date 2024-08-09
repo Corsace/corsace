@@ -175,6 +175,7 @@
                     v-for="matchup in filteredMatchups"
                     :key="matchup.ID"
                     :matchup="matchup"
+                    @update:matchup="updateMatchup()"
                 />
             </div>
             <div
@@ -290,7 +291,7 @@ export default class Schedule extends Vue {
         if (!this.matchupList) return [];
         return this.matchupList.filter(matchup => {
             if (matchup.matchID && !this.selectedMatchIDs[matchup.matchID[0]]) return false;
-            if (this.myMatches && !matchup.teams?.some(team => team.members.some(player => player.ID === this.loggedInUser?.ID))) return false;
+            if (this.myMatches && !matchup.teams?.some(team => team.members.some(player => player.osuID === this.loggedInUser?.osu.userID))) return false;
             if (this.myStaff) return false;
             if (this.hidePotentials && matchup.potential) return false;
             if (this.searchValue && !(
@@ -298,7 +299,6 @@ export default class Schedule extends Vue {
                 matchup.ID.toString().includes(this.searchValue) ||
                 matchup.teams?.some(team => team.ID.toString().includes(this.searchValue)) ||
                 matchup.teams?.some(team => team.name.toLowerCase().includes(this.searchValue.toLowerCase())) ||
-                matchup.teams?.some(team => team.members.some(player => player.ID.toString().includes(this.searchValue))) ||
                 matchup.teams?.some(team => team.members.some(player => player.osuID.includes(this.searchValue))) ||
                 matchup.teams?.some(team => team.members.some(player => player.username.toLowerCase().includes(this.searchValue.toLowerCase())))
             ))
@@ -413,6 +413,10 @@ export default class Schedule extends Vue {
                 if (bracketScroll instanceof HTMLElement)
                     bracketScroll.style.left = `${bracketContainer.scrollLeft / (bracketContainer.scrollWidth - bracketContainer.clientWidth) * bracketContainer.clientWidth}px`;
             };
+    }
+
+    async updateMatchup () {
+        await this.$store.dispatch("open/setMatchups", this.selectedStage?.ID);
     }
 }
 

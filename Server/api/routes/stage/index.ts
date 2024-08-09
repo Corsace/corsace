@@ -30,6 +30,9 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("matchup.teams", "teams")
+        .leftJoinAndSelect("matchup.referee", "referee")
+        .leftJoinAndSelect("matchup.commentators", "commentators")
+        .leftJoinAndSelect("matchup.streamer", "streamer")
         .leftJoinAndSelect("team1.members", "team1members")
         .leftJoinAndSelect("team2.members", "team2members")
         .leftJoinAndSelect("teams.members", "members")
@@ -108,6 +111,20 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                         }),
                     };
                 }),
+                referee: matchup.referee ? {
+                    ID: matchup.referee.ID,
+                    username: matchup.referee.osu.username,
+                } : undefined,
+                commentators: matchup.commentators?.map((commentator) => {
+                    return {
+                        ID: commentator.ID,
+                        username: commentator.osu.username,
+                    };
+                }) ?? [],
+                streamer: matchup.streamer ? {
+                    ID: matchup.streamer.ID,
+                    username: matchup.streamer.osu.username,
+                } : undefined,
             };
         }),
     };

@@ -603,6 +603,125 @@ matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/assignTeam", valida
     };
 });
 
+matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/assignStaff", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+    const tournament = ctx.state.tournament;
+    const matchupID = ctx.request.body?.matchupID;
+    if (!matchupID || isNaN(parseInt(matchupID))) {
+        ctx.body = {
+            success: false,
+            error: "No matchup ID provided",
+        };
+        return;
+    }
+
+    const roleType = ctx.request.body?.roleType;
+    if (!roleType || isNaN(parseInt(roleType))) {
+        ctx.body = {
+            success: false,
+            error: "No role type provided",
+        };
+        return;
+    }
+    if (roleType !== TournamentRoleType.Referees && roleType !== TournamentRoleType.Commentators && roleType !== TournamentRoleType.Streamers) {
+        ctx.body = {
+            success: false,
+            error: "Invalid role type provided",
+        };
+        return;
+    }
+
+    const staff = ctx.request.body?.staff;
+    if (!staff) {
+        ctx.body = {
+            success: false,
+            error: "No staff ID provided",
+        };
+        return;
+    }
+
+    if (Array.isArray(staff)) {
+        if (staff.some(s => isNaN(parseInt(s)))) {
+            ctx.body = {
+                success: false,
+                error: "Invalid staff ID provided",
+            };
+            return;
+        } else if (roleType !== TournamentRoleType.Commentators) {
+            ctx.body = {
+                success: false,
+                error: "Only commentators can have multiple staff members",
+            };
+            return;
+        }
+    } else if (isNaN(parseInt(staff))) {
+        ctx.body = {
+            success: false,
+            error: "Invalid staff ID provided",
+        };
+        return;
+    }
+
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
+        .leftJoin("matchup.round", "round")
+        .leftJoinAndSelect("matchup.referee", "referee")
+        .leftJoinAndSelect("matchup.commentators", "commentators")
+        .leftJoinAndSelect("matchup.streamer", "streamer")
+        .where("matchup.ID = :matchupID", { matchupID })
+        .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    if (Array.isArray(staff)) {
+        const staffMembers = await User
+            .createQueryBuilder("user")
+            .where("user.ID IN (:...staff)", { staff })
+            .getMany();
+        if (staffMembers.length !== staff.length) {
+            ctx.body = {
+                success: false,
+                error: `Some staff members were not found. The only members found in the database were ${staffMembers.map(s => s.osu.username).join(", ")}. Perhaps they are not logged in?`,
+            };
+            return;
+        }
+        matchup.commentators = staffMembers;
+    } else {
+        const staffMember = await User
+            .createQueryBuilder("user")
+            .where("user.ID = :staff", { staff })
+            .getOne();
+        if (!staffMember) {
+            ctx.body = {
+                success: false,
+                error: "Staff member not found. Perhaps they are not logged in?",
+            };
+            return;
+        }
+        if (roleType === TournamentRoleType.Referees)
+            matchup.referee = staffMember;
+        else if (roleType === TournamentRoleType.Commentators)
+            matchup.commentators = [...(matchup.commentators ?? []), staffMember];
+        else if (roleType === TournamentRoleType.Streamers)
+            matchup.streamer = staffMember;
+    }
+
+    await matchup.save();
+
+    ctx.body = {
+        success: true,
+        matchup,
+    };
+});
+
 matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const tournament = ctx.state.tournament;
     const stageOrRound = ctx.state.stage ?? ctx.state.round ?? null;
