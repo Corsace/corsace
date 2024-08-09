@@ -748,17 +748,17 @@
             "myMatches": "PERTANDINGAN SAYA",
             "myMatchesStaff": "PERTANDINGAN SAYA / STAF",
             "matchID": "ID PERTANDINGAN",
-            "group": "GROUP",
-            "invertSelection": "INVERT SELECTION",
+            "group": "GRUP",
+            "invertSelection": "BALIK PILIHAN",
             "nav": {
-                "schedule": "SCHEDULE",
-                "brackets": "BRACKETS"
+                "schedule": "JADWAL",
+                "brackets": "BRACKET"
             },
             "brackets": {
-                "standings": "STANDINGS",
-                "matches": "MATCHES",
-                "toBracket": "CLICK FOR BRACKET VIEW",
-                "upcoming": "UPCOMING"
+                "standings": "KLASEMEN",
+                "matches": "PERTANDINGAN",
+                "toBracket": "KLIK UNTUK TAMPILAN BRACKET",
+                "upcoming": "AKAN DATANG"
             }
         },
         "create": {
