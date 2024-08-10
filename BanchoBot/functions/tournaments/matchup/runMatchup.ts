@@ -789,6 +789,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await pause(15 * 1000);
             clearInterval(messageSaver);
 
+            matchup.baseURL = null;
+            await matchup.save();
             state.runningMatchups--;
             delete state.matchups[matchup.ID];
             await maybeShutdown();
