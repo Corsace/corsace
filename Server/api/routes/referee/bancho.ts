@@ -11,7 +11,7 @@ import { ResponseBody, TournamentAuthenticatedState } from "koa";
 
 const refereeBanchoRouter  = new CorsaceRouter();
 
-refereeBanchoRouter.$post<unknown, TournamentAuthenticatedState>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeBanchoRouter.$post<object, TournamentAuthenticatedState>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     if (!ctx.request.body.endpoint) {
         ctx.body = {
             success: false,

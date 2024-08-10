@@ -11,6 +11,7 @@ import getMappoolSlotMods from "../../../../BanchoBot/functions/tournaments/matc
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import ormConfig from "../../../../ormconfig";
 import { StageType } from "../../../../Interfaces/stage";
+import { MapStatus } from "../../../../Interfaces/matchup";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
@@ -55,13 +56,13 @@ banchoRefereeRouter.$use<{ pulse: boolean }>("/:matchupID", async (ctx, next) =>
                 success: true,
                 pulse: false,
             };
-        else if (endpoint !== "createLobby")
+        else if (endpoint !== "createLobby" && endpoint !== "forfeit")
             ctx.body = {
                 success: false,
                 error: "Matchup not found",
             };
         
-        if (endpoint !== "createLobby")
+        if (endpoint !== "createLobby" && endpoint !== "forfeit")
             return;
     }
 
@@ -523,6 +524,72 @@ banchoRefereeRouter.$post("/:matchupID/message", async (ctx) => {
 
     const mpChannel = state.matchups[ctx.state.matchupID].lobby.channel;
     await mpChannel.sendMessage(`<${ctx.request.body.username}>: ${ctx.request.body.message}`);
+
+    ctx.body = {
+        success: true,
+    };
+});
+
+banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
+    if (state.matchups[ctx.state.matchupID])
+        await state.matchups[ctx.state.matchupID].lobby.closeLobby();
+
+    const teamForfeitNumber = ctx.request.body.team;
+    if (teamForfeitNumber !== 1 && teamForfeitNumber !== 2) {
+        ctx.body = {
+            success: false,
+            error: "Invalid team number",
+        };
+        return;
+    }
+
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoinAndSelect("matchup.team1", "team1")
+        .innerJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("matchup.stage", "stage")
+        .leftJoinAndSelect("matchup.round", "round")
+        .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
+        .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
+        .leftJoinAndSelect("round.stage", "roundStage")
+        .where("matchup.ID = :id", { id: ctx.state.matchupID })
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    matchup.forfeit = true;
+    matchup.winner = teamForfeitNumber === 1 ? matchup.team2 : matchup.team1;
+    
+    const stage = matchup.stage ?? matchup.round?.stage;
+    const baseMapOrder = matchup.stage?.mapOrder ?? matchup.round?.mapOrder;
+    if (baseMapOrder && stage && stage.stageType !== StageType.Roundrobin) {
+        const mapOrder = baseMapOrder.map(o => o.set)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .map(s => ({
+                set: s,
+                order: baseMapOrder.filter(o => o.set === s).sort((a, b) => a.order - b.order) ?? [],
+            }));
+        if (mapOrder.length > 1) {
+            const firstTo = (mapOrder.length + 1) / 2;
+            matchup.team1Score = teamForfeitNumber === 1 ? 0 : firstTo;
+            matchup.team2Score = teamForfeitNumber === 2 ? 0 : firstTo;
+        } else {
+            const firstTo = mapOrder[0].order.filter(o => o.status === MapStatus.Picked).length / 2 + 1;
+            matchup.team1Score = teamForfeitNumber === 1 ? 0 : firstTo;
+            matchup.team2Score = teamForfeitNumber === 2 ? 0 : firstTo;
+        }
+    } else {
+        matchup.team1Score = teamForfeitNumber === 1 ? 0 : 1;
+        matchup.team2Score = teamForfeitNumber === 2 ? 0 : 1;
+    }
+
+    await matchup.save();
 
     ctx.body = {
         success: true,

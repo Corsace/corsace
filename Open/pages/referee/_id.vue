@@ -58,9 +58,27 @@
                 BOT AUTO-ROLLS
             </div>
         </div>
+        <div
+            ref="forfeitSelect"
+            class="referee__menu_select"
+            :style="{ display: forfeitMenu ? 'flex' : 'none' }"
+        >
+            <div 
+                class="referee__menu_select__option referee__menu_select__option--red"
+                @click="banchoCall('forfeit', { team: 1 }); forfeitMenu = false"
+            >
+                {{ matchup?.team1?.name }} FORFEIT / {{ matchup?.team2?.name }} WON
+            </div>
+            <div 
+                class="referee__menu_select__option referee__menu_select__option--red"
+                @click="banchoCall('forfeit', { team: 2 }); forfeitMenu = false"
+            >
+                {{ matchup?.team2?.name }} FORFEIT / {{ matchup?.team1?.name }} WON
+            </div>
+        </div>
         <div class="referee__container">
             <OpenTitle>
-                {{ $t('open.referee.title') }} {{ matchup ? `- (${matchup.ID}) ${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "" }}
+                {{ $t('open.referee.title') }} {{ matchup ? `- (${matchup.matchID} | ${matchup.ID}) ${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "" }}
             </OpenTitle>
             <div 
                 v-if="matchup"
@@ -73,9 +91,9 @@
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
-                            'content_button--disabled': matchup.mp && runningLobby,
+                            'content_button--disabled': matchup.winner || (matchup.mp && runningLobby),
                         }"
-                        @click.native="!matchup.mp || !runningLobby ? banchoCall('createLobby', { auto: false }) : tooltipText = 'Matchup already has a lobby'"
+                        @click.native="!matchup.winner && (!matchup.mp || !runningLobby) ? banchoCall('createLobby', { auto: false }) : tooltipText = 'Matchup already has a lobby'"
                     >
                         {{ $t('open.referee.createLobby') }}
                     </ContentButton>
@@ -109,6 +127,7 @@
                             v-model="mapTimer"
                             class="referee__matchup__messages__input"
                             style="width: 40px;"
+                            @click.stop
                         >
                     </ContentButton>
                     <ContentButton
@@ -123,6 +142,7 @@
                             v-model="readyTimer"
                             class="referee__matchup__messages__input"
                             style="width: 40px;"
+                            @click.stop
                         >
                     </ContentButton>
                     <ContentButton
@@ -142,6 +162,15 @@
                         @click.native="matchup.mp && runningLobby && mapStarted ? banchoCall('abortMap') : !mapStarted ? tooltipText = 'Matchup is not currently playing a map' : tooltipText = 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.abortMap') }}
+                    </ContentButton>
+                    <ContentButton
+                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                        :class="{
+                            'content_button--disabled': matchup.winner,
+                        }"
+                        @click.native="!matchup.winner ? toggleForfeitMenu() : tooltipText = 'Matchup has been finished'"
+                    >
+                        {{ $t('open.referee.forfeit') }}
                     </ContentButton>
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
@@ -550,6 +579,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     mapStarted = false;
     runningLobby = false;
 
+    forfeitMenu = false;
     rollMenu = false;
     mapSelected: MappoolMap | null = null;
 
@@ -701,6 +731,17 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         if (this.$refs.rollSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
             this.$refs.rollSelect.style.left = this.$refs.tooltip.style.left;
             this.$refs.rollSelect.style.top = this.$refs.tooltip.style.top;
+        }
+    }
+
+    toggleForfeitMenu () {
+        this.forfeitMenu = !this.forfeitMenu;
+        if (!this.forfeitMenu)
+            return;
+
+        if (this.$refs.forfeitSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
+            this.$refs.forfeitSelect.style.left = this.$refs.tooltip.style.left;
+            this.$refs.forfeitSelect.style.top = this.$refs.tooltip.style.top;
         }
     }
 
@@ -1062,6 +1103,9 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 break;
             case "closeLobby":
                 this.tooltipText = "Lobby closed";
+                break;
+            case "forfeit":
+                this.tooltipText = `Match forfeited by ${data.team === "1" ? this.matchup.team1?.name : this.matchup.team2?.name}`;
                 break;
             case "addRef":
                 this.tooltipText = "Addreffed";

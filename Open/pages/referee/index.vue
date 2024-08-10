@@ -13,7 +13,7 @@
                     :to="`/referee/${matchup.ID}`"
                 >
                     <div class="referee__matchups__matchup_name">
-                        ({{ matchup.ID }}) {{ matchup.teams?.map(team => team.name).join(" vs ") ?? (matchup.team1 || matchup.team2) ? `${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "TBD" }}
+                        ({{ matchup.matchID }} | {{ matchup.ID }}) {{ matchup.teams?.map(team => team.name).join(" vs ") || (matchup.team1 || matchup.team2) ? `${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "TBD" }}
                     </div>
                     <div class="referee__matchups__matchup_date">
                         {{ formatDate(matchup.date) }} {{ formatTime(matchup.date) }}
@@ -89,7 +89,7 @@ export default class Referee extends Vue {
             ...matchup,
             date: new Date(matchup.date),
         })) || [];
-
+        this.matchupList.sort((a, b) => a.date.getTime() - b.date.getTime());
         if (matchupData.matchups?.length < 5)
             this.moreMatchups = false;
     }
