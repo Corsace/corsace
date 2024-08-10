@@ -77,8 +77,7 @@ const maybeShutdown = async () => {
         banchoClient.disconnect();
         console.log("Disconnected from every service, shutting down now.");
 
-        // hopefully it will just exit? otherwise means we may have left a connection open somewhere, which we could work-around using process.exit, but i'm curious to see if it works without it during testing.
-        // process.exit();
+        process.exit();
     }
 };
 
