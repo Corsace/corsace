@@ -1359,7 +1359,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
         &__content {
             display: flex;
-            gap: 20px;
+            gap: 10px;
 
             grid-column: 1 / 3;
 
@@ -1367,7 +1367,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 flex: 1;
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
+                gap: 10px;
             }
 
             &__team {
@@ -1503,7 +1503,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                     background: #333333;
 
                     &__name {
-                        font-size: $font-lg;
+                        font-size: $font-base;
                         font-weight: 500;
                     }
 
@@ -1531,12 +1531,12 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                         }
 
                         &__name {
-                            font-size: $font-lg;
+                            font-size: $font-base;
                             font-weight: 500;
                         }
 
                         &__beatmap {
-                            font-size: $font-base;
+                            font-size: $font-sm;
                             font-weight: 300;
                         }
                     }
