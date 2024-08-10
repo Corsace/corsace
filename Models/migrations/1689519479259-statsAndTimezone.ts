@@ -10,15 +10,17 @@ export class StatsAndTimezone1689519479259 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`user_statistics\` ADD CONSTRAINT \`FK_09b61b49529146fc1572abbc550\` FOREIGN KEY (\`modeDivisionID\`) REFERENCES \`mode_division\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`user_statistics\` ADD CONSTRAINT \`FK_fe8512e6f7cfc1589a44a72a82f\` FOREIGN KEY (\`userID\`) REFERENCES \`user\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         
-        const teams = await Team
-            .createQueryBuilder("team")
-            .leftJoinAndSelect("team.members", "member")
-            .getMany();
-        
-        await Promise.all(teams.map(async team => {
-            await team.calculateStats();
-            await team.save();
-        }));
+        if (process.env.NODE_ENV === "production") {
+            const teams = await Team
+                .createQueryBuilder("team")
+                .leftJoinAndSelect("team.members", "member")
+                .getMany();
+            
+            await Promise.all(teams.map(async team => {
+                await team.calculateStats();
+                await team.save();
+            }));
+        }
     }
 
     public async down (queryRunner: QueryRunner): Promise<void> {
