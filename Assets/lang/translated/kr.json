@@ -478,6 +478,7 @@
         "navbar": {
             "home": "HOME",
             "info": "정보",
+            "referee": "REFEREE",
             "qualifiers": "퀄리파이어",
             "teams": "팀 목록",
             "schedule": "일정",
