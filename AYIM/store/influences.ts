@@ -14,16 +14,16 @@ export const state = (): InfluenceState => ({
 });
 
 export const mutations: MutationTree<InfluenceState> = {
-    addUser (state, user) {
-        state.users.push(user);
+    addUser (influenceState, user) {
+        influenceState.users.push(user);
     },
 
-    resetRoot (state) {
-        state.root = null;
+    resetRoot (influenceState) {
+        influenceState.root = null;
     },
 
-    setRoot (state, root) {
-        state.root = root;
+    setRoot (influenceState, root) {
+        influenceState.root = root;
     },
 };
 
@@ -32,10 +32,10 @@ export const getters: GetterTree<InfluenceState, RootState> = {
 };
 
 export const actions: ActionTree<InfluenceState, RootState> = {
-    async search ({ state, commit, rootState }, value) {
-        const user = state.users.find(u => u.osu.userID === value);
+    async search ({ state: influenceState, commit, rootState }, value) {
+        const user = influenceState.users.find(u => u.osu.userID === value);
         if (user) {
-            if (!state.root) {
+            if (!influenceState.root) {
                 commit("setRoot", user);
             }
             return;
@@ -47,7 +47,7 @@ export const actions: ActionTree<InfluenceState, RootState> = {
             if (data.success) {
                 commit("addUser", data.user);
 
-                if (!state.root) {
+                if (!influenceState.root) {
                     commit("setRoot", data.user);
                 }
             }
@@ -56,8 +56,8 @@ export const actions: ActionTree<InfluenceState, RootState> = {
         }
     },
 
-    findUser ({ state }, userId) {
-        return state.users.find(u => u.osu.userID == userId);
+    findUser ({ state: influenceState }, userId) {
+        return influenceState.users.find(u => u.osu.userID == userId);
     },
 
     resetRoot ({ commit }) {

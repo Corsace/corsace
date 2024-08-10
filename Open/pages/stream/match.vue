@@ -313,20 +313,20 @@ export default class Match extends Vue {
         this.matchupChannel.subscribe();
 
         if (this.matchup?.mp) {
-            const { data } = await this.$axios.get<{
+            const { data: pulseData } = await this.$axios.get<{
                 pulse: boolean;
                 beatmapID: number;
                 team1Score: number;
                 team2Score: number;
             }>(`/api/matchup/${this.matchup.ID}/bancho/pulseMatch`);
-            if (!data.success || !data.pulse)
+            if (!pulseData.success || !pulseData.pulse)
                 return;
             this.latestMap = this.stageOrRound?.mappool
                 .flatMap(m => m.slots)
                 .flatMap(s => s.maps)
-                .find(m => m.beatmap?.ID === data.beatmapID) ?? null;
-            this.matchup.team1Score = data.team1Score;
-            this.matchup.team2Score = data.team2Score;
+                .find(m => m.beatmap?.ID === pulseData.beatmapID) ?? null;
+            this.matchup.team1Score = pulseData.team1Score;
+            this.matchup.team2Score = pulseData.team2Score;
         }
         this.loading = false;
     }

@@ -84,7 +84,7 @@ async function stageInfos (m: Message<boolean> | ChatInputCommandInteraction, to
         stages.map(s => {
             return {
                 name: `**${s.name} (${s.abbreviation})** (${StageType[s.stageType]}) | ${discordStringTimestamp(s.timespan.start)} → ${discordStringTimestamp(s.timespan.end)}`,
-                value: `**Rounds:**\n${s.rounds.map(r => `${r.name} (${r.abbreviation})`).join("\n") ?? "None"}\n\n**Mappools:**\n${s.mappool?.concat(s.rounds.flatMap(r => r.mappool)).map(m => `${m.name} (${m.abbreviation})`).join("\n") ?? "None"}`,
+                value: `**Rounds:**\n${s.rounds.map(r => `${r.name} (${r.abbreviation})`).join("\n") ?? "None"}\n\n**Mappools:**\n${s.mappool?.concat(s.rounds.flatMap(r => r.mappool)).map(p => `${p.name} (${p.abbreviation})`).join("\n") ?? "None"}`,
                 inline: true,
             };
         })

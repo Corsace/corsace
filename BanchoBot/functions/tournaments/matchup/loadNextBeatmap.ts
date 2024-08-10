@@ -74,7 +74,7 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
                 if (isNaN(id)) {
                     const nums = param.match(/\d+/g) ?? [];
                     const order = parseInt(nums[nums.length - 1]);
-                    const slot = pool.slots.find(slot => param.toLowerCase().includes(slot.acronym.toLowerCase()));
+                    const slot = pool.slots.find(s => param.toLowerCase().includes(s.acronym.toLowerCase()));
 
                     if (!slot)
                         return;

@@ -48,7 +48,7 @@ function sanitizeMatchupResponse (matchup: Matchup) {
         winner: matchup.winner,
         sets: matchup.sets?.map(set => ({
             ID: set.ID,
-            order: set.order, 
+            order: set.order,
             maps: set.maps?.map(map => ({
                 ID: map.ID,
                 map: map.map,
@@ -76,11 +76,11 @@ function requiredNumberFields<T extends Record<string, any>> (obj: Partial<T>, f
     const result: Record<string, number> = {};
 
     for (const field of fields) {
-        if (!obj[field] && obj[field] !== 0) 
+        if (!obj[field] && obj[field] !== 0)
             return `Field ${String(field)} is missing`;
 
         const value = typeof obj[field] === "string" ? parseInt(obj[field]!) : obj[field];
-        if (typeof value !== "number" || isNaN(value)) 
+        if (typeof value !== "number" || isNaN(value))
             return `Field ${String(field)} is invalid`;
 
         result[field as string] = value;
@@ -213,8 +213,8 @@ matchupRouter.$get("/:matchupID", async (ctx) => {
         return;
     }
 
-    const roundOrStage: Round | Stage | null = 
-        dbMatchup.round ? 
+    const roundOrStage: Round | Stage | null =
+        dbMatchup.round ?
             await Round
                 .createQueryBuilder("round")
                 .innerJoin("round.matchups", "matchup")
@@ -243,7 +243,7 @@ matchupRouter.$get("/:matchupID", async (ctx) => {
                     .leftJoinAndSelect("maps.customMappers", "customMappers")
                     .leftJoinAndSelect("stage.mapOrder", "mapOrder")
                     .where("matchup.ID = :ID", { ID: dbMatchup.ID })
-                    .getOne() : 
+                    .getOne() :
                 null;
 
     const body: {
@@ -253,7 +253,7 @@ matchupRouter.$get("/:matchupID", async (ctx) => {
         success: true,
         matchup: await dbMatchupToInterface(dbMatchup, roundOrStage),
     };
-    
+
     ctx.body = body;
 });
 
@@ -340,9 +340,9 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
 
     const idToMatchup = new Map<number, Matchup>();
 
-    const createMatchups = async (matchups: postMatchup[], transactionManager: EntityManager): Promise<Matchup[]> => {
+    const createMatchups = async (postMatchupArr: postMatchup[], transactionManager: EntityManager): Promise<Matchup[]> => {
         const createdMatchups: Matchup[] = [];
-        for (const matchup of matchups) {
+        for (const matchup of postMatchupArr) {
 
             let dbMatchup = new Matchup();
             dbMatchup.matchID = matchup.matchID;
@@ -562,7 +562,7 @@ matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/assignTeam", valida
         };
         return;
     }
-    
+
     if (team1Or2 === 1) {
         if (matchup.team1) {
             ctx.body = {
@@ -889,13 +889,13 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
             else if (map.winner === matchup.team2)
                 sets[sets.length - 1].team2Score = (sets[sets.length - 1].team2Score ?? 0) + 1;
 
-            const setOrders = (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)!.map(order => order.set).filter((set, i, arr) => arr.indexOf(set) === i).map(set => ({
-                set,
-                maps: (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)!.filter(mapOrder => mapOrder.set === set),
+            const setOrders = (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)!.map(order => order.set).filter((orderSet, j, arr) => arr.indexOf(orderSet) === j).map(orderSet => ({
+                set: orderSet,
+                maps: (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)!.filter(mapOrder => mapOrder.set === orderSet),
             }));
             if (setOrders.find(setOrder => setOrder.set === sets.length)) {
-                const setOrder = setOrders.find(setOrder => setOrder.set === sets.length)!;
-                const firstTo = setOrder.maps.filter(map => map.status === MapStatus.Picked).length / 2 + 1;
+                const setOrder = setOrders.find(o => o.set === sets.length)!;
+                const firstTo = setOrder.maps.filter(mapOrder => mapOrder.status === MapStatus.Picked).length / 2 + 1;
                 if (sets[sets.length - 1].team1Score === firstTo)
                     sets[sets.length - 1].winner = matchup.team1;
                 else if (sets[sets.length - 1].team2Score === firstTo)
@@ -912,16 +912,16 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
         }
     });
 
-    matchup.sets?.forEach(async set => {
-        await Promise.all(set.maps?.map(map => map.scores?.map(score => score.remove()) ?? []) ?? []);
-        await Promise.all(set.maps?.map(map => map.remove()) ?? []);
-        await set.remove();
+    matchup.sets?.forEach(async matchupSet => {
+        await Promise.all(matchupSet.maps?.map(map => map.scores?.map(score => score.remove()) ?? []) ?? []);
+        await Promise.all(matchupSet.maps?.map(map => map.remove()) ?? []);
+        await matchupSet.remove();
     });
 
-    sets.forEach(async set => {
-        await set.save();
-        await Promise.all(set.maps?.map(map => map.save()) ?? []);
-        await Promise.all(set.maps?.flatMap(map => map.scores?.map(score => {
+    sets.forEach(async matchupSet => {
+        await matchupSet.save();
+        await Promise.all(matchupSet.maps?.map(map => map.save()) ?? []);
+        await Promise.all(matchupSet.maps?.flatMap(map => map.scores?.map(score => {
             score.map = map;
             return score.save();
         }) ?? []) ?? []);
@@ -997,7 +997,7 @@ matchupRouter.$post<{ matchup: object }>("/score", isLoggedInDiscord, isCorsace,
         return;
     }
 
-    const set = matchup.sets!.find(set => set.order === setNum);
+    const set = matchup.sets!.find(matchupSet => matchupSet.order === setNum);
     if (!set) {
         ctx.body = {
             success: false,
@@ -1006,7 +1006,7 @@ matchupRouter.$post<{ matchup: object }>("/score", isLoggedInDiscord, isCorsace,
         return;
     }
 
-    const map = set.maps!.find(map => map.order === mapOrder);
+    const map = set.maps!.find(setMap => setMap.order === mapOrder);
     if (!map) {
         ctx.body = {
             success: false,
@@ -1017,7 +1017,7 @@ matchupRouter.$post<{ matchup: object }>("/score", isLoggedInDiscord, isCorsace,
 
     let team: Team | undefined = undefined;
     if (matchup.stage!.stageType === StageType.Qualifiers)
-        team = matchup.teams!.find(team => team.ID === teamID);
+        team = matchup.teams!.find(t => t.ID === teamID);
     else
         team = matchup.team1?.ID === teamID ? matchup.team1 : matchup.team2?.ID === teamID ? matchup.team2 : undefined;
     if (!team) {
@@ -1054,11 +1054,11 @@ matchupRouter.$post<{ matchup: object }>("/score", isLoggedInDiscord, isCorsace,
             map.scores = [];
         map.scores.push(matchupScore);
         map.team1Score = map.scores
-            .filter(score => matchup.team1!.members.some(member => member.ID === score.user.ID))
-            .reduce((acc, score) => acc + score.score, 0);
+            .filter(mapScore => matchup.team1!.members.some(member => member.ID === mapScore.user.ID))
+            .reduce((acc, mapScore) => acc + mapScore.score, 0);
         map.team2Score = map.scores
-            .filter(score => matchup.team2!.members.some(member => member.ID === score.user.ID))
-            .reduce((acc, score) => acc + score.score, 0);
+            .filter(mapScore => matchup.team2!.members.some(member => member.ID === mapScore.user.ID))
+            .reduce((acc, mapScore) => acc + mapScore.score, 0);
         if (map.team1Score > map.team2Score)
             map.winner = matchup.team1;
         else if (map.team2Score > map.team1Score)
@@ -1068,10 +1068,10 @@ matchupRouter.$post<{ matchup: object }>("/score", isLoggedInDiscord, isCorsace,
         const i = matchup.sets!.findIndex(m => m.ID === set.ID);
         const j = matchup.sets![i].maps!.findIndex(m => m.ID === map.ID);
         matchup.sets![i].maps![j] = map;
-        matchup.sets![i].team1Score = matchup.sets![i].maps!.filter(map => map.team1Score && map.team2Score ? map.team1Score > map.team2Score : false).length;
-        matchup.sets![i].team2Score = matchup.sets![i].maps!.filter(map => map.team1Score && map.team2Score ? map.team2Score > map.team1Score : false).length;
-        matchup.team1Score = matchup.sets!.filter(set => set.team1Score && set.team2Score ? set.team1Score > set.team2Score : false).length;
-        matchup.team2Score = matchup.sets!.filter(set => set.team1Score && set.team2Score ? set.team2Score > set.team1Score : false).length;
+        matchup.sets![i].team1Score = matchup.sets![i].maps!.filter(setMap => setMap.team1Score && setMap.team2Score ? setMap.team1Score > setMap.team2Score : false).length;
+        matchup.sets![i].team2Score = matchup.sets![i].maps!.filter(setMap => setMap.team1Score && setMap.team2Score ? setMap.team2Score > setMap.team1Score : false).length;
+        matchup.team1Score = matchup.sets!.filter(matchupSet => matchupSet.team1Score && matchupSet.team2Score ? matchupSet.team1Score > matchupSet.team2Score : false).length;
+        matchup.team2Score = matchup.sets!.filter(matchupSet => matchupSet.team1Score && matchupSet.team2Score ? matchupSet.team2Score > matchupSet.team1Score : false).length;
         if (matchup.team1Score > matchup.team2Score)
             matchup.winner = matchup.team1;
         else if (matchup.team2Score > matchup.team1Score)
@@ -1083,7 +1083,7 @@ matchupRouter.$post<{ matchup: object }>("/score", isLoggedInDiscord, isCorsace,
         success: true,
         matchup: sanitizeMatchupResponse(matchup),
     };
-}); 
+});
 
 matchupRouter.$delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ctx) => {
     const scoreID = parseInt(ctx.params.scoreID);
@@ -1113,7 +1113,7 @@ matchupRouter.$delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ct
     await score.remove();
 
     await updateMatchup(score.map.set.matchup!.ID);
-    
+
     ctx.body = {
         success: true,
     };
@@ -1146,7 +1146,7 @@ matchupRouter.$delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) =
 
     await Promise.all(map.scores?.map(score => score.remove()) ?? []);
     await map.remove();
-    
+
     await updateMatchup(map.set.matchup!.ID);
 
     ctx.body = {

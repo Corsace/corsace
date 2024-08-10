@@ -44,9 +44,9 @@ async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
             user: user.ID,
         })
         .getMany())
-        .map(s => s.maps.map(m => {
-            m.slot = s;
-            return m;
+        .map(s => s.maps.map(slotMap => {
+            slotMap.slot = s;
+            return slotMap;
         })).flat();
 
     if (mappoolMaps.length === 0) {
@@ -127,9 +127,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             criteria: `%${pool}%`,
         })
         .getMany())
-        .map(s => s.maps.map(m => {
-            m.slot = s;
-            return m;
+        .map(s => s.maps.map(slotMap => {
+            slotMap.slot = s;
+            return slotMap;
         })).flat();
 
     if (mappoolMaps.length === 0) {
@@ -137,7 +137,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    if (mappoolMaps.some(m => !m.slot.mappool.isPublic) && !await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers]))
+    if (mappoolMaps.some(mappoolMap => !mappoolMap.slot.mappool.isPublic) && !await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers]))
         return;
 
     const embed = new EmbedBuilder()

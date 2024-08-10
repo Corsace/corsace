@@ -99,7 +99,7 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
     const beatmapID = parseInt(link[3]);
     
     const set = await osuClient.beatmaps.getBySetId(parseInt(link[1])) as APIBeatmap[];
-    let apiMap = set.find(m => m.beatmapId === beatmapID);
+    let apiMap = set.find(setMap => setMap.beatmapId === beatmapID);
     if (!apiMap) {
         await respond(m, "Can't find the beatmap via osu!api");
         return;
@@ -167,7 +167,7 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
     await log.save();
 
     if (allowedMods)
-        apiMap = (await osuClient.beatmaps.getBySetId(parseInt(link[1]), undefined, undefined, undefined, allowedMods) as APIBeatmap[]).find(m => m.beatmapId === beatmapID)!;
+        apiMap = (await osuClient.beatmaps.getBySetId(parseInt(link[1]), undefined, undefined, undefined, allowedMods) as APIBeatmap[]).find(setMap => setMap.beatmapId === beatmapID)!;
     const mappoolMapEmbed = await beatmapEmbed(apiMap, mod, set);
     mappoolMapEmbed.embed.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.embed.author!.name}`;
 

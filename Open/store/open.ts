@@ -37,12 +37,12 @@ export const state = (): OpenState => ({
 });
 
 export const mutations: MutationTree<OpenState> = {
-    setTitle (state, year: number | undefined) {
-        state.title = `Corsace Open - ${year}` || "";
+    setTitle (openState, year: number | undefined) {
+        openState.title = `Corsace Open - ${year}` || "";
     },
-    setTournament (state, tournament: Tournament | undefined) {
+    setTournament (openState, tournament: Tournament | undefined) {
         if (tournament) {
-            state.tournament = {
+            openState.tournament = {
                 ...tournament,
                 createdAt: new Date(tournament.createdAt),
                 organizer: {
@@ -85,55 +85,55 @@ export const mutations: MutationTree<OpenState> = {
                 })),
             };
 
-            state.tournament.stages.sort((a, b) => a.order - b.order);
+            openState.tournament.stages.sort((a, b) => a.order - b.order);
         }
     },
-    setTeamList (state, teams: TeamList[] | undefined) {
-        state.teamList = teams ?? null;
-        if (!state.teamList)
+    setTeamList (openState, teams: TeamList[] | undefined) {
+        openState.teamList = teams ?? null;
+        if (!openState.teamList)
             return;
-        state.teamList
+        openState.teamList
             .sort((a, b) => a.BWS - b.BWS)
             .sort((a, b) => (a.BWS === 0 ? 1 : 0) - (b.BWS === 0 ? 1 : 0));
     },
-    addTeamList (state, team: TeamList | undefined) {
-        if (!state.teamList)
-            state.teamList = [];
+    addTeamList (openState, team: TeamList | undefined) {
+        if (!openState.teamList)
+            openState.teamList = [];
 
         if (team)
-            state.teamList.push(team);
+            openState.teamList.push(team);
     },
-    setMyTeams (state, teams: Team[] | undefined) {
-        state.myTeams = teams ?? null;
+    setMyTeams (openState, teams: Team[] | undefined) {
+        openState.myTeams = teams ?? null;
     },
-    setTeamInvites (state, invites: TeamInvites[] | undefined) {
-        state.inviteList = invites ?? null;
+    setTeamInvites (openState, invites: TeamInvites[] | undefined) {
+        openState.inviteList = invites ?? null;
     },
-    setInvites (state, invites: BaseTeam[] | undefined) {
-        state.teamInvites = invites ?? null;
+    setInvites (openState, invites: BaseTeam[] | undefined) {
+        openState.teamInvites = invites ?? null;
     },
-    addInvite (state, invite: BaseTeam | undefined) {
-        if (!state.teamInvites)
-            state.teamInvites = [];
+    addInvite (openState, invite: BaseTeam | undefined) {
+        if (!openState.teamInvites)
+            openState.teamInvites = [];
 
         if (invite)
-            state.teamInvites.push(invite);
+            openState.teamInvites.push(invite);
     },
-    setQualifierList (state, qualifiers: BaseQualifier[] | undefined) {
-        state.qualifierList = qualifiers?.map(q => ({
+    setQualifierList (openState, qualifiers: BaseQualifier[] | undefined) {
+        openState.qualifierList = qualifiers?.map(q => ({
             ...q,
             date: new Date(q.date),
         })) ?? null;
     },
-    setMatchups (state, matchups: MatchupList[] | undefined) {
-        state.matchupList = matchups?.map(matchup => {
+    setMatchups (openState, matchups: MatchupList[] | undefined) {
+        openState.matchupList = matchups?.map(matchup => {
             matchup.date = new Date(matchup.date);
             return matchup;
         }) ?? [];
-        state.matchupList.sort((a, b) => a.date.getTime() - b.date.getTime());
+        openState.matchupList.sort((a, b) => a.date.getTime() - b.date.getTime());
     },
-    setMappools (state, mappools: Mappool[] | undefined) {
-        state.mappools = mappools?.map(mappool => ({
+    setMappools (openState, mappools: Mappool[] | undefined) {
+        openState.mappools = mappools?.map(mappool => ({
             ...mappool,
             createdAt: new Date(mappool.createdAt),
             mappackExpiry: mappool.mappackExpiry ? new Date(mappool.mappackExpiry) : null,
@@ -143,14 +143,14 @@ export const mutations: MutationTree<OpenState> = {
             })),
         })) ?? [];
     },
-    setScores (state, scores: MatchupScore[] | undefined) {
-        state.scores = scores ?? null;
+    setScores (openState, scores: MatchupScore[] | undefined) {
+        openState.scores = scores ?? null;
     },
-    setStaffInfo (state, info: OpenStaffInfo | undefined) {
-        state.staffInfo = info ?? null;
+    setStaffInfo (openState, info: OpenStaffInfo | undefined) {
+        openState.staffInfo = info ?? null;
     },
-    setStaffList (state, staff: StaffList[] | undefined) {
-        state.staffList = staff ?? null;
+    setStaffList (openState, staff: StaffList[] | undefined) {
+        openState.staffList = staff ?? null;
     },
 };
 
@@ -178,7 +178,7 @@ export const actions: ActionTree<OpenState, OpenState> = {
 
         if (data.success)
             commit("setMyTeams", data.teams);
-        
+
         await dispatch("setTeamInvites");
     },
     async setTeamInvites ({ commit }) {

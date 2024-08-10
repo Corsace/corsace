@@ -50,12 +50,12 @@ async function getMaps (m: Message | ChatInputCommandInteraction, mappool1: Mapp
     if (!slotMod2) 
         return;
 
-    const mappoolMap1 = order1 === true ? slotMod1.maps.length === 1 ? slotMod1.maps[0] : undefined : slotMod1.maps.find(m => m.order === order1);
+    const mappoolMap1 = order1 === true ? slotMod1.maps.length === 1 ? slotMod1.maps[0] : undefined : slotMod1.maps.find(slotMap => slotMap.order === order1);
     if (!mappoolMap1) {
         await respond(m, `Can't find **${slot1}${order1 === true ? "" : order1}**`);
         return;
     }
-    const mappoolMap2 = order2 === true ? slotMod2.maps.length === 1 ? slotMod2.maps[0] : undefined : slotMod2.maps.find(m => m.order === order2);
+    const mappoolMap2 = order2 === true ? slotMod2.maps.length === 1 ? slotMod2.maps[0] : undefined : slotMod2.maps.find(slotMap => slotMap.order === order2);
     if (!mappoolMap2) {
         await respond(m, `Can't find **${slot2}${order2 === true ? "" : order2}**`);
         return;

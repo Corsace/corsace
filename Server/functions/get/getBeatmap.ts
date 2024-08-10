@@ -18,13 +18,13 @@ export default async function getBeatmap (apiBeatmap: APIBeatmap | number, save:
     if (!save)
         return;
 
-    const mode = await getModeDivison(targetBeatmap.mode!, save);
-    if (!mode)
+    const modeDivision = await getModeDivison(targetBeatmap.mode!, save);
+    if (!modeDivision)
         return;
 
     beatmap = new Beatmap();
     beatmap.ID = targetBeatmap.id;
-    beatmap.mode = mode;
+    beatmap.mode = modeDivision;
     beatmap.difficulty = targetBeatmap.version;
     beatmap.circleSize = targetBeatmap.CS;
     beatmap.approachRate = targetBeatmap.AR;

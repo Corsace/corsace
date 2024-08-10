@@ -30,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setTitle(`Teams for ${tournament.name}`)
         .setDescription(
             teams.map(team => {
-                return `**${team.name}** (${team.abbreviation})\n**Captain:** ${team.captain.osu.username} <@${team.captain.discord.userID}>\n**Members:** ${team.members.map(m => m.osu.username).join(", ")}`;
+                return `**${team.name}** (${team.abbreviation})\n**Captain:** ${team.captain.osu.username} <@${team.captain.discord.userID}>\n**Members:** ${team.members.map(member => member.osu.username).join(", ")}`;
             }).join("\n\n"))
         .setFooter({
             text: `Requested by ${m instanceof Message ? m.author.username : m.user.username}`,

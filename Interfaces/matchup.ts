@@ -121,20 +121,20 @@ export function mapNames (scores: MatchupScore[] | null): {
     if (!scores)
         return [];
 
-    const mapNames = scores
+    const scoreMaps = scores
         .map(s => ({
             map: s.map,
             mapID: s.mapID,
         }))
         .filter((v, i, a) => a.findIndex(t => (t.map === v.map && t.mapID === v.mapID)) === i);
 
-    mapNames.sort((a, b) => a.mapID - b.mapID);
-    return mapNames;
+    scoreMaps.sort((a, b) => a.mapID - b.mapID);
+    return scoreMaps;
 }
 
 export function computeScoreViews (
-    idNameAccessor: (score: MatchupScore) => { id: number, name: string, avatar?: string | null }, 
-    scores: MatchupScore[] | null, 
+    idNameAccessor: (score: MatchupScore) => { id: number, name: string, avatar?: string | null },
+    scores: MatchupScore[] | null,
     syncView: "players" | "teams",
     currentFilter: scoreSortType,
     mapSort: number,
@@ -151,20 +151,20 @@ export function computeScoreViews (
     const scoresByMapID = new Map<number, number[]>();
     for (const score of scores) {
         const userID = idNameAccessor(score).id;
-        const scores = scoresByAccessorID.get(userID) ?? [];
-        scores.push(score);
-        scoresByAccessorID.set(userID, scores);
+        const accessedScores = scoresByAccessorID.get(userID) ?? [];
+        accessedScores.push(score);
+        scoresByAccessorID.set(userID, accessedScores);
     }
 
     // Create score objects for each player
     for (const idName of idNames) {
-        const scores = scoresByAccessorID.get(idName.id)!;
-        const nonZeroScores = scores.filter(score => score.score !== 0);
+        const accessedScores = scoresByAccessorID.get(idName.id)!;
+        const nonZeroScores = accessedScores.filter(score => score.score !== 0);
         if (nonZeroScores.length === 0)
             continue;
 
         const filterValues: MatchupScoreFilterValues = {
-            sum: scores.reduce((a, b) => a + b.score, 0),
+            sum: accessedScores.reduce((a, b) => a + b.score, 0),
             average: Math.round(nonZeroScores.reduce((a, b) => a + b.score, 0) / (nonZeroScores.length || 1)),
             relMax: -100,
             percentMax: -100,
@@ -179,7 +179,7 @@ export function computeScoreViews (
             name: idName.name,
             avatar: idName.avatar,
             scores: mapNameList.map(map => {
-                const mapScores = scores.filter(score => score.mapID === map.mapID);
+                const mapScores = accessedScores.filter(score => score.mapID === map.mapID);
                 const score = mapScores.reduce((a, b) => a + b.score, 0);
                 const avgScore = Math.round(score / (mapScores.length || 1));
 
@@ -188,7 +188,7 @@ export function computeScoreViews (
                 mapScoreHash.push(score);
                 scoresByMapID.set(mapID, mapScoreHash);
 
-                const filterValues: MatchupScoreFilterValues = {
+                const userFilterValues: MatchupScoreFilterValues = {
                     sum: score,
                     average: avgScore,
                     relMax: -100,
@@ -197,14 +197,14 @@ export function computeScoreViews (
                     percentAvg: -100,
                     zScore: -100,
                 };
-                
+
                 const result = {
-                    ...filterValues,
+                    ...userFilterValues,
                     map: map.map,
                     mapID: map.mapID,
                     isBest: false,
                 } as MatchupScoreViewScore;
-                
+
                 return result;
             }),
             best: "",
@@ -215,7 +215,7 @@ export function computeScoreViews (
         scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
         if (syncView === "players") {
-            const team = scores.find(s => s.userID === idName.id);
+            const team = accessedScores.find(s => s.userID === idName.id);
             if (team) {
                 scoreView.team = team.teamName;
                 scoreView.teamID = team.teamID;
@@ -232,10 +232,10 @@ export function computeScoreViews (
         stdDev: number;
     }>();
     for (const mapID of scoresByMapID.keys()) {
-        const scores = scoresByMapID.get(mapID)!;
-        const max = Math.max(...scores);
-        const avg = scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
-        const stdDev = Math.sqrt(scores.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / (scores.length || 1));
+        const mapScores = scoresByMapID.get(mapID)!;
+        const max = Math.max(...mapScores);
+        const avg = mapScores.reduce((a, b) => a + b, 0) / (mapScores.length || 1);
+        const stdDev = Math.sqrt(mapScores.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / (mapScores.length || 1));
         statsByMapID.set(mapID, { max, avg, stdDev });
     }
 
@@ -249,8 +249,8 @@ export function computeScoreViews (
         percentAvg: number;
         zScore: number;
     }>();
-    scoreViews.forEach(score => {
-        score.scores.forEach(s => {
+    scoreViews.forEach(scoreView => {
+        scoreView.scores.forEach(s => {
             if (s.sum === 0)
                 return;
 
@@ -266,7 +266,7 @@ export function computeScoreViews (
             s.percentAvg = Math.round(s.relAvg * 100);
 
             s.zScore = (targetScore - mapsStats.avg) / (mapsStats.stdDev || 1);
-            
+
             mapMax.sum = Math.max(mapMax.sum, s.sum);
             mapMax.average = Math.max(mapMax.average, s.average);
             mapMax.relMax = Math.max(mapMax.relMax, s.relMax);
@@ -277,12 +277,12 @@ export function computeScoreViews (
             maxFilterByMapID.set(s.mapID, mapMax);
         });
 
-        const nonZeroScores = score.scores.filter(score => score.sum !== 0);
-        score.relMax = nonZeroScores.reduce((a, b) => a + b.relMax, 0);
-        score.percentMax = Math.round(nonZeroScores.reduce((a, b) => a + b.percentMax, 0) / (nonZeroScores.length || 1));
-        score.relAvg = nonZeroScores.reduce((a, b) => a + b.relAvg, 0);
-        score.percentAvg = Math.round(nonZeroScores.reduce((a, b) => a + b.percentAvg, 0) / (nonZeroScores.length || 1));
-        score.zScore = nonZeroScores.reduce((a, b) => a + b.zScore, 0);    
+        const nonZeroScores = scoreView.scores.filter(score => score.sum !== 0);
+        scoreView.relMax = nonZeroScores.reduce((a, b) => a + b.relMax, 0);
+        scoreView.percentMax = Math.round(nonZeroScores.reduce((a, b) => a + b.percentMax, 0) / (nonZeroScores.length || 1));
+        scoreView.relAvg = nonZeroScores.reduce((a, b) => a + b.relAvg, 0);
+        scoreView.percentAvg = Math.round(nonZeroScores.reduce((a, b) => a + b.percentAvg, 0) / (nonZeroScores.length || 1));
+        scoreView.zScore = nonZeroScores.reduce((a, b) => a + b.zScore, 0);
     });
 
     // Sort by current filter
@@ -294,19 +294,19 @@ export function computeScoreViews (
     });
 
     // Add best/worst values, and placement
-    scoreViews.forEach(score => {
-        score.scores.forEach(s => {
+    scoreViews.forEach(scoreView => {
+        scoreView.scores.forEach(s => {
             const score = maxFilterByMapID.get(s.mapID);
             if (score && s[currentFilter] === score[currentFilter as keyof typeof score])
                 s.isBest = true;
         });
-        score.truePlacement = scoreViews.filter(s => s.zScore > score.zScore).length + 1;
-        if (mapSort !== -1 && score.scores[mapSort])
-            score.sortPlacement = scoreViews.filter(s => s.scores[mapSort][currentFilter] > score.scores[mapSort][currentFilter]).length + 1;
+        scoreView.truePlacement = scoreViews.filter(s => s.zScore > scoreView.zScore).length + 1;
+        if (mapSort !== -1 && scoreView.scores[mapSort])
+            scoreView.sortPlacement = scoreViews.filter(s => s.scores[mapSort][currentFilter] > scoreView.scores[mapSort][currentFilter]).length + 1;
         else
-            score.sortPlacement = scoreViews.filter(s => s[currentFilter] > score[currentFilter]).length + 1;
-        score.best = score.scores.reduce((a, b) => a[currentFilter] > b[currentFilter] ? a : b).map,
-        score.worst = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a[currentFilter] < b[currentFilter] ? a : b).map;
+            scoreView.sortPlacement = scoreViews.filter(s => s[currentFilter] > scoreView[currentFilter]).length + 1;
+        scoreView.best = scoreView.scores.reduce((a, b) => a[currentFilter] > b[currentFilter] ? a : b).map,
+        scoreView.worst = scoreView.scores.filter(score => score.sum !== 0).reduce((a, b) => a[currentFilter] < b[currentFilter] ? a : b).map;
     });
 
     return scoreViews;

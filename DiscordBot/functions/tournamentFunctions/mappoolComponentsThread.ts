@@ -82,9 +82,9 @@ export default async function mappoolComponentsThread (t: ThreadChannel, owner: 
         },
     });
     const targetRoles = [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers];
-    const allowedRoles = roles.filter(r => targetRoles.some(t => t === r.roleType));
+    const allowedRoles = roles.filter(r => targetRoles.some(tr => tr === r.roleType));
     if (allowedRoles.length === 0) {
-        await respond(m, `There are no valid roles for this tournament. Add ${targetRoles.map(t => t.toString()).join(", ")} roles first`);
+        await respond(m, `There are no valid roles for this tournament. Add ${targetRoles.map(tr => tr.toString()).join(", ")} roles first`);
         return;
     }
     const member = await t.guild.members.fetch(owner.id);

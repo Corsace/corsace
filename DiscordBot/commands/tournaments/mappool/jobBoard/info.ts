@@ -63,10 +63,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             icon_url: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
         })
         .setTimestamp()
-        .addFields(mappool.slots.map(slot => {
+        .addFields(mappool.slots.map(poolSlot => {
             return {
-                name: `**${slot.name}**`,
-                value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.jobPost && (all ? true : !map.jobPost.jobBoardThread) ? map.jobPost.description : map.jobPost?.jobBoardThread ? "**PUBLISHED**" : "N/A"}`).join("\n\n"),
+                name: `**${poolSlot.name}**`,
+                value: poolSlot.maps.map(map => `**${poolSlot.acronym}${poolSlot.maps.length === 1 ? "" : map.order}:** ${map.jobPost && (all ? true : !map.jobPost.jobBoardThread) ? map.jobPost.description : map.jobPost?.jobBoardThread ? "**PUBLISHED**" : "N/A"}`).join("\n\n"),
             };
         }));
 

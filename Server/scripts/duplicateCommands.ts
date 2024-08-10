@@ -12,7 +12,7 @@ const duplicateNames = allNames.filter((name, index) => allNames.indexOf(name) !
 const duplicateAlternativeNames = commands
     .map((command) => command.alternativeNames)
     .flat()
-    .filter((name, index, allNames) => allNames.indexOf(name) !== index);
+    .filter((name, index, commandsFlat) => commandsFlat.indexOf(name) !== index);
 
 // Find all duplicate names and alternative names
 const duplicateNamesAndAlternativeNames = [...duplicateNames, ...duplicateAlternativeNames];

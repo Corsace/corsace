@@ -368,10 +368,10 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             slot.acronym = acronym;
             slot.name = slotName.join(" ");
             slot.maps = [];
-            for (let i = 0; i < mapCount; i++) {
+            for (let j = 0; j < mapCount; j++) {
                 const map = new MappoolMap();
                 map.createdBy = mappool.createdBy;
-                map.order = i + 1;
+                map.order = j + 1;
                 slot.maps.push(map);
             }
             slot.allowedMods = modNum;

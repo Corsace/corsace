@@ -12,14 +12,14 @@ export const filter = (msg: Message | MessageComponentInteraction) => {
 // Basic button row with a single stop button
 export function stopRow (): [string, ActionRowBuilder<ButtonBuilder>]  {
     const id = randomUUID();
-    const stopRow = new ActionRowBuilder<ButtonBuilder>()
+    const stopButtonRow = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
             new ButtonBuilder()
                 .setCustomId(id)
                 .setLabel("STOP COMMAND")
                 .setStyle(ButtonStyle.Danger)
         );
-    return [id, stopRow];
+    return [id, stopButtonRow];
 }
 
 export async function timedOut (m: Message, stopped: boolean, item: string) {
