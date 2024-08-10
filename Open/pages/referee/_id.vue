@@ -298,11 +298,7 @@
                             <div class="referee__matchup__content__team__name">
                                 {{ getTeamName(matchup.team1) }} {{ getRollStatus(matchup.sets, matchup.team1) }}
                             </div>
-                            <div class="referee__matchup__content__team__avatar_section">
-                                <div 
-                                    class="referee__matchup__content__team__avatar"
-                                    :style="{ backgroundImage: `url(${matchup.team1?.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
-                                />
+                            <div class="referee__matchup__content__team__stats_section">
                                 <div class="referee__matchup__content__team__stats">
                                     {{ team1PlayerStates.filter(player => player.inLobby).length }} in lobby
                                 </div>
@@ -336,11 +332,7 @@
                             <div class="referee__matchup__content__team__name">
                                 {{ getTeamName(matchup.team2) }} {{ getRollStatus(matchup.sets, matchup.team2) }}
                             </div>
-                            <div class="referee__matchup__content__team__avatar_section">
-                                <div 
-                                    class="referee__matchup__content__team__avatar"
-                                    :style="{ backgroundImage: `url(${matchup.team2?.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
-                                />
+                            <div class="referee__matchup__content__team__stats_section">
                                 <div class="referee__matchup__content__team__stats">
                                     {{ team2PlayerStates.filter(player => player.inLobby).length }} in lobby
                                 </div>
@@ -1376,26 +1368,20 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 gap: 5px;
 
                 &__name {
-                    font-size: $font-lg;
+                    font-size: $font-xxl;
                     font-weight: bold;
                 }
 
-                &__avatar {
+                &__stats {
                     width: 150px;
                     height: 50px;
-                    background-size: contain;
-                    background-repeat: no-repeat;
-                    background-position: center;
+                    font-size: $font-xxl;
+                    font-weight: bold;
 
                     &_section {
                         display: flex;
                         gap: 5px;
                     }
-                }
-
-                &__stats {
-                    font-size: $font-xxl;
-                    font-weight: bold;
                 }
 
                 &__members {
