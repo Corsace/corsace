@@ -459,7 +459,7 @@
                                     :key="map.ID"
                                     class="referee__matchup__content__mappool__slot__map"
                                     :class="{ 'referee__matchup__content__mappool__slot__map--used': matchupSet?.maps?.filter(m => m.status !== 0).some(m => m.map.ID === map.ID) }"
-                                    @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupSet?.maps?.find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
+                                    @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupSet?.maps?.filter(m => m.status !== 0).find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
                                 >
                                     <div class="referee__matchup__content__mappool__slot__map__name">
                                         {{ slot.acronym.toUpperCase() }}{{ slot.maps.length === 1 ? '' : map.order }}
