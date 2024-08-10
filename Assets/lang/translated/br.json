@@ -829,6 +829,7 @@
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
+            "forfeit": "FORFEIT",
             "closeLobby": "FECHAR LOBBY"
         },
         "status": {
