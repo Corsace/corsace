@@ -1,8 +1,9 @@
 import { CorsaceRouter } from "../../corsaceRouter";
-import { Qualifier, QualifierTeam } from "../../../Interfaces/qualifier";
+import { Qualifier } from "../../../Interfaces/qualifier";
 import { unallowedToPlay } from "../../../Interfaces/tournament";
 import { Matchup } from "../../../Models/tournaments/matchup";
 import { discordClient } from "../../discord";
+import { BaseTeam } from "../../../Interfaces/team";
 
 const qualifierRouter  = new CorsaceRouter();
 
@@ -51,9 +52,10 @@ qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) 
             ID: qualifier.referee.ID,
             username: qualifier.referee.osu.username,
         } : undefined,
-        teams: qualifier.teams?.map<QualifierTeam>(t => ({
+        teams: qualifier.teams?.map<BaseTeam>(t => ({
             ID: t.ID,
             name: t.name,
+            abbreviation: t.abbreviation,
             avatarURL: t.avatarURL,
         })) ?? [],
         scores: [],

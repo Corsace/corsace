@@ -2,7 +2,7 @@
     <div class="layout layout--open">
         <DevBanner 
             v-if="devBanner"
-            @close="devBanner = false"
+            @close="hideBanner()"
         />
         <the-header
             class="header"
@@ -28,6 +28,13 @@
                     class="header__nav-item"
                 >
                     {{ $t("open.navbar.info") }}
+                </NuxtLink>
+                <NuxtLink
+                    v-if="staffInfo?.userRoles.includes(0) || staffInfo?.userRoles.includes(6)"
+                    to="/referee"
+                    class="header__nav-item"
+                >
+                    {{ $t("open.navbar.referee") }}
                 </NuxtLink>
                 <NuxtLink
                     to="/qualifiers" 
@@ -224,6 +231,7 @@ import CentrifugeMixin from "../../Assets/mixins/centrifuge";
 
 import { UserInfo } from "../../Interfaces/user";
 import { BaseTeam } from "../../Interfaces/team";
+import { OpenStaffInfo } from "../../Interfaces/staff";
 
 import DevBanner from "../../Assets/components/DevBanner.vue";
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
@@ -249,8 +257,9 @@ export default class Default extends Mixins(CentrifugeMixin) {
     @State loggedInUser!: null | UserInfo;
 
     @openModule.State teamInvites!: BaseTeam[] | null;
+    @openModule.State staffInfo!: OpenStaffInfo | null;
 
-    devBanner = true;
+    devBanner = false;
     isSmall = false;
 
     async mounted () {
@@ -262,6 +271,11 @@ export default class Default extends Mixins(CentrifugeMixin) {
         }
 
         await this.$store.dispatch("setViewTheme", "dark");
+        
+        // Get devBanner from localStorage, will be a number equivalent to Date.now() if it exists, if it doesn't exist, or if it's been past the value, then show the banner
+        const devBannerTime = localStorage.getItem("devBanner");
+        if (!devBannerTime || parseInt(devBannerTime) < Date.now())
+            this.devBanner = true;
 
         if (!this.loggedInUser)
             return;
@@ -272,6 +286,11 @@ export default class Default extends Mixins(CentrifugeMixin) {
     handleData (ctx: ExtendedPublicationContext) {
         if (ctx.data.type === "invite")
             this.$store.commit("open/addInvite", ctx.data.team);
+    }
+
+    hideBanner () {
+        localStorage.setItem("devBanner", (Date.now() + 604800000).toString());
+        this.devBanner = false;
     }
 }
 </script>

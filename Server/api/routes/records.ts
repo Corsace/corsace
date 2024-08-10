@@ -67,7 +67,7 @@ recordsRouter.$get<{ records: Record<string, BeatmapsetRecord[]> }>("/beatmapset
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") || new Date().getUTCFullYear();
     const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
     if (!(modeString in ModeDivisionType)) {
         ctx.body = {
@@ -256,7 +256,7 @@ recordsRouter.$get<{ records: Record<string, MapperRecord[]> }>("/mappers", asyn
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") || new Date().getUTCFullYear();
     const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
     if (!(modeString in ModeDivisionType)) {
         ctx.body = { 

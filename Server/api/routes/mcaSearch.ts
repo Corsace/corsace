@@ -58,7 +58,7 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
     
         
         // Check if this is the initial call, add currently nominated beatmaps/users at the top of the list
-        const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") ?? 0;
+        const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") || 0;
         if (skip === 0) {
             let objects = await initialCall(ctx, category) as Vote[]; // doesnt really matter the type in this case
             objects = objects.filter(o => o.category.ID === category.ID);

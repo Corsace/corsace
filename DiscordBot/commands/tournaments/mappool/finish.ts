@@ -134,7 +134,7 @@ const data = new SlashCommandBuilder()
             .setDescription("The slot to provide a finsihed beatmap for.")
             .setRequired(true))
     .addStringOption(option =>
-        option.setName("link")
+        option.setName("target")
             .setDescription("The beatmap link.")
             .setRequired(true))
     .setDMPermission(false);

@@ -34,6 +34,9 @@ export class Beatmap extends BaseEntity {
     @Column()
         difficulty!: string;
 
+    @Column({ length: 32, nullable: true })
+        md5?: string;
+
     @Column("double")
         circleSize!: number;
 

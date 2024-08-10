@@ -37,8 +37,24 @@
                 </div>
             </div>
             <hr class="line--red line--bottom-space">
-            <div class="scores__wrapper">
-                <table class="scores__table">
+            <!-- Top scrollbar container -->
+            <div 
+                ref="scrollWrapperTop"
+                class="scores__wrapper"
+            >
+                <div
+                    ref="fake"
+                    class="scores__wrapper_fake"
+                />
+            </div>
+            <div
+                ref="scrollWrapperBottom"
+                class="scores__wrapper"
+            >
+                <table
+                    ref="table"
+                    class="scores__table"
+                >
                     <tbody>
                         <tr>
                             <th> {{ $t('open.qualifiers.scores.nav.placement') }} </th>
@@ -87,58 +103,51 @@
                             v-for="row in shownQualifierScoreViews"
                             :key="row.ID"
                             :class="{ 
-                                'scores__table--tier1': tiers && row.placement <= 8 && syncView === 'teams',
-                                'scores__table--tier2': tiers && row.placement > 8 && row.placement <= 24 && syncView === 'teams',
+                                'scores__table--tier1': tierSync && (keepPlacementLocked ? row.truePlacement <= 4 : row.sortPlacement <= 4) && syncView === 'teams',
+                                'scores__table--tier2': tierSync && (keepPlacementLocked ? row.truePlacement > 4 && row.truePlacement <= 16 : row.sortPlacement > 4 && row.sortPlacement <= 16) && syncView === 'teams'
                             }"
                         >
-                            <td>#{{ row.placement }}</td>
+                            <td>#{{ keepPlacementLocked ? row.truePlacement : row.sortPlacement }}</td>
                             <!-- THE TEAM / PLAYER COLUMN -->
-                            <div
+                            <a
+                                :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
+                                target="_blank"
                                 class="scores__table_team"
+                                :style="{ 'background-image': `linear-gradient(90deg, transparent 0%, #EF3255 45%), url(${row.avatar || require('../../img/site/open/team/default.png')})` }"
                                 @mousemove="updateTooltipPosition($event)"
                                 @mouseenter="hover = true; syncView === 'players' ? (showPlayers = false, teamSearchID = row.teamID): (showPlayers = true, teamSearchID = row.ID); "
                                 @mouseleave="hover = false; showPlayers = true"
                             >
-                                <div 
-                                    v-if="syncView === 'players'"
-                                    class="scores__table_team--background-image"
-                                    :style="{ 'background-image': `url(${row.avatar})`}" 
-                                />
-                                <div 
-                                    v-else
-                                    class="scores__table_team--background-image"
-                                    :style="{'clip-path': 'ellipse(37% 100% at 0% 0%)'}" 
-                                >
-                                    <div 
-                                        class="scores__table_team--background-image scores__table_team--background-image--team"
-                                        :style="{ 'background-image': `url(${row.avatar || require('../../img/site/open/team/default.png')})`}"   
-                                    />
-                                </div>
-                                <a
-                                    :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
-                                    target="_blank"
-                                    class="scores__table--click scores__table--no_padding"
-                                    :style="{'z-index': 2}"
-                                >
-                                    {{ row.name }}
-                                </a>
-                            </div>
-                            <td
+                                {{ row.name }}
+                                <div class="scores__table_white" />
+                            </a>
+                            <a
                                 v-if="syncView === 'players'"
+                                :href="`https://open.corsace.io/team/${row.teamID}`"
+                                target="_blank"
+                                class="scores__table_team"
+                                :style="{ 'background-image': `linear-gradient(90deg, transparent 0%, #EF3255 45%), url(${row.teamAvatar || require('../../img/site/open/team/default.png')})` }"
                                 @mousemove="updateTooltipPosition($event)"
                                 @mouseenter="hover = true; teamSearchID = row.teamID"
                                 @mouseleave="hover = false"
                             >
-                                <a
-                                    :href="`https://open.corsace.io/team/${row.teamID}`"
-                                    target="_blank"
-                                    class="scores__table--click scores__table--no_padding"
-                                >
-                                    {{ row.team }}
-                                </a>
+                                {{ row.team }}
+                                <div class="scores__table_white" />
+                            </a>
+                            <td
+                                @mousemove="updateTooltipPosition($event)"
+                                @mouseenter="maphover = true; mapSearchID = row.best"
+                                @mouseleave="maphover = false"    
+                            >
+                                {{ row.best }}
                             </td>
-                            <td>{{ row.best }}</td>
-                            <td>{{ row.worst }}</td>
+                            <td
+                                @mousemove="updateTooltipPosition($event)"
+                                @mouseenter="maphover = true; mapSearchID = row.worst"
+                                @mouseleave="maphover = false"    
+                            >
+                                {{ row.worst }}
+                            </td>
                             <td>{{ row.sum === 0 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row.sum !== 0 ? "%" : "" }}</td>
                             <td 
                                 v-for="score in row.scores"
@@ -156,7 +165,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, PropSync, Prop } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { MatchupScore, MatchupScoreView, computeScoreViews, mapNames, scoreFilters, scoreSortType } from "../../../Interfaces/matchup";
 import { Tournament } from "../../../Interfaces/tournament";
@@ -178,8 +187,9 @@ const openModule = namespace("open");
 export default class ScoresView extends Vue {
 
     @PropSync("view", { type: String }) syncView!: "players" | "teams";
+    @PropSync("placementLock", { type: Boolean, default: false }) keepPlacementLocked!: boolean;
     @PropSync("pool", { default: null }) readonly selectedMappool!: Mappool | null;
-    @Prop(Boolean) readonly tiers!: boolean;
+    @PropSync("tiers", { type: Boolean, default: false }) readonly tierSync!: boolean;
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State scores!: MatchupScore[] | null;
@@ -224,6 +234,25 @@ export default class ScoresView extends Vue {
         if (this.tournament && (!this.teamList || this.teamList.length === 0))
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
         this.loading = false;
+
+        const topScroll = this.$refs.scrollWrapperTop as HTMLElement;
+        const bottomScroll = this.$refs.scrollWrapperBottom as HTMLElement;
+
+        topScroll.onscroll = () => {
+            bottomScroll.scrollLeft = topScroll.scrollLeft;
+        };
+
+        bottomScroll.onscroll = () => {
+            topScroll.scrollLeft = bottomScroll.scrollLeft;
+        };
+
+        // Set fake width to match table width every time the table width changes
+        const table = this.$refs.table as HTMLElement;
+        const fake = this.$refs.fake as HTMLElement;
+        const observer = new ResizeObserver(() => {
+            fake.style.width = `${table.clientWidth}px`;
+        });
+        observer.observe(table);
     }
     hover = false;
     maphover = false;
@@ -284,6 +313,15 @@ export default class ScoresView extends Vue {
         return groupedScores;
     }
 
+    validPlacement (index: number, max: number): boolean {
+        const row = this.shownQualifierScoreViews[index];
+        if (this.keepPlacementLocked)
+            return row.placement <= max;
+        if (this.sortDir === "asc")
+            return index >= (this.shownQualifierScoreViews.length - max);
+        return index < max;
+    }
+
 }
 </script>
 
@@ -296,6 +334,8 @@ export default class ScoresView extends Vue {
     &__sub_header {
         display: flex;
         justify-content: center;
+        margin: 10px 0;
+        gap: 40px;
         width: 100%;
         top: 0px;
         background-color: rgba(0, 0, 0, 0);
@@ -309,9 +349,8 @@ export default class ScoresView extends Vue {
             cursor: pointer;
             width: auto;
             text-decoration: none;
-            font-family: $font-ggsans;
-            font-weight: 500;
-            padding: 0 30px 5px 30px;
+            font-family: $font-univers;
+            font-size: $font-base;
             
             &:hover, &--active {
                 color: $open-red;
@@ -320,8 +359,10 @@ export default class ScoresView extends Vue {
             &--active::after {
                 content: "";
                 position: absolute;
-                top: calc(50% - 10px/2);
-                right: calc(100% - 20px);
+                margin: auto;
+                top: 0;
+                bottom: 0;
+                left: -10px;
                 width: 4.5px;
                 height: 4.5px;
                 transform: rotate(-45deg);
@@ -332,8 +373,7 @@ export default class ScoresView extends Vue {
         &_subtext {
             display: flex;
             align-items: center;
-            font-family: $font-swis721;
-            font-weight: 400;
+            font-stretch: condensed;
             font-size: $font-sm;
             padding: 0 80px 5px 30px;
         }
@@ -342,78 +382,77 @@ export default class ScoresView extends Vue {
     &__wrapper {
         padding: 0;
         height: 100%;
-        margin-top: 15px;
         border-left: 1px solid #383838;
         border-right: 1px solid #383838;
-        overflow: scroll;
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
+        overflow-x: auto;
+
+        &:first-of-type {
+            margin-top: 15px;
+        }
+
+        &_fake {
+            width: 100%;
+            height: 1px;
+            transition: none;
+        }
     }
 
-    &__wrapper::-webkit-scrollbar {
-        display: none; /*Chrome*/
+    &__table th {
+        border-bottom: 1px solid #383838;
+        border-left: 1px solid #383838;
     }
+
+    &__table th:first-child {
+        border-left: 0;
+        border-right: 0;
+    }
+
+    &__table td {
+        border-left: 1px solid #383838;
+        border-bottom: 1px solid $open-red;
+    }
+
+    &__table td, &__table_team {
+        text-align: center;
+        padding: 10px 20px;
+    }
+
+    &__table td:first-child {
+        border-left: 0;
+        border-right: 0;
+    }
+
     &__table {
-        font-family: $font-ggsans;
+        font-family: $font-univers;
+        font-size: $font-sm;
+        font-weight: bold;
         width: 100%;
         border-collapse: collapse;
         box-sizing: border-box;
         white-space: nowrap;
-        overflow-x: auto;
-
-        &::-webkit-scrollbar {
-            height: 10px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: #333333;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: #555555;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-            background: #777777;
-        }
-
-        &::-webkit-scrollbar-thumb:active {
-            background: #999999;
-        }
-
-        scrollbar-color: #555555 #333333;
-        scrollbar-width: thin;
         
         &_team {
-            display: flex;
+            background-size: 100%, 50%;
+            background-position: center, left center;
+            background-repeat: no-repeat;
+            display: table-cell;
+            font-size: $font-base;
+            letter-spacing: 0.08em;
+            text-align: right;
             position: relative;
-            justify-content: center;
-            background-image: url("../../img/site/open/checkers-bg.png");
-            padding-bottom: 1px;
 
-            // The border
-            text-shadow: 1.41px 1.41px #222222, 2px 0 #222222, 1.41px -1.41px #222222,
-    0 -2px #222222, -1.41px -1.41px #222222, -2px 0 #222222,
-   -1.41px 1.41px #222222, 0 2px #222222;
-
-            &--background-image {
-                display: flex;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                
-                background: linear-gradient(180deg, #EBEBEB 0%, #000000 99.99%, rgba(98, 72, 72, 0) 100%);
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                
-                &--team {
-                    clip-path: ellipse(98% 98% at 0% 0%);
-                    width: 37%;
-                }
+            &:hover {
+                text-decoration: none;
             }
+        }
+
+        &_white {
+            width: 10px;
+            height: 100%;
+            background-color: white;
+            position: absolute;
+            right: 0;
+            top: 0;
         }
 
         &--highlight {
@@ -425,7 +464,7 @@ export default class ScoresView extends Vue {
             height: 0;
             border-left: 4.5px solid transparent;
             border-right: 4.5px solid transparent;
-            border-top: 4.5px solid #FBBA20;
+            border-top: 4.5px solid $open-red;
         }
 
         &--desc {
@@ -433,7 +472,7 @@ export default class ScoresView extends Vue {
             height: 0;
             border-left: 4.5px solid transparent;
             border-right: 4.5px solid transparent;
-            border-bottom: 4.5px solid #FBBA20;
+            border-bottom: 4.5px solid $open-red;
         }
 
         &--none {
@@ -458,38 +497,12 @@ export default class ScoresView extends Vue {
         }
 
         &--tier1 {
-            background-color: rgba(251, 186, 32, 0.1);
+            background-color: rgba(251, 186, 32, 0.15);
         }
         
         &--tier2 {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(255, 255, 255, 0.1);
         }
-    }
-
-    &__table th {
-        font-size: $font-sm;
-        font-weight: 700;
-        border-bottom: 1px solid #383838;
-        border-left: 1px solid #383838;
-    }
-
-    &__table th:first-child {
-        border-left: 0;
-        border-right: 0;
-    }
-
-    &__table td, &__table_team {
-        font-size: 0.70rem; /* i tried $font-xsm but its too small*/
-        font-weight: 600;
-        text-align: center;
-        padding: 10px;
-        border-bottom: 1px solid $open-red;
-        border-left: 1px solid #383838;
-    }
-
-    &__table td:first-child {
-        border-left: 0;
-        border-right: 0;
     }
 }
 </style>

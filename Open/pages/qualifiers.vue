@@ -62,20 +62,18 @@
                     >
                         {{ $t('open.qualifiers.scores.teams') }}
                     </ContentButton>
+                    <ContentButton
+                        class="content_button--red content_button--font_sm"
+                        @click.native="placementLock = !placementLock"
+                    >
+                        {{ placementLock ? $t('open.qualifiers.scores.lockedPlacement') : $t('open.qualifiers.scores.unlockedPlacement') }}
+                    </ContentButton>
                 </template>
                 <template 
                     v-else-if="page === 'qualifiers'"
                     #right
                 >
                     <Clock />
-                    <ContentButton 
-                        v-if="team && loggedInUser && team.captain.ID === loggedInUser.ID && !team.qualifier"
-                        class="content_button--header_button"
-                        :class="{ 'content_button--disabled': !team || !tournament || tournament.minTeamSize > team.members.length || tournament.maxTeamSize < team.members.length }"
-                        @click.native="togglePopup()"
-                    >
-                        {{ $t('open.qualifiers.create') }}
-                    </ContentButton>
                     <BaseModal
                         v-if="isOpen"
                         @click.native="togglePopup()"
@@ -96,6 +94,7 @@
                 v-else-if="page === 'scores' && mappools?.[0].isPublic"
                 tiers
                 :view="scoreView"
+                :placement-lock="placementLock"
                 :pool="mappools[0]"
             />
             <QualifiersView
@@ -164,6 +163,7 @@ export default class Qualifiers extends Vue {
     calledMappool = false;
     page: "mappool" | "qualifiers" | "scores" = "qualifiers";
     scoreView: "players" | "teams" = "teams";
+    placementLock = false;
 
     @State loggedInUser!: UserInfo | null;
 
@@ -209,23 +209,17 @@ export default class Qualifiers extends Vue {
 @import '@s-sass/_variables';
 
 .qualifiers {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
 
     &__main_content {
         align-self: center;
         position: relative;
         width: 75vw;
         padding: 35px;
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
-    }
-
-    &__qualifiers {
-        overflow: auto;
     }
 
     &__header_subtext {
-        font-family: $font-swis721;
-        font-weight: 400;
+        font-weight: bold;
+        font-stretch: condensed;
         font-size: $font-sm;
         text-align: right;
         color: #909090;

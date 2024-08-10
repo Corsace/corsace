@@ -78,13 +78,7 @@ export default class Referee extends Vue {
     moreMatchups = true;
 
     async mounted () {
-        const { data: matchupData } = await this.$axios.get<{
-            success: false;
-            error: string;
-        } | {
-            success: true;
-            matchups: Matchup[];
-        }>(`/api/referee/matchups/${this.tournament?.ID}`);
+        const { data: matchupData } = await this.$axios.get<{ matchups: Matchup[] }>(`/api/referee/matchups/${this.tournament?.ID}`);
         if (!matchupData.success) {
             alert(matchupData.error);
             await this.$router.push("/");

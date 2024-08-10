@@ -579,6 +579,7 @@ export default class Info extends Vue {
 
         &_header {
             width: 100%;
+            margin: 20px 0;
         }
     }
 
@@ -612,6 +613,7 @@ export default class Info extends Vue {
 
         &__text {
             text-align: center;
+            line-height: $font-xxl;
 
             &--noAlign {
                 text-align: left;
@@ -717,7 +719,7 @@ export default class Info extends Vue {
 
      &_stage_title {
         position: relative;
-        font-family: $font-commuterssans;
+        font-family: $font-zurich;
         font-size: $font-xxxl;
 
         &__status {
@@ -778,7 +780,6 @@ export default class Info extends Vue {
             font-size: $font-lg;
 
             &__title {
-                font-family: $font-ggsans;
                 font-weight: 800;
                 color: #EBEBEB;
             }
@@ -786,7 +787,6 @@ export default class Info extends Vue {
             & ul {
                 margin-left: 35px;
                 list-style-type: none;
-                font-family: $font-ggsans;
                 font-weight: 600;
             }
 

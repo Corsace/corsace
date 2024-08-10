@@ -133,6 +133,24 @@ export function modsToRGB (modNum?: ModsType | null): [number, number, number] {
     return averageColour;
 }
 
+export function contrastColourText (slotColour: string): string {
+    const rgb = slotColour.match(/\d+/g);
+    console.log(rgb);
+    if (!rgb) return "#FFFFFF";
+
+    const r = parseInt(rgb[0]) / 255.0;
+    const g = parseInt(rgb[1]) / 255.0;
+    const b = parseInt(rgb[2]) / 255.0;
+
+    const r_ = r <= 0.04045 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+    const g_ = g <= 0.04045 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+    const b_ = b <= 0.04045 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+
+    const L = 0.2126 * r_ + 0.7152 * g_ + 0.0722 * b_;
+
+    return L > 0.8 ? "#000000" : "#FFFFFF";
+}
+
 /**
  * Parses a list of mod acronyms into nodesu ModsType enums
  * @param text A string consisting of mods as acronyms

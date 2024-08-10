@@ -4,7 +4,7 @@ import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier } from "../../../../Interfaces/qualifier";
 import { Next } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
-import { StaffList, StaffMember } from "../../../../Interfaces/staff";
+import { StaffList, StaffMember, OpenStaffInfo, BaseStaffMember, OpenStaffInfoList } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
 import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
@@ -12,6 +12,9 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { User } from "../../../../Models/user";
 import { createHash } from "crypto";
 import { Stage } from "../../../../Models/tournaments/stage";
+import { isLoggedIn, isLoggedInDiscord } from "../../../middleware";
+import { hasRoles, validateTournament } from "../../../middleware/tournament";
+import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 
 async function validateID (ctx: CorsaceContext<object>, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -167,6 +170,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
             return {
                 ID: t.ID,
                 name: t.name,
+                abbreviation: t.abbreviation,
                 avatarURL: t.avatarURL,
                 pp: t.pp,
                 BWS: t.BWS,
@@ -222,6 +226,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/unregisteredTeams",
             return {
                 ID: t.ID,
                 name: t.name,
+                abbreviation: t.abbreviation,
                 avatarURL: t.avatarURL,
                 pp: t.pp,
                 BWS: t.BWS,
@@ -276,6 +281,10 @@ tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifier
     const qualifiers = await Matchup
         .createQueryBuilder("matchup")
         .innerJoinAndSelect("matchup.teams", "team")
+        .innerJoinAndSelect("team.members", "members")
+        .leftJoinAndSelect("members.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "modeDivision")
+        .innerJoinAndSelect("team.captain", "captain")
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .where("tournament.ID = :ID", { ID })
@@ -292,14 +301,33 @@ tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifier
             if (!q.teams)
                 return [qualData];
 
-            return q.teams.map<BaseQualifier>(t => ({
-                ...qualData,
-                team: {
-                    ID: t.ID,
-                    name: t.name,
-                    avatarURL: t.avatarURL,
-                },
-            }));
+            return q.teams.map<BaseQualifier>(t => {
+                let members = t.members;
+                if (!members.some((member) => member.ID === t.captain.ID))
+                    members = [t.captain, ...members];
+                return {
+                    ...qualData,
+                    team: {
+                        ID: t.ID,
+                        name: t.name,
+                        abbreviation: t.abbreviation,
+                        avatarURL: t.avatarURL,
+                        pp: t.pp,
+                        rank: t.rank,
+                        BWS: t.BWS,
+                        members: members.map<TeamMember>((member) => {
+                            return {
+                                ID: member.ID,
+                                username: member.osu.username,
+                                osuID: member.osu.userID,
+                                country: member.country,
+                                isCaptain: member.ID === t.captain.ID,
+                                rank: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
+                            };
+                        }),
+                    },
+                };
+            });
         }),
     };
 });
@@ -349,9 +377,16 @@ tournamentRouter.$get<{ staff: StaffList[] }>("/:tournamentID/staff", validateID
 
         for (const role of roles) {
             const discordRole = await server.roles.fetch(role.roleID);
-            if (!discordRole || discordRole.members.filter(m => !m.user.bot).size === 0)
+            if (!discordRole)
                 continue;
-
+            if (discordRole.members.filter(m => !m.user.bot).size === 0) {
+                staff.push({
+                    role: discordRole.name,
+                    roleType: role.roleType,
+                    users: [],
+                });
+                continue;
+            }
             const members = discordRole.members.filter(m => !m.user.bot);
             const dbUsers = await User
                 .createQueryBuilder("user")
@@ -379,6 +414,90 @@ tournamentRouter.$get<{ staff: StaffList[] }>("/:tournamentID/staff", validateID
         ctx.body = {
             success: true,
             staff,
+        };
+    } catch (e) {
+        ctx.body = {
+            success: false,
+            error: `Error fetching staff list\n${e}`,
+        };
+    }
+});
+
+tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLoggedIn, isLoggedInDiscord, validateTournament, hasRoles(tournamentStaffRoleOrder), async (ctx) => {
+    const tournament = ctx.state.tournament!;
+
+    let roles = await TournamentRole
+        .createQueryBuilder("role")
+        .where("role.tournamentID = :ID", { ID: tournament.ID })
+        .getMany();
+    roles = roles.filter(r => !playingRoles.some(p => p === r.roleType));
+    roles
+        .sort((a, b) => parseInt(a.roleID) - parseInt(b.roleID))
+        .sort((a, b) => tournamentStaffRoleOrder.indexOf(a.roleType) - tournamentStaffRoleOrder.indexOf(b.roleType));
+
+    try {
+        const server = await discordClient.guilds.fetch(tournament.server);
+        await server.members.fetch();
+        const staff: OpenStaffInfoList[] = [];
+        
+        const organizer = await User
+            .createQueryBuilder("user")
+            .innerJoin("user.tournamentsOrganized", "tournament")
+            .where("tournament.ID = :ID", { ID: tournament.ID })
+            .getOne();
+        if (organizer)
+            staff.push({
+                role: "Organizer",
+                roleType: TournamentRoleType.Organizer,
+                users: [{
+                    ID: organizer.ID,
+                    username: organizer.osu.username,
+                }],
+            });
+
+        for (const role of roles) {
+            const discordRole = await server.roles.fetch(role.roleID);
+            if (!discordRole)
+                continue;
+            if (discordRole.members.filter(m => !m.user.bot).size === 0) {
+                staff.push({
+                    role: discordRole.name,
+                    roleType: role.roleType,
+                    users: [],
+                });
+                continue;
+            }
+
+            const members = discordRole.members.filter(m => !m.user.bot);
+            const dbUsers = await User
+                .createQueryBuilder("user")
+                .where("user.discordUserid IN (:...ids)", { ids: members.map(m => m.id) })
+                .getMany();
+            const users: BaseStaffMember[] = [];
+            for (const m of members.values()) {
+                const dbUser = dbUsers.find(u => u.discord.userID === m.id);
+                if (!dbUser)
+                    continue;
+                users.push({
+                    ID: dbUser.ID,
+                    username: dbUser.osu.username,
+                });
+            }
+            users.sort((a, b) => a.username.localeCompare(b.username));
+
+            staff.push({
+                role: discordRole.name,
+                roleType: role.roleType,
+                users,
+            });
+        }
+
+        ctx.body = {
+            success: true,
+            info: {
+                staff,
+                userRoles: staff.filter(s => s.users.some(u => u.ID === ctx.state.user!.ID)).map(s => s.roleType).filter((v, i, a) => a.indexOf(v) === i),
+            },
         };
     } catch (e) {
         ctx.body = {

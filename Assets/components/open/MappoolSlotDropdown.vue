@@ -1,23 +1,38 @@
 <template>
     <div class="mappool_slot_dropdown">
-        <a 
+        <div 
             class="mappool_slot_dropdown__header"
-            :style="{ color: slotMod, borderColor: slotMod }"
-            @click="toggleAccordion()"
+            @click="isOpen = !isOpen"
         >
             <div 
-                class="triangle mappool_slot_dropdown__triangle" 
-                :class="{ 'mappool_slot_dropdown__triangle--active': isOpen }"
-                :style="{ color: slotMod }"
-            />
-            <slot />
-        </a>
+                class="mappool_slot_dropdown__triangle_holder"
+                :style="{ backgroundColor: slotColourSync }"
+            >
+                <div 
+                    class="triangle mappool_slot_dropdown__triangle" 
+                    :class="{ 'mappool_slot_dropdown__triangle--active': isOpen }"
+                    :style="{ color: getContrastColourText }"
+                />
+            </div>
+            <div 
+                class="mappool_slot_dropdown__text"
+                :style="{ backgroundColor: slotColourSync, color: getContrastColourText }"
+            >
+                <slot />
+            </div>
+        </div>
         <transition name="collapsible">
             <div
                 v-show="isOpen" 
                 class="mappool_slot_dropdown__content"
             >
-                <slot name="content" />
+                <div 
+                    class="mappool_slot_dropdown__line"
+                    :style="{ backgroundColor: slotColourSync }"
+                />
+                <div class="mappool_slot_dropdown__maps">
+                    <slot name="content" />
+                </div>
             </div>
         </transition>
     </div>
@@ -25,34 +40,17 @@
 
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
-import { MappoolSlot } from "../../../Interfaces/mappool";
-import { freemodRGB, freemodButFreerRGB, modsToRGB } from "../../../Interfaces/mods";
+import { contrastColourText } from "../../../Interfaces/mods";
 
 @Component
 export default class MappoolSlotDropdown extends Vue {
-
-    @PropSync("slot", { default: null }) readonly slotData!: MappoolSlot | null;
+    @PropSync("slotColour", { default: "" }) readonly slotColourSync!: string;
 
     isOpen = false;
 
-    toggleAccordion () {
-        this.isOpen = !this.isOpen;
+    get getContrastColourText () {
+        return contrastColourText(this.slotColourSync);
     }
-
-    get slotMod (): string {
-        if (this.slotData?.allowedMods === null && this.slotData?.userModCount === null && this.slotData?.uniqueModCount === null)
-            return this.RGBValuesToRGBCSS(freemodButFreerRGB);
-
-        if (this.slotData?.userModCount !== null || this.slotData?.uniqueModCount !== null)
-            return this.RGBValuesToRGBCSS(freemodRGB);
-
-        return this.RGBValuesToRGBCSS(modsToRGB(this.slotData?.allowedMods));
-    }
-
-    RGBValuesToRGBCSS (values: [number, number, number]) {
-        return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
-    } 
-    
 }
 </script>
 
@@ -66,23 +64,15 @@ export default class MappoolSlotDropdown extends Vue {
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
-        min-width: 100%;
-        background: linear-gradient(180deg, #121212 0%, #1C1C1C 100%);
-        border-bottom: 1px solid $open-red;
-        padding: 10px;
+        align-items: center;
+        gap: 10px;
         margin: 10px 0px;
         color: $white;
-        font-weight: 600;
-
-        &:hover {
-            text-decoration: none;
-        }
+        font-weight: bold;
     }
 
     &__triangle {
-        margin-top: 5px;
-        margin-right: 10px;
-        color: $open-red;
+        color: white;
         transform: rotate(270deg);
 
         &--active {       
@@ -90,10 +80,35 @@ export default class MappoolSlotDropdown extends Vue {
             border-bottom: 10px solid;
             transform: rotate(180deg);
         }
+
+        &_holder {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 10px 8px;
+        }
+    }
+
+    &__text {
+        padding: 5px 10px;
+        width: 100%;
     }
 
     &__content {
+        display: flex;
+        gap: 10px;
         overflow: hidden;
+    }
+
+    &__line {
+        width: 30px;
+    }
+
+    &__maps {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
     }
 }
 

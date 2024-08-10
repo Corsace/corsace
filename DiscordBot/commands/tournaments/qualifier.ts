@@ -16,7 +16,7 @@ import { discordStringTimestamp } from "../../../Server/utils/dateParse";
 import { extractParameters } from "../../functions/parameterFunctions";
 import respond from "../../functions/respond";
 import confirmCommand from "../../functions/confirmCommand";
-import { Tournament } from "../../../Models/tournaments/tournament";
+import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import { Matchup, preInviteTime } from "../../../Models/tournaments/matchup";
 import { StageType } from "../../../Interfaces/stage";
 import { cron } from "../../../Server/cron";
@@ -46,10 +46,10 @@ async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommand
     team.tournaments = [];
 
     const usernameSplit = user.osu.username.split(" ");
-    team.abbreviation = usernameSplit.length < 2 || usernameSplit.length > 4 ? 
-        usernameSplit[0].slice(0, Math.min(usernameSplit[0].length, 4)) : 
+    team.abbreviation = usernameSplit.length < 2 || usernameSplit.length > 4 ?
+        usernameSplit[0].slice(0, Math.min(usernameSplit[0].length, 4)) :
         usernameSplit.map(n => n[0]).join("");
-    
+
     return team;
 }
 
@@ -61,7 +61,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         { name: "date", paramType: "string", customHandler: extractDate },
         { name: "target", paramType: "string", customHandler: extractTargetText, optional: true },
         { name: "tournament", paramType: "string", optional: true },
-    ]); 
+    ]);
     if (!params)
         return;
 
@@ -72,7 +72,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const tournament = await getTournament(m, typeof tournamentParam === "string" ? tournamentParam : channelID(m), typeof tournamentParam === "string" ? "name" : "channel", undefined, true);
+    const tournament = await getTournament(m, typeof tournamentParam === "string" ? tournamentParam : channelID(m), typeof tournamentParam === "string" ? "name" : "channel", [TournamentStatus.NotStarted, TournamentStatus.Registrations], true);
     if (!tournament)
         return;
 
@@ -102,7 +102,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (target) {
         if (!await securityChecks(m, true, true, [], [TournamentRoleType.Organizer]))
             return;
-        
+
         const teams = await getTeams(target, "name", false, true);
         if (teams.length > 0) {
             team = await getFromList(m, teams, "team", target);
@@ -150,8 +150,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return;
             }
         }
-    } 
-    
+    }
+
     // Rerun for when the target is a user or if there was no target at all
     if (!team) {
         const teams = await Team
@@ -171,8 +171,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (tournamentTeamFilter.length > 1) {
                 await respond(m, `User \`${user.osu.username}\` is in multiple teams for this tournament which SHOULD NEVER HAPPEN CONTACT VINXIS`);
                 return;
-            } else if (tournamentTeamFilter.length === 0)
-                team = teams[0];
+            } else if (tournamentTeamFilter.length === 1)
+                team = tournamentTeamFilter[0];
             else {
                 if (tournament.minTeamSize === 1) {
                     const onePlayerTeam = teams.filter(t => t.members.length === 1 && t.members[0].ID === user!.ID);
@@ -212,7 +212,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Ok Lol . stopped qualifier scheduling");
         return;
     }
-    
+
     if (!team.tournaments.some(t => t.ID === tournament.ID)) {
         if (target && !await confirmCommand(m, `<@${user.discord.userID}> do you wish to confirm your registration for ${tournament.name} under team name ${team.name}?`, true, user.discord.userID)) {
             await respond(m, "Ok Lol . stopped tournament registration");
@@ -319,7 +319,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("map.scores", "score")
             .where("matchup.ID = :ID", { ID: matchup.ID })
             .getMany();
-        await Promise.all(sets.flatMap(set => set.maps?.flatMap(map => map.scores.map(s => s.remove()))));
+        await Promise.all(sets.flatMap(set => set.maps?.flatMap(map => map.scores?.map(s => s.remove()) ?? [])));
         await Promise.all(sets.flatMap(set => set.maps?.map(map => map.remove())));
         await Promise.all(sets.map(s => s.remove()));
 
@@ -339,7 +339,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    await respond(m, `The qualifier for \`${team.name}\` is now ${discordStringTimestamp(date)}`);
+    await respond(m, `The qualifier for \`${team.name}\` is now ${discordStringTimestamp(date)}\n\nYou can reschedule with the same command anytime before the match starts if needed.`);
 }
 
 const data = new SlashCommandBuilder()
@@ -349,11 +349,11 @@ const data = new SlashCommandBuilder()
         option.setName("date")
             .setDescription("The UTC date and/or time (E.g. YYYY-MM-DD HH:MM UTC) / UNIX epoch to play qualifiers in")
             .setRequired(true))
-    .addStringOption(option => 
+    .addStringOption(option =>
         option.setName("tournament")
             .setDescription("The tournament to schedule for")
             .setRequired(false))
-    .addStringOption(option => 
+    .addStringOption(option =>
         option.setName("target")
             .setDescription("The user/team to schedule (only works for tournament organizers)")
             .setRequired(false))

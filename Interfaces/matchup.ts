@@ -3,9 +3,11 @@ import { Round } from "./round";
 import { Team, TeamList } from "./team";
 import { User } from "./user";
 import { Mappool, MappoolMap } from "./mappool";
+import { BaseStaffMember } from "./staff";
 
 export interface BaseMatchup {
     ID: number;
+    matchID: string;
     date: Date;
     mp?: number | null;
 }
@@ -14,6 +16,9 @@ export interface MatchupList extends BaseMatchup {
     vod?:   string | null;
     potential?: string;
     teams: TeamList[] | null;
+    referee?: BaseStaffMember;
+    streamer?: BaseStaffMember;
+    commentators?: BaseStaffMember[];
 }
 
 export interface Matchup extends BaseMatchup {
@@ -98,11 +103,13 @@ export interface MatchupScoreViewBase {
     name: string;
     team?: string;
     teamID?: number;
+    teamAvatar?: string | null;
     avatar?: string | null;
     scores: MatchupScoreViewScore[];
     best: string;
     worst: string;
-    placement: number;
+    truePlacement: number;
+    sortPlacement: number;
 }
 
 export type MatchupScoreView = MatchupScoreViewBase & MatchupScoreFilterValues;
@@ -126,8 +133,8 @@ export function mapNames (scores: MatchupScore[] | null): {
 }
 
 export function computeScoreViews (
-    idNameAccessor: (score: MatchupScore) => { id: number, name: string, avatar?: string | null }, 
-    scores: MatchupScore[] | null, 
+    idNameAccessor: (score: MatchupScore) => { id: number, name: string, avatar?: string | null },
+    scores: MatchupScore[] | null,
     syncView: "players" | "teams",
     currentFilter: scoreSortType,
     mapSort: number,
@@ -190,19 +197,20 @@ export function computeScoreViews (
                     percentAvg: -100,
                     zScore: -100,
                 };
-                
+
                 const result = {
                     ...userFilterValues,
                     map: map.map,
                     mapID: map.mapID,
                     isBest: false,
                 } as MatchupScoreViewScore;
-                
+
                 return result;
             }),
             best: "",
             worst: "",
-            placement: -1,
+            truePlacement: -1,
+            sortPlacement: -1,
         } as MatchupScoreView;
         scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
@@ -211,6 +219,7 @@ export function computeScoreViews (
             if (team) {
                 scoreView.team = team.teamName;
                 scoreView.teamID = team.teamID;
+                scoreView.teamAvatar = team.teamAvatar;
             }
         }
         scoreViews.push(scoreView);
@@ -257,7 +266,7 @@ export function computeScoreViews (
             s.percentAvg = Math.round(s.relAvg * 100);
 
             s.zScore = (targetScore - mapsStats.avg) / (mapsStats.stdDev || 1);
-            
+
             mapMax.sum = Math.max(mapMax.sum, s.sum);
             mapMax.average = Math.max(mapMax.average, s.average);
             mapMax.relMax = Math.max(mapMax.relMax, s.relMax);
@@ -273,7 +282,15 @@ export function computeScoreViews (
         scoreView.percentMax = Math.round(nonZeroScores.reduce((a, b) => a + b.percentMax, 0) / (nonZeroScores.length || 1));
         scoreView.relAvg = nonZeroScores.reduce((a, b) => a + b.relAvg, 0);
         scoreView.percentAvg = Math.round(nonZeroScores.reduce((a, b) => a + b.percentAvg, 0) / (nonZeroScores.length || 1));
-        scoreView.zScore = nonZeroScores.reduce((a, b) => a + b.zScore, 0);    
+        scoreView.zScore = nonZeroScores.reduce((a, b) => a + b.zScore, 0);
+    });
+
+    // Sort by current filter
+    scoreViews.sort((a, b) => {
+        if (mapSort !== -1 && a.scores[mapSort])
+            return sortDir === "asc" ? a.scores[mapSort][currentFilter] - b.scores[mapSort][currentFilter] : b.scores[mapSort][currentFilter] - a.scores[mapSort][currentFilter];
+
+        return sortDir === "asc" ? a[currentFilter] - b[currentFilter] : b[currentFilter] - a[currentFilter];
     });
 
     // Add best/worst values, and placement
@@ -283,17 +300,13 @@ export function computeScoreViews (
             if (score && s[currentFilter] === score[currentFilter as keyof typeof score])
                 s.isBest = true;
         });
-        scoreView.placement = scoreViews.filter(s => s.zScore > scoreView.zScore).length + 1;
+        scoreView.truePlacement = scoreViews.filter(s => s.zScore > scoreView.zScore).length + 1;
+        if (mapSort !== -1 && scoreView.scores[mapSort])
+            scoreView.sortPlacement = scoreViews.filter(s => s.scores[mapSort][currentFilter] > scoreView.scores[mapSort][currentFilter]).length + 1;
+        else
+            scoreView.sortPlacement = scoreViews.filter(s => s[currentFilter] > scoreView[currentFilter]).length + 1;
         scoreView.best = scoreView.scores.reduce((a, b) => a[currentFilter] > b[currentFilter] ? a : b).map,
         scoreView.worst = scoreView.scores.filter(score => score.sum !== 0).reduce((a, b) => a[currentFilter] < b[currentFilter] ? a : b).map;
-    });
-
-    // Sort by current filter
-    scoreViews.sort((a, b) => {
-        if (mapSort !== -1 && a.scores[mapSort])
-            return sortDir === "asc" ? a.scores[mapSort][currentFilter] - b.scores[mapSort][currentFilter] : b.scores[mapSort][currentFilter] - a.scores[mapSort][currentFilter];
-
-        return sortDir === "asc" ? a[currentFilter] - b[currentFilter] : b[currentFilter] - a[currentFilter];
     });
 
     return scoreViews;

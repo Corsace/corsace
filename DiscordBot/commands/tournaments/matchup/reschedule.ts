@@ -55,7 +55,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const params = await extractParameters<parameters>(m, [
         { name: "date", paramType: "string", customHandler: extractDate },
-        { name: "matchup", paramType: "integer", optional: true },
+        { name: "matchup", paramType: "string", optional: true },
         { name: "tournament", paramType: "string", optional: true },
     ]); 
     if (!params)
@@ -93,7 +93,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.previousMatchups", "previousMatchups")
             .leftJoinAndSelect("matchup.nextMatchups", "nextMatchups")
             .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
-            .where("matchup.ID = :matchupID", { matchupID })
+            .where("(matchup.ID = :matchupID OR matchup.matchID = :matchupID)", { matchupID })
             .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
             .getOne();
         
@@ -284,7 +284,7 @@ const data = new SlashCommandBuilder()
         option.setName("tournament")
             .setDescription("The tournament to reschedule for")
             .setRequired(false))
-    .addIntegerOption(option => 
+    .addStringOption(option => 
         option.setName("matchup")
             .setDescription("The ID of the matchup to reschedule")
             .setRequired(false))
@@ -292,7 +292,7 @@ const data = new SlashCommandBuilder()
 
 interface parameters {
     date: Date,
-    matchup?: number,
+    matchup?: string,
     tournament?: string,
 }
 

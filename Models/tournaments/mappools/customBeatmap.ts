@@ -8,11 +8,14 @@ export class CustomBeatmap extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, length: 512 })
         link?: string;
 
     @Column({ nullable: true })
         background?: string;
+
+    @Column({ length: 32, nullable: true })
+        md5?: string;
 
     @Column()
         artist!: string;

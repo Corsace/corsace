@@ -31,6 +31,7 @@ inviteRouter.$get<{ invites: BaseTeam[] }>("/user", async (ctx) => {
             return {
                 ID: i.team.ID,
                 name: i.team.name,
+                abbreviation: i.team.abbreviation,
                 avatarURL: i.team.avatarURL,
             };
         }),
@@ -152,6 +153,7 @@ inviteRouter.$post<{ invite: TeamInvite }, TeamAuthenticatedState>("/:teamID", v
         await publish(`invitations:${user.ID}`, { type: "invite", team: {
             ID: team.ID,
             name: team.name,
+            abbreviation: team.abbreviation,
             avatarURL: team.avatarURL,
         }});
 

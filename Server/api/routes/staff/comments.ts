@@ -16,7 +16,7 @@ commentsReviewRouter.$use(isMCAStaff);
 commentsReviewRouter.$get<{staffComments: StaffComment[] }, MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
     const mca = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
-    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
+    const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") || 0;
     const text = ctx.query.text ?? undefined;
     const query = UserComment
         .createQueryBuilder("userComment")
@@ -61,7 +61,7 @@ commentsReviewRouter.$get<{staffComments: StaffComment[] }, MCAAuthenticatedStat
         targetosuID: string;
         targetosuUsername: string;
         reviewer: string;
-    }[] = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
+    }[] = await query.offset(skip).limit(10).getRawMany();
     const staffComments = comments.map<StaffComment>(comment => ({
         ID: comment.ID,
         comment: comment.comment,

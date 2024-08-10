@@ -597,9 +597,9 @@
                 "w4Header": "PEKAN KE-4 (AGU 31 - SEP 1)",
                 "w4": "<li>Bracket tunggal<li>Pertandingan akan berlansung dengan format <strong>Best of 13</strong> dengan <strong>2 ban</strong> dan <strong>1 protect</strong><li>Ukuran mappool (20 map): <strong>5 NM</strong><strong> / </strong><strong>4 HD</strong><strong> / </strong><strong>4 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong>"
             },
-            "matchProceduresText": "<li>Wasit akan membuat pertandingan 10 menit sebelum waktu yang dijadwalkan<li>Tidak akan ada <strong>map warm-up</strong><li>Tim <strong>diharapkan</strong> untuk hadir tepat waktu dan dengan penuh kesiapan ke dalam ruang pertandingan<ul class=info_desc__list><li>Kapten diharapkan untuk <strong>online</strong> setidaknya 5 menit <strong>sebelum</strong> waktu yang dijadwalkan untuk menerima undangan dari wasit</ul><li>Tim yang gagal untuk mengumpulkan pemain <strong>5 menit</strong> setelah waktu yang dijadwalkan akan dianggap <strong>kalah</strong><li><strong>Tidak ada batasan</strong> terkait pick dan ban<li><strong>NF</strong> akan diwajibkan pada seluruh map<li>Kapten akan saling beradu !roll di ruang pertandingan. <strong>Pemenang</strong> roll akan <strong>mendapatkan pick pertama, ban kedua,</strong> dan <strong>protect kedua</strong><li>Masing-masing tim akan memiliki <strong>1 map yang di-protect</strong><ul class=info_desc__list><li>Map yang di-protect <strong>tidak</strong> dapat di-ban namun tetap dapat dipilih oleh kedua tim</ul><li>Masing-masing tim memiliki <strong>2 ban</strong> per pertandingan sepanjang fase bracket<li>Masing-masing tim akan mem-ban <strong>1 map</strong> pada setiap set ban<ul class=info_desc__list><li><strong>Set ban pertama</strong> akan berlangsung di <strong>awal</strong> pertandingan<li><strong>Set ban kedua</strong> akan berlangsung setelah <strong>4 map</strong> telah dimainkan<li>Urutan ban adalah <strong>ABAB</strong></ul><li>Tim memiliki waktu <strong>90 detik</strong> untuk menentukan <strong>pick, ban, and protect</strong><ul class=info_desc__list><li>Apabila terdapat tim yang membutuhkan waktu yang lebih untuk salah satu tindakan di atas, tindakan akan diambil sesuai dengan prosedur berikut:<ul class=info_desc__list><li><strong>Kejadian pertama:</strong> Perpanjangan waktu selama 15 detik akan diberikan beserta dengan peringatan verbal<li><strong>Rangkaian kejadian selanjutnya:</strong> Satu map akan dipilih secara acak dari mappool melalui perintah !roll X, di mana X merupakan jumlah beatmap yang tersisa di mappool</ul></ul><li>Tim memiliki waktu <strong>90 detiik</strong> untuk mengubah pemain dan <strong>mengunci daftar pemain</strong><ul class=info_desc__list><li>Apabila terdapat tim yang membutuhkan waktu yang lebih untuk salah satu tindakan di atas, tindakan akan diambil sesuai dengan prosedur berikut:<ul class=info_desc__list><li><strong>Kejadian pertama:</strong> Perpanjangan waktu selama 15 detik akan diberikan beserta dengan peringatan verbal<li><strong>Rangkaian kejadian berikutnya:</strong> Wasit akan mengeluarkan perintah !mp start 10</ul></ul>",
+            "matchProceduresText": "<li>Wasit akan membuat pertandingan 10 menit sebelum waktu yang dijadwalkan<li>Tidak ada <strong>map warm-up</strong><li>Tim <strong>diharapkan</strong> untuk hadir tepat waktu dan dengan penuh kesiapan ke dalam ruang pertandingan<ul class=info_desc__list><li>Kapten diharapkan untuk <strong>online</strong> setidaknya 5 menit <strong>sebelum</strong> waktu yang dijadwalkan untuk menerima undangan dari wasit</ul><li>Tim yang gagal untuk mengumpulkan pemain dalam <strong>5 menit</strong> setelah waktu yang dijadwalkan akan dianggap <strong>kalah</strong><li><strong>Tidak ada batasan</strong> terkait pick dan ban<li><strong>NF</strong> akan diwajibkan pada seluruh map<li>Kapten akan saling beradu !roll di ruang pertandingan. <strong>Pemenang</strong> roll akan <strong>mendapatkan pick pertama, ban kedua,</strong> dan <strong>protect kedua</strong><li>Masing-masing tim memiliki <strong>1 map untuk di-protect</strong><ul class=info_desc__list><li>Map yang di-protect <strong>tidak</strong> dapat di-ban namun tetap dapat dipilih oleh kedua tim</ul><li>Masing-masing tim memiliki <strong>2 ban</strong> per pertandingan sepanjang fase bracket<li>Masing-masing tim akan mem-ban <strong>1 map</strong> pada setiap set ban<ul class=info_desc__list><li><strong>Set ban pertama</strong> akan berlangsung pada <strong>awal</strong> pertandingan<li><strong>Set ban kedua</strong> akan berlangsung setelah <strong>4 map</strong> telah dimainkan<li>Urutan ban <strong>ABAB</strong></ul><li>Tim memiliki waktu <strong>90 detik</strong> untuk menentukan <strong>pick, ban, and protect</strong><ul class=info_desc__list><li>Apabila terdapat tim yang membutuhkan waktu yang lebih untuk salah satu tindakan di atas, tindakan akan diambil sesuai dengan prosedur berikut:<ul class=info_desc__list><li><strong>Kejadian pertama:</strong> Perpanjangan waktu selama 15 detik akan diberikan beserta dengan peringatan verbal<li><strong>Rangkaian kejadian selanjutnya:</strong> Satu map akan dipilih secara acak dari mappool melalui perintah !roll X, di mana X merupakan jumlah beatmap yang tersisa di mappool</ul></ul><li>Tim memiliki waktu <strong>90 detiik</strong> untuk mengubah pemain dan <strong>mengunci daftar pemain</strong><ul class=info_desc__list><li>Apabila terdapat tim yang membutuhkan waktu yang lebih untuk salah satu tindakan di atas, tindakan akan diambil sesuai dengan prosedur berikut:<ul class=info_desc__list><li><strong>Kejadian pertama:</strong> Perpanjangan waktu selama 15 detik akan diberikan beserta dengan peringatan verbal<li><strong>Rangkaian kejadian berikutnya:</strong> Wasit akan mengeluarkan perintah !mp start 10</ul></ul>",
             "freemodRulesText": "<li><strong>Peraturan FreeMod</strong> Mod yang diizinkan meliputi <strong>HD</strong> dan <strong>HR</strong>. Masing-masing tim harus memiliki <strong>setidaknya</strong> satu pemain dengan <strong>HD</strong> dan satu pemain dengan <strong>HR</strong> (atau HDHR)<ul class=info_desc__list><li><strong>Tiebreaker</strong> akan dimainkan dengan <strong>FreeMod</strong> aktif, namun masing-masing pemain <strong>tidak</strong> diwajibkan untuk memasang mod</ul>",
-            "disconnectionsText": "<li>Dalam kasus di mana terdapat <strong>pemain yang perangkatnya terputus</strong>, map yang bersangkutan dapat dianulir/dimulai ulang apabila kejadian ini terjadi dalam <strong>30 detik pertama</strong> map. Di samping itu, segala sesuatunya akan ditentukan berdasarkan akal sehat (common sense). Apabila skor akhir dari pemain yang hubungannya terputus <strong>dapat dibuktikan</strong> (atau apabila skor pemain pada saat menyelesaikan map dapat dikira-kira secara kasar), skor ini akan digunakan. Apabila bukti ini ternyata bersifat <strong>ambigu</strong>, skor pemain tersebut akan dianggap <strong>hangus</strong>. <li><strong>Putusnya hubungan suatu perangkat</strong> hanya akan diterima sebagai alasan yang valid apabila kejadian ini bersifat tidak terduga, menghambat permainan, dan <strong>berada di luar kendali pemain</strong> (mis. keyboard/tablet/mouse yang berhenti berfungsi, sistem yang mengalami error, koneksi internet yang terputus, dll.). Offset, background dim, leaderboard, dan lain sebagainya <strong>TIDAK</strong> akan dianggap sebagai alasan yang valid untuk meminta penganuliran/pengulangan karena masing-masing pemain dapat mengatur hal ini di luar waktu pertandingan."
+            "disconnectionsText": "<li>Dalam kasus di mana terdapat <strong>pemain yang perangkatnya terputus</strong>, map yang bersangkutan dapat dianulir/dimulai ulang apabila kejadian ini terjadi dalam <strong>30 detik pertama</strong> map. Di samping itu, segala sesuatunya akan ditentukan berdasarkan akal sehat (common sense). Apabila skor akhir dari pemain yang hubungannya terputus <strong>dapat dibuktikan</strong> (atau apabila skor pemain pada saat menyelesaikan map dapat dikira-kira secara kasar), skor ini akan digunakan. Apabila bukti ini ditemukan bersifat <strong>ambigu</strong>, skor pemain tersebut akan dianggap <strong>hangus</strong>. <li><strong>Putusnya hubungan suatu perangkat</strong> hanya akan diterima sebagai alasan yang valid apabila kejadian ini bersifat tidak terduga, menghambat permainan, dan <strong>berada di luar kendali pemain</strong> (mis. keyboard/tablet/mouse yang berhenti berfungsi, sistem yang mengalami error, koneksi internet yang terputus, dll.). Offset, background dim, leaderboard, dan lain sebagainya <strong>TIDAK</strong> akan dianggap sebagai alasan yang valid untuk meminta penganuliran/pengulangan karena masing-masing pemain dapat mengatur hal ini di luar waktu pertandingan."
         },
         "qualifiers": {
             "nav": {
@@ -633,6 +633,8 @@
                     "worst": "TERBURUK"
                 },
                 "categorySelect": "PILIH KATEGORI",
+                "lockedPlacement": "Klasemen final",
+                "unlockedPlacement": "Klasemen saat ini",
                 "players": "PEMAIN",
                 "teams": "TIM"
             },
@@ -643,14 +645,13 @@
             }
         },
         "teams": {
-            "registeredTeams": "TIM YANG TERDAFTAR",
-            "allTeams": "SELURUH TIM",
             "teamList": "DAFTAR TIM",
             "teamManagement": "MANAJEMEN TIM",
             "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
             "loginManagement": "Silakan masuk untuk mengelola tim milikmu.",
             "searchPlaceholder": "cari pengguna/tim",
-            "showUnregistered": "Tampilkan tim yang tidak terdaftar",
+            "showAll": "seluruh tim",
+            "showRegistered": "hanya yang terdaftar",
             "noRegisteredTeams": "Belum ada tim yang terdaftar.",
             "noCreatedTeams": "Kamu saat ini tidak sedang berada dalam tim mana pun",
             "editTeamInfo": "SUNtING INFO TIM",
@@ -731,12 +732,34 @@
             "averageRank": "Peringkat Rata-Rata",
             "averagePP": "PP Rata-Rata",
             "editQualifierTime": "sunting waktu kualifikasi",
-            "deleteTeam": "hapus lobi kualifikasi/urungkan pendaftaran tim",
+            "deleteQualifier": "hapus kualifikasi/urungkan pendaftaran tim",
             "createJoinQualifier": "buat/gabung lobi kualifikasi",
             "joinQualRegister": "IKUTI KUALIFIKASI UNTUK MENDAFTAR",
             "needMorePlayers": "Kamu perlu untuk menambahkan setidaknya {count} pemain",
             "needLessPlayers": "Kamu perlu untuk mengurangi setidaknya {count} pemain",
             "notRegistered": "Saat ini tidak terdaftar pada Corsace Open."
+        },
+        "schedule": {
+            "all": "SEMUA",
+            "upcoming": "AKAN DATANG",
+            "ongoing": "SEDANG BERLANGSUNG",
+            "past": "TELAH USAI",
+            "hidePotentials": "SEMBUNYIKAN PERTANDINGAN POTENSIAL",
+            "myMatches": "PERTANDINGAN SAYA",
+            "myMatchesStaff": "PERTANDINGAN SAYA / STAF",
+            "matchID": "ID PERTANDINGAN",
+            "group": "GRUP",
+            "invertSelection": "BALIK PILIHAN",
+            "nav": {
+                "schedule": "JADWAL",
+                "brackets": "BRACKET"
+            },
+            "brackets": {
+                "standings": "KLASEMEN",
+                "matches": "PERTANDINGAN",
+                "toBracket": "KLIK UNTUK TAMPILAN BRACKET",
+                "upcoming": "AKAN DATANG"
+            }
         },
         "create": {
             "title": "BUAT TIM",
@@ -772,7 +795,23 @@
                 "unregistered": "BELUM TERDAFTAR",
                 "bws": "BWS"
             },
-            "stageSelector": "PILIH TAHAPAN"
+            "stageSelector": "PILIH TAHAPAN",
+            "filter": {
+                "name": "FILTER",
+                "sorts": {
+                    "A-Z": "A-Z",
+                    "ID": "ID",
+                    "RANK": "PERINGKAT",
+                    "BWS AVG": "BWS RATA-RATA",
+                    "TEAM SIZE": "UKURAN TIM",
+                    "DATETIME": "TANGGAL DAN WAKTU",
+                    "MATCHID": "ID PERTANDINGAN",
+                    "RANK AVERAGE": "RATA-RATA PERINGKAT",
+                    "BWS AVERAGE": "RATA-RATA BWS",
+                    "RANK DIFF": "SELISIH PERINGKAT",
+                    "BWS DIFF": "SELISIH BWS"
+                }
+            }
         },
         "staff": {
             "title": "STAF",

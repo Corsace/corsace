@@ -24,7 +24,6 @@ import mappoolHistory from "./tournaments/mappool/history";
 import mappoolInfo from "./tournaments/mappool/info";
 import mappoolPublish from "./tournaments/mappool/publish";
 import mappoolRemove from "./tournaments/mappool/remove";
-import mappoolReplay from "./tournaments/mappool/replay";
 import mappoolSubmit from "./tournaments/mappool/submit";
 import mappoolSwap from "./tournaments/mappool/swap";
 
@@ -32,6 +31,9 @@ import jobDelete from "./tournaments/mappool/jobBoard/delete";
 import job from "./tournaments/mappool/jobBoard/job";
 import jobInfo from "./tournaments/mappool/jobBoard/info";
 import jobPublish from "./tournaments/mappool/jobBoard/publish";
+
+import mappoolReplay from "./tournaments/mappool/replay";
+import mappoolReplayDownload from "./tournaments/mappool/replay/download";
 
 import stageCreate from "./tournaments/stage/create";
 import stageDelete from "./tournaments/stage/delete";
@@ -110,7 +112,6 @@ commands.push(mappoolHistory);
 commands.push(mappoolInfo);
 commands.push(mappoolPublish);
 commands.push(mappoolRemove);
-commands.push(mappoolReplay);
 commands.push(mappoolSubmit);
 commands.push(mappoolSwap);
 
@@ -119,6 +120,10 @@ commands.push(job);
 commands.push(jobDelete);
 commands.push(jobInfo);
 commands.push(jobPublish);
+
+// replay commands
+commands.push(mappoolReplay);
+commands.push(mappoolReplayDownload);
 
 // stage commands
 commands.push(stageCreate);

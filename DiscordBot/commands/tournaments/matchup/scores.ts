@@ -54,7 +54,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .flatMap((matchup) => matchup.teams ?? [matchup.team1, matchup.team2])
         .filter((team, index, self) => team && self.findIndex(t => t && t.ID === team.ID) === index) as Team[];
     const scores = matchups
-        .flatMap((matchup) => matchup.sets?.flatMap(set => set.maps?.flatMap(map => map.scores) ?? []) ?? [])
+        .flatMap((matchup) => matchup.sets?.flatMap(set => set.maps?.flatMap(map => map.scores ?? []) ?? []) ?? [])
         .map(score => {
             // Identify the user, team, and mp like you're currently doing
             const user = score.user?.osu.username;

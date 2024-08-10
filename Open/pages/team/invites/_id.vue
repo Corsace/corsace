@@ -222,7 +222,7 @@ export default class Invites extends Vue {
             flex-direction: column;
             gap: 25px;
             overflow: auto;
-            scrollbar-color: #545454 #131313;
+            scrollbar-color: #545454 $open-dark;
             scrollbar-width: thin;
         }
     }

@@ -30,6 +30,9 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("matchup.teams", "teams")
+        .leftJoinAndSelect("matchup.referee", "referee")
+        .leftJoinAndSelect("matchup.commentators", "commentators")
+        .leftJoinAndSelect("matchup.streamer", "streamer")
         .leftJoinAndSelect("team1.members", "team1members")
         .leftJoinAndSelect("team2.members", "team2members")
         .leftJoinAndSelect("teams.members", "members")
@@ -47,7 +50,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
         .andWhere("matchup.invalid = 0")
         .getMany();
 
-    matchups.sort((a, b) => a.ID - b.ID);
+    matchups.sort((a, b) => a.date.getTime() - b.date.getTime());
     matchups = matchups.filter((matchup) =>
         matchup.potentialFor &&
         matchups.filter((m) => m.potentialFor && m.potentialFor.ID === matchup.potentialFor!.ID).length === 1 ?
@@ -79,6 +82,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
 
             return {
                 ID: matchup.ID,
+                matchID: matchup.matchID,
                 date: matchup.date,
                 mp: matchup.mp,
                 vod: matchup.vod,
@@ -90,6 +94,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                     return {
                         ID: team.ID,
                         name: team.name,
+                        abbreviation: team.abbreviation,
                         avatarURL: team.avatarURL,
                         pp: team.pp,
                         rank: team.rank,
@@ -106,6 +111,20 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                         }),
                     };
                 }),
+                referee: matchup.referee ? {
+                    ID: matchup.referee.ID,
+                    username: matchup.referee.osu.username,
+                } : undefined,
+                commentators: matchup.commentators?.map((commentator) => {
+                    return {
+                        ID: commentator.ID,
+                        username: commentator.osu.username,
+                    };
+                }) ?? [],
+                streamer: matchup.streamer ? {
+                    ID: matchup.streamer.ID,
+                    username: matchup.streamer.osu.username,
+                } : undefined,
             };
         }),
     };

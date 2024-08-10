@@ -88,6 +88,12 @@
                     >
                         {{ $t('open.qualifiers.scores.teams') }}
                     </ContentButton>
+                    <ContentButton
+                        class="content_button--red content_button--font_sm"
+                        @click.native="placementLock = !placementLock"
+                    >
+                        {{ placementLock ? $t('open.qualifiers.scores.lockedPlacement') : $t('open.qualifiers.scores.unlockedPlacement') }}
+                    </ContentButton>
                 </template>
             </OpenTitle>
             <div v-if="page === 'mappool' && mappools?.length !== 0">
@@ -96,6 +102,9 @@
                     :key="mappool.ID"
                     :pool="mappool"
                 />
+            </div>
+            <div v-else-if="loading">
+                {{ $t("open.status.loading").toString().toLowerCase() }}...
             </div>
             <div v-else-if="page === 'mappool'">
                 {{ $t("open.qualifiers.mappool.notAvailable") }}
@@ -106,6 +115,7 @@
                     v-for="mappool in mappools"
                     :key="mappool.ID"
                     :view="scoreView"
+                    :placement-lock="placementLock"
                     :pool="mappool"
                 />
             </div>
@@ -162,8 +172,10 @@ const openModule = namespace("open");
     },
 })
 export default class Mappool extends Vue {
+    loading = false;
     page: "mappool" | "scores" = "mappool";
     scoreView: "players" | "teams" = "teams";
+    placementLock = false;
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State mappools!: MappoolInterface[] | null;
@@ -178,9 +190,11 @@ export default class Mappool extends Vue {
 
     @Watch("selectedStage")
     async stageScoresAndMappools () {
+        this.loading = true;
         if (!this.selectedStage) {
             this.$store.commit("open/setMappools", []);
             this.$store.commit("open/setScores", []);
+            this.loading = false;
             return;
         }
         
@@ -194,6 +208,7 @@ export default class Mappool extends Vue {
         await this.$store.dispatch("open/setMappools", this.selectedStage?.ID);
         if (this.page === "scores")
             await this.$store.dispatch("open/setScores", this.selectedStage?.ID);
+        this.loading = false;
     }
 
     async changePage (page: "mappool" | "scores") {
@@ -222,7 +237,6 @@ export default class Mappool extends Vue {
 <style lang="scss">
 @import '@s-sass/_variables';
 .mappool {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
     overflow: auto;
 
     &__main_content {
@@ -230,7 +244,6 @@ export default class Mappool extends Vue {
         position: relative;
         width: 65vw;
         padding: 35px;
-        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
     }
 }
 </style>

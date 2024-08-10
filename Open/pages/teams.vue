@@ -13,15 +13,45 @@
             class="teams_list__main_content"
         >
             <OpenTitle>
-                {{ unregisteredTeams ? $t('open.teams.allTeams') : $t('open.teams.registeredTeams') }}
+                {{ $t('open.teams.teamList') }}
                 <template #right>
-                    <ContentButton
-                        v-if="!unregisteredTeams"
-                        class="content_button--red content_button--nowrap"
-                        @click.native="getUnregisteredTeams"
-                    >
-                        {{ $t('open.teams.showUnregistered') }}
-                    </ContentButton>
+                    <OpenFilter>
+                        <template #view>
+                            <div
+                                :class="{ 'open_filter__selected': showUnregistered }"
+                                @click="showUnregistered = true"
+                            >
+                                {{ $t('open.teams.showAll') }}
+                            </div>
+                            <div
+                                :class="{ 'open_filter__selected': !showUnregistered }"
+                                @click="showUnregistered = false"
+                            >
+                                {{ $t('open.teams.showRegistered') }}
+                            </div>
+                        </template>
+                        <template #sort>
+                            <div
+                                v-for="sort in sorts"
+                                :key="sort"
+                                :class="{ 'open_filter__selected': currentSort === sort }"
+                                @click="currentSort === sort ? (sortDir = sortDir === 'ASC' ? 'DESC' : 'ASC') : (currentSort = sort)"
+                            >
+                                <div
+                                    v-if="currentSort === sort"
+                                    class="open_filter__arrows"
+                                >
+                                    <div :class="{ 'open_filter__arrows--selected': sortDir === 'ASC' }">
+                                        ▲
+                                    </div>
+                                    <div :class="{ 'open_filter__arrows--selected': sortDir === 'DESC' }">
+                                        ▼
+                                    </div>
+                                </div>
+                                {{ $t(`open.components.filter.sorts.${sort}`) }}
+                            </div>
+                        </template>
+                    </OpenFilter>
                     <SearchBar
                         :placeholder="`${$t('open.teams.searchPlaceholder')}`"
                         style="margin-bottom: 10px;"
@@ -51,17 +81,6 @@
                 class="teams_list__main_content"
             >
                 {{ $t('open.teams.noRegisteredTeams') }}
-            </div>
-            <div
-                v-if="unregisteredTeams"
-                id="unregisteredTeams"
-                class="teams_list__main_content_list"
-            >
-                <OpenCardTeam
-                    v-for="team in unregisteredTeams"
-                    :key="team.ID"
-                    :team="team"
-                />
             </div>
         </div>
         <div 
@@ -128,6 +147,7 @@ import { Tournament } from "../../Interfaces/tournament";
 import { Team, TeamList } from "../../Interfaces/team";
 import { UserInfo } from "../../Interfaces/user";
 
+import OpenFilter from "../../Assets/components/open/OpenFilter.vue";
 import SearchBar from "../../Assets/components/SearchBar.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
@@ -138,6 +158,7 @@ const openModule = namespace("open");
 
 @Component({
     components: {
+        OpenFilter,
         SearchBar,
         OpenTitle,
         ContentButton,
@@ -173,6 +194,17 @@ export default class Teams extends Mixins(CentrifugeMixin) {
     @openModule.State teamList!: TeamList[] | null;
 
     loading = true;
+    showUnregistered = false;
+    sortDir: "ASC" | "DESC" = "ASC";
+    sorts = ["RANK", "BWS AVG", "A-Z", "ID", "TEAM SIZE"] as const;
+    sortFunctions: Record<typeof this.sorts[number], (a: TeamList, b: TeamList) => number> = {
+        "RANK": (a, b) => a.rank - b.rank,
+        "BWS AVG": (a, b) => a.BWS - b.BWS,
+        "A-Z": (a, b) => a.name.localeCompare(b.name),
+        "ID": (a, b) => a.ID - b.ID,
+        "TEAM SIZE": (a, b) => a.members.length - b.members.length,
+    };
+    currentSort: typeof this.sorts[number] = "A-Z";
     searchValue = "";
     page: "list" | "management" = "list";
     unregisteredTeams: TeamList[] | null = null;
@@ -180,45 +212,38 @@ export default class Teams extends Mixins(CentrifugeMixin) {
     get filteredTeams () {
         if (this.page === "management")
             return this.myTeams ?? [];
-        if (!this.searchValue)
-            return this.teamList ?? [];
-        return this.teamList?.filter(team => 
+        let teams = [...(this.teamList ?? [])];
+        if (this.showUnregistered && this.unregisteredTeams)
+            teams = [...teams, ...this.unregisteredTeams];
+        if (!this.searchValue) // consider asc/desc
+            return teams.sort((a, b) => this.sortDir === "ASC" ? this.sortFunctions[this.currentSort](a, b) : this.sortFunctions[this.currentSort](b, a)); 
+
+        return teams.filter(team => 
             team.name.toLowerCase().includes(this.searchValue.toLowerCase()) ||
             team.members.some(member => member.username.toLowerCase().includes(this.searchValue.toLowerCase())) ||
             team.ID.toString().includes(this.searchValue.toLowerCase()) ||
-            team.members.some(member => member.ID.toString().includes(this.searchValue.toLowerCase())) ||
             team.members.some(member => member.osuID.toLowerCase().includes(this.searchValue.toLowerCase()))
-        ) ?? [];
+        ).sort((a, b) => this.sortFunctions[this.currentSort](a, b) * (this.sortDir === "ASC" ? 1 : -1));
     }
 
     async mounted () {
         if (this.$route.query.s === "my")
             this.page = "management";
         this.loading = true;
-        if (this.tournament)
+        if (this.tournament) {
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
+            const { data } = await this.$axios.get<{ teams: TeamList[] }>(`/api/tournament/${this.tournament.ID}/unregisteredTeams`);
+            if (!data.success) {
+                alert("Failed to get unregistered teams, check console for more information");
+                console.error(data.error);
+                return;
+            }
+            this.unregisteredTeams = data.teams;
+        }
         this.loading = false;
 
         if (this.tournament)
             await this.initCentrifuge(`teams:${this.tournament.ID}`);
-    }
-
-    async getUnregisteredTeams () {
-        this.loading = true;
-        const { data } = await this.$axios.get<{ teams: TeamList[] }>(`/api/tournament/${this.tournament?.ID}/unregisteredTeams`);
-        if (!data.success) {
-            alert("Failed to get unregistered teams, check console for more information");
-            console.error(data.error);
-            return;
-        }
-        this.unregisteredTeams = data.teams;
-        this.loading = false;
-
-        const teamsList = document.getElementsByClassName("teams_list")[0];
-        teamsList.scrollTo({
-            top: document.getElementById("unregisteredTeams")?.offsetTop ?? teamsList.scrollHeight,
-            behavior: "smooth",
-        });
     }
 
     handleData (ctx: ExtendedPublicationContext) {
@@ -232,6 +257,12 @@ export default class Teams extends Mixins(CentrifugeMixin) {
 @import '@s-sass/_variables';
 
 .teams_list {
+
+    &__button {
+        min-width: 150px;
+        text-transform: uppercase;
+        padding: 0;
+    }
 
     &__main_content {
         align-self: center;

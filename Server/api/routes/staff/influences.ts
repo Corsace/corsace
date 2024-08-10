@@ -14,8 +14,8 @@ influencesReviewRouter.$use(isMCAStaff);
 
 influencesReviewRouter.$get<{ staffComments: StaffComment[] }>("/", async (ctx) => {
     const filter = ctx.query.filter ?? undefined;
-    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
-    const year = ctx.query.year ? parseInt(parseQueryParam(ctx.query.year) ?? "") : undefined;
+    const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") || 0;
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") || undefined;
     const text = ctx.query.text ?? undefined;
     const query = Influence
         .createQueryBuilder("influence")
@@ -48,10 +48,10 @@ influencesReviewRouter.$get<{ staffComments: StaffComment[] }>("/", async (ctx) 
             }))
             .setParameter("criteria", `%${text}%`);
     }
-    if (year && !isNaN(year))
+    if (year)
         query.andWhere(`year = ${year}`);
     
-    const comments = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
+    const comments = await query.offset(skip).limit(10).getRawMany();
     const staffComments = comments.map(comment => {
         const staffComment: StaffComment = {
             ID: comment.ID,

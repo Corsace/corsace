@@ -11,6 +11,7 @@ export default async function dbMatchupToInterface (dbMatchup: Matchup, roundOrS
 
     return {
         ID: dbMatchup.ID,
+        matchID: dbMatchup.matchID,
         date: dbMatchup.date,
         mp: dbMatchup.mp,
         teams: await Promise.all(dbMatchup.teams?.map(team => team.teamInterface()) ?? []),
@@ -63,7 +64,7 @@ export default async function dbMatchupToInterface (dbMatchup: Matchup, roundOrS
                 team1Score: map.team1Score,
                 team2Score: map.team2Score,
                 winner: map.winner,
-                scores: map.scores.map(score => ({
+                scores: map.scores?.map(score => ({
                     ID: score.ID,
                     user: score.user,
                     score: score.score,
@@ -73,7 +74,7 @@ export default async function dbMatchupToInterface (dbMatchup: Matchup, roundOrS
                     fail: score.fail,
                     accuracy: score.accuracy,
                     fullCombo: score.fullCombo,
-                })),
+                })) ?? [],
             })) ?? [],
         })) ?? []),
         forfeit: dbMatchup.forfeit,

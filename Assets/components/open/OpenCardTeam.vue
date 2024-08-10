@@ -20,7 +20,7 @@
         </ul>
         <div
             class="open_card_team__img"
-            :style="{ 'backgroundImage': `url(${teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
+            :style="{ 'backgroundImage': `radial-gradient(transparent, rgba(0,0,0,0.33)), url(${teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
         />
         <div class="open_card_team__name">
             {{ teamSync.name }} <span v-if="!registeredSync">({{ $t("open.components.openCardTeam.unregistered") }})</span>

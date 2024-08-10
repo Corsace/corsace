@@ -169,7 +169,7 @@ export default class OpenCardPlayer extends Vue {
         height: 85px;
         display: flex;
         flex-direction: column;
-        background: #131313;
+        background: $open-dark;
 
         &_text_group {
             display: flex;
@@ -179,7 +179,7 @@ export default class OpenCardPlayer extends Vue {
             margin-right: 3px;
 
             &_label {
-                color: #131313;
+                color: $open-dark;
                 font-family: $font-swis721;
                 font-size: 0.85rem;
                 font-weight: 700;
@@ -233,7 +233,7 @@ export default class OpenCardPlayer extends Vue {
 
     &_about {
         height: 280px;
-        background: #131313;
+        background: $open-dark;
         border-top: 1px solid $open-red;
         position: relative;
         display: flex;

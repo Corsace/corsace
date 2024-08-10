@@ -5,6 +5,7 @@ import { BaseTournament } from "./tournament";
 export interface BaseTeam {
     ID: number;
     name: string;
+    abbreviation: string;
     avatarURL?: string | null;
 }
 
@@ -12,13 +13,14 @@ export interface TeamList extends BaseTeam {
     pp: number;
     rank: number;
     BWS: number;
-    members: TeamMember[];
+    members: MemberList[];
 }
 
 export interface Team extends TeamList {
     abbreviation: string;
     timezoneOffset: number;
     captain: TeamMember;
+    members: TeamMember[];
     invites?: TeamUser[];
     qualifier?: BaseMatchup;
     tournaments?: BaseTournament[];
@@ -33,6 +35,13 @@ export interface TeamUser {
 export interface TeamMember extends TeamUser {
     isCaptain: boolean;
     country: string;
+    rank: number;
+}
+
+export interface MemberList {
+    username: string;
+    osuID: string;
+    isCaptain: boolean;
     rank: number;
 }
 

@@ -47,10 +47,9 @@ export default class StageSelector extends Vue {
         flex-direction: column;
         justify-content: flex-end;
         text-align: right;
-        font-family: $font-swis721;
         font-size: $font-sm;
+        font-stretch: condensed;
         color: #909090; // This color is not in variables
-        font-weight: 400;
         width: min-content;
     }
 
@@ -58,31 +57,39 @@ export default class StageSelector extends Vue {
         display: flex;
         flex-direction: center;
         justify-content: space-between;
-        width: 130px;
-        &__left {
+        gap: 30px;
+
+        &__left, &__right {
             cursor: pointer;
             width: 0;
             height: 0;
             border-style: solid;
+            border-radius: 2px;
+        }
+
+        &__left {
             border-width: 12.5px 24px 12.5px 0;
             border-color: transparent $open-red transparent transparent;
-            border-radius: 2px;
+
+            &:hover {
+                border-color: transparent #CD2443 transparent transparent;
+            }
         }
 
         &__selected {
             font-size: $font-base;
             font-weight: 700;
             color: $open-red;
+            letter-spacing: 0.18em;
         }
 
         &__right {
-            cursor: pointer;
-            width: 0;
-            height: 0;
-            border-style: solid;
             border-width: 12.5px 0 12.5px 24px;
             border-color: transparent transparent transparent $open-red;
-            border-radius: 2px;
+
+            &:hover {
+                border-color: transparent transparent transparent #CD2443;
+            }
         }
     }
 }

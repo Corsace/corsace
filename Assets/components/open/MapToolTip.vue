@@ -3,37 +3,35 @@
         <div class="map_tooltip__top_left" />
         <div
             class="map_tooltip__banner"
-            :style="`background-image: linear-gradient(rgba(0,0,0,0.66), rgba(0,0,0,0.66)), url(https://assets.ppy.sh/beatmaps/${mapSync.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`"
+            :style="`background-image: linear-gradient(270deg, transparent 0%, #131313 100%), url(https://assets.ppy.sh/beatmaps/${mapSync.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`"
         />
+        <div class="map_tooltip__line" />
         <div class="map_tooltip_info">
             <div class="map_tooltip_info__wrapper">
-                <div class="map_tooltip_info__wrapper__title">
-                    {{ mapSync.beatmap?.beatmapset?.title }}
+                <div class="map_tooltip_info__header">
+                    {{ $t("open.qualifiers.mappool.banner.difficulty") }}
                 </div>
-                <div class="map_tooltip_info__wrapper__artist">
-                    {{ mapSync.beatmap?.beatmapset?.artist }}
+                <div class="map_tooltip_info__text">
+                    {{ censorMethod(mapSync.beatmap?.difficulty || mapSync.customBeatmap?.difficulty || '') }}
                 </div>
             </div>
-            <div class="map_tooltip_info_osu_data">
-                <div class="map_tooltip_info_osu_data_text">
-                    <div class="map_tooltip_info_osu_data_text--mapper">
-                        {{ $t("open.qualifiers.mappool.banner.mapper") }}
-                    </div>
-                    <div class="map_tooltip_info_osu_data_text--truncated">
-                        {{ mapSync.customMappers?.map(mapper => mapper.osu.username).join(", ") || mapSync.beatmap?.beatmapset?.creator?.osu.username || '' }}
-                    </div>
+            <div class="map_tooltip_info__wrapper">
+                <div class="map_tooltip_info__header">
+                    {{ $t("open.qualifiers.mappool.banner.mapper") }}
                 </div>
-                <div class="map_tooltip_info_osu_data_text">
-                    <div class="map_tooltip_info_osu_data_text--difficulty">
-                        {{ $t("open.qualifiers.mappool.banner.difficulty") }}
-                    </div>
-                    <div class="map_tooltip_info_osu_data_text--truncated">
-                        {{ censorMethod(mapSync.beatmap?.difficulty || mapSync.customBeatmap?.difficulty || '') }}
-                    </div>
+                <div class="map_tooltip_info__text">
+                    {{ mapSync.customMappers?.map(mapper => mapper.osu.username).join(", ") || mapSync.beatmap?.beatmapset?.creator?.osu.username || '' }}
+                </div>
+            </div>
+            <div class="map_tooltip_info__wrapper map_tooltip_info__wrapper--left">
+                <div class="map_tooltip_info__title">
+                    {{ censorMethod(mapSync.beatmap?.beatmapset?.title || mapSync.customBeatmap?.title || '') }}
+                </div>
+                <div class="map_tooltip_info__artist">
+                    {{ mapSync.beatmap?.beatmapset?.artist || mapSync.customBeatmap?.artist || '' }}
                 </div>
             </div>
         </div>
-        <div class="map_tooltip__top_right" />
     </div>
 </template>
 
@@ -41,12 +39,11 @@
 import { Vue, Component, PropSync } from "vue-property-decorator";
 import { MappoolMap } from "../../../Interfaces/mappool";
 import { censor, profanityFilter } from "../../../Interfaces/comment";
+
 @Component({
     components: {
     },
 })
-
-
 export default class MapToolTip extends Vue {
     @PropSync("map", { type: Object }) mapSync!: MappoolMap;
 
@@ -63,134 +60,90 @@ export default class MapToolTip extends Vue {
     display: flex;
     flex-direction: column;
 
-    background: #131313;
-    border: 1px solid #353535;
+    background: $open-dark;
 
-    width: 250px;
-    min-height: 75px;
-    padding-bottom: 10px;
+    width: 350px;
 
-    background-image: url("../../img/site/open/checkers-bg.png");
+    background-color: $open-dark;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: bottom;
     align-items: center;
-
-    overflow: hidden;
 
     pointer-events: all;
 
     &__top_left {
         display: flex;
         position: absolute;
-        top: 2px;
-        left: 2px;
+        top: 4px;
+        left: 4px;
         width: 0;
         height: 0;
         border-style: solid;
-        border-width: 8px 8px 0 0;
+        border-width: 14px 14px 0 0;
         border-color: $open-red transparent transparent transparent;
-
-        z-index: 1;
-    }
-    &__top_right {
-        display: flex;
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 0 8px 8px 0;
-        border-color: transparent #353535 transparent transparent;;
-        z-index: 1;
     }
 
     &__banner {
-        display: flex;
-        width: 97%;
-        height: 31px;
+        margin-left: auto;
+        width: 87%;
+        height: 75px;
         margin-top: 4px;
-        z-index: 0;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        // clip-path: polygon(0 8.00px, 8.00px 0,100% 0,100% 100%,0 100%);
-        clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%, 0 8px);
+    }
+
+    &__line {
+        width: 100%;
+        height: 6px;
+        background-color: $open-red;
     }
 
     &_info {
-        width: 95%;
+        width: 100%;
         display: flex;
         flex-direction: column;
         justify-self: center;
-        z-index: 2;
-        margin-top: -5px;
-        gap: 5px;
+        padding: 3px;
+        background-color: white;
+        color: black;
+        font-weight: bold;
+
+        &__text, &__title, &__artist {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
         &__wrapper {
             display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            font-family: $font-ggsans;
-            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-            
-            &__title {
-                font-size: $font-sm;
-                font-weight: 600;
-                line-height: 16px;
-                letter-spacing: 0em;
-                text-align: left;
-            }
+            gap: 5px;
+            justify-content: flex-end;
+            align-items: center;
+            font-family: $font-univers;
+            font-size: $font-xsm;
 
-            &__artist {
-                font-size: $font-xsm;
-                font-style: italic;
-                font-weight: 500;
-                line-height: 13px;
-                letter-spacing: 0em;
-                text-align: left;
+            &--left {
+                justify-content: flex-start;
             }
         }
 
-        &_osu_data {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            &_text {
-                gap: 5px;
-                display: flex;
-                flex-direction: row;
-                font-family: $font-ggsans;
-                font-size: $font-xsm;
-                font-weight: 500;
-                line-height: 13px;
-                letter-spacing: 0em;
-                text-align: left;
-                
-                &--mapper, &--difficulty {
-                    font-family: $font-swis721;
-                    font-weight: 700;
-                    color: #131313;
-                    padding: 1px 1px;
-                    font-size: $font-xsm;
-                }
-    
-                &--mapper {
-                    background-color: $open-red;
-                }
-    
-                &--difficulty {
-                    background-color: $white;
-                }
-    
-                &--truncated { 
-                    min-width: 0px; 
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                }
-            }
+        &__header, &__artist {
+            color: $open-red;
+            font-stretch: condensed;
+        }
 
+        &__header {
+            font-size: calc(0.8 * $font-xsm);
+        }
+
+        &__artist {
+            font-size: $font-sm;
+        }
+
+        &__title {
+            font-size: $font-base;
         }
     }
 }
