@@ -210,6 +210,13 @@
                                     {{ message.content }}
                                 </div>
                             </div>
+                            <div
+                                v-if="showScrollBottom"
+                                class="referee__matchup__messages__container__scrollBottom"
+                                @click="scrollToBottom()"
+                            >
+                                Scroll to bottom
+                            </div>
                         </div>
                         <div
                             v-if="loggedInUser && runningLobby"
@@ -582,6 +589,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     readyTimer = "90";
 
     inputMessage = "";
+    showScrollBottom = false;
     messages: message[] = [];
     showBanchoMessages = true;
     showBanchoSettings = false;
@@ -674,6 +682,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             top: messageContainer?.scrollHeight,
             behavior: "smooth",
         });
+        this.showScrollBottom = false;
     }
 
     tooltipText = "";
@@ -916,6 +925,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         const initialHeight = messageContainer.scrollHeight;
         this.messages.push(data);
         if (scrollPos === initialHeight) {
+            this.showScrollBottom = false;
             setTimeout(() => { 
                 const messageContainerNew = document.getElementById("messageContainer")!;
                 messageContainerNew.scrollTo({
@@ -923,7 +933,17 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                     behavior: "smooth",
                 });
             }, 100);
-        }
+        } else
+            this.showScrollBottom = true;
+    }
+
+    scrollToBottom () {
+        const messageContainer = document.getElementById("messageContainer")!;
+        messageContainer.scrollTo({
+            top: messageContainer?.scrollHeight,
+            behavior: "smooth",
+        });
+        this.showScrollBottom = false;
     }
 
     handleData (ctx: ExtendedPublicationContext) {
@@ -1242,6 +1262,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             &__container {
                 overflow-y: scroll;
                 height: 550px;
+                position: relative;
 
                 &::-webkit-scrollbar {
                     width: 5px;
@@ -1266,6 +1287,18 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
                 scrollbar-color: #555555 #333333;
                 scrollbar-width: thin;
+
+                &__scrollBottom {
+                    position: absolute;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    width: 100%;
+                    height: 50px;
+                    bottom: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                }
             } 
 
             &__message {
