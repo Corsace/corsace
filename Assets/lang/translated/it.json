@@ -478,6 +478,7 @@
         "navbar": {
             "home": "HOME",
             "info": "INFO",
+            "referee": "REFEREE",
             "qualifiers": "QUALIFIERS",
             "teams": "TEAMS",
             "schedule": "SCHEDULE",
