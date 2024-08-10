@@ -478,6 +478,7 @@
         "navbar": {
             "home": "BERANDA",
             "info": "INFO",
+            "referee": "REFEREE",
             "qualifiers": "KUALIFIKASI",
             "teams": "TIM",
             "schedule": "JADWAL",
