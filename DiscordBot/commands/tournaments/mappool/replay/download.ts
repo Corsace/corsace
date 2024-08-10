@@ -91,7 +91,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             const mapReplay = replays.find(replay => replay.mappoolMap!.ID === map.ID);
             if (!mapReplay)
                 return `**${slotMod.acronym.toUpperCase()}${slotMod.maps.length === 1 ? "" : map.order}**:\nMap: ${link}\nReplay: No replay`;
-    
+
             const md5 = map.beatmap?.md5 ?? map.customBeatmap?.md5;
             return `**${slotMod.acronym.toUpperCase()}${slotMod.maps.length === 1 ? "" : map.order}**:\nMap: ${link}\nReplay: ${mapReplay.link}${md5 !== mapReplay.beatmapMD5 ? `\nThis replay may be for a different beatmap!\nMap MD5: ${md5}\nReplay MD5: ${mapReplay.beatmapMD5}` : ""}`;
         }).join("\n\n"));
@@ -107,17 +107,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .where("mappool.ID = :mappoolID", { mappoolID: mappool.ID })
         .getMany();
 
-    await respond(m, mappool.slots.map(slot => slot.maps.map(map => {
+    await respond(m, mappool.slots.map(mappoolSlot => mappoolSlot.maps.map(map => {
         const link = map.beatmap ? `https://osu.direct/api/d/${map.beatmap.beatmapsetID}` : map.customBeatmap?.link;
         if (!link)
-            return `**${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}**: No map`;
+            return `**${mappoolSlot.acronym.toUpperCase()}${mappoolSlot.maps.length === 1 ? "" : map.order}**: No map`;
 
         const mapReplay = replays.find(replay => replay.mappoolMap!.ID === map.ID);
         if (!mapReplay)
-            return `**${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}**:\nMap: ${link}\nReplay: No replay`;
+            return `**${mappoolSlot.acronym.toUpperCase()}${mappoolSlot.maps.length === 1 ? "" : map.order}**:\nMap: ${link}\nReplay: No replay`;
 
         const md5 = map.beatmap?.md5 ?? map.customBeatmap?.md5;
-        return `**${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}**:\nMap: ${link}\nReplay: ${mapReplay.link}${md5 !== mapReplay.beatmapMD5 ? `\nThis replay may be for a different beatmap!\nMap MD5: ${md5}\nReplay MD5: ${mapReplay.beatmapMD5}` : ""}`;
+        return `**${mappoolSlot.acronym.toUpperCase()}${mappoolSlot.maps.length === 1 ? "" : map.order}**:\nMap: ${link}\nReplay: ${mapReplay.link}${md5 !== mapReplay.beatmapMD5 ? `\nThis replay may be for a different beatmap!\nMap MD5: ${md5}\nReplay MD5: ${mapReplay.beatmapMD5}` : ""}`;
     }).join("\n\n")).join("\n\n"));
 }
 
