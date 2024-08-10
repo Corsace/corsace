@@ -3,7 +3,7 @@ import { handleCommand } from "../commands";
 import state from "../state";
 
 export default async function messageHandler (message: PrivateMessage | ChannelMessage) {
-    if (state.shuttingDown)
+    if (state.receivedShutdownSignal)
         return;
 
     // ignore messages from our own user

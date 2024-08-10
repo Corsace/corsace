@@ -46,7 +46,7 @@ koa.use(koaBody());
 koa.use(Mount("/api/bancho", banchoRouter.routes()));
 
 /// Referee
-koa.use(Mount("/api/bancho/referee", banchoRefereeRouter.routes())); 
+koa.use(Mount("/api/bancho/referee", banchoRefereeRouter.routes()));
 
 /// Stream
 koa.use(Mount("/api/bancho/stream", banchoStreamRouter.routes()));
@@ -58,46 +58,49 @@ ormConfig.initialize()
         const server = koa.listen(config.banchoBot.port);
         httpShutdown = gracefulShutdown(server, {
             signals: "", // leave signals handling to us
-            onShutdown: async () => {
-                state.httpServerShutDown = true;
-                console.log("Done handling all API requests.");
-                await maybeShutdown();
-            },
         });
     })
     .catch((error) => console.log("An error has occurred in connecting.", error));
 
 const maybeShutdown = async () => {
-    if (!state.shuttingDown || !state.httpServerShutDown)
+    if (!state.shuttingDown)
         return;
 
     if (state.runningMatchups > 0) {
         console.log(`Waiting for ${state.runningMatchups} matchups to finish...`);
     } else {
         console.log("No running matchup.");
+        await httpShutdown?.();
+        console.log("Done handling all API requests, closed HTTP server.");
         await ormConfig.destroy();
         discordClient.destroy();
         banchoClient.disconnect();
         console.log("Disconnected from every service, shutting down now.");
-        process.exit();
+
+        // hopefully it will just exit? otherwise means we may have left a connection open somewhere, which we could work-around using process.exit, but i'm curious to see if it works without it during testing.
+        // process.exit();
     }
 };
 
-const onTerminationSignal = async (signal: NodeJS.Signals) => {
+const onTerminationSignal = (signal: NodeJS.Signals) => {
     // HTTP server not initiated yet, simply exiting.
     if (!httpShutdown) {
         process.exit();
     }
 
-    if (state.shuttingDown) {
+    if (state.receivedShutdownSignal) {
         console.warn(`Received ${signal}, but already shutting down. Ignoring.`);
         return;
     }
-    
-    state.shuttingDown = true;
-    console.log(`Received shutdown signal (${signal}), initiating shutdown sequence.`);
-    
-    await httpShutdown?.();
+
+    state.receivedShutdownSignal = true;
+    // Delaying shutdown as a safety net while Kubernetes sets up routing new requests to the new instance.
+    console.log(`Received shutdown signal (${signal}), initiating shutdown sequence in 10 seconds.`);
+
+    setTimeout(async () => {
+        state.shuttingDown = true;
+        await maybeShutdown();
+    }, 10000);
 };
 
 process.on("SIGTERM", () => onTerminationSignal("SIGTERM"));
