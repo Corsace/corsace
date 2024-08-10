@@ -9,8 +9,8 @@ export interface MatchupList {
 }
 
 const state = {
+    receivedShutdownSignal: false,
     shuttingDown: false,
-    httpServerShutDown: false,
     runningMatchups: 0,
     matchups: {} as MatchupState,
 };
