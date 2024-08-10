@@ -78,7 +78,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     matchup.forfeit = false;
     await Promise.all(matchup.messages?.map(message => message.remove()) ?? []);
     matchup.messages = [];
-    await Promise.all(matchup.sets?.flatMap(set => set.maps?.flatMap(map => map.scores.map(score => score.remove())) ?? []) ?? []);
+    await Promise.all(matchup.sets?.flatMap(set => set.maps?.flatMap(map => map.scores?.map(score => score.remove()) ?? []) ?? []) ?? []);
     await Promise.all(matchup.sets?.flatMap(set => set.maps?.map(map => map.remove()) ?? []) ?? []);
     await Promise.all(matchup.sets?.map(set => set.remove()) ?? []);
     const firstSet = new MatchupSet();

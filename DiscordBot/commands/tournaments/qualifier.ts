@@ -319,7 +319,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("map.scores", "score")
             .where("matchup.ID = :ID", { ID: matchup.ID })
             .getMany();
-        await Promise.all(sets.flatMap(set => set.maps?.flatMap(map => map.scores.map(s => s.remove()))));
+        await Promise.all(sets.flatMap(set => set.maps?.flatMap(map => map.scores?.map(s => s.remove()) ?? [])));
         await Promise.all(sets.flatMap(set => set.maps?.map(m => m.remove())));
         await Promise.all(sets.map(s => s.remove()));
 
