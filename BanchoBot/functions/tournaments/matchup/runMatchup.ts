@@ -772,6 +772,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             invCollector?.stop();
             refCollector?.stop();
 
+            matchup.baseURL = null;
             if (matchup.stage!.stageType !== StageType.Qualifiers) {
                 if (matchup.team1Score > matchup.team2Score)
                     matchup.winner = matchup.team1;
@@ -789,8 +790,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await pause(15 * 1000);
             clearInterval(messageSaver);
 
-            matchup.baseURL = null;
-            await matchup.save();
             state.runningMatchups--;
             delete state.matchups[matchup.ID];
             await maybeShutdown();
