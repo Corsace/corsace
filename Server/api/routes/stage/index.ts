@@ -16,6 +16,8 @@ import { discordClient } from "../../../discord";
 import { validateStageOrRound } from "../../../middleware/tournament";
 import { osuClient } from "../../../osu";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
+import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
+import { User } from "../../../../Models/user";
 
 const stageRouter  = new CorsaceRouter<TournamentStageState>();
 
@@ -24,31 +26,58 @@ stageRouter.$use("/:stageID", validateStageOrRound);
 stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) => {
     const stage = ctx.state.stage;
 
-    let matchups = await Matchup
+    let matchups: (Omit<Matchup, "team1" | "team2"> & { team1: number; team2: number })[] = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
-        .leftJoinAndSelect("matchup.sets", "sets")
-        .leftJoinAndSelect("matchup.team1", "team1")
+    .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
-        .leftJoinAndSelect("matchup.teams", "teams")
         .leftJoinAndSelect("matchup.referee", "referee")
-        .leftJoinAndSelect("matchup.commentators", "commentators")
         .leftJoinAndSelect("matchup.streamer", "streamer")
-        .leftJoinAndSelect("team1.members", "team1members")
-        .leftJoinAndSelect("team2.members", "team2members")
-        .leftJoinAndSelect("teams.members", "members")
-        .leftJoinAndSelect("team1.captain", "team1captain")
-        .leftJoinAndSelect("team2.captain", "team2captain")
-        .leftJoinAndSelect("teams.captain", "captain")
-        .leftJoinAndSelect("team1members.userStatistics", "team1stats")
-        .leftJoinAndSelect("team2members.userStatistics", "team2stats")
-        .leftJoinAndSelect("members.userStatistics", "stats")
-        .leftJoinAndSelect("team1stats.modeDivision", "team1modeDivision")
-        .leftJoinAndSelect("team2stats.modeDivision", "team2modeDivision")
-        .leftJoinAndSelect("stats.modeDivision", "modeDivision")
         .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
         .where("stage.ID = :stageID", { stageID: stage.ID })
         .andWhere("matchup.invalid = 0")
+        .loadAllRelationIds({
+            relations: ["team1", "team2", "teams", "commentators"],
+        })
+        .getMany() as any;
+
+    const teamIds = new Set<number>();
+    for (const matchup of matchups) {
+        teamIds.add(matchup.team1);
+        teamIds.add(matchup.team2);
+        for (const team of matchup.teams) {
+            teamIds.add(team);
+        }
+    }
+
+    const commentatorIds = new Set<number>();
+    for (const matchup of matchups) {
+        for (const commentator of matchup.commentators)
+            commentatorIds.add(commentator);
+    }
+
+    const teams = await Team
+        .createQueryBuilder("team")
+        .innerJoinAndSelect("team.members", "members")
+        .innerJoinAndSelect("members.userStatistics", "memberStatistics")
+        .innerJoinAndSelect("team.captain", "captain")
+        .innerJoinAndSelect("captain.userStatistics", "captainStatistics")
+        .where("team.ID IN (:...teamIds)", { teamIds: Array.from(teamIds) })
+        .andWhere("memberStatistics.modeDivisionID = :mode", { mode: stage.tournament.mode.ID })
+        .andWhere("captainStatistics.modeDivisionID = :mode", { mode: stage.tournament.mode.ID })
+        .getMany();
+
+    const sets = await MatchupSet
+        .createQueryBuilder("sets")
+        .where("sets.matchupID IN (:...matchupIds)", { matchupIds: matchups.map((m) => m.ID) })
+        .loadAllRelationIds({
+            relations: ["matchup"],
+        })
+        .getMany();
+
+    const commentators = await User
+        .createQueryBuilder("user")
+        .where("user.ID IN (:...commentatorIds)", { commentatorIds: Array.from(commentatorIds) })
         .getMany();
 
     matchups.sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -64,13 +93,15 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
     ctx.body = {
         success: true,
         matchups: matchups.map<MatchupList>((matchup) => {
-            const teams: Team[] = [];
+            const matchupTeams: Team[] = [];
             if (matchup.team1)
-                teams.push(matchup.team1);
+                matchupTeams.push(teams.find((t) => t.ID === matchup.team1)!);
             if (matchup.team2)
-                teams.push(matchup.team2);
+                matchupTeams.push(teams.find((t) => t.ID === matchup.team2)!);
             if (matchup.teams)
-                teams.push(...matchup.teams);
+                matchupTeams.push(...teams.filter((t) => t.ID === matchup.teams!.includes(t.ID)));
+
+            const matchupSets = sets.filter((set) => set.matchup === matchup.ID);
 
             let val = 0;
             if (matchup.potentialFor) {
@@ -88,10 +119,10 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                 mp: matchup.mp,
                 vod: matchup.vod,
                 forfeit: matchup.forfeit,
-                team1Score: matchup.sets?.length === 1 ? matchup.sets[0].team1Score : matchup.team1Score,
-                team2Score: matchup.sets?.length === 1 ? matchup.sets[0].team2Score : matchup.team2Score,
+                team1Score: matchupSets.length === 1 ? matchupSets[0].team1Score : matchup.team1Score,
+                team2Score: matchupSets.length === 1 ? matchupSets[0].team2Score : matchup.team2Score,
                 potential: matchup.potentialFor ? `${matchup.potentialFor.ID}-${String.fromCharCode("A".charCodeAt(0) + val)}` : undefined,
-                teams: teams.map<TeamList>((team) => {
+                teams: matchupTeams.map<TeamList>((team) => {
                     let members = team.members;
                     if (!members.some((member) => member.ID === team.captain.ID))
                         members = [team.captain, ...members];
@@ -110,7 +141,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                                 osuID: member.osu.userID,
                                 country: member.country,
                                 isCaptain: member.ID === team.captain.ID,
-                                rank: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
+                                rank: member.userStatistics?.[0]?.rank ?? 0,
                             };
                         }),
                     };
@@ -119,12 +150,10 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                     ID: matchup.referee.ID,
                     username: matchup.referee.osu.username,
                 } : undefined,
-                commentators: matchup.commentators?.map((commentator) => {
-                    return {
-                        ID: commentator.ID,
-                        username: commentator.osu.username,
-                    };
-                }) ?? [],
+                commentators: commentators.filter((c) => matchup.commentators?.includes(c.ID)).map((commentator) => ({
+                    ID: commentator.ID,
+                    username: commentator.osu.username,
+                })),
                 streamer: matchup.streamer ? {
                     ID: matchup.streamer.ID,
                     username: matchup.streamer.osu.username,

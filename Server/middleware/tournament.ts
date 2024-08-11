@@ -41,7 +41,7 @@ export async function validateTournament<S extends DefaultState = DefaultState> 
 export async function validateStageOrRound<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next): Promise<void> {
     const stageID = ctx.request.body?.stageID || ctx.params?.stageID || ctx.query.stageID || ctx.request.body?.stage || ctx.params?.stage || ctx.query.stage;
     const roundID = ctx.request.body?.roundID || ctx.params?.roundID || ctx.query.roundID || ctx.request.body?.round || ctx.params?.round || ctx.query.round;
-    
+
     if (stageID === undefined || isNaN(parseInt(stageID)) || parseInt(stageID) < 1) {
         ctx.body = {
             success: false,
@@ -61,7 +61,8 @@ export async function validateStageOrRound<S extends DefaultState = DefaultState
     const stageQ = Stage
         .createQueryBuilder("stage")
         .leftJoinAndSelect("stage.rounds", "rounds")
-        .leftJoinAndSelect("stage.tournament", "tournament");
+        .leftJoinAndSelect("stage.tournament", "tournament")
+        .leftJoinAndSelect("tournament.mode", "mode");
     if (ctx.state.tournament) {
         stageQ.where("tournament.ID = :tournamentID", { tournamentID: ctx.state.tournament.ID });
         if (roundID)
@@ -79,7 +80,7 @@ export async function validateStageOrRound<S extends DefaultState = DefaultState
             .orWhere("rounds.ID = :roundID", { roundID: parseInt(roundID) });
     else
         stageQ.where("stage.ID = :stageID", { stageID: parseInt(stageID) });
-    
+
     const stage = await stageQ.getOne();
 
     if (!stage) {
@@ -89,7 +90,7 @@ export async function validateStageOrRound<S extends DefaultState = DefaultState
         };
         return;
     }
-    
+
     if (stage.ID === parseInt(stageID))
         ctx.state.stage = stage;
     else {
@@ -141,12 +142,12 @@ export function hasRoles (roles: TournamentRoleType[]) {
             .getMany();
 
         const filterRoles = tournamentRoles.filter(role => roles.some(r => role.roleType === r));
-        
+
         if (member.roles.cache.some(role => filterRoles.some(r => r.roleID === role.id))) {
             await next();
             return;
         }
-        
+
         ctx.body = {
             success: false,
             error: "User does not have any of the required tournament roles!",
