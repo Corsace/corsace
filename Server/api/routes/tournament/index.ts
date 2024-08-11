@@ -283,12 +283,12 @@ tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifier
         .innerJoinAndSelect("matchup.teams", "team")
         .innerJoinAndSelect("team.members", "members")
         .leftJoinAndSelect("members.userStatistics", "stats")
-        .leftJoinAndSelect("stats.modeDivision", "modeDivision")
         .innerJoinAndSelect("team.captain", "captain")
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .where("tournament.ID = :ID", { ID })
         .andWhere("stage.stageType = '0'")
+        .andWhere("stats.modeDivisionID = tournament.modeID")
         .getMany();
     
     ctx.body = {
@@ -322,7 +322,7 @@ tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifier
                                 osuID: member.osu.userID,
                                 country: member.country,
                                 isCaptain: member.ID === t.captain.ID,
-                                rank: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
+                                rank: member.userStatistics?.[0]?.rank ?? 0,
                             };
                         }),
                     },
