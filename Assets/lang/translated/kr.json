@@ -830,7 +830,8 @@
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
             "forfeit": "FORFEIT",
-            "closeLobby": "로비 닫기"
+            "closeLobby": "로비 닫기",
+            "postResults": "POST RESULTS"
         },
         "status": {
             "loading": "로딩중"
