@@ -107,7 +107,7 @@
             >
                 <div>VS</div>
                 <div>
-                    {{ matchupSync.team1Score }}-{{ matchupSync.team2Score }}
+                    {{ !matchupSync.forfeit ? matchupSync.team1Score : matchupSync.team1Score < matchupSync.team2Score ? "FF" : 0 }}-{{ !matchupSync.forfeit ? matchupSync.team2Score : matchupSync.team1Score > matchupSync.team2Score ? "FF" : 0 }}
                 </div>
             </div>
             <ScheduleMatchBoxTeam :team="matchupSync.teams?.[1]" />
