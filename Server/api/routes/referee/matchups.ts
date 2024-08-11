@@ -169,7 +169,7 @@ refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:match
 });
 
 
-interface postResultsBan { 
+interface postResultsMap { 
     team: string | undefined
     map: string
 }
@@ -245,11 +245,30 @@ refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/post
         return;
     }
 
+    const protects = body.protects;
+    if (protects)
+        protects.sort((a: postResultsMap, b: postResultsMap) => (a.team ?? "").localeCompare(b.team ?? ""));
+
     const bans = body.bans;
     if (bans)
-        bans.sort((a: postResultsBan, b: postResultsBan) => (a.team ?? "").localeCompare(b.team ?? ""));
+        bans.sort((a: postResultsMap, b: postResultsMap) => (a.team ?? "").localeCompare(b.team ?? ""));
 
-    const textBuilder = `**${body.stage}: ${body.matchID}**\n${body.team1Score > body.team2Score ? "**" : ""}${body.team1Name} | ${body.forfeit && body.team1Score === 0 ? "FF" : body.team1Score}${body.team1Score > body.team2Score ? "**" : ""} - ${body.team2Score > body.team1Score ? "**" : ""}${body.forfeit && body.team2Score === 0 ? "FF" : body.team2Score} | ${body.team2Name}${body.team2Score > body.team1Score ? "**" : ""}\n[MP Link](<https://osu.ppy.sh/community/matches/${body.mpID}>)\n\n${body.forfeit || !bans ? "" : `__**Bans**__\n**${body.team1Name}**\n${bans.filter((b: postResultsBan) => b.team === body.team1Name).map((b: postResultsBan) => `\`${b.map}\``).join("\n")}\n\n**${body.team2Name}**\n${bans.filter((b: postResultsBan) => b.team === body.team2Name).map((b: postResultsBan) => `\`${b.map}\``).join("\n")}`}`;
+    let textBuilder = `**${body.stage}: ${body.matchID}**\n${body.team1Score > body.team2Score ? "**" : ""}${body.team1Name} | ${body.forfeit && body.team1Score === 0 ? "FF" : body.team1Score}${body.team1Score > body.team2Score ? "**" : ""} - ${body.team2Score > body.team1Score ? "**" : ""}${body.forfeit && body.team2Score === 0 ? "FF" : body.team2Score} | ${body.team2Name}${body.team2Score > body.team1Score ? "**" : ""}\n[MP Link](<https://osu.ppy.sh/community/matches/${body.mpID}>)`;
+    if (protects && !body.forfeit) {
+        textBuilder += "\n\n__**Protects**__";
+        textBuilder += `\n**${body.team1Name}**\n`;
+        textBuilder += protects.filter((b: postResultsMap) => b.team === body.team1Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
+        textBuilder += `\n**${body.team2Name}**\n`;
+        textBuilder += protects.filter((b: postResultsMap) => b.team === body.team2Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
+    }
+
+    if (bans && !body.forfeit) {
+        textBuilder += "\n\n__**Bans**__";
+        textBuilder += `\n**${body.team1Name}**\n`;
+        textBuilder += bans.filter((b: postResultsMap) => b.team === body.team1Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
+        textBuilder += `\n**${body.team2Name}**\n`;
+        textBuilder += bans.filter((b: postResultsMap) => b.team === body.team2Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
+    }
 
     const channel = await discordClient.channels.fetch(resultsChannel.channelID);
     if (!channel?.isTextBased()) {
