@@ -830,7 +830,8 @@
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
             "forfeit": "FORFEIT",
-            "closeLobby": "ЗАКРЫТЬ ЛОББИ"
+            "closeLobby": "ЗАКРЫТЬ ЛОББИ",
+            "postResults": "POST RESULTS"
         },
         "status": {
             "loading": "ЗАГРУЗКА"
