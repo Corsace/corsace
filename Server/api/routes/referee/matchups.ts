@@ -62,7 +62,8 @@ refereeMatchupsRouter.$get<{ matchups: MatchupInterface[] }>("/:tournamentID", v
     const matchups = await matchupQ
         .skip(skip)
         .take(5)
-        .orderBy("matchup.ID", "DESC")
+        .orderBy("stage.timespan.start", "DESC")
+        .addOrderBy("matchup.date", "ASC")
         .getMany();
 
     ctx.body = {
