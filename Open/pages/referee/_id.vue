@@ -426,7 +426,7 @@
                             v-for="map in matchup.sets?.flatMap(set => set.maps || [])"
                             :key="map.ID"
                             class="referee__matchup__content__map"
-                            :style="{backgroundColor: slotColour(selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID)))}"
+                            :style="{backgroundColor: convertStatusEnum(map.status)}"
                         >
                             <div
                                 class="referee__matchup__content__map_delete"
