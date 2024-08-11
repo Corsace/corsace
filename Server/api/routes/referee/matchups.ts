@@ -223,7 +223,7 @@ refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/post
         return;
     }
 
-    if (typeof body.mpID !== "number") {
+    if (typeof body.mpID !== "number" && !body.forfeit) {
         ctx.body = {
             success: false,
             error: "Invalid mp ID.",
@@ -253,7 +253,10 @@ refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/post
     if (bans)
         bans.sort((a: postResultsMap, b: postResultsMap) => (a.team ?? "").localeCompare(b.team ?? ""));
 
-    let textBuilder = `**${body.stage}: ${body.matchID}**\n${body.team1Score > body.team2Score ? "**" : ""}${body.team1Name} | ${body.forfeit && body.team1Score === 0 ? "FF" : body.team1Score}${body.team1Score > body.team2Score ? "**" : ""} - ${body.team2Score > body.team1Score ? "**" : ""}${body.forfeit && body.team2Score === 0 ? "FF" : body.team2Score} | ${body.team2Name}${body.team2Score > body.team1Score ? "**" : ""}\n[MP Link](<https://osu.ppy.sh/community/matches/${body.mpID}>)`;
+    let textBuilder = `**${body.stage}: ${body.matchID}**\n${body.team1Score > body.team2Score ? "**" : ""}${body.team1Name} | ${body.forfeit && body.team1Score === 0 ? "FF" : body.team1Score}${body.team1Score > body.team2Score ? "**" : ""} - ${body.team2Score > body.team1Score ? "**" : ""}${body.forfeit && body.team2Score === 0 ? "FF" : body.team2Score} | ${body.team2Name}${body.team2Score > body.team1Score ? "**" : ""}`;
+    if (!body.forfeit)
+        textBuilder += `\n[MP Link](<https://osu.ppy.sh/community/matches/${body.mpID}>)`;
+
     if (protects && !body.forfeit) {
         textBuilder += "\n\n__**Protects**__";
         textBuilder += `\n**${body.team1Name}**\n`;
