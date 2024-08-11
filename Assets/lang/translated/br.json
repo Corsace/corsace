@@ -830,7 +830,8 @@
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
             "forfeit": "FORFEIT",
-            "closeLobby": "FECHAR LOBBY"
+            "closeLobby": "FECHAR LOBBY",
+            "postResults": "POST RESULTS"
         },
         "status": {
             "loading": "CARREGANDO"
