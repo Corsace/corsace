@@ -26,7 +26,7 @@ stageRouter.$use("/:stageID", validateStageOrRound);
 stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) => {
     const stage = ctx.state.stage;
 
-    let matchups: (Omit<Matchup, "team1" | "team2"> & { team1: number; team2: number })[] = await Matchup
+    let matchups: (Omit<Matchup, "team1" | "team2" | "teams" | "commentators"> & { team1: number; team2: number; teams: number[], commentators: number[] })[] = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
         .leftJoinAndSelect("matchup.team1", "team1")
@@ -59,23 +59,21 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
     const teams = await Team
         .createQueryBuilder("team")
         .innerJoinAndSelect("team.members", "members")
-        .innerJoinAndSelect("members.userStatistics", "memberStatistics")
+        .leftJoinAndSelect("members.userStatistics", "memberStatistics")
         .innerJoinAndSelect("team.captain", "captain")
-        .innerJoinAndSelect("captain.userStatistics", "captainStatistics")
+        .leftJoinAndSelect("captain.userStatistics", "captainStatistics")
         .where("team.ID IN (:...teamIds)", { teamIds: Array.from(teamIds) })
-        .andWhere("memberStatistics.modeDivisionID = :mode", { mode: stage.tournament.mode.ID })
-        .andWhere("captainStatistics.modeDivisionID = :mode", { mode: stage.tournament.mode.ID })
         .getMany();
 
-    const sets = await MatchupSet
+    const sets: (Omit<MatchupSet, "matchup"> & { matchup: number; })[] = await MatchupSet
         .createQueryBuilder("sets")
         .where("sets.matchupID IN (:...matchupIds)", { matchupIds: matchups.map((m) => m.ID) })
         .loadAllRelationIds({
             relations: ["matchup"],
         })
-        .getMany();
+        .getMany() as any;
 
-    const commentators = await User
+    const commentators = commentatorIds.size === 0 ? [] : await User
         .createQueryBuilder("user")
         .where("user.ID IN (:...commentatorIds)", { commentatorIds: Array.from(commentatorIds) })
         .getMany();
@@ -99,7 +97,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
             if (matchup.team2)
                 matchupTeams.push(teams.find((t) => t.ID === matchup.team2)!);
             if (matchup.teams)
-                matchupTeams.push(...teams.filter((t) => t.ID === matchup.teams!.includes(t.ID)));
+                matchupTeams.push(...teams.filter((t) => matchup.teams.includes(t.ID)));
 
             const matchupSets = sets.filter((set) => set.matchup === matchup.ID);
 
