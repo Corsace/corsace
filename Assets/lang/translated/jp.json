@@ -830,7 +830,8 @@
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
             "forfeit": "FORFEIT",
-            "closeLobby": "ロビーを閉じる"
+            "closeLobby": "ロビーを閉じる",
+            "postResults": "POST RESULTS"
         },
         "status": {
             "loading": "ロード中"
