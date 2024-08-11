@@ -95,7 +95,7 @@
                         :class="{
                             'content_button--disabled': matchup.winner || (matchup.mp && runningLobby),
                         }"
-                        @click.native="!matchup.winner && (!matchup.mp || !runningLobby) ? banchoCall('createLobby', { auto: false, replace: true }) : tooltipText = 'Matchup already has a lobby'"
+                        @click.native="!matchup.winner && (!matchup.mp || !runningLobby) ? banchoCall('createLobby', { auto: false }) : tooltipText = 'Matchup already has a lobby'"
                     >
                         {{ $t('open.referee.createLobby') }}
                     </ContentButton>
@@ -470,7 +470,7 @@
                                     :key="map.ID"
                                     class="referee__matchup__content__mappool__slot__map"
                                     :class="{ 'referee__matchup__content__mappool__slot__map--used': matchupSet?.maps?.filter(m => m.status !== 0).some(m => m.map.ID === map.ID) }"
-                                    @click="selectMap(map.ID)"
+                                    @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupSet?.maps?.filter(m => m.status !== 0).find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
                                 >
                                     <div class="referee__matchup__content__mappool__slot__map__name">
                                         {{ slot.acronym.toUpperCase() }}{{ slot.maps.length === 1 ? '' : map.order }}
