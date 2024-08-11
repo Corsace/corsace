@@ -19,7 +19,7 @@ export default async function dbMatchupToInterface (dbMatchup: Matchup, roundOrS
         team2,
         team1Score: dbMatchup.team1Score,
         team2Score: dbMatchup.team2Score,
-        potential: !dbMatchup.potentialFor,
+        potential: dbMatchup.potentialFor ? true : false,
         baseURL: dbMatchup.baseURL,
         round: roundOrStage instanceof Round ? {
             ID: roundOrStage.ID,
