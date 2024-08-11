@@ -229,6 +229,12 @@
                         <div class="referee__matchup__messages__header">
                             Channel: #mp_{{ matchup.mp }}
                         </div>
+                        <a
+                            :href="`https://osu.ppy.sh/community/matches/${matchup.mp}`"
+                            target="_blank"
+                        >
+                            MP Link
+                        </a>
                         <div 
                             id="messageContainer"
                             class="referee__matchup__messages__container"
