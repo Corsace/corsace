@@ -292,7 +292,7 @@ export default class Schedule extends Vue {
         return this.matchupList.filter(matchup => {
             if (matchup.matchID && !this.selectedMatchIDs[matchup.matchID[0]]) return false;
             if (this.myMatches && !matchup.teams?.some(team => team.members.some(player => player.osuID === this.loggedInUser?.osu.userID))) return false;
-            if (this.myStaff) return false;
+            if (this.myStaff && (matchup.referee?.ID !== this.loggedInUser?.ID && matchup.streamer?.ID !== this.loggedInUser?.ID && !matchup.commentators?.some(comm => comm.ID === this.loggedInUser?.ID))) return false;
             if (this.hidePotentials && matchup.potential) return false;
             if (this.searchValue && !(
                 matchup.matchID.toLowerCase().includes(this.searchValue.toLowerCase()) || 
