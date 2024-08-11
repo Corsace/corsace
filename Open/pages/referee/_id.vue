@@ -213,9 +213,9 @@
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
-                            'content_button--disabled': !matchup.winner || runningLobby || postedResults,
+                            'content_button--disabled': runningLobby || postedResults,
                         }"
-                        @click.native="matchup.winner && !runningLobby ? postResults() : postedResults ? tooltipText = 'Result should have already been posted on discord' : tooltipText = 'Matchup has no winner/is still running'"
+                        @click.native="!postedResults && !runningLobby ? postResults() : postedResults ? tooltipText = 'Result should have already been posted on discord' : tooltipText = 'Lobby is still running'"
                     >
                         {{ $t('open.referee.postResults') }}
                     </ContentButton>
