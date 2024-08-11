@@ -56,7 +56,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
             commentatorIds.add(commentator);
     }
 
-    const teams = await Team
+    const teams = teamIds.size === 0 ? [] : await Team
         .createQueryBuilder("team")
         .innerJoinAndSelect("team.members", "members")
         .leftJoinAndSelect("members.userStatistics", "memberStatistics")
@@ -65,7 +65,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
         .where("team.ID IN (:...teamIds)", { teamIds: Array.from(teamIds) })
         .getMany();
 
-    const sets: (Omit<MatchupSet, "matchup"> & { matchup: number; })[] = await MatchupSet
+    const sets: (Omit<MatchupSet, "matchup"> & { matchup: number; })[] = matchups.length === 0 ? [] : await MatchupSet
         .createQueryBuilder("sets")
         .where("sets.matchupID IN (:...matchupIds)", { matchupIds: matchups.map((m) => m.ID) })
         .loadAllRelationIds({
