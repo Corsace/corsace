@@ -105,7 +105,10 @@
                     'background-color': matchupSync.potential ? '#FF5F22' : '#EF3255'
                 }"
             >
-                VS
+                <div>VS</div>
+                <div>
+                    {{ matchupSync.team1Score }}-{{ matchupSync.team2Score }}
+                </div>
             </div>
             <ScheduleMatchBoxTeam :team="matchupSync.teams?.[1]" />
         </div>

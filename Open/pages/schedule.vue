@@ -305,7 +305,7 @@ export default class Schedule extends Vue {
                 return false;
             if (this.view === "ALL") return true;
             if (this.view === "UPCOMING") return matchup.date.getTime() > Date.now();
-            if (this.view === "ONGOING") return matchup.date.getTime() < Date.now() && !matchup.mp;
+            if (this.view === "ONGOING") return matchup.date.getTime() < Date.now() && !matchup.mp && !matchup.forfeit;
             if (this.view === "PAST") return matchup.date.getTime() < Date.now();
             return false;
         }).sort((a, b) => this.sortFunctions[this.currentSort](a, b) * (this.sortDir === "ASC" ? 1 : -1));

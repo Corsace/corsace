@@ -63,7 +63,7 @@
                             {{ team.name }}
                         </div>
                         <div class="round_robin_view__standings_team_score">
-                            0-0
+                            {{ group.matches.filter(m => m.teams && ((m.teams[0] && m.teams[0].ID === team.ID && m.team1Score > m.team2Score) || (m.teams[1] && m.teams[1].ID === team.ID && m.team2Score > m.team1Score))).length }}-{{ group.matches.filter(m => m.teams && ((m.teams[0] && m.teams[0].ID === team.ID && m.team1Score < m.team2Score) || (m.teams[1] && m.teams[1].ID === team.ID && m.team2Score < m.team1Score))).length }}
                         </div>
                     </a>
                 </div>
@@ -232,6 +232,12 @@ export default class RoundRobinView extends Vue {
                     for (const team of matchup.teams)
                         if (!teams.find(t => t.ID === team.ID))
                             teams.push(team);
+            teams.sort((a, b) => {
+                const matchesWonA = matches.filter(m => m.teams && ((m.teams[0] && m.teams[0].ID === a.ID && m.team1Score > m.team2Score) || (m.teams[1] && m.teams[1].ID === a.ID && m.team2Score > m.team1Score))).length;
+                const matchesWonB = matches.filter(m => m.teams && ((m.teams[0] && m.teams[0].ID === b.ID && m.team1Score > m.team2Score) || (m.teams[1] && m.teams[1].ID === b.ID && m.team2Score > m.team1Score))).length;
+                return matchesWonA > matchesWonB ? -1 : 1;
+            });
+
             return {
                 id,
                 matches,

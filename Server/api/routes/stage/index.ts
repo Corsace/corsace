@@ -86,6 +86,9 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                 date: matchup.date,
                 mp: matchup.mp,
                 vod: matchup.vod,
+                forfeit: matchup.forfeit,
+                team1Score: matchup.team1Score,
+                team2Score: matchup.team2Score,
                 potential: matchup.potentialFor ? `${matchup.potentialFor.ID}-${String.fromCharCode("A".charCodeAt(0) + val)}` : undefined,
                 teams: teams.map<TeamList>((team) => {
                     let members = team.members;
