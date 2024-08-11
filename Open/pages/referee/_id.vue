@@ -15,13 +15,15 @@
             class="referee__menu_select"
             :style="{ display: mapSelected ? 'flex' : 'none' }"
         >
-            <div 
+            <div
+                v-if="!matchupSet?.maps?.some(m => m.status === 0 && m.map.ID === mapSelected?.ID)"
                 class="referee__menu_select__option referee__menu_select__option--blue"
                 @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 0, set: (matchupSet?.order || 1) - 1 }); mapSelected = null"
             >
                 PROTECT
             </div>
             <div 
+                v-if="!matchupSet?.maps?.some(m => m.status === 0 && m.map.ID === mapSelected?.ID)"
                 class="referee__menu_select__option referee__menu_select__option--red"
                 @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 1, set: (matchupSet?.order || 1) - 1 }); mapSelected = null"
             >
@@ -93,7 +95,7 @@
                         :class="{
                             'content_button--disabled': matchup.winner || (matchup.mp && runningLobby),
                         }"
-                        @click.native="!matchup.winner && (!matchup.mp || !runningLobby) ? banchoCall('createLobby', { auto: false }) : tooltipText = 'Matchup already has a lobby'"
+                        @click.native="!matchup.winner && (!matchup.mp || !runningLobby) ? banchoCall('createLobby', { auto: false, replace: true }) : tooltipText = 'Matchup already has a lobby'"
                     >
                         {{ $t('open.referee.createLobby') }}
                     </ContentButton>
@@ -391,8 +393,8 @@
                                         :key="map.ID"
                                         class="referee__matchup__content__order__team"
                                         :style="{ 
-                                            backgroundColor: (matchupSet?.maps?.length || 0) < (mapOrder.find(set => set.set === matchupSet?.order)?.order.length || 0) + map.order ? convertStatusEnum(map.status) : '#333333',
-                                            boxShadow: (matchupSet?.maps?.length || 0) === (mapOrder.find(set => set.set === matchupSet?.order)?.order.length || 0) + map.order - 1 ? `0 0 10px ${convertStatusEnum(map.status)}` : 'none',
+                                            backgroundColor: set.set < (matchupSet?.order || 0) || (matchupSet?.maps?.length || 0) < map.order ? convertStatusEnum(map.status) : '#333333',
+                                            boxShadow: set.set === (matchupSet?.order || 0) && (matchupSet?.maps?.length || 0) + 1 === map.order ? `0 0 10px ${convertStatusEnum(map.status)}` : 'none',
                                         }"
                                     >
                                         {{ convertOrderEnum(map.team) }}
@@ -459,7 +461,7 @@
                                     :key="map.ID"
                                     class="referee__matchup__content__mappool__slot__map"
                                     :class="{ 'referee__matchup__content__mappool__slot__map--used': matchupSet?.maps?.filter(m => m.status !== 0).some(m => m.map.ID === map.ID) }"
-                                    @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupSet?.maps?.filter(m => m.status !== 0).find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
+                                    @click="selectMap(map.ID)"
                                 >
                                     <div class="referee__matchup__content__mappool__slot__map__name">
                                         {{ slot.acronym.toUpperCase() }}{{ slot.maps.length === 1 ? '' : map.order }}
