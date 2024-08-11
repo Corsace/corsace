@@ -659,14 +659,12 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         playersPlaying = undefined;
         matchStart = undefined;
 
-        matchup.sets![matchup.sets!.length - 1].maps = state.matchups[matchup.ID].matchup.sets![state.matchups[matchup.ID].matchup.sets!.length - 1].maps; // Get all the maps from state cuz of protects/bans etc
         const matchupMap = new MatchupMap();
         matchupMap.set = matchup.sets![matchup.sets!.length - 1];
         matchupMap.map = beatmap;
         matchupMap.order = matchup.sets![matchup.sets!.length - 1].maps!.length + 1;
         await matchupMap.save();
         matchup.sets![matchup.sets!.length - 1].maps!.push(matchupMap);
-        state.matchups[matchup.ID].matchup.sets![state.matchups[matchup.ID].matchup.sets!.length - 1].maps!.push(matchupMap); // State management moment
 
         matchupMap.scores = await Promise.all(scores.map(async (score) => {
             const user = users.find(u => u.osu.userID === score.userId.toString());
