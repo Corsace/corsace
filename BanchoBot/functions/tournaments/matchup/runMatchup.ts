@@ -734,6 +734,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             type: "matchFinished",
             setTeam1Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team1Score ?? 0,
             setTeam2Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team2Score ?? 0,
+            setWinner: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.winner?.ID,
             team1Score: matchup.team1Score,
             team2Score: matchup.team2Score,
             map: {

@@ -183,6 +183,15 @@
                     >
                         {{ $t('open.referee.closeLobby') }}
                     </ContentButton>
+                    <ContentButton
+                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                        :class="{
+                            'content_button--disabled': !matchup.winner || runningLobby || postedResults,
+                        }"
+                        @click.native="matchup.winner && !runningLobby ? postResults() : postedResults ? tooltipText = 'Result should have already been posted on discord' : tooltipText = 'Matchup has no winner/is still running'"
+                    >
+                        {{ $t('open.referee.postResults') }}
+                    </ContentButton>
                 </div>
                 
                 <div 
@@ -579,6 +588,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     mapStarted = false;
     runningLobby = false;
+    postedResults = false;
 
     forfeitMenu = false;
     rollMenu = false;
@@ -1026,6 +1036,8 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 this.matchup.sets![this.matchup.sets!.length - 1].maps!.push(ctx.data.map);
                 this.matchup.sets![this.matchup.sets!.length - 1].team1Score = ctx.data.setTeam1Score;
                 this.matchup.sets![this.matchup.sets!.length - 1].team2Score = ctx.data.setTeam2Score;
+                if (ctx.data.setWinner && this.mapOrder.length === 1)
+                    this.matchup.winner = this.matchup.team1?.ID === ctx.data.setWinner ? this.matchup.team1 : this.matchup.team2?.ID === ctx.data.setWinner ? this.matchup.team2 : null;
                 break;
             case "closed":
                 this.team1PlayerStates.forEach(player => player.inLobby = player.ready = false);
@@ -1066,6 +1078,39 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             case MapStatus.Picked:
                 return "Pick";
         }
+    }
+
+    async postResults () {
+        if (!this.matchup) {
+            this.tooltipText = "No matchup selected";
+            return;
+        }
+
+        const { data } = await this.$axios.post<{ message: string }>(`/api/referee/matchups/${this.tournament?.ID}/${this.$route.params.id}/postResults`, {
+            matchID: this.matchup.matchID,
+            stage: this.matchup.round?.name ?? this.matchup.stage?.name ?? "",
+            team1Score: this.matchup.team1Score,
+            team2Score: this.matchup.team2Score,
+            team1Name: this.matchup.team1?.name,
+            team2Name: this.matchup.team2?.name,
+            forfeit: this.matchup.forfeit,
+            mpID: this.matchup.mp,
+            bans: this.matchup.sets?.flatMap(set => set.maps?.filter(map => map.status === MapStatus.Banned).map((map, i) => {
+                const mapOrderTeam = this.mapOrder.find(o => o.set === set.order)?.order.filter(p => p.status === MapStatus.Banned).find((p, j) => i === j)?.team;
+                const slot = this.mappools.flatMap(m => m.slots).find(s => s.maps.some(m => m.ID === map.map.ID));
+                return {
+                    team: mapOrderTeam === MapOrderTeam.Team1 ? this.matchup!.team1?.name : mapOrderTeam === MapOrderTeam.Team2 ? this.matchup!.team2?.name : "N/A",
+                    map: `${slot?.acronym.toUpperCase()}${slot?.maps.length === 1 ? "" : map.order } | ${map.map.beatmap?.beatmapset?.artist} - ${map.map.beatmap?.beatmapset?.title} [${map.map.beatmap?.difficulty}]`,
+                };
+            }) ?? []) ?? [],
+        });
+        if (!data.success) {
+            alert(data.error);
+            return;
+        }
+
+        this.tooltipText = data.message;
+        this.postedResults = true;
     }
 
     async banchoCall (endpoint: string, data?: any) {
@@ -1109,6 +1154,13 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         if (endpoint === "deleteMap" && this.matchup.sets?.[data.set]) {
             this.matchup.sets[data.set].maps = this.matchup.sets[data.set].maps!.filter(map => map.ID !== data.mapID);
             this.matchup.sets[data.set].maps!.forEach((map, i) => map.order = i + 1);
+        }
+
+        if (endpoint === "forfeit") {
+            this.matchup.winner = this.matchup.team1?.ID === data.team ? this.matchup.team2 : this.matchup.team2?.ID === data.team ? this.matchup.team1 : null;
+            this.matchup.forfeit = true;
+            this.matchup.team1Score = this.matchup.team1?.ID === data.team ? 0 : 1;
+            this.matchup.team2Score = this.matchup.team2?.ID === data.team ? 0 : 1;
         }
 
         switch (endpoint) {

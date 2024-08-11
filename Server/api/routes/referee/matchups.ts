@@ -11,6 +11,7 @@ import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { parseQueryParam } from "../../../utils/query";
 import dbMatchupToInterface from "../../../functions/tournaments/matchups/dbMatchupToInterface";
 import { TournamentAuthenticatedState } from "koa";
+import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
 
 const refereeMatchupsRouter  = new CorsaceRouter<TournamentAuthenticatedState>();
 
@@ -164,6 +165,105 @@ refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:match
     ctx.body = {
         success: true,
         matchup: await dbMatchupToInterface(dbMatchup, roundOrStage),
+    };
+});
+
+
+interface postResultsBan { 
+    team: string | undefined
+    map: string
+}
+refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/postResults", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+    const body = ctx.request.body;
+    if (typeof body.matchID !== "string") {
+        ctx.body = {
+            success: false,
+            error: "Invalid match ID.",
+        };
+        return;
+    }
+
+    if (typeof body.stage !== "string") {
+        ctx.body = {
+            success: false,
+            error: "Invalid stage.",
+        };
+        return;
+    }
+
+    if (typeof body.team1Score !== "number") {
+        ctx.body = {
+            success: false,
+            error: "Invalid team 1 score.",
+        };
+        return;
+    }
+
+    if (typeof body.team2Score !== "number") {
+        ctx.body = {
+            success: false,
+            error: "Invalid team 2 score.",
+        };
+        return;
+    }
+
+    if (typeof body.team1Name !== "string") {
+        ctx.body = {
+            success: false,
+            error: "Invalid team 1 name.",
+        };
+        return;
+    }
+
+    if (typeof body.team2Name !== "string") {
+        ctx.body = {
+            success: false,
+            error: "Invalid team 2 name.",
+        };
+        return;
+    }
+
+    if (typeof body.mpID !== "number") {
+        ctx.body = {
+            success: false,
+            error: "Invalid mp ID.",
+        };
+        return;
+    }
+
+    const resultsChannel = await TournamentChannel
+        .createQueryBuilder("channel")
+        .innerJoin("channel.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
+        .andWhere("channel.channelType = '11'")
+        .getOne();
+    if (!resultsChannel) {
+        ctx.body = {
+            success: false,
+            error: "Results channel not found.",
+        };
+        return;
+    }
+
+    const bans = body.bans;
+    if (bans)
+        bans.sort((a: postResultsBan, b: postResultsBan) => (a.team ?? "").localeCompare(b.team ?? ""));
+
+    const textBuilder = `**${body.stage}: ${body.matchID}**\n${body.team1Score > body.team2Score ? "**" : ""}${body.team1Name} | ${body.forfeit && body.team1Score === 0 ? "FF" : body.team1Score}${body.team1Score > body.team2Score ? "**" : ""} - ${body.team2Score > body.team1Score ? "**" : ""}${body.forfeit && body.team2Score === 0 ? "FF" : body.team2Score} ${body.team2Name}${body.team2Score > body.team1Score ? "**" : ""}\n[MP Link](https://osu.ppy.sh/community/matches/${body.mpID})\n\n${bans ? `__**Bans**__\n**${body.team1Name}**\n${bans.filter((b: postResultsBan) => b.team === body.team1Name).map((b: postResultsBan) => `\`${b.map}\``).join("\n")}\n\n**${body.team2Name}**\n${bans.filter((b: postResultsBan) => b.team === body.team2Name).map((b: postResultsBan) => `\`${b.map}\``).join("\n")}` : ""}`;
+
+    const channel = await discordClient.channels.fetch(resultsChannel.channelID);
+    if (!channel?.isTextBased()) {
+        ctx.body = {
+            success: false,
+            error: "Results channel not found.",
+        };
+        return;
+    }
+    await channel.send(textBuilder);
+
+    ctx.body = {
+        success: true,
+        message: "name" in channel ? `Results posted to ${channel.name}.` : "Results posted.",
     };
 });
 

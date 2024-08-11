@@ -70,6 +70,7 @@ declare module "centrifuge" {
         type: "matchFinished";
         setTeam1Score: number;
         setTeam2Score: number;
+        setWinner?: number;
         team1Score: number;
         team2Score: number;
         map: MatchupMap;
