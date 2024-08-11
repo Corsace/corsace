@@ -1089,8 +1089,8 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         const { data } = await this.$axios.post<{ message: string }>(`/api/referee/matchups/${this.tournament?.ID}/${this.$route.params.id}/postResults`, {
             matchID: this.matchup.matchID,
             stage: this.matchup.round?.name ?? this.matchup.stage?.name ?? "",
-            team1Score: this.matchup.team1Score,
-            team2Score: this.matchup.team2Score,
+            team1Score: this.matchup.forfeit || this.mapOrder.length > 1 ? this.matchup.team1Score : this.matchup.sets?.[0].team1Score,
+            team2Score: this.matchup.forfeit || this.mapOrder.length > 1 ? this.matchup.team2Score : this.matchup.sets?.[0].team2Score,
             team1Name: this.matchup.team1?.name,
             team2Name: this.matchup.team2?.name,
             forfeit: this.matchup.forfeit,
@@ -1098,9 +1098,10 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             bans: this.matchup.sets?.flatMap(set => set.maps?.filter(map => map.status === MapStatus.Banned).map((map, i) => {
                 const mapOrderTeam = this.mapOrder.find(o => o.set === set.order)?.order.filter(p => p.status === MapStatus.Banned).find((p, j) => i === j)?.team;
                 const slot = this.mappools.flatMap(m => m.slots).find(s => s.maps.some(m => m.ID === map.map.ID));
+                const mappoolMap = slot?.maps.find(m => m.ID === map.map.ID);
                 return {
                     team: mapOrderTeam === MapOrderTeam.Team1 ? this.matchup!.team1?.name : mapOrderTeam === MapOrderTeam.Team2 ? this.matchup!.team2?.name : "N/A",
-                    map: `${slot?.acronym.toUpperCase()}${slot?.maps.length === 1 ? "" : map.order } | ${map.map.beatmap?.beatmapset?.artist} - ${map.map.beatmap?.beatmapset?.title} [${map.map.beatmap?.difficulty}]`,
+                    map: `${slot?.acronym.toUpperCase()}${slot?.maps.length === 1 ? "" : mappoolMap?.order } | ${mappoolMap?.beatmap?.beatmapset?.artist} - ${mappoolMap?.beatmap?.beatmapset?.title} [${mappoolMap?.beatmap?.difficulty}]`,
                 };
             }) ?? []) ?? [],
         });
