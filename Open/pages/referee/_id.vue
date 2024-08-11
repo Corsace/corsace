@@ -635,18 +635,18 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     get nextMapMessage () {
         // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
-        const score = `${this.matchup?.team1?.name ?? "TBD"} | ${this.matchupSet?.team1Score ?? this.matchup?.team1Score} - ${this.matchupSet?.team2Score ?? this.matchup?.team2Score} | ${this.matchup?.team2?.name ?? "TBD"}`;
+        const score = `${this.matchup?.team1?.name ?? "TBD"} | ${Number.isInteger(this.matchupSet?.team1Score) ? this.matchupSet?.team1Score : this.matchup?.team1Score} - ${Number.isInteger(this.matchupSet?.team2Score) ? this.matchupSet?.team2Score : this.matchup?.team2Score} | ${this.matchup?.team2?.name ?? "TBD"}`;
         let bestOf = `BO${this.mapOrder[(this.matchupSet?.order ?? 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1 ?? ""}`;
         if (this.mapOrder.length > 1)
             bestOf = `BO${this.mapOrder.length + 1 / 2} ${bestOf}`;
         const firstTo = this.mapOrder[(this.matchupSet?.order ?? 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
-        
+
         if (!this.matchupSet?.first)
             return `${score} // ${bestOf}`;
 
-        let winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup.team2?.name : null;
+        let winner = this.matchupSet?.team1Score === firstTo ? this.matchup?.team1?.name : this.matchupSet?.team2Score === firstTo ? this.matchup?.team2?.name : null;
         if (this.mapOrder.length > 1) {
-            winner = this.matchupSet?.team1Score === firstTo ? this.matchup?.team1?.name : this.matchupSet?.team2Score === firstTo ? this.matchup?.team2?.name : null;
+            winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup.team2?.name : null;
         }
         const nextMap = (this.matchupSet?.maps?.length ?? 0) > this.mapOrder[(this.matchupSet?.order ?? 1) - 1]?.order.length ? null : this.mapOrder[(this.matchupSet?.order ?? 1) - 1].order[this.matchupSet?.maps?.length ?? 0];
     
@@ -760,7 +760,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             ...matchupData.matchup,
             date: new Date(matchupData.matchup.date),
         } : null;
-        if (this.matchup && !this.matchup.sets)
+        if (this.matchup && (!this.matchup.sets || this.matchup.sets.length === 0))
             this.matchup.sets = [{
                 ID: 0,
                 order: 1,
