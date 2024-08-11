@@ -27,6 +27,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
     let matchups = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
+        .leftJoinAndSelect("matchup.sets", "sets")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("matchup.teams", "teams")
@@ -87,8 +88,8 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                 mp: matchup.mp,
                 vod: matchup.vod,
                 forfeit: matchup.forfeit,
-                team1Score: matchup.team1Score,
-                team2Score: matchup.team2Score,
+                team1Score: !matchup.sets || matchup.sets.length > 1 ? matchup.team1Score : matchup.sets[0].team1Score,
+                team2Score: !matchup.sets || matchup.sets.length > 1 ? matchup.team2Score : matchup.sets[0].team2Score,
                 potential: matchup.potentialFor ? `${matchup.potentialFor.ID}-${String.fromCharCode("A".charCodeAt(0) + val)}` : undefined,
                 teams: teams.map<TeamList>((team) => {
                     let members = team.members;
