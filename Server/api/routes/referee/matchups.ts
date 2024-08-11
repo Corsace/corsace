@@ -93,13 +93,9 @@ refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:match
         .leftJoinAndSelect("team1.members", "members1")
         .leftJoinAndSelect("team2.members", "members2")
         .leftJoinAndSelect("matchup.winner", "winner")
-        .leftJoinAndSelect("winner.captain", "winnerCaptain")
-        .leftJoinAndSelect("winner.members", "winnerMembers")
         // maps
         .leftJoinAndSelect("matchup.sets", "set")
         .leftJoinAndSelect("set.first", "first")
-        .leftJoinAndSelect("first.captain", "firstCaptain")
-        .leftJoinAndSelect("first.members", "firstMembers")
         .leftJoinAndSelect("set.maps", "maps")
         .leftJoinAndSelect("maps.map", "map")
         .leftJoinAndSelect("map.slot", "slot")

@@ -50,10 +50,10 @@ export default async function dbMatchupToInterface (dbMatchup: Matchup, roundOrS
         } : undefined,
         isLowerBracket: dbMatchup.isLowerBracket,
         winner,
-        sets: await Promise.all(dbMatchup.sets?.map(async (set) => ({
+        sets: await Promise.all(dbMatchup.sets?.map((set) => ({
             ID: set.ID,
             order: set.order,
-            first: await set.first?.teamInterface(false, false),
+            first: set.first?.ID === team1?.ID ? team1 : set.first?.ID === team2?.ID ? team2 : undefined,
             team1Score: set.team1Score,
             team2Score: set.team2Score,
             maps: set.maps?.map(map => ({
