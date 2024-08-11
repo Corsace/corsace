@@ -662,7 +662,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         const matchupMap = new MatchupMap();
         matchupMap.set = matchup.sets![matchup.sets!.length - 1];
         matchupMap.map = beatmap;
-        matchupMap.order = mapsPlayed.length;
+        matchupMap.order = matchup.sets![matchup.sets!.length - 1].maps!.length + 1;
         await matchupMap.save();
         matchup.sets![matchup.sets!.length - 1].maps!.push(matchupMap);
 
