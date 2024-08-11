@@ -830,7 +830,8 @@
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
             "forfeit": "FORFEIT",
-            "closeLobby": "TUTUP LOBI"
+            "closeLobby": "TUTUP LOBI",
+            "postResults": "POST RESULTS"
         },
         "status": {
             "loading": "MEMUAT"
