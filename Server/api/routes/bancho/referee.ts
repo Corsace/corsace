@@ -339,7 +339,6 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
             },
         });
     } else {
-
         const mpLobby = state.matchups[ctx.state.matchupID].lobby;
         await Promise.all([
             mpLobby.setMap(map.beatmap!.ID),
@@ -568,7 +567,7 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
     
     const stage = matchup.stage ?? matchup.round?.stage;
     const baseMapOrder = matchup.stage?.mapOrder ?? matchup.round?.mapOrder;
-    if (baseMapOrder && stage && stage.stageType !== StageType.Roundrobin) {
+    if (baseMapOrder && stage && stage.stageType === StageType.Roundrobin) {
         const mapOrder = baseMapOrder.map(o => o.set)
             .filter((v, i, a) => a.indexOf(v) === i)
             .map(s => ({
