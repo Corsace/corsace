@@ -258,6 +258,7 @@ refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/post
         textBuilder += "\n\n__**Protects**__";
         textBuilder += `\n**${body.team1Name}**\n`;
         textBuilder += protects.filter((b: postResultsMap) => b.team === body.team1Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
+        textBuilder += "\n";
         textBuilder += `\n**${body.team2Name}**\n`;
         textBuilder += protects.filter((b: postResultsMap) => b.team === body.team2Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
     }
@@ -266,6 +267,7 @@ refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/post
         textBuilder += "\n\n__**Bans**__";
         textBuilder += `\n**${body.team1Name}**\n`;
         textBuilder += bans.filter((b: postResultsMap) => b.team === body.team1Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
+        textBuilder += "\n";
         textBuilder += `\n**${body.team2Name}**\n`;
         textBuilder += bans.filter((b: postResultsMap) => b.team === body.team2Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
     }
