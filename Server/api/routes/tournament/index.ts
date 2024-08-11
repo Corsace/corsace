@@ -156,9 +156,9 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
         .innerJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
-        .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoin("team.tournaments", "tournament")
         .where("tournament.ID = :ID", { ID })
+        .andWhere("stats.modeDivisionID = :mode", { mode: tournament.mode.ID })
         .getMany();
 
     ctx.body = {
@@ -180,7 +180,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
                     username: m.osu.username,
                     osuID: m.osu.userID,
                     country: m.country,
-                    rank: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.rank ?? 0,
+                    rank: m.userStatistics?.[0]?.rank ?? 0,
                     isCaptain: m.ID === t.captain.ID,
                 })),
             };
@@ -211,9 +211,9 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/unregisteredTeams",
         .innerJoinAndSelect("team.captain", "captain")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
-        .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoin("team.tournaments", "tournament")
-        .where("tournament.ID IS NULL OR tournament.ID <> :ID", { ID })
+        .where("(tournament.ID IS NULL OR tournament.ID <> :ID)", { ID })
+        .andWhere("(stats.modeDivisionID IS NULL OR stats.modeDivisionID = :mode)", { mode: tournament.mode.ID })
         .orderBy("team.ID", "DESC")
         .getMany();
 
@@ -236,7 +236,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/unregisteredTeams",
                     username: m.osu.username,
                     osuID: m.osu.userID,
                     country: m.country,
-                    rank: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.rank ?? 0,
+                    rank: m.userStatistics?.[0]?.rank ?? 0,
                     isCaptain: m.ID === t.captain.ID,
                 })),
             };
@@ -290,7 +290,7 @@ tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifier
         .where("tournament.ID = :ID", { ID })
         .andWhere("stage.stageType = '0'")
         .getMany();
-    
+
     ctx.body = {
         success: true,
         qualifiers: qualifiers.flatMap<BaseQualifier>(q => {
@@ -439,7 +439,7 @@ tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLog
         const server = await discordClient.guilds.fetch(tournament.server);
         await server.members.fetch();
         const staff: OpenStaffInfoList[] = [];
-        
+
         const organizer = await User
             .createQueryBuilder("user")
             .innerJoin("user.tournamentsOrganized", "tournament")
