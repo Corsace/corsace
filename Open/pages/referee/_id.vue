@@ -78,6 +78,24 @@
                 {{ matchup?.team2?.name }} FORFEIT / {{ matchup?.team1?.name }} WON
             </div>
         </div>
+        <div
+            ref="firstSelect"
+            class="referee__menu_select"
+            :style="{ display: firstMenu ? 'flex' : 'none' }"
+        >
+            <div 
+                class="referee__menu_select__option referee__menu_select__option--red"
+                @click="banchoCall('first', { team: 1 }); firstMenu = false"
+            >
+                {{ matchup?.team1?.name }}
+            </div>
+            <div 
+                class="referee__menu_select__option referee__menu_select__option--red"
+                @click="banchoCall('first', { team: 2 }); firstMenu = false"
+            >
+                {{ matchup?.team2?.name }}
+            </div>
+        </div>
         <div class="referee__container">
             <OpenTitle>
                 {{ $t('open.referee.title') }} {{ matchup ? `- (${matchup.matchID} | ${matchup.ID}) ${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "" }}
@@ -107,6 +125,15 @@
                         @click.native="matchup.mp && runningLobby && matchup.stage?.stageType !== 0 ? toggleRollMenu() : tooltipText = 'Matchup has no lobby'"
                     >
                         {{ matchupSet?.first ? $t('open.referee.reroll') : $t('open.referee.roll') }}
+                    </ContentButton>
+                    <ContentButton
+                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                        :class="{
+                            'content_button--disabled': !matchup.mp,
+                        }"
+                        @click.native="matchup.mp ? toggleFirstMenu() : tooltipText = 'Matchup has no mp'"
+                    >
+                        {{ $t('open.referee.first') }}
                     </ContentButton>
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
@@ -590,6 +617,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     runningLobby = false;
     postedResults = false;
 
+    firstMenu = false;
     forfeitMenu = false;
     rollMenu = false;
     mapSelected: MappoolMap | null = null;
@@ -755,6 +783,17 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         if (this.$refs.forfeitSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
             this.$refs.forfeitSelect.style.left = this.$refs.tooltip.style.left;
             this.$refs.forfeitSelect.style.top = this.$refs.tooltip.style.top;
+        }
+    }
+
+    toggleFirstMenu () {
+        this.firstMenu = !this.firstMenu;
+        if (!this.firstMenu)
+            return;
+
+        if (this.$refs.firstSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
+            this.$refs.firstSelect.style.left = this.$refs.tooltip.style.left;
+            this.$refs.firstSelect.style.top = this.$refs.tooltip.style.top;
         }
     }
 
@@ -1182,6 +1221,9 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 break;
             case "roll":
                 this.tooltipText = "Rolled";
+                break;
+            case "first":
+                this.tooltipText = `First team set to ${data.team === "1" ? this.matchup.team1?.name : this.matchup.team2?.name}`;
                 break;
             case "timer":
                 this.tooltipText = "Timer set";

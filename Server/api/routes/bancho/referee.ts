@@ -212,6 +212,46 @@ banchoRefereeRouter.$post("/:matchupID/roll", async (ctx) => {
     };
 });
 
+banchoRefereeRouter.$post("/:matchupID/first", async (ctx) => {
+    if (!state.matchups[ctx.state.matchupID]) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    const teamNumber = ctx.request.body.team;
+    if (teamNumber !== 1 && teamNumber !== 2) {
+        ctx.body = {
+            success: false,
+            error: "Invalid team number",
+        };
+        return;
+    }
+
+    const matchup = state.matchups[ctx.state.matchupID].matchup;
+    if (!matchup.sets) {
+        ctx.body = {
+            success: false,
+            error: "Matchup has no sets",
+        };
+        return;
+    }
+
+    matchup.sets[matchup.sets.length - 1].first = teamNumber === 1 ? matchup.team1 : matchup.team2;
+    await matchup.sets[matchup.sets.length - 1].save();
+
+    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
+        type: "first",
+        first: matchup.sets[matchup.sets.length - 1].first?.ID,
+    });
+
+    ctx.body = {
+        success: true,
+    };
+});
+
 banchoRefereeRouter.$post("/:matchupID/invite", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
