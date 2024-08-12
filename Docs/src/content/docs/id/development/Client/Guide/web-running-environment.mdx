@@ -1,7 +1,7 @@
 ---
 title: Dokumentasi - Menjalankan Lingkungan Sistem
 description: Panduan untuk memulai dan menjalankan lingkungan sistem untuk pengembangan web.
-lastUpdated: 2024-07-07
+lastUpdated: 2024-08-12
 sidebar:
   order: 1200
 ---
@@ -13,7 +13,7 @@ sidebar:
 
 ## Nilai Parameter Config yang Relevan
 
-Berdasarkan nilai parameter config yang telah kamu tetapkan pada `config.[WEBSITE].host` dan `config.[WEBSITE].port` milik situs lokalmu, kamu akan dapat mengakses Corsace secara lokal pada `http://host:port`.
+Based on what config values you had provided for the website's `config.[WEBSITE].host` and `config.[WEBSITE].port`, you should be able to access the website at `http://[config.[WEBSITE].host]:[config.[WEBSITE].port]`. **Make sure you use different ports for each website**.
 
 Sebagai contoh, apabila `config.ayim.host` kamu diatur ke `localhost` dan nilai `config.ayim.port` kamu adalah `3000`, maka situs lokalmu akan dapat diakses pada `http://localhost:3000`.
 
@@ -24,7 +24,7 @@ Lihat halaman [Referensi Config](../../../misc/reference/config) untuk informasi
 ## Menjalankan Lingkungan Sistem
 
 :::note
-Pastikan untuk menjalankan server API apabila server ini belum aktif.
+Pastikan untuk menjalankan server API apabila server ini belum aktif. See the [Server + CrunRunner - Running Environment](../../../server/guide/server-running-environment) guide for more information.
 :::
 
 Jalankan masing-masing perintah berikut pada terminal yang terpisah sesuai dengan situs web yang ingin kamu jalankan:
@@ -40,3 +40,7 @@ Jalankan masing-masing perintah berikut pada terminal yang terpisah sesuai denga
 \*Saat ini belum tersedia
 
 Situs web lokalmu akan dapat ditemui pada alamat URL yang kamu tentukan pada [Referensi Config](../../../misc/reference/config).
+
+:::caution
+If you are using `localhost` or `127.0.0.1` as the host, and you are unable to see the website after running the command, you may need to check your hosts file to make sure they are connected (this may be necessary in Linux if not done already).
+:::
