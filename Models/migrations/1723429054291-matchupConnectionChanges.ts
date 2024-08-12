@@ -13,16 +13,28 @@ export class MatchupConnectionChanges1723429054291 implements MigrationInterface
             BEFORE UPDATE ON matchup
             FOR EACH ROW
             BEGIN
+                DECLARE NEWConnectionID INT;
                 DECLARE connectionCount INT;
-                SELECT COUNT(*) INTO connectionCount
-                FROM matchup
-                WHERE loserNextMatchupID = NEW.ID
-                OR winnerNextMatchupID = NEW.ID;
-                IF connectionCount >= 2 THEN
-                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Matchup cannot be connected to more than 2 matchups';
+                
+                IF OLD.winnerNextMatchupID != NEW.winnerNextMatchupID OR OLD.loserNextMatchupID != NEW.loserNextMatchupID THEN
+                    IF OLD.winnerNextMatchupID != NEW.winnerNextMatchupID AND NEW.winnerNextMatchupID IS NOT NULL THEN
+                        SET NEWConnectionID = NEW.winnerNextMatchupID;
+                    ELSE
+                        SET NEWConnectionID = NEW.loserNextMatchupID;
+                    END IF;
+                    
+                    SELECT COUNT(*) INTO connectionCount
+                    FROM matchup
+                    WHERE loserNextMatchupID = NEWConnectionID
+                    OR winnerNextMatchupID = NEWConnectionID;
+                    
+                    IF connectionCount >= 2 THEN
+                        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Matchup cannot be connected to more than 2 matchups';
+                    END IF;
                 END IF;
             END
         `);
+        
         await queryRunner.query(`UPDATE matchup JOIN \`matchup_previous_matchups_matchup\` pm ON pm.matchupID_2 = matchup.ID SET matchup.winnerNextMatchupID = pm.matchupID_1`);
         await queryRunner.query(`ALTER TABLE \`matchup_previous_matchups_matchup\` DROP FOREIGN KEY \`FK_5d4718758c212b06afb974f0d6d\``);
         await queryRunner.query(`ALTER TABLE \`matchup_previous_matchups_matchup\` DROP FOREIGN KEY \`FK_6627631cc3285362a1483684bfb\``);
