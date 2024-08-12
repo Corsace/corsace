@@ -14,7 +14,7 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
 import { discordClient } from "../../../../Server/discord";
-import { Brackets } from "typeorm";
+// import { Brackets } from "typeorm";
 
 async function rescheduleLog (matchup: Matchup, prevDate: Date) {
     const rescheduleChannel = await TournamentChannel
@@ -86,13 +86,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
-            .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
-            .leftJoinAndSelect("potentialFor.previousMatchups", "potentialForPreviousMatchups")
-            .leftJoinAndSelect("potentialFor.nextMatchups", "potentialForNextMatchups")
-            .leftJoinAndSelect("potentialForNextMatchups.potentials", "potentialForNextMatchupsPotentials", "potentialForNextMatchupsPotentials.invalid = 0")
-            .leftJoinAndSelect("matchup.previousMatchups", "previousMatchups")
-            .leftJoinAndSelect("matchup.nextMatchups", "nextMatchups")
-            .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
             .where("(matchup.ID = :matchupID OR matchup.matchID = :matchupID)", { matchupID })
             .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
             .getOne();
@@ -135,13 +128,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
-            .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
-            .leftJoinAndSelect("potentialFor.previousMatchups", "potentialForPreviousMatchups")
-            .leftJoinAndSelect("potentialFor.nextMatchups", "potentialForNextMatchups")
-            .leftJoinAndSelect("potentialForNextMatchups.potentials", "potentialForNextMatchupsPotentials", "potentialForNextMatchupsPotentials.invalid = 0")
-            .leftJoinAndSelect("matchup.previousMatchups", "previousMatchups")
-            .leftJoinAndSelect("matchup.nextMatchups", "nextMatchups")
-            .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
             .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
             .andWhere("matchup.date > :date", { date: new Date().toISOString() })
             .andWhere("captain1.discordUserid = :userID OR captain2.discordUserid = :userID", { userID: commandUser(m).id })
@@ -167,24 +153,46 @@ async function run (m: Message | ChatInputCommandInteraction) {
         matchup = matchups.find((match) => match.ID === matchupListResult.ID)!;
     }
 
-    if (matchup.previousMatchups && matchup.previousMatchups.length > 0) {
-        const previousMatchupAfterDate = matchup.previousMatchups.find((previousMatchup) => date.getTime() < (previousMatchup.date.getTime() + 3600000));
+    const previousMatchups = await Matchup
+        .createQueryBuilder("matchup")
+        .leftJoin("matchup.loserNextMatchup", "loserNextMatchup")
+        .leftJoin("matchup.winnerNextMatchup", "winnerNextMatchup")
+        .where("matchup.invalid = 0")
+        .andWhere("(loserNextMatchup.ID = :matchupID OR winnerNextMatchup.ID = :matchupID)", { matchupID: matchup.ID })
+        .getMany();
+    if (previousMatchups.length > 0) {
+        const previousMatchupAfterDate = previousMatchups.find((previousMatchup) => date.getTime() < (previousMatchup.date.getTime() + 3600000));
         if (previousMatchupAfterDate) {
             await message.edit(`U cant reschedule a matchup to a time that is BEFORE 1 hour after a matchup that the one ur rescheduling depends on, see matchup ID ${previousMatchupAfterDate.ID} (${previousMatchupAfterDate.date.toUTCString()} ${discordStringTimestamp(previousMatchupAfterDate.date)})`);
             return;
         }
     }
 
-    if (matchup.nextMatchups && matchup.nextMatchups.length > 0) {
-        const nextMatchupBeforeDate = matchup.nextMatchups.find((nextMatchup) => date.getTime() > (nextMatchup.date.getTime() - 3600000));
+    const nextMatchups = await Matchup
+        .createQueryBuilder("matchup")
+        .leftJoin("matchup.loserPreviousMatchups", "loserPreviousMatchup")
+        .leftJoin("matchup.winnerPreviousMatchups", "winnerPreviousMatchup")
+        .where("matchup.invalid = 0")
+        .andWhere("(loserPreviousMatchup.ID = :matchupID OR winnerPreviousMatchup.ID = :matchupID)", { matchupID: matchup.ID })
+        .getMany();
+    
+    if (nextMatchups && nextMatchups.length > 2) {
+        await message.edit("You have a bigger problem than rescheduling this matchup, there are more than 2 matchups that your matchup depends on, contact a tournament organizer to fix this NOW!!!");
+        return;
+    }
+    if (nextMatchups && nextMatchups.length > 0) {
+        const nextMatchupBeforeDate = nextMatchups.find((nextMatchup) => date.getTime() > (nextMatchup.date.getTime() - 3600000));
         if (nextMatchupBeforeDate) {
             await message.edit(`U cant reschedule a matchup to a time that is AFTER 1 hour before a matchup that is dependant on this one, see matchup ID ${nextMatchupBeforeDate.ID} (${nextMatchupBeforeDate.date.toUTCString()} ${discordStringTimestamp(nextMatchupBeforeDate.date)})`);
             return;
         }
 
-        const potentials = matchup.nextMatchups
-            .filter((nextMatchup) => nextMatchup.potentials && nextMatchup.potentials.filter(potential => !potential.invalid).length > 0)
-            .flatMap((nextMatchup) => nextMatchup.potentials!.filter(potential => !potential.invalid));
+        const potentials = await Matchup
+            .createQueryBuilder("matchup")
+            .leftJoin("matchup.potentialFor", "potentialFor")
+            .where("potentialFor.ID  IN (:...nextMatchups)", { nextMatchups: nextMatchups.map((nextMatchup) => nextMatchup.ID) })
+            .andWhere("matchup.invalid = 0")
+            .getMany();
         const potentialsBeforeDate = potentials.find((potential) => date.getTime() > (potential.date.getTime() - 3600000));
         if (potentialsBeforeDate) {
             await message.edit(`U cant reschedule a matchup to a time that is AFTER 1 hour before a matchup that is dependant on this one, see POTENTIAL matchup ID ${potentialsBeforeDate.ID} (${potentialsBeforeDate.date.toUTCString()} ${discordStringTimestamp(potentialsBeforeDate.date)})`);
@@ -216,36 +224,37 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    // Check for any other matchups within 1 hour of the new time
-    const existing = await Matchup
-        .createQueryBuilder("matchup")
-        .innerJoin("matchup.stage", "stage")
-        .innerJoin("stage.tournament", "tournament")
-        .leftJoinAndSelect("matchup.team1", "team1")
-        .leftJoinAndSelect("matchup.team2", "team2")
-        .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
-        .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
-        .andWhere("matchup.date > :date", { date: new Date(date.getTime() - 3600000) })
-        .andWhere("matchup.date < :date2", { date2: new Date(date.getTime() + 3600000) })
-        .andWhere(new Brackets((qb) => {
-            qb.where("matchup.ID != :matchupID", { matchupID: matchup!.ID })
-                .orWhere("matchup.ID != :potentialID", { potentialID: matchup!.potentialFor?.ID ?? 0 })
-                .orWhere("potentialFor.ID != :matchupID2", { matchupID2: matchup!.ID })
-                .orWhere("potentialFor.ID != :potentialID2", { potentialID2: matchup!.potentialFor?.ID ?? 0 });
-        }))
-        .andWhere("matchup.invalid = 0")
-        .andWhere(new Brackets((qb) => {
-            qb.where("team1.ID = :team1ID1", { team1ID1: matchup!.team1?.ID })
-                .orWhere("team2.ID = :team2ID1", { team2ID1: matchup!.team1?.ID })
-                .orWhere("team1.ID = :team1ID2", { team1ID2: matchup!.team2?.ID })
-                .orWhere("team2.ID = :team2ID2", { team2ID2: matchup!.team2?.ID });
-        }))
-        .getOne();
+    // Leaving this commented for now until this actually becomes a thing wanted in any situation ever
+    // // Check for any other matchups within 1 hour of the new time
+    // const existing = await Matchup
+    //     .createQueryBuilder("matchup")
+    //     .innerJoin("matchup.stage", "stage")
+    //     .innerJoin("stage.tournament", "tournament")
+    //     .leftJoinAndSelect("matchup.team1", "team1")
+    //     .leftJoinAndSelect("matchup.team2", "team2")
+    //     .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
+    //     .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
+    //     .andWhere("matchup.date > :date", { date: new Date(date.getTime() - 3600000) })
+    //     .andWhere("matchup.date < :date2", { date2: new Date(date.getTime() + 3600000) })
+    //     .andWhere(new Brackets((qb) => {
+    //         qb.where("matchup.ID != :matchupID", { matchupID: matchup!.ID })
+    //             .orWhere("matchup.ID != :potentialID", { potentialID: matchup!.potentialFor?.ID ?? 0 })
+    //             .orWhere("potentialFor.ID != :matchupID2", { matchupID2: matchup!.ID })
+    //             .orWhere("potentialFor.ID != :potentialID2", { potentialID2: matchup!.potentialFor?.ID ?? 0 });
+    //     }))
+    //     .andWhere("matchup.invalid = 0")
+    //     .andWhere(new Brackets((qb) => {
+    //         qb.where("team1.ID = :team1ID1", { team1ID1: matchup!.team1?.ID })
+    //             .orWhere("team2.ID = :team2ID1", { team2ID1: matchup!.team1?.ID })
+    //             .orWhere("team1.ID = :team1ID2", { team1ID2: matchup!.team2?.ID })
+    //             .orWhere("team2.ID = :team2ID2", { team2ID2: matchup!.team2?.ID });
+    //     }))
+    //     .getOne();
 
-    if (existing) {
-        await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name ?? "N/A"}\` and \`${existing.team2?.name ?? "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
-        return;
-    }
+    // if (existing) {
+    //     await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name ?? "N/A"}\` and \`${existing.team2?.name ?? "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
+    //     return;
+    // }
 
     if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.captain.discord.userID}> U wanna reschedule ur match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.captain.discord.userID, dayBeforeStart - Date.now())) {
         await message.edit(`Ok Lol . <@${matchup.team1.captain.discord.userID}> stopped reschedule or the message timed out`);
