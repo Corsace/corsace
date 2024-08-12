@@ -478,6 +478,7 @@
         "navbar": {
             "home": "HOME",
             "info": "정보",
+            "referee": "REFEREE",
             "qualifiers": "퀄리파이어",
             "teams": "팀 목록",
             "schedule": "일정",
@@ -828,7 +829,10 @@
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "로비 닫기"
+            "forfeit": "FORFEIT",
+            "first": "FIRST",
+            "closeLobby": "로비 닫기",
+            "postResults": "POST RESULTS"
         },
         "status": {
             "loading": "로딩중"

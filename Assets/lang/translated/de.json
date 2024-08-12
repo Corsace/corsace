@@ -478,6 +478,7 @@
         "navbar": {
             "home": "HOME",
             "info": "INFO",
+            "referee": "REFEREE",
             "qualifiers": "QUALIFIERS",
             "teams": "TEAMS",
             "schedule": "SCHEDULE",
@@ -828,7 +829,10 @@
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "CLOSE LOBBY"
+            "forfeit": "FORFEIT",
+            "first": "FIRST",
+            "closeLobby": "CLOSE LOBBY",
+            "postResults": "POST RESULTS"
         },
         "status": {
             "loading": "LOADING"

@@ -478,6 +478,7 @@
         "navbar": {
             "home": "ホーム",
             "info": "詳細",
+            "referee": "REFEREE",
             "qualifiers": "予選",
             "teams": "チーム",
             "schedule": "スケジュール",
@@ -828,7 +829,10 @@
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "ロビーを閉じる"
+            "forfeit": "FORFEIT",
+            "first": "FIRST",
+            "closeLobby": "ロビーを閉じる",
+            "postResults": "POST RESULTS"
         },
         "status": {
             "loading": "ロード中"

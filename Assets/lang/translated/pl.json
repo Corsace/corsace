@@ -1,66 +1,66 @@
 {
-    "language": "Nederlands",
-    "flag": "https://osu.ppy.sh/images/flags/NL.png",
+    "language": "English",
+    "flag": "https://osu.ppy.sh/images/flags/GB.png",
     "header": {
-        "welcomeBack": "welkom terug",
-        "login": "{site} inloggen",
-        "register": "registreren",
+        "welcomeBack": "welcome back",
+        "login": "{site} login",
+        "register": "register",
         "menu": "menu",
-        "changeDiscord": "discord veranderen",
-        "logout": "uitloggen"
+        "changeDiscord": "change discord",
+        "logout": "logout"
     },
     "mca_ayim": {
         "banner": {
-            "merch": "OFFICIËLE MERCHANDISE WINKEL",
+            "merch": "OFFICIAL MERCHANDISE STORE",
             "corsace": "MAIN EVENT HUB"
         },
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "LOG IN",
-            "welcomeBack": "welkom terug",
+            "welcomeBack": "welcome back",
             "admin": "ADMIN",
             "staff": "STAFF",
-            "logout": "UITLOGGEN"
+            "logout": "LOGOUT"
         },
         "login": {
-            "login": "inloggen",
+            "login": "login",
             "message": {
-                "1": "Het ziet ernaar uit dat je niet ingelogd bent!<br>Log in met osu! en je kan direct beginnen met stemmen/nomineren!",
-                "2": "Je kan erna ook op discord inloggen, maar dat is <b>niet verplicht</b> om te stemmen/nomineren.<br>Discord login <b>is verplicht</b>voor staff leden die werken aan MCA/AYIM.</span>"
+                "1": "It seems that you are not logged in!<br>Simply login with osu! and you can start voting/nominating immediately!",
+                "2": "You may login on discord in addition as well after, but it is <b>not required</b> to vote/nominate.<br>Discord login <b>is required</b> for staff members working on MCA/AYIM.</span>"
             },
-            "authOsu": "klik hier om met osu! te verifiëren!",
-            "authOsuComp": "osu! verificatie compleet. Nya :3 ",
-            "authDiscord": "klik hier om met discord te verifiëren",
-            "authDiscordComp": "Discord verificatie compleet. Nom :3 "
+            "authOsu": "click here to authenticate with osu!",
+            "authOsuComp": "osu! verification complete. Hi ",
+            "authDiscord": "click here to authenticate with discord",
+            "authDiscordComp": "Discord verification complete. Hi "
         }
     },
     "ayim": {
         "main": {
             "records": "RECORDS",
-            "statistics": "STATISTIEKEN",
-            "search": "zoek naar een mapper",
-            "numberof": "nummer van",
-            "numberwith": "nummer van maps met",
+            "statistics": "STATISTICS",
+            "search": "search for a mapper",
+            "numberof": "number of",
+            "numberwith": "number of maps with",
             "message": {
-                "2019": "<p>Hallo 2020.</p><p>A Year in Mapping 2019 is terug om jou de records van dit jaar, en de verzamelde gedetailleerde statistieken te laten zien!</p><p>Met deze website kunnen we nu zo veel mogelijk informatie mogelijk toevoegen voor alle jaren! Als je suggesties (of website bugs) hebt, laat het VINXIS weten in de corsace server (link linksonder!)</p><p>WE CROWDFUNDEN OOK COMMENTS! Dat betekent dat JIJ comments kan schrijven en insturen voor zo veel mappers als je wil!</p><p>Selecteer de gamemode van jouw voorkeur met de icons hieronder om te starten!</p>",
-                "2020": "<p>Hallo 2021... het correcte jaar deze keer!</p><p>A Year in Mapping 2020 is back to back terug om jou de records en verzamelde gedetailleerde statistieken van DIT jaar te laten zien!</p><p>Comments zijn gesloten voor 2020. Hopelijk kunnen we ze in de toekomst weer activeren! Ondertussen, kijk naar alle records en stats!</p>",
-                "2021": "<p>2022 is hier!</p> <p>A Year in Mapping 2021 is hier om de records en stats te laten zien die gemaakt of zelfs gebroken zijn!</p>",
-                "2022": "<p>Welkom in 2023!</p> <p>A Year in Mapping 2022 is hier om de records en stats te laten zien die gemaakt of zelfs gebroken zijn! Deze keer (soortvan) wel op tijd!</p>",
+                "2019": "<p>Hello 2020.</p><p>A Year in Mapping 2019 has returned to bring you the record-breaks of the year, and the detailed statistics amassed as well!</p><p>With this website, we can now add as much information as we can feasibly retrieve for all years! If you have any suggestions (as well as any website bugs), let VINXIS know in the corsace server (link at the bottom left!)</p><p>WE ARE ALSO CROWDFUNDING COMMENTS! That means YOU can write and submit a comment for as many mappers as you want!</p><p>Select your preferred mode with the icons below to get started!</p>",
+                "2020": "<p>Hello 2021... the correct year this time!</p><p>A Year in Mapping 2020 has come to you back to back to bring you the record-breaks of THIS year, and the detailed statistics amassed as well!</p><p>Comments are closed off for 2020. Hopefully we will be able to bring them back in the future! In the meantime, check out all the records and stats!</p>",
+                "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>",
+                "2022": "<p>Welcome to 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>",
                 "2023": "<p>2024 is now here!</p> <p>A Year in Mapping 2023 is here to provide the records and stats made or even broken!</p>"
             }
         },
         "mapsets": {
             "name": "MAPSETS",
-            "playcount": "KEREN GESPEELD",
-            "favourites": "FAVOURIETEN",
-            "favouritesExclHybrid": "FAVOURIETEN (EXCL. HYBRIDS)",
-            "length": "LENGTE",
+            "playcount": "PLAYCOUNT",
+            "favourites": "FAVOURITES",
+            "favouritesExclHybrid": "FAVOURITES (EXCL. HYBRIDS)",
+            "length": "LENGTH",
             "difficulties": "DIFFICULTIES",
-            "playTime": "LENGTE (SOM VAN ALLE DIFFICULTIES)",
-            "totalRanked": "TOTAAL AANTAL RANKED",
-            "totalDiff": "TOTALE DIFFICULTIES",
-            "submitDates": "INSTUUR DATA",
+            "playTime": "LENGTH (SUM OF ALL DIFFICULTIES)",
+            "totalRanked": "TOTAL RANKED",
+            "totalDiff": "TOTAL DIFFICULTIES",
+            "submitDates": "SUBMIT DATES",
             "starRatings": "STAR RATINGS",
             "approachRate": "APPROACH RATE",
             "overallDifficulty": "OVERALL DIFFICULTY",
@@ -69,318 +69,318 @@
             "spinners": "SPINNERS",
             "sliders": "SLIDERS",
             "circles": "CIRCLES",
-            "avgSpinnersPerDiff": "GEMIDDELDE SPINNERS PER DIFF",
-            "avgSlidersPerDiff": "GEMIDDELDE SLIDERS PER DIFF",
-            "avgCirclesPerDiff": "GEMIDDELDE CIRCLES PER DIFF",
-            "highestSr": "HOOGSTE STAR RATING",
-            "lowestSr": "LAAGSTE STAR RATING"
+            "avgSpinnersPerDiff": "AVG SPINNERS PER DIFF",
+            "avgSlidersPerDiff": "AVG SLIDERS PER DIFF",
+            "avgCirclesPerDiff": "AVG CIRCLES PER DIFF",
+            "highestSr": "HIGHEST STAR RATING",
+            "lowestSr": "LOWEST STAR RATING"
         },
         "mappers": {
             "name": "MAPPERS",
-            "mostRanked": "MEEST GERANKED",
-            "mostDiffs": "MEESTE DIFFICULTIES",
-            "mostFavs": "MEESTE FAVOURITES",
-            "mostFavsExclHybrid": "MEESTE FAVOURITES (EXCL. HYBRIDS)",
-            "mostPlayed": "MEEST GESPEELD",
-            "totalMappers": "TOTALE MAPPERS",
-            "newMapperAges": "NIEUWE MAPPER LEEFTIJD",
-            "mapperAges": "MAPPER LEEFTIJD",
-            "mapsPerMapperAges": "MAPS PER MAPPER PER LEEFTIJD",
+            "mostRanked": "MOST RANKED",
+            "mostDiffs": "MOST DIFFICULTIES",
+            "mostFavs": "MOST FAVOURITES",
+            "mostFavsExclHybrid": "MOST FAVOURITES (EXCL. HYBRIDS)",
+            "mostPlayed": "MOST PLAYED",
+            "totalMappers": "TOTAL MAPPERS",
+            "newMapperAges": "NEW MAPPER AGES",
+            "mapperAges": "MAPPER AGES",
+            "mapsPerMapperAges": "MAPS PER MAPPER PER AGE",
             "bng": "BNG",
             "nat": "NAT",
-            "uniqueMappers": "TOTAAL AANTAL MAPPERS",
-            "newMappers": "NIEUWE MAPPERS",
-            "highestAvgSr": "HOOGSTE GEMIDDELDE SR",
-            "lowestAvgSr": "LAAGSTE GEMIDDELDE SR",
+            "uniqueMappers": "TOTAL MAPPERS",
+            "newMappers": "NEW MAPPERS",
+            "highestAvgSr": "HIGHEST AVG SR",
+            "lowestAvgSr": "LOWEST AVG SR",
             "mappers": "MAPPERS"
         },
         "statistics": {
-            "numberOf": "nummer van",
-            "numberOfMapsWith": "nummer van maps met",
-            "average": "gemiddeld"
+            "numberOf": "number of",
+            "numberOfMapsWith": "number of maps with",
+            "average": "average"
         },
         "comments": {
             "name": "COMMENTS",
-            "info": "Alle comments worden gepubliceerd nadat de resultaten voor deze MCA bekend zijn! Tot dan kan je je eigen comments insturen.",
-            "search": "zoek naar een mapper",
-            "viewSubmit": "comments zien/insturen",
-            "writeHere": "Schrijf hier een nieuwe comment voor deze mapper",
+            "info": "All comments become public after this MCA's results are out! You can submit your own comments until then.",
+            "search": "search for a mapper",
+            "viewSubmit": "view/submit comments",
+            "writeHere": "Write a new comment for this mapper here!",
             "update": "Update",
-            "remove": "Verwijder",
-            "create": "Maak",
-            "login": "Log in om een comment te schrijven!",
-            "visible": "(nog niet zichtbaar)",
-            "notice": "Hallo! Dit is wellicht de eerste keer dat je op (een van) de comment pagina('s) terecht bent gekomen! <br> Houd er rekening mee dat de comments gecrowdfund zijn! <br> Iedereen (inclusief jij) kan comments voor anderen schrijven totdat de MCA van dit jaar voorbij is! <br> Schrijf over wat ze hebben gedaan of hebben bereikt in [YEAR] om ze te bedanken voor hun inzet voor de community!"
+            "remove": "Remove",
+            "create": "Create",
+            "login": "Login to create a comment!",
+            "visible": "(not visible yet)",
+            "notice": "Hello! This may be the first time you have navigated to (one of) the comments page! <br> Please note that comments are crowdfunded! <br> Anyone (including you) can write comments for anyone until this year's MCA is done! <br> Write about what they did or their achievements in [YEAR] to show appreciation to the mappers participating in the community!"
         }
     },
     "mca": {
         "main": {
-            "banner": "LATEN WE TERUGKIJKEN <br> NAAR",
-            "click": "KLIK HIER OM TE BEGINNEN",
-            "welcome": "WELKOM BIJ MCA",
-            "voting": "stemmen",
-            "nominating": "nomineren",
-            "preparation": "voorbereiding",
-            "results": "resultaten",
-            "timeline": "tijdlijn",
+            "banner": "LET'S LOOK BACK <br> AT",
+            "click": "CLICK HERE TO ENTER",
+            "welcome": "WELCOME TO MCA",
+            "voting": "voting",
+            "nominating": "nominating",
+            "preparation": "preparation",
+            "results": "results",
+            "timeline": "timeline",
             "mapsetsLabel": "MAPSETS",
             "mappersLabel": "MAPPERS",
             "commentsLabel": "COMMENTS",
             "recordsLabel": "RECORDS",
-            "statisticsLabel": "STATISTIEKEN",
+            "statisticsLabel": "STATISTICS",
             "stage": {
-                "voting": "stem fase",
-                "nominating": "nomineer fase",
-                "preparation": "voorbereidings fase",
-                "stage": "fase"
+                "voting": "voting stage",
+                "nominating": "nomination stage",
+                "preparation": "preparation stage",
+                "stage": "stage"
             },
             "rankedSets": "RANKED SETS",
-            "nominateNow": "nomineer nu!",
-            "voteNow": "stem nu!",
-            "viewResults": "bekijk resultaten!",
-            "daysLeft": "dagen over",
+            "nominateNow": "nominate now!",
+            "voteNow": "vote now!",
+            "viewResults": "view results!",
+            "daysLeft": "days left",
             "message": {
-                "2019": "<p>Mapper's Choice Awards is terug voor ronde 4 in 2019! Dit is een stem event waar alle mappers/modders kunnen nomineren of stemmen voor wat zij denken dat de beste map/mapper voor elke categorie is!</p><p>Onze bedoeling is om een nieuw perspectief te bieden aan de beste maps van 2019 door de ogen van de mapping community!</p><p>Dit jaar, hebben we volledig de transitie naar de website gemaakt zodat we het zo makkelijk mogelijk kunnen maken voor stemmers die in aanmerking komen om te nomineren en stemmen!</p><p>Alle osu! supporter prijzen worden direct door de osu! staff aangeboden. 2 maanden supporter voor de winnaars van elke categorie, en 6 maanden voor de winnaars van de Grand Awards!</p><p>We hopen dat zo veel mogelijk mensen deelnemen aan dit event! Laat het VINXIS weten in de discord server als je bugs of problemen hebt met de website!</p>",
-                "2020": "<p>Back to back is mapper's choice awards terug om het af te maken met ronde 5 met 2020! Dit is een stem event waar alle mappers/modders kunnen nomineren of stemmen voor wat zij denken dat de beste map/mapper voor elke categorie is!</p><p>Onze bedoeling is om een nieuw perspectief te bieden aan de beste maps van 2020 door de ogen van de mapping community!</p><p>We hebben veel aanpassingen gedaan en hopelijk alle bugs verholpen die in MCA 2019 gevonden zijn, en ook de categoriëen veranderd dus deze editie zou veel beter moeten lopen!</p><p>Alle osu! supporter prijzen worden direct door de osu! staff aangeboden. 2 maanden supporter voor de winnaars van elke categorie, en 6 maanden voor de winnaars van de Grand Awards!</p><p>We hopen dat zo veel mogelijk mensen deelnemen aan dit event!</p>",
-                "2021": "<p>Mapper's Choice Awards is weer terug voor 2021! Dit is een stem event waar alle mappers/modders kunnen nomineren of stemmen voor wat zij denken dat de beste map/mapper voor elke categorie is!</p><p>Alle osu! supporter prijzen worden direct door de osu! staff aangeboden. 2 maanden supporter voor de winnaars van elke categorie, en 6 maanden voor de winnaars van de Grand Awards!</p><p>We hopen dat zo veel mogelijk mensen deelnemen aan dit event!</p>",
-                "2022": "We zijn weer terug voor nog een editie van Mapper's Choice Awards! (Deze keer bijna op tijd!)<br>Dit is een stem event waar alle mappers/modders kunnen nomineren of stemmen voor wat zij denken dat de beste map/mapper voor elke categorie is!<br>Alle osu! supporter prijzen worden direct door de osu! staff aangeboden. 2 maanden supporter voor de winnaars van elke categorie, en 6 maanden voor de winnaars van de Grand Awards!</p><p>We hopen dat zo veel mogelijk mensen deelnemen aan dit event!",
+                "2019": "<p>Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community!</p><p>This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event! Let VINXIS know in the corsace discord server for any bugs or issues with the website!</p>",
+                "2020": "<p>Back to back, mapper's choice awards is again to finish it off at round 5 with 2020! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2020 through the eyes of the mapping community!</p><p>We've made many changes and hopefully dealt with all the bugs that were found throughout MCA 2019 as well as changing categories as needed so this one should be far smoother!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>",
+                "2021": "<p>Mapper's Choice Awards is back again for 2021! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>",
+                "2022": "We are back for another installment of Mapper's Choice Awards! (This time almost on schedule!)<br>This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!",
                 "2023": "New year, new iteration of Mapper's Choice Awards!<br>This is a voting event where all mappers and modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
             },
             "categories": {
-                "index": "categoriëen",
-                "map": "map categoriëen",
-                "user": "user categoriëen"
+                "index": "categories",
+                "map": "map categories",
+                "user": "user categories"
             },
-            "organized": "ORGANISATOREN"
+            "organized": "ORGANIZERS"
         },
         "categories": {
             "grandAward": {
                 "name": "Grand Award",
-                "description": "Het beste van het beste"
+                "description": "The best of the best."
             },
             "grandStoryboard": {
                 "name": "Grand Storyboard",
-                "description": "Het beste storyboard."
+                "description": "The best storyboard out there."
             },
             "grandStoryboarder": {
                 "name": "Grand Storyboarder",
-                "description": "De beste storyboarder."
+                "description": "The best storyboarder out there."
             },
             "marathon": {
-                "name": "Beste Marathon",
-                "description": "De beste beatmap met 5+ minuten drain time."
+                "name": "Best Marathon",
+                "description": "The best beatmap with 5+ minute drain time."
             },
             "marathonMan": {
-                "name": "Beste Marathon",
-                "description": "De beste beatmap met 4+ minuten drain time."
+                "name": "Best Marathon",
+                "description": "The best beatmap with 4+ minute drain time."
             },
             "hitsounding": {
-                "name": "Beste Hitsounding",
-                "description": "De beste toeters en bellen."
+                "name": "Best Hitsounding",
+                "description": "The best bells and whistles out there."
             },
             "collab": {
-                "name": "Beste Collab",
-                "description": "De beste beatmap met 2+ mappers die de top difficulty hebben gemaakt."
+                "name": "Best Collab",
+                "description": "The best beatmap with 2+ mappers creating the top difficulty."
             },
             "simple": {
-                "name": "Beste Simple",
-                "description": "De beste beatmap met een top difficulty lager dan een insane."
+                "name": "Best Simple",
+                "description": "The best beatmap with the top difficulty lower than an insane."
             },
             "highBPM": {
-                "name": "Beste High BPM",
-                "description": "De beste beatmap met onorthodox snelle streams of veel singletap strain."
+                "name": "Best High BPM",
+                "description": "The best beatmap with atypically fast streaming or high singletap strain."
             },
             "smallCircles": {
-                "name": "Beste Small Circles",
-                "description": "De beste beatmap met een top difficulty van circle size 5 of kleiner."
+                "name": "Best Small Circles",
+                "description": "The best beatmap with the top difficulty using circle size 5 or smaller."
             },
             "heavy13": {
-                "name": "Beste 1/3 Heavy",
-                "description": "De beste beatmap met top difficulties die veel paarse ticks gebruiken."
+                "name": "Best 1/3 Heavy",
+                "description": "The best beatmap with top difficulties using lots of purple ticks."
             },
             "throwback": {
-                "name": "Beste Throwback",
-                "description": "De beste beatmap met een oude stijl."
+                "name": "Best Throwback",
+                "description": "The best beatmap with a style of the old."
             },
             "mapper": {
-                "name": "Beste Mapper",
-                "description": "Degene die de beste beatmaps heeft gemaakt."
+                "name": "Best Mapper",
+                "description": "The one who created the best beatmaps."
             },
             "modder": {
-                "name": "Beste Modder",
-                "description": "Degene die de beste mods heeft geschreven."
+                "name": "Best Modder",
+                "description": "The one who created the best mods."
             },
             "hitsounder": {
-                "name": "Beste Hitsounder",
-                "description": "Degene die de beste hitsounds heeft gemaakt."
+                "name": "Best Hitsounder",
+                "description": "The one who created the best hitsounds."
             },
             "mostPromising": {
-                "name": "Meest Promising",
-                "description": "De beste mapper die dit jaar hun eerste beatmap heeft geranked."
+                "name": "Most Promising",
+                "description": "The best mapper who ranked their first set this year."
             },
             "mostInfluential": {
-                "name": "Meest Influential",
-                "description": "Degene die anderen het meest heeft geïnspireerd of beïnvloed."
+                "name": "Most Influential",
+                "description": "The one who inspired and influenced other mappers the most."
             },
             "outCont": {
                 "name": "Outstanding Contributor",
-                "description": "Degene die het positiefst heeft bijgedraagd aan osu!"
+                "description": "The one who positively contributed to the health of osu! the most."
             },
             "spread": {
-                "name": "Beste Spread",
-                "description": "De set met de beste spread van difficulties."
+                "name": "Best Spread",
+                "description": "The set with the best spread of difficulties."
             },
             "experimental": {
-                "name": "Beste Experimental",
-                "description": "De beste \"tech\" / of meta beatmap."
+                "name": "Best Experimental",
+                "description": "The best \"tech\" / off meta beatmap."
             },
             "stream": {
-                "name": "Beste Streams",
-                "description": "De beatmap met de beste aaneenlopende streams."
+                "name": "Best Streams",
+                "description": "The beatmap with the best continuous streams."
             },
             "highBPMTaiko": {
-                "name": "Beste High BPM",
-                "description": "De beste beatmap boven 240 BPM."
+                "name": "Best High BPM",
+                "description": "The best beatmap with over 240 BPM."
             },
             "lowBPMTaiko": {
-                "name": "Beste Low BPM",
-                "description": "De beste beatmap onder 130BPM."
+                "name": "Best Low BPM",
+                "description": "The best beatmap with under 130 BPM."
             },
             "simplistic": {
-                "name": "Beste Simplistic",
-                "description": "De beste simpele beatmap."
+                "name": "Best Simplistic",
+                "description": "The best cleanest beatmap out there."
             },
             "sliderVelocity": {
-                "name": "Beste Slider Velocity",
-                "description": "De beste beatmap met een intens gebruik van slider velocities."
+                "name": "Best Slider Velocity",
+                "description": "The best beatmap with an intense usage of slider velocities."
             },
             "featuredArtist": {
-                "name": "Beste Featured Artist",
-                "description": "De beste beatmap van een Featured Artist lied."
+                "name": "Best Featured Artist",
+                "description": "The best beatmap for a featured artist song."
             },
             "longNotes": {
-                "name": "Beste Long Notes",
-                "description": "De beste beatmap met een intens gebruik van LNs."
+                "name": "Best Long Notes",
+                "description": "The best beatmap with an intense usage of LNs."
             },
             "longNotes4K": {
-                "name": "Beste 4K Long Notes",
-                "description": "De beste 4K beatmap met een intens gebruik van LNs."
+                "name": "Best 4K Long Notes",
+                "description": "The best 4K beatmap with an intense usage of LNs."
             },
             "longNotes7K": {
-                "name": "Beste 7K Long Notes",
-                "description": "De beste 7K beatmap met een intens gebruik van LNs."
+                "name": "Best 7K Long Notes",
+                "description": "The best 7K beatmap with an intense usage of LNs."
             },
             "rice": {
-                "name": "Beste Rice",
-                "description": "De beste beatmap met een intens gebruik van rice."
+                "name": "Best Rice",
+                "description": "The best beatmap with an intense usage of rice."
             },
             "rice4K": {
-                "name": "Beste 4K Rice",
-                "description": "De beste 4K beatmap met een intens gebruik van rice."
+                "name": "Best 4K Rice",
+                "description": "The best 4K beatmap with an intense usage of rice."
             },
             "rice7K": {
-                "name": "Beste 7K Rice",
-                "description": "De beste 7K beatmap met een intens gebruik van rice."
+                "name": "Best 7K Rice",
+                "description": "The best 7K beatmap with an intense usage of rice."
             },
             "antiMeta": {
-                "name": "Beste Anti Meta",
-                "description": "De beste beatmap rond 5K/6K/8K/9K."
+                "name": "Best Anti Meta",
+                "description": "The best beatmap based around 5K/6K/8K/9K."
             },
             "7K": {
-                "name": "Beste 7K Specific",
-                "description": "De beste beatmap van 7K."
+                "name": "Best 7K Specific",
+                "description": "The best beatmap based around 7K."
             },
             "technical": {
-                "name": "Beste Technical",
-                "description": "Het beste storyboard met zijn technische aspecten."
+                "name": "Best Technical Storyboard",
+                "description": "The best storyboard in its technical capabilities."
             },
             "gameplay": {
-                "name": "Beste Gameplay",
-                "description": "Het beste storyboard in zijn gebruik van gameplay elementen."
+                "name": "Best Gameplay Storyboard",
+                "description": "The best storyboard in utilizing gameplay elements."
             },
             "minimalistic": {
-                "name": "Beste Minimalistic",
-                "description": "Het beste storyboard in veel zeggen met weinig."
+                "name": "Best Minimalistic Storyboard",
+                "description": "The best storyboard in saying a lot with very little."
             },
             "narrative": {
-                "name": "Beste Narrative",
-                "description": "Het beste storyboard in het vertellen van een verhaal."
+                "name": "Best Narrative Storyboard",
+                "description": "The best storyboard in telling a great story."
             },
             "technicalTaiko": {
-                "name": "Beste Technical",
-                "description": "De beste beatmap rijk in in complexe patterns en timing snap combinaties."
+                "name": "Best Technical",
+                "description": "The best beatmap rich in complex patterning and snap combinations."
             },
             "fastTaiko": {
-                "name": "Beste Fast",
-                "description": "De beste beatmap met snelle tapping en hoge SV."
+                "name": "Best Fast",
+                "description": "The best beatmap with fast tapping and high SV."
             },
             "slowTaiko": {
-                "name": "Beste Slow",
-                "description": "De beste beatmap met slome tapping en lage SV."
+                "name": "Best Slow",
+                "description": "The best beatmap with slow tapping and low SV."
             },
             "hybrid": {
-                "name": "Beste Hybrid",
-                "description": "De beste beatmap die veel van LNs EN rice patterning laat zien."
+                "name": "Best Hybrid",
+                "description": "The best beatmap which showcases substantial amounts of both LN and rice patterning."
             },
             "hybrid4K": {
-                "name": "Beste 4K Hybrid",
-                "description": "De beste 4K beatmap die veel van LNs EN rice patterning laat zien."
+                "name": "Best 4K Hybrid",
+                "description": "The best 4K beatmap which showcases substantial amounts of both LN and rice patterning."
             },
             "hybrid7K": {
-                "name": "Beste 7K Hybrid",
-                "description": "De beste 7K beatmap die veel van LNs EN rice patterning laat zien."
+                "name": "Best 7K Hybrid",
+                "description": "The best 7K beatmap which showcases substantial amounts of both LN and rice patterning."
             },
             "highBPMAlternator": {
-                "name": "Beste High BPM / Alternator",
-                "description": "De beste beatmap met een focus op extreem snelle tapping en/of aim skills. (240+ BPM)"
+                "name": "Best High BPM / Alternator",
+                "description": "The best beatmap with priority on extremely fast tapping and / or aim skills. (240+ BPM)"
             },
             "vanilla": {
-                "name": "Beste Vanilla",
-                "description": "De beste beatmap die effectief gebruikt maakt van simpele mapping technieken."
+                "name": "Best Vanilla",
+                "description": "The best beatmap utilizing simple mapping techniques to great effect."
             },
             "complex": {
-                "name": "Beste Complex Rhythm / Swing",
-                "description": "De beste beatmap met veelvuldig gebruik van ongewone snappings, inclusief doubles, 1/3, 1/5, 1/7, en meer."
+                "name": "Best Complex Rhythm / Swing",
+                "description": "The best beatmap with extensive usage of uncommon snappings, including doubles, 1/3, 1/5, 1/7, and more."
             },
             "unorthodox": {
-                "name": "Beste Unorthodox / Gimmick",
-                "description": "De beste beatmap die mapping technieken of ideeën laat zien die niet vaak worden gezien."
+                "name": "Best Unorthodox / Gimmick",
+                "description": "The best beatmap showcasing mapping techniques or ideas that are not frequently seen."
             },
             "sliderTech": {
-                "name": "Beste Slider Tech",
-                "description": "De beste beatmap met technical elementen, ingewikkelde slider design en velocity gebruik, en complexe stream patterns."
+                "name": "Best Slider Tech",
+                "description": "The best beatmap featuring technical elements, intricate slider design and velocity usage, and complex stream patterns."
             },
             "mostInspiring": {
-                "name": "Meest Inspiring",
-                "description": "Degene die anderen het meest heeft geïnspireerd of beïnvloed."
+                "name": "Most Inspiring",
+                "description": "The one who influenced and provided inspiration to others the most."
             },
             "mostInnovative": {
-                "name": "Meest Innovative",
-                "description": "Degene met de meest vernieuwende ideeën."
+                "name": "Most Innovative",
+                "description": "The one who influenced and provided inspiration to others the most."
             },
             "communityPillar": {
                 "name": "Community Pillar",
-                "description": "De beste user in het bijdragen aan de community achter de schermen."
+                "description": "The best user in providing outstanding contribution to the community behind-the-scenes."
             },
             "simplisticTaiko": {
-                "name": "Beste Simplistic",
-                "description": "De beste beatmap die simpele patterns en ritme gebruikt."
+                "name": "Best Simplistic",
+                "description": "The best beatmap in using simple patterning and rhythm."
             },
             "technicalCatch": {
-                "name": "Beste Technical",
-                "description": "De beste beatmap dat innoverende concepten gebruikt die de grenzen van catch gameplay verleggen."
+                "name": "Best Technical",
+                "description": "The best beatmap which utilizes concepts that push the boundaries of catch gameplay."
             },
             "antiMetaCatch": {
-                "name": "Beste Anti-Meta",
-                "description": "De beste beatmap in het gebruiken van onorthodoxe / gimmicky patterning."
+                "name": "Best Anti-Meta",
+                "description": "The best beatmap at using unconventional / gimmicky patterning."
             },
             "unconventionalCtb": {
-                "name": "Beste Unconventional AR/CS",
-                "description": "De beste beatmap met ongewone AR (Rond <=8.5) of ongewone CS (Rond >=5, <=3)."
+                "name": "Best Unconventional AR/CS",
+                "description": "The best beatmap with unusual AR (Approx. <=8.5) or unusual CS (Approx. >=5, <=3)."
             },
             "diversity": {
-                "name": "Beste Diversity",
-                "description": "De beste beatmap met veel skillsets/categorieën."
+                "name": "Best Diversity",
+                "description": "The best beatmap focusing on many skillsets / categories."
             },
             "altSwing": {
                 "name": "Best Alternator / Swing",
@@ -432,46 +432,46 @@
             }
         },
         "nom_vote": {
-            "search": "zoek naar een beatmap/user",
-            "select": "Selecteer alsjeblieft een categorie!",
-            "candidates": "candidaten",
+            "search": "search for a beatmap / user",
+            "select": "Please select a category!",
+            "candidates": "candidates",
             "options": {
-                "date": "DATUM",
-                "artist": "ARTIEST",
-                "title": "TITEL",
+                "date": "DATE",
+                "artist": "ARTIST",
+                "title": "TITLE",
                 "favs": "FAVS",
                 "creator": "CREATOR",
                 "sr": "SR",
                 "id": "ID",
                 "alph": "ALPH",
-                "asc": "OPL",
-                "desc": "AFL",
-                "voteOrder": "STEM VOLGORDE",
-                "valid": "GELDIG",
-                "invalid": "ONGELDIG",
-                "both": "BEIDE",
-                "all": "ALLE",
-                "played": "GESPEELD",
-                "results": "RESULTATEN",
-                "voters": "STEMMERS"
+                "asc": "ASC",
+                "desc": "DESC",
+                "voteOrder": "VOTE ORDER",
+                "valid": "VALID",
+                "invalid": "INVALID",
+                "both": "BOTH",
+                "all": "ALL",
+                "played": "PLAYED",
+                "results": "RESULTS",
+                "voters": "VOTERS"
             },
-            "votingOverlay": "Hallo! Dit is wellicht de eerste keer dat je op de stem pagina bent gekomen! <br> MCA stemmen gebruikt <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting!</a> <br> Dit betekent dat je zo veel beatmaps/users als je wil kan kiezen om voor te stemmen! <br> Alle stemmen zijn gerangschikt op keuze, dus <span class='notice-modal--bold'>je eerste keuze heeft altijd de hoogste prioriteit!</span> <br> Je eerste keus telt totdat het uitvalt. Daarna je tweede keus, derde, 4de, etc. <br> Veel succes en we kunnen niet wachten om de resultaten te zien voor MCA [YEAR]",
-            "hosted": "GEHOST DOOR",
+            "votingOverlay": "Hello! this may be the first time you have navigated to the voting page! <br> MCA Voting utilizes <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting!</a> <br> This means you can select any number of beatmaps/users to vote for! <br> All votes are ordered by choice, so <span class='notice-modal--bold'>the first choice will have the highest priority!</span> <br> Your first choice will count until it loses the race. Then your second, then your third, then 4th, e.t.c. <br> Good luck and can't wait to see the results for MCA [YEAR]",
+            "hosted": "HOSTED BY",
             "userID": "USER ID"
         },
         "results": {
             "headings": {
-                "placement": "PLEK",
+                "placement": "PLACE",
                 "map": "MAP",
-                "title": "TITEL",
-                "artist": "ARTIEST",
+                "title": "TITLE",
+                "artist": "ARTIST",
                 "hoster": "HOST",
                 "username": "USER",
-                "firstChoice": "1STE KEUZES",
-                "secondThirdChoice": "2DE-3DE KEUZES",
-                "restChoice": "4DE KEUZES"
+                "firstChoice": "1ST CHOICES",
+                "secondThirdChoice": "2ND-3RD CHOICES",
+                "restChoice": "4TH+ CHOICES"
             },
-            "resultsOverlay": "Hello! Dit is wellicht de eerste keer dat je op de resultaten pagina bent gekomen! <br> Deze resultaten laten de definitieve plaatsing van de beatmaps/users zien met gebruik van <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> naast het aantal keer dat de beatmap/user een eerste keus was, en het totaal aantal verschijningen!<br> Hopelijk ben je tevreden met de resultaten voor MCA [YEAR]! We kunnen niet wachten om jullie allemaal te zien voor de volgende MCA!"
+            "resultsOverlay": "Hello! This is possibly the first time you have navigated to the results page! <br> These results show the final placements of the beatmaps/users using <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> alongside the amount of times the beatmap/user was a first choice, and the total number of appearances!<br> Hopefully these results for MCA [YEAR] are to your liking! Can't wait to see you all for next MCA!"
         }
     },
     "open": {
@@ -486,7 +486,7 @@
             "staff": "STAFF",
             "createTeam": "CREATE TEAM",
             "myTeams": "my teams",
-            "invitations": "INVITATIONS",
+            "invitations": "invitations",
             "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
             "teamInvites": "TEAM INVITES",
             "noInvites": "You currently have no invites"
@@ -646,7 +646,7 @@
             }
         },
         "teams": {
-            "teamList": "TEAMS LIST",
+            "teamList": "TEAM LIST",
             "teamManagement": "TEAM MANAGEMENT",
             "error": "COULD NOT GET TEAM LIST",
             "loginManagement": "Log in to manage your teams.",
@@ -655,11 +655,11 @@
             "showRegistered": "registered only",
             "noRegisteredTeams": "No teams have registered yet.",
             "noCreatedTeams": "You are currently not in any teams",
-            "editTeamInfo": "edit team info",
+            "editTeamInfo": "EDIT TEAM INFO",
             "leaveTeam": "LEAVE TEAM",
             "qualifierId": "Qualifier ID",
             "placeholders": {
-                "searchUser": "osu! username (must have corsace account)",
+                "searchUser": "osu! username",
                 "name": "name",
                 "abbreviation": "abbreviation"
             },
@@ -694,7 +694,7 @@
                     "deleteTeam": "Are you sure you want to delete this team?",
                     "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
                     "removeMember": "Are you sure you want to remove {username} from your team?",
-                    "transferCaptain": "Are you sure you want to transfer manager to {username}?",
+                    "transferCaptain": "Are you sure you want to transfer captain to {username}?",
                     "invite": "Are you sure you want to invite {username} to your team?",
                     "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
                     "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
@@ -705,12 +705,12 @@
             "headers": {
                 "tournaments": "TOURNAMENTS",
                 "teamStats": "TEAM STATS",
-                "teamCaptain": "TEAM MANAGER",
+                "teamCaptain": "TEAM CAPTAIN",
                 "teamMembers": "TEAM MEMBERS",
                 "editTeamMembers": "edit team members",
                 "closeTeamMembers": "close team members edit",
                 "becomeMember": "become a member and play as well",
-                "becomeCaptain": "become manager only",
+                "becomeCaptain": "become captain only",
                 "teamInvites": "TEAM INVITES",
                 "teamPage": "TEAM PAGE",
                 "editTeamInvites": "edit team invites",
@@ -783,10 +783,10 @@
             "avatarInfo3": "All names and avatars will be approved by staff.",
             "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
             "teamManagement": "TEAM MANAGEMENT",
-            "teamCaptains": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamCaptainsFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
-            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmCaptain": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "teamCaptains": "<div>Team <span>captains</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamCaptainsFree": "If you wish to not play, and only act as a captain, you will <span>not</span> take up a player slot.",
+            "selectCaptain": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>captain</span>.",
+            "confirmCaptain": "<div>By checking this, I will only act as captain, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "CREATE TEAM"
         },
         "components": {
@@ -843,14 +843,14 @@
     },
     "main": {
         "construction": {
-            "underConstruction": "wordt aan gewerkt",
-            "sorry": "sorry voor het ongemak",
-            "development": "de corsace website is nog steeds in early development",
-            "theTeam": "het corsace team"
+            "underConstruction": "under construction",
+            "sorry": "sorry for the inconvenience",
+            "development": "the corsace website is still in early development",
+            "theTeam": "the corsace team"
         },
         "merch": {
             "code": "Tap Trio - Corsace Bundle",
-            "products": "Beperkte hoeveelheid beschikbaar"
+            "products": "Limited quantity available"
         }
     }
 }

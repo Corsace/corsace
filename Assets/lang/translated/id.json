@@ -478,6 +478,7 @@
         "navbar": {
             "home": "BERANDA",
             "info": "INFO",
+            "referee": "WASIT",
             "qualifiers": "KUALIFIKASI",
             "teams": "TIM",
             "schedule": "JADWAL",
@@ -828,7 +829,10 @@
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "TUTUP LOBI"
+            "forfeit": "MENYERAH",
+            "first": "FIRST",
+            "closeLobby": "TUTUP LOBI",
+            "postResults": "POSTING HASIL"
         },
         "status": {
             "loading": "MEMUAT"

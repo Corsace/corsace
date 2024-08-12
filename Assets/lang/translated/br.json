@@ -478,6 +478,7 @@
         "navbar": {
             "home": "INÍCIO",
             "info": "INFORMAÇÕES",
+            "referee": "REFEREE",
             "qualifiers": "QUALIFICATÓRIAS",
             "teams": "TIMES",
             "schedule": "CALENDÁRIO",
@@ -828,7 +829,10 @@
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "FECHAR LOBBY"
+            "forfeit": "FORFEIT",
+            "first": "FIRST",
+            "closeLobby": "FECHAR LOBBY",
+            "postResults": "POST RESULTS"
         },
         "status": {
             "loading": "CARREGANDO"
