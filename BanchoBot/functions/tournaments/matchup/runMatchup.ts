@@ -31,7 +31,7 @@ import { loginRow } from "../../../../DiscordBot/functions/loginResponse";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { unallowedToPlay } from "../../../../Interfaces/tournament";
 import { publishSettings } from "./centrifugo";
-import assignTeamsToNextMatchup from "../../../../Server/functions/tournaments/matchups/assignTeamsToNextMatchup";
+// import assignTeamsToNextMatchup from "../../../../Server/functions/tournaments/matchups/assignTeamsToNextMatchup";
 import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
 import { MapStatus } from "../../../../Interfaces/matchup";
 import { publish } from "../../../../Server/functions/centrifugo";
@@ -781,7 +781,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     matchup.winner = matchup.team2;
                 await matchup.save();
 
-                await assignTeamsToNextMatchup(matchup.ID);
+                // await assignTeamsToNextMatchup(matchup.ID);
             } else 
                 await matchup.save();
 
