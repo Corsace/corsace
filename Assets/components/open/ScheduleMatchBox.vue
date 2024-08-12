@@ -88,7 +88,7 @@
         <div class="schedule_matchbox_date">
             <div
                 v-if="matchupSync.potential"
-                class="schedule_matchbox_potential"
+                class="schedule_matchbox__potential"
             >
                 {{ $t("open.schedule.potential") }}
             </div>
@@ -360,6 +360,16 @@ export default class ScheduleMatchBox extends Vue {
         }
     }
 
+    &__potential {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        background-color: $open-red;
+        font-weight: bold;
+        color: $open-dark;
+        text-align: center;
+    }
+
     &_date {
         position: absolute;
         display: flex;
@@ -383,16 +393,6 @@ export default class ScheduleMatchBox extends Vue {
             font-stretch: condensed;
             color: rgba(235, 235, 235, 1);
         }
-    }
-
-    &_potential {
-        position: absolute;
-        top: 0;
-        width: 100%;
-        background-color: $open-red;
-        font-weight: bold;
-        color: $open-dark;
-        text-align: center;
     }
 
     &_teams {
