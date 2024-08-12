@@ -135,6 +135,31 @@ export function mapNames (scores: MatchupScore[] | null): {
     return scoreMaps;
 }
 
+export function matchIDAlphanumericSort (a: MatchupList, b: MatchupList): number {
+    const regex = /(\d+)|(\D+)/g;
+    const aParts = a.matchID.match(regex);
+    const bParts = b.matchID.match(regex);
+
+    if (aParts === null || bParts === null) return 0;
+
+    for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+        const aPart = aParts[i] || "";
+        const bPart = bParts[i] || "";
+
+        const aIsNumber = !isNaN(Number(aPart));
+        const bIsNumber = !isNaN(Number(bPart));
+
+        if (aIsNumber && bIsNumber) {
+            const comparison = Number(aPart) - Number(bPart);
+            if (comparison !== 0) return comparison;
+        } else {
+            if (aPart !== bPart) return aPart.localeCompare(bPart);
+        }
+    }
+
+    return 0;
+}
+
 export function computeScoreViews (
     idNameAccessor: (score: MatchupScore) => { id: number, name: string, avatar?: string | null },
     scores: MatchupScore[] | null,
