@@ -1,12 +1,9 @@
 <template>
     <div class="open_matchup_time">
         <div class="open_matchup_time__time">
-            {{ tbdSync ? "TBD" : formatTime(dateSync) }}
+            {{ formatTime(dateSync) }}
         </div>
-        <div
-            v-if="!tbdSync" 
-            class="open_matchup_time__timezone"
-        >
+        <div class="open_matchup_time__timezone">
             {{ timezoneSync }}
         </div>
     </div>
@@ -19,7 +16,6 @@ import { Vue, Component, PropSync } from "vue-property-decorator";
 export default class OpenMatchupTime extends Vue {
     @PropSync("date", { type: Date, required: false, default: null }) dateSync!: Date;
     @PropSync("timezone", { type: String, default: "UTC" }) timezoneSync!: string;
-    @PropSync("tbd", { type: Boolean, default: false }) tbdSync!: boolean;
 
     formatTime (date: Date | null): string {
         if (!date) return "";

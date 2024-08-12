@@ -87,7 +87,7 @@
         </div>
         <div class="schedule_matchbox_date">
             <div
-                v-if="matchupSync.potentialFor"
+                v-if="matchupSync.potential"
                 class="schedule_matchbox__potential"
             >
                 {{ $t("open.schedule.potential") }}
@@ -96,11 +96,10 @@
                 ID: {{ matchupSync.matchID }}
             </div>
             <div class="schedule_matchbox_date__month">
-                {{ tbdSync ? "TBD" : formatDate(matchupSync.date) }}
+                {{ formatDate(matchupSync.date) }}
             </div>
             <OpenMatchupTime
                 :date="matchupSync.date"
-                :tbd="tbdSync"
                 timezone="UTC"
             />
         </div>
@@ -181,7 +180,6 @@ const openModule = namespace("open");
 })
 export default class ScheduleMatchBox extends Vue {
     @PropSync("matchup", { default: null }) matchupSync!: MatchupList | null;
-    @PropSync("tbd", { default: false }) tbdSync!: boolean;
 
     @openModule.State staffInfo!: OpenStaffInfo | null;
     @openModule.State tournament!: Tournament | null;
@@ -382,7 +380,6 @@ export default class ScheduleMatchBox extends Vue {
         white-space: nowrap;
         z-index: 2;
         background-color: $open-dark;
-        min-width: 182px;
 
         &__ID {
             font-size: 18px;

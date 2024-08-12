@@ -175,7 +175,6 @@
                     v-for="matchup in filteredMatchups"
                     :key="matchup.ID"
                     :matchup="matchup"
-                    :tbd="(matchupList?.filter(m => m.potentialFor === matchup.matchID)?.map(m => m.date.getTime()).filter((date, i, arr) => arr.indexOf(date) === i) || []).length > 1"
                     @update:matchup="updateMatchup()"
                 />
             </div>
@@ -220,7 +219,7 @@ import RoundRobinView from "../../Assets/components/open/RoundRobinView.vue";
 
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage, StageType } from "../../Interfaces/stage";
-import { MatchupList, matchIDAlphanumericSort } from "../../Interfaces/matchup";
+import { MatchupList } from "../../Interfaces/matchup";
 import { UserInfo } from "../../Interfaces/user";
 
 const openModule = namespace("open");
@@ -276,7 +275,7 @@ export default class Schedule extends Vue {
     sorts = ["DATETIME", "MATCHID", "RANK AVERAGE", "BWS AVERAGE", "RANK DIFF", "BWS DIFF"] as const;
     sortFunctions: Record<typeof this.sorts[number], (a: MatchupList, b: MatchupList) => number> = {
         DATETIME: (a, b) => a.date.getTime() - b.date.getTime(),
-        MATCHID: matchIDAlphanumericSort,
+        MATCHID: (a, b) => a.matchID > b.matchID ? 1 : -1,
         "RANK AVERAGE": (a, b) => !a.teams || !b.teams ? 0 : a.teams.reduce((acc, team) => acc + team.rank, 0) / (a.teams.length || 1) - b.teams.reduce((acc, team) => acc + team.rank, 0) / (b.teams.length || 1),
         "BWS AVERAGE": (a, b) => !a.teams || !b.teams ? 0 : a.teams.reduce((acc, team) => acc + team.BWS, 0) / (a.teams.length || 1) - b.teams.reduce((acc, team) => acc + team.BWS, 0) / (b.teams.length || 1),
         "RANK DIFF": (a, b) => !a.teams || !b.teams ? 0 : (Math.max(...a.teams.map(team => team.rank)) - Math.min(...a.teams.map(team => team.rank))) - (Math.max(...b.teams.map(team => team.rank)) - Math.min(...b.teams.map(team => team.rank))),
@@ -294,7 +293,7 @@ export default class Schedule extends Vue {
             if (matchup.matchID && this.visibleMatchIDs.length > 0 && !this.selectedMatchIDs[matchup.matchID[0]]) return false;
             if (this.myMatches && !matchup.teams?.some(team => team.members.some(player => player.osuID === this.loggedInUser?.osu.userID))) return false;
             if (this.myStaff && (matchup.referee?.ID !== this.loggedInUser?.ID && matchup.streamer?.ID !== this.loggedInUser?.ID && !matchup.commentators?.some(comm => comm.ID === this.loggedInUser?.ID))) return false;
-            if (this.hidePotentials && matchup.potentialFor) return false;
+            if (this.hidePotentials && matchup.potential) return false;
             if (this.searchValue && !(
                 matchup.matchID.toLowerCase().includes(this.searchValue.toLowerCase()) || 
                 matchup.ID.toString().includes(this.searchValue) ||
