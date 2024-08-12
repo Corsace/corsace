@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { MatchupMessage } from "./matchupMessage";
 import { MatchupSet } from "./matchupSet";
@@ -79,19 +79,17 @@ export class Matchup extends BaseEntity {
     @ManyToOne(() => User, user => user.matchupsStreamed)
         streamer?: User | null;
         
-    @OneToOne(() => Matchup, matchup => matchup.loserPreviousMatchup)
-    @JoinColumn()
+    @ManyToOne(() => Matchup, matchup => matchup.loserPreviousMatchups)
         loserNextMatchup?: Matchup | null;
 
-    @OneToOne(() => Matchup, matchup => matchup.loserNextMatchup)
-        loserPreviousMatchup?: Matchup | null;
+    @OneToMany(() => Matchup, matchup => matchup.loserNextMatchup)
+        loserPreviousMatchups?: Matchup[] | null;
 
-    @OneToOne(() => Matchup, matchup => matchup.winnerPreviousMatchup)
-    @JoinColumn()
+    @ManyToOne(() => Matchup, matchup => matchup.winnerPreviousMatchups)
         winnerNextMatchup?: Matchup | null;
 
-    @OneToOne(() => Matchup, matchup => matchup.winnerNextMatchup)
-        winnerPreviousMatchup?: Matchup | null;
+    @OneToMany(() => Matchup, matchup => matchup.winnerNextMatchup)
+        winnerPreviousMatchups?: Matchup[] | null;
 
     @OneToMany(() => MatchupMessage, message => message.matchup)
         messages?: MatchupMessage[] | null;
