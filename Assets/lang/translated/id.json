@@ -745,7 +745,7 @@
             "upcoming": "AKAN DATANG",
             "ongoing": "SEDANG BERLANGSUNG",
             "past": "TELAH USAI",
-            "potential": "POTENTIAL",
+            "potential": "POTENSIAL",
             "hidePotentials": "SEMBUNYIKAN PERTANDINGAN POTENSIAL",
             "myMatches": "PERTANDINGAN SAYA",
             "myMatchesStaff": "PERTANDINGAN SAYA / STAF",
@@ -831,7 +831,7 @@
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
             "forfeit": "MENYERAH",
-            "first": "FIRST",
+            "first": "PERTAMA",
             "closeLobby": "TUTUP LOBI",
             "postResults": "POSTING HASIL"
         },
