@@ -745,6 +745,7 @@
             "upcoming": "UPCOMING",
             "ongoing": "ONGOING",
             "past": "PAST",
+            "potential": "POTENTIAL",
             "hidePotentials": "HIDE POTENTIALS",
             "myMatches": "MY MATCHES",
             "myMatchesStaff": "MY MATCHES / STAFF",
