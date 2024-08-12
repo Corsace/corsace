@@ -443,7 +443,6 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
 
                     const loserPrevMatchupTeams: Team[] = [];
                     const loserPrevMatchups = matchups.filter(m => m.loserNextMatchupID === matchup.ID).map(m => idToMatchup.get(m.ID)!);
-                    console.log(dbMatchup.matchID, loserPrevMatchups.length);
                     for (const loserPrevMatchup of loserPrevMatchups) {
                         if (loserPrevMatchup.team1)
                             loserPrevMatchupTeams.push(loserPrevMatchup.team1);
@@ -453,7 +452,6 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
 
                     const winnerPrevMatchupTeams: Team[] = [];
                     const winnerPrevMatchups = matchups.filter(m => m.winnerNextMatchupID === matchup.ID).map(m => idToMatchup.get(m.ID)!);
-                    console.log(dbMatchup.matchID, winnerPrevMatchups.length);
                     for (const winnerPrevMatchup of winnerPrevMatchups) {
                         if (winnerPrevMatchup.team1)
                             winnerPrevMatchupTeams.push(winnerPrevMatchup.team1);
@@ -461,7 +459,6 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
                             winnerPrevMatchupTeams.push(winnerPrevMatchup.team2);
                     }
                     
-                    console.log(dbMatchup.matchID, currMatchTeams.length, loserPrevMatchupTeams.length, winnerPrevMatchupTeams.length);
                     const teamArr: Team[][] = [currMatchTeams, loserPrevMatchupTeams, winnerPrevMatchupTeams];
 
                     dbMatchup.potentials = [];
