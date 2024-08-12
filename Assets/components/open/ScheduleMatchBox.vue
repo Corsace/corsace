@@ -96,11 +96,11 @@
                 ID: {{ matchupSync.matchID }}
             </div>
             <div class="schedule_matchbox_date__month">
-                {{ tbdSync ? "TBD" : formatDate(matchupSync.date) }}
+                {{ tbddateSync ? "TBD" : formatDate(matchupSync.date) }}
             </div>
             <OpenMatchupTime
                 :date="matchupSync.date"
-                :tbd="tbdSync"
+                :tbd="tbdtimeSync"
                 timezone="UTC"
             />
         </div>
@@ -181,7 +181,8 @@ const openModule = namespace("open");
 })
 export default class ScheduleMatchBox extends Vue {
     @PropSync("matchup", { default: null }) matchupSync!: MatchupList | null;
-    @PropSync("tbd", { default: false }) tbdSync!: boolean;
+    @PropSync("tbddate", { default: false }) tbddateSync!: boolean;
+    @PropSync("tbdtime", { default: false }) tbdtimeSync!: boolean;
 
     @openModule.State staffInfo!: OpenStaffInfo | null;
     @openModule.State tournament!: Tournament | null;

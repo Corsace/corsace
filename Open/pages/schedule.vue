@@ -175,7 +175,8 @@
                     v-for="matchup in filteredMatchups"
                     :key="matchup.ID"
                     :matchup="matchup"
-                    :tbd="(matchupList?.filter(m => m.potentialFor === matchup.matchID)?.map(m => m.date.getTime()).filter((date, i, arr) => arr.indexOf(date) === i) || []).length > 1"
+                    :tbddate="(matchupList?.filter(m => m.potentialFor === matchup.matchID)?.map(m => m.date.getUTCDate()).filter((date, i, arr) => arr.indexOf(date) === i) || []).length > 1"
+                    :tbdtime="(matchupList?.filter(m => m.potentialFor === matchup.matchID)?.map(m => m.date.getTime()).filter((date, i, arr) => arr.indexOf(date) === i) || []).length > 1"
                     @update:matchup="updateMatchup()"
                 />
             </div>
