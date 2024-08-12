@@ -7,14 +7,17 @@
             class="schedule_matchbox_team__avatar" 
             :style="{ 'backgroundImage': `url(${teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }" 
         />
-        <div class="schedule_matchbox_team_details schedule_matchbox_team_details--overlay">
+        <div
+            v-if="teamSync.ID !== -1"
+            class="schedule_matchbox_team_details schedule_matchbox_team_details--overlay"
+        >
             <div class="schedule_matchbox_team_details__name schedule_matchbox_team_details__name--overlay">
                 {{ teamSync.name }}
             </div>
             <ul class="schedule_matchbox_team__members">
                 <li 
                     v-for="member in teamSync.members"
-                    :key="member.ID"
+                    :key="member.osuID"
                     class="schedule_matchbox_team__member"
                     :class="{ 'schedule_matchbox_team__member_leader': member.isCaptain }"
                 >
@@ -31,7 +34,10 @@
             <div class="schedule_matchbox_team_details__name">
                 {{ teamSync.name }}
             </div>
-            <div class="schedule_matchbox_team_details_teamrank">
+            <div
+                v-if="teamSync.ID !== -1"
+                class="schedule_matchbox_team_details_teamrank"
+            >
                 <div class="schedule_matchbox_team--title schedule_matchbox_team--title_soft">
                     {{ $t('open.components.openCardTeam.rank') }}
                 </div>
@@ -39,7 +45,10 @@
                     {{ Math.round(teamSync.rank) }}
                 </div>
             </div>
-            <div class="schedule_matchbox_team_details_teambws">
+            <div
+                v-if="teamSync.ID !== -1"
+                class="schedule_matchbox_team_details_teambws"
+            >
                 <div class="schedule_matchbox_team--title schedule_matchbox_team--title_soft">
                     {{ $t('open.components.openCardTeam.teambwsAverage') }}
                 </div>
