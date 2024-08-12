@@ -1,7 +1,7 @@
 import axios from "axios";
 import { CorsaceRouter } from "../../corsaceRouter";
 import { Multi } from "nodesu";
-import { Brackets, EntityManager } from "typeorm";
+import { Brackets } from "typeorm";
 import { StageType } from "../../../Interfaces/stage";
 import { TournamentRoleType } from "../../../Interfaces/tournament";
 import { MapStatus, Matchup as MatchupInterface } from "../../../Interfaces/matchup";
@@ -15,7 +15,7 @@ import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
-import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
+// import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
 import { Round } from "../../../Models/tournaments/round";
 import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
@@ -24,17 +24,6 @@ import dbMatchupToInterface from "../../functions/tournaments/matchups/dbMatchup
 import { ResponseBody, TournamentStageState, TournamentState } from "koa";
 
 const matchupRouter  = new CorsaceRouter();
-
-interface postMatchup {
-    ID: number;
-    matchID: string;
-    isLowerBracket?: boolean;
-    potentials?: boolean;
-    date?: string;
-    team1?: number;
-    team2?: number;
-    previousMatchups?: postMatchup[];
-}
 
 function sanitizeMatchupResponse (matchup: Matchup) {
     return {
@@ -141,6 +130,19 @@ async function updateMatchup (matchupID: number) {
     }
 }
 
+interface postMatchup {
+    ID: number;
+    matchID: string;
+    date: string;
+    stageID: number;
+    isLowerBracket?: boolean;
+    createPotentials?: boolean;
+    team1?: number;
+    team2?: number;
+    loserNextMatchupID?: number;
+    winnerNextMatchupID?: number;
+}
+
 function validatePOSTMatchups (matchups: Partial<postMatchup>[]): asserts matchups is postMatchup[] {
     for (const matchup of matchups) {
         if (typeof matchup.ID !== "number" || isNaN(matchup.ID) || matchup.ID < 1)
@@ -152,31 +154,53 @@ function validatePOSTMatchups (matchups: Partial<postMatchup>[]): asserts matchu
         if (matchup.date && (isNaN(parseDateOrTimestamp(matchup.date).getTime()) || parseDateOrTimestamp(matchup.date).getTime() < 0))
             throw new Error(`Invalid matchup date provided: ${matchup.date}`);
 
+        if (typeof matchup.stageID !== "number" || isNaN(matchup.stageID) || matchup.stageID < 1)
+            throw new Error(`Invalid matchup stageID provided: ${matchup.stageID}`);
+
         if (matchup.isLowerBracket !== undefined && typeof matchup.isLowerBracket !== "boolean")
             throw new Error(`Invalid matchup isLowerBracket provided: ${matchup.isLowerBracket}`);
 
-        if (matchup.potentials !== undefined && typeof matchup.potentials !== "boolean")
-            throw new Error(`Invalid matchup potentials provided: ${matchup.potentials}`);
+        if (matchup.createPotentials !== undefined && typeof matchup.createPotentials !== "boolean")
+            throw new Error(`Invalid matchup createPotentials provided: ${matchup.createPotentials}`);
 
-        if (typeof matchup.team1 !== "number" || isNaN(matchup.team1) || matchup.team1 < 1)
+        if (matchup.team1 !== undefined && (typeof matchup.team1 !== "number" || isNaN(matchup.team1) || matchup.team1 < 1))
             throw new Error(`Invalid matchup team1 provided: ${matchup.team1}`);
 
-        if (typeof matchup.team2 !== "number" || isNaN(matchup.team2) || matchup.team2 < 1)
+        if (matchup.team2 !== undefined && (typeof matchup.team2 !== "number" || isNaN(matchup.team2) || matchup.team2 < 1))
             throw new Error(`Invalid matchup team2 provided: ${matchup.team2}`);
 
-        if (matchup.previousMatchups) {
-            if (!Array.isArray(matchup.previousMatchups) || matchup.previousMatchups.length > 3)
-                throw new Error(`Invalid matchup previousMatchups provided (not an array or more than 2 matchups): ${matchup.ID}`);
+        if (matchup.loserNextMatchupID !== undefined && (typeof matchup.loserNextMatchupID !== "number" || isNaN(matchup.loserNextMatchupID) || matchup.loserNextMatchupID < 1))
+            throw new Error(`Invalid matchup loserNextMatchupID provided: ${matchup.loserNextMatchupID}`);
 
-            if (!matchup.isLowerBracket && !matchup.previousMatchups.some(m => !m.isLowerBracket))
-                throw new Error(`Invalid matchup previousMatchups provided (no previous matchup is winner bracket for a winner bracket matchup): ${matchup.ID}`);
+        if (matchup.loserNextMatchupID === matchup.ID)
+            throw new Error("Matchup cannot be its own loserNextMatchupID");
 
-            if (matchup.previousMatchups.some(m => m.ID === matchup.ID))
-                throw new Error(`Invalid matchup previousMatchups provided (matchup is a previous matchup of itself): ${matchup.ID}`);
+        if (matchup.loserNextMatchupID !== undefined && !matchups.some(m => m.ID === matchup.loserNextMatchupID))
+            throw new Error(`Matchup with ID ${matchup.loserNextMatchupID} not found in provided matchups`);
 
-            validatePOSTMatchups(matchup.previousMatchups);
-        }
+        if (matchup.winnerNextMatchupID !== undefined && (typeof matchup.winnerNextMatchupID !== "number" || isNaN(matchup.winnerNextMatchupID) || matchup.winnerNextMatchupID < 1))
+            throw new Error(`Invalid matchup winnerNextMatchupID provided: ${matchup.winnerNextMatchupID}`);
+
+        if (matchup.winnerNextMatchupID === matchup.ID)
+            throw new Error("Matchup cannot be its own winnerNextMatchupID");
+
+        if (matchup.winnerNextMatchupID !== undefined && !matchups.some(m => m.ID === matchup.winnerNextMatchupID))
+            throw new Error(`Matchup with ID ${matchup.winnerNextMatchupID} not found in provided matchups`);
     }
+
+    if (matchups.some((v, i, arr) => arr.findIndex(t => t.ID === v.ID) !== i))
+        throw new Error("Duplicate matchup IDs provided");
+
+    // See if any id shows up more than two times as a loserNextMatchupID or winnerNextMatchupID
+    const loserNextMatchupIDs = matchups.map(m => m.loserNextMatchupID).filter(id => id !== undefined) as number[];
+    const winnerNextMatchupIDs = matchups.map(m => m.winnerNextMatchupID).filter(id => id !== undefined) as number[];
+    if (loserNextMatchupIDs.some((v, i, arr) => arr.filter(t => t === v).length > 2))
+        throw new Error(`Matchup IDs show up more than twice as loserNextMatchupID: ${loserNextMatchupIDs.filter((v, i, arr) => arr.filter(t => t === v).length > 2).join(", ")}`);
+    if (winnerNextMatchupIDs.some((v, i, arr) => arr.filter(t => t === v).length > 2))
+        throw new Error(`Matchup IDs show up more than twice as winnerNextMatchupID: ${winnerNextMatchupIDs.filter((v, i, arr) => arr.filter(t => t === v).length > 2).join(", ")}`);
+    const allNextMatchupIDs = [...loserNextMatchupIDs, ...winnerNextMatchupIDs];
+    if (allNextMatchupIDs.some((v, i, arr) => arr.filter(t => t === v).length > 2))
+        throw new Error(`Matchup IDs show up more than twice as any form of nextMatchupID: ${allNextMatchupIDs.filter((v, i, arr) => arr.filter(t => t === v).length > 2).join(", ")}`);
 }
 
 matchupRouter.$get("/:matchupID", async (ctx) => {
@@ -326,7 +350,7 @@ matchupRouter.$get<{ matchup: Matchup }>("/:matchupID/teams", async (ctx) => {
     };
 });
 
-matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", validateTournament, async (ctx) => {
     const matchups: Partial<postMatchup>[] | postMatchup[] = ctx.request.body?.matchups;
     if (!matchups) {
         ctx.body = {
@@ -339,128 +363,140 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
     validatePOSTMatchups(matchups);
 
     const idToMatchup = new Map<number, Matchup>();
-
-    const createMatchups = async (postMatchupArr: postMatchup[], transactionManager: EntityManager): Promise<Matchup[]> => {
-        const createdMatchups: Matchup[] = [];
-        for (const matchup of postMatchupArr) {
-
-            let dbMatchup = new Matchup();
-            dbMatchup.matchID = matchup.matchID;
-            dbMatchup.isLowerBracket = matchup.isLowerBracket ?? false;
-            if (idToMatchup.has(matchup.ID)) {
-                dbMatchup = idToMatchup.get(matchup.ID)!;
-                if (dbMatchup.isLowerBracket !== matchup.isLowerBracket)
-                    return Promise.reject(new Error(`Matchup ${matchup.ID} is already created with isLowerBracket ${dbMatchup.isLowerBracket}, but you provided ${matchup.isLowerBracket}`));
-            }
-
-            if (matchup.date)
-                dbMatchup.date = parseDateOrTimestamp(matchup.date);
-            else // beginning of stage time
-                dbMatchup.date = ctx.state.stage.timespan.start;
-
-            if (dbMatchup.date.getTime() < ctx.state.stage.timespan.start.getTime())
-                return Promise.reject(new Error(`Matchup ${matchup.ID} date ${dbMatchup.date} is before stage start ${ctx.state.stage.timespan.start}`));
-
-            if (ctx.state.stage)
-                dbMatchup.stage = ctx.state.stage;
-            else
-                dbMatchup.round = ctx.state.round;
-
-            if (matchup.team1) {
-                const team1 = await transactionManager
-                    .createQueryBuilder(Team, "team")
-                    .where("team.ID = :teamID", { teamID: matchup.team1 })
-                    .getOne();
-                if (!team1)
-                    return Promise.reject(new Error(`Could not find team1's ID ${matchup.team1} for matchup ${matchup.ID}`));
-                dbMatchup.team1 = team1;
-            }
-
-            if (matchup.team2) {
-                const team2 = await transactionManager
-                    .createQueryBuilder(Team, "team")
-                    .where("team.ID = :teamID", { teamID: matchup.team2 })
-                    .getOne();
-                if (!team2)
-                    return Promise.reject(new Error(`Could not find team2's ID ${matchup.team2} for matchup ${matchup.ID}`));
-                dbMatchup.team2 = team2;
-            }
-
-            idToMatchup.set(matchup.ID, dbMatchup);
-            const previousMatchups = matchup.previousMatchups ? await createMatchups(matchup.previousMatchups, transactionManager) : undefined;
-            if (previousMatchups)
-                dbMatchup.previousMatchups = previousMatchups;
-
-            if (matchup.potentials) {
-                dbMatchup.potentials = [];
-                const teams = previousMatchups?.map(m => {
-                    if (m.winner)
-                        return [ m.winner ];
-
-                    const teamArray: Team[] = [];
-                    if (m.team1)
-                        teamArray.push(m.team1);
-                    if (m.team2)
-                        teamArray.push(m.team2);
-
-                    return teamArray;
-                }) ?? [];
-                if (teams.flat().length < 2)
-                    for (let i = 0; i < 4; i++) {
-                        const potential = new Matchup();
-                        potential.date = dbMatchup.date;
-                        if (ctx.state.stage)
-                            potential.stage = ctx.state.stage;
-                        else
-                            potential.round = ctx.state.round;
-                        dbMatchup.potentials.push(potential);
-                    }
-                else
-                    for (let i = 0; i < teams.length; i++) {
-                        for (let j = i + 1; j < teams.length; j++) {
-                            for (const team of teams[i]) {
-                                for (const team2 of teams[j]) {
-                                    const potential = new Matchup();
-                                    potential.date = dbMatchup.date;
-                                    potential.team1 = team;
-                                    potential.team2 = team2;
-                                    potential.isLowerBracket = dbMatchup.isLowerBracket;
-                                    if (ctx.state.stage)
-                                        potential.stage = ctx.state.stage;
-                                    else
-                                        potential.round = ctx.state.round;
-                                    dbMatchup.potentials.push(potential);
-                                }
-                            }
-                        }
-                    }
-            }
-            idToMatchup.set(matchup.ID, dbMatchup);
-            createdMatchups.push(dbMatchup);
-        }
-        return createdMatchups;
-    };
+    const idToStages = new Map<number, Stage>();
 
     try {
         await ormConfig.transaction(async transactionManager => {
-            const createdMatchups = await createMatchups(matchups, transactionManager);
-            // Reverse Level Order Traversal to save the initial matchups (and their potentials) first at each level, before saving levels closer to the root
-            const stack: Matchup[] = [];
-            const queue: Matchup[] = [];
-            queue.push(...createdMatchups.reverse());
+            const createdMatchups: Matchup[] = [];
+            // Initial creation and saving of matchups
+            for (const matchup of matchups) {
+                const dbMatchup = new Matchup();
+                dbMatchup.matchID = matchup.matchID;
+                dbMatchup.date = matchup.date ? parseDateOrTimestamp(matchup.date) : new Date();
+                dbMatchup.isLowerBracket = matchup.isLowerBracket ?? false;
 
-            while (queue.length > 0) {
-                const node = queue.shift()!;
-                stack.push(node);
-                stack.push(...node.potentials ?? []);
+                const stage = idToStages.get(matchup.stageID) ?? await transactionManager.findOne(Stage, { where: { ID: matchup.stageID }});
+                if (!stage) {
+                    ctx.body = {
+                        success: false,
+                        error: `Stage with ID ${matchup.stageID} not found`,
+                    };
+                    return;
+                }
+                idToStages.set(stage.ID, stage);
+                dbMatchup.stage = stage;
 
-                if (node.previousMatchups)
-                    queue.push(...node.previousMatchups);
+                if (matchup.team1) {
+                    const team1 = await transactionManager.findOne(Team, { where: { ID: matchup.team1 }});
+                    if (!team1) {
+                        ctx.body = {
+                            success: false,
+                            error: `Team1 with ID ${matchup.team1} not found`,
+                        };
+                        return;
+                    }
+                    dbMatchup.team1 = team1;
+                }
+
+                if (matchup.team2) {
+                    const team2 = await transactionManager.findOne(Team, { where: { ID: matchup.team2 }});
+                    if (!team2) {
+                        ctx.body = {
+                            success: false,
+                            error: `Team2 with ID ${matchup.team2} not found`,
+                        };
+                        return;
+                    }
+                    dbMatchup.team2 = team2;
+                }
+
+                await transactionManager.save(dbMatchup);
+                idToMatchup.set(matchup.ID, dbMatchup);
             }
 
-            while (stack.length > 0) {
-                const node = stack.pop()!;
-                await transactionManager.save(node);
+            // Assigning previous matchups and potentials
+            for (const matchup of matchups) {
+                const dbMatchup = idToMatchup.get(matchup.ID)!;
+                if (matchup.loserNextMatchupID) {
+                    const loserNextMatchup = idToMatchup.get(matchup.loserNextMatchupID);
+                    if (!loserNextMatchup) 
+                        throw new Error(`Matchup with ID ${matchup.loserNextMatchupID} not found`);
+                    dbMatchup.loserNextMatchup = loserNextMatchup;
+                }
+
+                if (matchup.winnerNextMatchupID) {
+                    const winnerNextMatchup = idToMatchup.get(matchup.winnerNextMatchupID);
+                    if (!winnerNextMatchup) 
+                        throw new Error(`Matchup with ID ${matchup.winnerNextMatchupID} not found`);
+                    dbMatchup.winnerNextMatchup = winnerNextMatchup;
+                }
+
+                if (matchup.createPotentials) {
+                    if (dbMatchup.team1 && dbMatchup.team2)
+                        throw new Error(`Matchup ${matchup.ID} already has both teams assigned`);
+
+                    const currMatchTeams: Team[] = [];
+                    if (dbMatchup.team1)
+                        currMatchTeams.push(dbMatchup.team1);
+                    if (dbMatchup.team2)
+                        currMatchTeams.push(dbMatchup.team2);
+
+                    const loserPrevMatchupTeams: Team[] = [];
+                    const loserPrevMatchups = matchups.filter(m => m.loserNextMatchupID === matchup.ID).map(m => idToMatchup.get(m.ID)!);
+                    console.log(dbMatchup.matchID, loserPrevMatchups.length);
+                    for (const loserPrevMatchup of loserPrevMatchups) {
+                        if (loserPrevMatchup.team1)
+                            loserPrevMatchupTeams.push(loserPrevMatchup.team1);
+                        if (loserPrevMatchup.team2)
+                            loserPrevMatchupTeams.push(loserPrevMatchup.team2);
+                    }
+
+                    const winnerPrevMatchupTeams: Team[] = [];
+                    const winnerPrevMatchups = matchups.filter(m => m.winnerNextMatchupID === matchup.ID).map(m => idToMatchup.get(m.ID)!);
+                    console.log(dbMatchup.matchID, winnerPrevMatchups.length);
+                    for (const winnerPrevMatchup of winnerPrevMatchups) {
+                        if (winnerPrevMatchup.team1)
+                            winnerPrevMatchupTeams.push(winnerPrevMatchup.team1);
+                        if (winnerPrevMatchup.team2)
+                            winnerPrevMatchupTeams.push(winnerPrevMatchup.team2);
+                    }
+                    
+                    console.log(dbMatchup.matchID, currMatchTeams.length, loserPrevMatchupTeams.length, winnerPrevMatchupTeams.length);
+                    const teamArr: Team[][] = [currMatchTeams, loserPrevMatchupTeams, winnerPrevMatchupTeams];
+
+                    dbMatchup.potentials = [];
+                    if (teamArr.flat().length < 2) // If there are less than 2 teams in total, it's not feasible to create potentials
+                        for (let i = 0; i < 4; i++) {
+                            const potential = new Matchup();
+                            potential.matchID = `${dbMatchup.matchID}${String.fromCharCode("A".charCodeAt(0) + dbMatchup.potentials.length)}`;
+                            potential.date = dbMatchup.date;
+                            potential.stage = dbMatchup.stage;
+                            dbMatchup.potentials.push(potential);
+                        }
+                    else
+                        for (let i = 0; i < teamArr.length; i++) { // Iterate each matchup
+                            for (let j = i + 1; j < teamArr.length; j++) { // Iterate each matchup not current focus
+                                for (const team of teamArr[i]) { // Iterate each team in current matchup
+                                    for (const team2 of teamArr[j]) { // Iterate each team in other matchup
+                                        const potential = new Matchup();
+                                        potential.matchID = `${dbMatchup.matchID}${String.fromCharCode("A".charCodeAt(0) + dbMatchup.potentials.length)}`;
+                                        potential.date = dbMatchup.date;
+                                        potential.team1 = team;
+                                        potential.team2 = team2;
+                                        potential.isLowerBracket = dbMatchup.isLowerBracket;
+                                        potential.stage = dbMatchup.stage;
+                                        dbMatchup.potentials.push(potential);
+                                    }
+                                }
+                            }
+                            if (currMatchTeams.length > 0) // If current matchup has teams, we only need to iterate the teams in the current matchup since it's impossible for them to not be in the current matchup now
+                                break;
+                        }
+                    await transactionManager.save(dbMatchup.potentials);
+                }
+
+                await transactionManager.save(dbMatchup);
+                createdMatchups.push(dbMatchup);
             }
 
             ctx.body = {
@@ -935,8 +971,6 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
             matchup.winner = matchup.team1;
         else if (matchup.team2Score > matchup.team1Score)
             matchup.winner = matchup.team2;
-
-        await assignTeamsToNextMatchup(matchup.ID);
     }
     matchup.mp = mpID;
     await matchup.save();
