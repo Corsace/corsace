@@ -1,7 +1,7 @@
 import { CorsaceRouter } from "../../../corsaceRouter";
 import { createHash } from "crypto";
 import { TournamentStageState } from "koa";
-import { Beatmap, Mode } from "nodesu";
+import { Beatmap, Converts, Mode } from "nodesu";
 import { MatchupList, MatchupScore } from "../../../../Interfaces/matchup";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { StageType } from "../../../../Interfaces/stage";
@@ -18,6 +18,7 @@ import { osuClient } from "../../../osu";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
 import { User } from "../../../../Models/user";
+import { cache } from "../../../cache";
 
 const stageRouter  = new CorsaceRouter<TournamentStageState>();
 
@@ -123,7 +124,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
 
             const matchupSets = sets.filter((set) => set.matchup === matchup.ID);
 
-            // Less than 2 teams means we need to put placeholder text of Winner of/Loser of match ID X 
+            // Less than 2 teams means we need to put placeholder text of Winner of/Loser of match ID X
             if (matchupTeams.length < 2) {
                 const prevWinnerMatchups: (Omit<Matchup, "team1" | "team2" | "teams"> & { team1: number; team2: number; teams: number[] })[] = await Matchup
                     .createQueryBuilder("matchup")
@@ -133,7 +134,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                         relations: ["team1", "team2", "teams"],
                     })
                     .getMany() as any;
-                
+
                 // If theres a matchup with teams not in matchupTeams, we add a team with the name "winner of X" to the list
                 const unFinishedWinnerMatchups = prevWinnerMatchups.filter((m) => !matchupTeams.some((t) => t.ID === m.team1 && t.ID === m.team2 && m.teams.some((team) => team === t.ID)));
                 if (unFinishedWinnerMatchups.length > 0) {
@@ -281,7 +282,14 @@ stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
         if (!slot.allowedMods || !map.beatmap)
             return;
 
-        const set = await osuClient.beatmaps.getByBeatmapId(map.beatmap.ID, Mode.all, undefined, undefined, slot.allowedMods) as Beatmap[];
+        const cacheKey = `mappool-beatmap;${map.beatmap.ID};${Mode.all};${Converts.exclude};${slot.allowedMods}`;
+        const cachedBeatmap = cache.get(cacheKey) as string | undefined;
+        if (cachedBeatmap) {
+            map.beatmap = JSON.parse(cachedBeatmap);
+            return;
+        }
+
+        const set = await osuClient.beatmaps.getByBeatmapId(map.beatmap.ID, Mode.all, undefined, Converts.exclude, slot.allowedMods) as Beatmap[];
         if (set.length === 0)
             return;
 
@@ -294,6 +302,8 @@ stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
         map.beatmap.hpDrain = beatmap.hpDrain;
         if (map.beatmap.beatmapset)
             map.beatmap.beatmapset.BPM = beatmap.bpm;
+
+        cache.set(cacheKey, JSON.stringify(map.beatmap));
     };
 
     const beatmapPromises: Promise<void>[] = [];
