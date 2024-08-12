@@ -16,7 +16,7 @@ export class MatchupConnectionChanges1723429054291 implements MigrationInterface
                 DECLARE connectionCount INT;
                 SELECT COUNT(*) INTO connectionCount
                 FROM matchup
-                WHERE loserNextMatchupID.ID = NEW.ID
+                WHERE loserNextMatchupID = NEW.ID
                 OR winnerNextMatchupID = NEW.ID;
                 IF connectionCount >= 2 THEN
                     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Matchup cannot be connected to more than 2 matchups';
