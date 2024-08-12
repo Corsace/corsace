@@ -398,6 +398,7 @@ export default class ScheduleMatchBox extends Vue {
 
     &_teams {
         display: flex;
+        justify-content: center;
         width: 100%;
         color: $open-dark;
         background-color: #FAFAFA;
