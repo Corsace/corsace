@@ -220,7 +220,7 @@ import RoundRobinView from "../../Assets/components/open/RoundRobinView.vue";
 
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage, StageType } from "../../Interfaces/stage";
-import { MatchupList } from "../../Interfaces/matchup";
+import { MatchupList, matchIDAlphanumericSort } from "../../Interfaces/matchup";
 import { UserInfo } from "../../Interfaces/user";
 
 const openModule = namespace("open");
@@ -276,7 +276,7 @@ export default class Schedule extends Vue {
     sorts = ["DATETIME", "MATCHID", "RANK AVERAGE", "BWS AVERAGE", "RANK DIFF", "BWS DIFF"] as const;
     sortFunctions: Record<typeof this.sorts[number], (a: MatchupList, b: MatchupList) => number> = {
         DATETIME: (a, b) => a.date.getTime() - b.date.getTime(),
-        MATCHID: (a, b) => a.matchID > b.matchID ? 1 : -1,
+        MATCHID: matchIDAlphanumericSort,
         "RANK AVERAGE": (a, b) => !a.teams || !b.teams ? 0 : a.teams.reduce((acc, team) => acc + team.rank, 0) / (a.teams.length || 1) - b.teams.reduce((acc, team) => acc + team.rank, 0) / (b.teams.length || 1),
         "BWS AVERAGE": (a, b) => !a.teams || !b.teams ? 0 : a.teams.reduce((acc, team) => acc + team.BWS, 0) / (a.teams.length || 1) - b.teams.reduce((acc, team) => acc + team.BWS, 0) / (b.teams.length || 1),
         "RANK DIFF": (a, b) => !a.teams || !b.teams ? 0 : (Math.max(...a.teams.map(team => team.rank)) - Math.min(...a.teams.map(team => team.rank))) - (Math.max(...b.teams.map(team => team.rank)) - Math.min(...b.teams.map(team => team.rank))),
