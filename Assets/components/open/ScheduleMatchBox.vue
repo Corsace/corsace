@@ -371,7 +371,7 @@ export default class ScheduleMatchBox extends Vue {
     }
 
     &_date {
-        position: absolute;
+        position: relative;
         display: flex;
         flex-direction: column;
         padding: 30px;
