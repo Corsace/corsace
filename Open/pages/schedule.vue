@@ -175,6 +175,7 @@
                     v-for="matchup in filteredMatchups"
                     :key="matchup.ID"
                     :matchup="matchup"
+                    :tbd="(matchupList?.filter(m => m.potentialFor === matchup.matchID)?.map(m => m.date.getTime()).filter((date, i, arr) => arr.indexOf(date) === i) || []).length > 1"
                     @update:matchup="updateMatchup()"
                 />
             </div>
@@ -293,7 +294,7 @@ export default class Schedule extends Vue {
             if (matchup.matchID && this.visibleMatchIDs.length > 0 && !this.selectedMatchIDs[matchup.matchID[0]]) return false;
             if (this.myMatches && !matchup.teams?.some(team => team.members.some(player => player.osuID === this.loggedInUser?.osu.userID))) return false;
             if (this.myStaff && (matchup.referee?.ID !== this.loggedInUser?.ID && matchup.streamer?.ID !== this.loggedInUser?.ID && !matchup.commentators?.some(comm => comm.ID === this.loggedInUser?.ID))) return false;
-            if (this.hidePotentials && matchup.potential) return false;
+            if (this.hidePotentials && matchup.potentialFor) return false;
             if (this.searchValue && !(
                 matchup.matchID.toLowerCase().includes(this.searchValue.toLowerCase()) || 
                 matchup.ID.toString().includes(this.searchValue) ||
