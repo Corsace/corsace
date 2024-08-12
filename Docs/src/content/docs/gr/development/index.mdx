@@ -1,7 +1,7 @@
 ---
 title: Getting Started
 description: Documentation to get started on Corsace development.
-lastUpdated: 2024-07-07
+lastUpdated: 2024-08-12
 sidebar:
   order: 1
 ---
@@ -81,16 +81,16 @@ The values in your personal `config/user/$USER.json` config file will be referre
 
 `config.osu.v1.apiKey`
 
-You can obtain your osu! API V1 key [here](https://osu.ppy.sh/p/api/)
+You can obtain your osu! API V1 key in the "Legacy API" section in the osu! account settings page at https://osu.ppy.sh/home/account/edit.
 
 ```
 config.osu.v2.clientId
 config.osu.v2.clientSecret
 ```
 
-You will need to create a "New OAuth Application" at the bottom of https://osu.ppy.sh/home/account/edit.
+You will need to create a "New OAuth Application" in the "OAuth" section from the same osu! account settings page containing the API v1 key at https://osu.ppy.sh/home/account/edit.
 
-Add `config.corsace.publicUrl + /api/login/osu/callback` to the `Application Callback URLs` section in the popup.
+Add `[config.corsace.publicUrl]/api/login/osu/callback` to the `Application Callback URLs` section in the popup.
 
 For example, if your `config.corsace.publicUrl` is `http://localhost:5000`, then the callback URL should be `http://localhost:5000/api/login/osu/callback`.
 
@@ -100,7 +100,7 @@ Afterwards, you will be given a `Client ID` and `Client Secret` which you will n
 config.osu.bancho
 ```
 
-You can obtain your osu! IRC password from the same place as the osu OAuth Application at https://osu.ppy.sh/home/account/edit#irc.
+You can obtain your osu! IRC password at the bottom of the same osu! accounts settings page at https://osu.ppy.sh/home/account/edit.
 
 If your account is a bot account, then make sure to have `botAccount` set to true; otherwise, make set it to false.
 
