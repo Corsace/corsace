@@ -290,7 +290,7 @@ export default class Schedule extends Vue {
     get filteredMatchups () {
         if (!this.matchupList) return [];
         return this.matchupList.filter(matchup => {
-            if (matchup.matchID && !this.selectedMatchIDs[matchup.matchID[0]]) return false;
+            if (matchup.matchID && this.visibleMatchIDs.length > 0 && !this.selectedMatchIDs[matchup.matchID[0]]) return false;
             if (this.myMatches && !matchup.teams?.some(team => team.members.some(player => player.osuID === this.loggedInUser?.osu.userID))) return false;
             if (this.myStaff && (matchup.referee?.ID !== this.loggedInUser?.ID && matchup.streamer?.ID !== this.loggedInUser?.ID && !matchup.commentators?.some(comm => comm.ID === this.loggedInUser?.ID))) return false;
             if (this.hidePotentials && matchup.potential) return false;
@@ -332,12 +332,13 @@ export default class Schedule extends Vue {
         await this.$store.dispatch("open/setMatchups", this.selectedStage?.ID);
         const matchupIDSet = new Set<string>();
         for (const matchup of this.matchupList ?? []) {
-            if (matchup.matchID)
+            if (matchup.matchID && isNaN(parseInt(matchup.matchID)))
                 matchupIDSet.add(matchup.matchID[0]);
         }
         this.visibleMatchIDs = Array.from(matchupIDSet).sort();
         this.selectedMatchIDs = this.visibleMatchIDs.reduce((acc, id) => ({ ...acc, [id]: true }), {});
-        this.currGroup = this.visibleMatchIDs[0];
+        if (this.visibleMatchIDs.length)
+            this.currGroup = this.visibleMatchIDs[0];
         this.loading = false;
     }
 

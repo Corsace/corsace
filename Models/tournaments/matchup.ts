@@ -78,13 +78,18 @@ export class Matchup extends BaseEntity {
 
     @ManyToOne(() => User, user => user.matchupsStreamed)
         streamer?: User | null;
+        
+    @ManyToOne(() => Matchup, matchup => matchup.loserPreviousMatchups)
+        loserNextMatchup?: Matchup | null;
 
-    @ManyToMany(() => Matchup, matchup => matchup.nextMatchups)
-    @JoinTable()
-        previousMatchups?: Matchup[] | null;
+    @OneToMany(() => Matchup, matchup => matchup.loserNextMatchup)
+        loserPreviousMatchups?: Matchup[] | null;
 
-    @ManyToMany(() => Matchup, matchup => matchup.previousMatchups)
-        nextMatchups?: Matchup[] | null;
+    @ManyToOne(() => Matchup, matchup => matchup.winnerPreviousMatchups)
+        winnerNextMatchup?: Matchup | null;
+
+    @OneToMany(() => Matchup, matchup => matchup.winnerNextMatchup)
+        winnerPreviousMatchups?: Matchup[] | null;
 
     @OneToMany(() => MatchupMessage, message => message.matchup)
         messages?: MatchupMessage[] | null;

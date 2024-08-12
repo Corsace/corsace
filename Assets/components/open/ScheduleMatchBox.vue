@@ -86,6 +86,12 @@
             <div class="triangle schedule_matchbox__staff_box__triangle" />
         </div>
         <div class="schedule_matchbox_date">
+            <div
+                v-if="matchupSync.potential"
+                class="schedule_matchbox__potential"
+            >
+                {{ $t("open.schedule.potential") }}
+            </div>
             <div class="schedule_matchbox_date__ID">
                 ID: {{ matchupSync.matchID }}
             </div>
@@ -99,12 +105,7 @@
         </div>
         <div class="schedule_matchbox_teams">
             <ScheduleMatchBoxTeam :team="matchupSync.teams?.[0]" />
-            <div 
-                class="schedule_matchbox_teams__vs"
-                :style="{
-                    'background-color': matchupSync.potential ? '#FF5F22' : '#EF3255'
-                }"
-            >
+            <div class="schedule_matchbox_teams__vs">
                 <div>VS</div>
                 <div>
                     {{ !matchupSync.forfeit ? matchupSync.team1Score : matchupSync.team1Score < matchupSync.team2Score ? "FF" : 0 }}-{{ !matchupSync.forfeit ? matchupSync.team2Score : matchupSync.team1Score > matchupSync.team2Score ? "FF" : 0 }}
@@ -360,19 +361,17 @@ export default class ScheduleMatchBox extends Vue {
     }
 
     &__potential {
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: 0em;
-        text-align: center;
         position: absolute;
-        text-transform: uppercase;
-        left: 26px;
         top: 0;
-        bottom: 0;
-        transform: rotate(-90deg);
+        width: 100%;
+        background-color: $open-red;
+        font-weight: bold;
+        color: $open-dark;
+        text-align: center;
     }
 
     &_date {
+        position: relative;
         display: flex;
         flex-direction: column;
         padding: 30px;
@@ -398,6 +397,7 @@ export default class ScheduleMatchBox extends Vue {
 
     &_teams {
         display: flex;
+        justify-content: center;
         width: 100%;
         color: $open-dark;
         background-color: #FAFAFA;
@@ -421,7 +421,7 @@ export default class ScheduleMatchBox extends Vue {
             text-align: center;
             
             color: white;
-            
+            background-color: $open-red;
         }
 
     }

@@ -26,7 +26,7 @@ stageRouter.$use("/:stageID", validateStageOrRound);
 stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) => {
     const stage = ctx.state.stage;
 
-    let matchups: (Omit<Matchup, "team1" | "team2" | "teams" | "commentators"> & { team1: number; team2: number; teams: number[], commentators: number[] })[] = await Matchup
+    let matchups: (Omit<Matchup, "team1" | "team2" | "teams" | "commentators"> & { team1: number; team2: number; teams: number[]; commentators: number[] })[] = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
         .leftJoinAndSelect("matchup.team1", "team1")
@@ -65,7 +65,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
         .where("team.ID IN (:...teamIds)", { teamIds: Array.from(teamIds) })
         .getMany();
 
-    const sets: (Omit<MatchupSet, "matchup"> & { matchup: number; })[] = matchups.length === 0 ? [] : await MatchupSet
+    const sets: (Omit<MatchupSet, "matchup"> & { matchup: number })[] = matchups.length === 0 ? [] : await MatchupSet
         .createQueryBuilder("sets")
         .where("sets.matchupID IN (:...matchupIds)", { matchupIds: matchups.map((m) => m.ID) })
         .loadAllRelationIds({
@@ -86,28 +86,89 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
             true
     );
 
-    const potentialIDs = new Map<number, number>();
-
     ctx.body = {
         success: true,
-        matchups: matchups.map<MatchupList>((matchup) => {
-            const matchupTeams: Team[] = [];
+        matchups: await Promise.all(matchups.map<Promise<MatchupList>>(async (matchup) => {
+            const matchupTeams: TeamList[] = [];
+            const teamToTeamList = (team: Team): TeamList => {
+                let members = team.members;
+                if (!members.some((member) => member.ID === team.captain.ID))
+                    members = [team.captain, ...members];
+                return {
+                    ID: team.ID,
+                    name: team.name,
+                    abbreviation: team.abbreviation,
+                    avatarURL: team.avatarURL,
+                    pp: team.pp,
+                    rank: team.rank,
+                    BWS: team.BWS,
+                    members: members.map<TeamMember>((member) => {
+                        return {
+                            ID: member.ID,
+                            username: member.osu.username,
+                            osuID: member.osu.userID,
+                            country: member.country,
+                            isCaptain: member.ID === team.captain.ID,
+                            rank: member.userStatistics?.[0]?.rank ?? 0,
+                        };
+                    }),
+                };
+            };
             if (matchup.team1)
-                matchupTeams.push(teams.find((t) => t.ID === matchup.team1)!);
+                matchupTeams.push(teamToTeamList(teams.find((t) => t.ID === matchup.team1)!));
             if (matchup.team2)
-                matchupTeams.push(teams.find((t) => t.ID === matchup.team2)!);
+                matchupTeams.push(teamToTeamList(teams.find((t) => t.ID === matchup.team2)!));
             if (matchup.teams)
-                matchupTeams.push(...teams.filter((t) => matchup.teams.includes(t.ID)));
+                matchupTeams.push(...teams.filter((t) => matchup.teams.includes(t.ID)).map(teamToTeamList));
 
             const matchupSets = sets.filter((set) => set.matchup === matchup.ID);
 
-            let val = 0;
-            if (matchup.potentialFor) {
-                const num = potentialIDs.get(matchup.potentialFor.ID);
-                if (typeof num === "number")
-                    val = num + 1;
-
-                potentialIDs.set(matchup.potentialFor.ID, val);
+            // Less than 2 teams means we need to put placeholder text of Winner of/Loser of match ID X 
+            if (matchupTeams.length < 2) {
+                const prevWinnerMatchups: (Omit<Matchup, "team1" | "team2" | "teams"> & { team1: number; team2: number; teams: number[] })[] = await Matchup
+                    .createQueryBuilder("matchup")
+                    .leftJoin("matchup.winnerNextMatchup", "winnerNextMatchup")
+                    .where("winnerNextMatchup.ID = :matchupID", { matchupID: matchup.ID })
+                    .loadAllRelationIds({
+                        relations: ["team1", "team2", "teams"],
+                    })
+                    .getMany() as any;
+                
+                // If theres a matchup with teams not in matchupTeams, we add a team with the name "winner of X" to the list
+                const unFinishedWinnerMatchups = prevWinnerMatchups.filter((m) => !matchupTeams.some((t) => t.ID === m.team1 && t.ID === m.team2 && m.teams.some((team) => team === t.ID)));
+                if (unFinishedWinnerMatchups.length > 0) {
+                    matchupTeams.push(...unFinishedWinnerMatchups.map((unFinishedWinnerMatchup) => ({
+                        ID: -1,
+                        name: `Winner of ${unFinishedWinnerMatchup.matchID}`,
+                        abbreviation: "",
+                        avatarURL: "",
+                        members: [],
+                        pp: 0,
+                        rank: 0,
+                        BWS: 0,
+                    })));
+                }
+                const prevLoserMatchups: (Omit<Matchup, "team1" | "team2" | "teams"> & { team1: number; team2: number; teams: number[] })[] = await Matchup
+                    .createQueryBuilder("matchup")
+                    .leftJoin("matchup.loserNextMatchup", "loserNextMatchup")
+                    .where("loserNextMatchup.ID = :matchupID", { matchupID: matchup.ID })
+                    .loadAllRelationIds({
+                        relations: ["team1", "team2", "teams"],
+                    })
+                    .getMany() as any;
+                const unFinishedLoserMatchups = prevLoserMatchups.filter((m) => !matchupTeams.some((t) => t.ID === m.team1 && t.ID === m.team2 && m.teams.some((team) => team === t.ID)));
+                if (unFinishedLoserMatchups.length > 0) {
+                    matchupTeams.push(...unFinishedLoserMatchups.map((unFinishedLoserMatchup) => ({
+                        ID: -1,
+                        name: `Loser of ${unFinishedLoserMatchup.matchID}`,
+                        abbreviation: "",
+                        avatarURL: "",
+                        members: [],
+                        pp: 0,
+                        rank: 0,
+                        BWS: 0,
+                    })));
+                }
             }
 
             return {
@@ -117,33 +178,10 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                 mp: matchup.mp,
                 vod: matchup.vod,
                 forfeit: matchup.forfeit,
+                potential: matchup.potentialFor ? true : false,
                 team1Score: matchupSets.length === 1 ? matchupSets[0].team1Score : matchup.team1Score,
                 team2Score: matchupSets.length === 1 ? matchupSets[0].team2Score : matchup.team2Score,
-                potential: matchup.potentialFor ? `${matchup.potentialFor.ID}-${String.fromCharCode("A".charCodeAt(0) + val)}` : undefined,
-                teams: matchupTeams.map<TeamList>((team) => {
-                    let members = team.members;
-                    if (!members.some((member) => member.ID === team.captain.ID))
-                        members = [team.captain, ...members];
-                    return {
-                        ID: team.ID,
-                        name: team.name,
-                        abbreviation: team.abbreviation,
-                        avatarURL: team.avatarURL,
-                        pp: team.pp,
-                        rank: team.rank,
-                        BWS: team.BWS,
-                        members: members.map<TeamMember>((member) => {
-                            return {
-                                ID: member.ID,
-                                username: member.osu.username,
-                                osuID: member.osu.userID,
-                                country: member.country,
-                                isCaptain: member.ID === team.captain.ID,
-                                rank: member.userStatistics?.[0]?.rank ?? 0,
-                            };
-                        }),
-                    };
-                }),
+                teams: matchupTeams,
                 referee: matchup.referee ? {
                     ID: matchup.referee.ID,
                     username: matchup.referee.osu.username,
@@ -157,7 +195,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                     username: matchup.streamer.osu.username,
                 } : undefined,
             };
-        }),
+        })),
     };
 });
 
