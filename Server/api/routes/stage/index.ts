@@ -178,7 +178,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
                 mp: matchup.mp,
                 vod: matchup.vod,
                 forfeit: matchup.forfeit,
-                potential: matchup.potentialFor ? true : false,
+                potentialFor: matchup.potentialFor?.matchID,
                 team1Score: matchupSets.length === 1 ? matchupSets[0].team1Score : matchup.team1Score,
                 team2Score: matchupSets.length === 1 ? matchupSets[0].team2Score : matchup.team2Score,
                 teams: matchupTeams,
