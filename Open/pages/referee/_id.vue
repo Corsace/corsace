@@ -1142,7 +1142,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             mpID: this.matchup.mp,
             sets: this.matchup.sets?.map(set => {
                 const first = set.first;
-                const second = this.matchup!.team1?.ID === first?.ID ? this.matchup!.team2 : this.matchup!.team2?.ID === first ? this.matchup!.team1 : null;
+                const second = this.matchup!.team1?.ID === first?.ID ? this.matchup!.team2 : this.matchup!.team2?.ID === first?.ID ? this.matchup!.team1 : null;
                 return {
                     set: set.order,
                     maps: set.maps?.map(map => {

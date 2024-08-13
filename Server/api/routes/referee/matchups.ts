@@ -209,12 +209,12 @@ function setBasedMatchText (team1Name: string, team2Name: string, maps: postResu
     const protects = maps.filter(m => m.status === MapStatus.Protected);
     const bans = maps.filter(m => m.status === MapStatus.Banned);
     textBuilder += `\n${team1Name}`;
-    textBuilder += `�${protects.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => b.name.split(" | ")[0])}`;
-    textBuilder += `�${bans.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => b.name.split(" | ")[0])}`;
+    textBuilder += `:shield: ${protects.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => b.name.split(" | ")[0]).join(" ")}`;
+    textBuilder += `:no_entry_sign: ${bans.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => b.name.split(" | ")[0]).join(" ")}`;
     
     textBuilder += `\n${team2Name}`;
-    textBuilder += `�${protects.filter((b: postResultsMap) => b.team === team2Name).map((b: postResultsMap) => b.name.split(" | ")[0])}`;
-    textBuilder += `�${bans.filter((b: postResultsMap) => b.team === team2Name).map((b: postResultsMap) => b.name.split(" | ")[0])}`;
+    textBuilder += `:shield: ${protects.filter((b: postResultsMap) => b.team === team2Name).map((b: postResultsMap) => b.name.split(" | ")[0]).join(" ")}`;
+    textBuilder += `:no_entry_sign: ${bans.filter((b: postResultsMap) => b.team === team2Name).map((b: postResultsMap) => b.name.split(" | ")[0]).join(" ")}`;
 
     return textBuilder;
 }
@@ -341,7 +341,7 @@ refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/post
         return;
     }
 
-    let textBuilder = `**${body.stage}: ${body.matchID}**\n${body.team1Score > body.team2Score ? "�**" : ""}${body.team1Name} | ${body.forfeit && body.team1Score === 0 ? "FF" : body.team1Score}${body.team1Score > body.team2Score ? "**" : ""} - ${body.team2Score > body.team1Score ? "**" : ""}${body.forfeit && body.team2Score === 0 ? "FF" : body.team2Score} | ${body.team2Name}${body.team2Score > body.team1Score ? "**�" : ""}`;
+    let textBuilder = `**${body.stage}: ${body.matchID}**\n${body.team1Score > body.team2Score ? ":medal:**" : ""}${body.team1Name} | ${body.forfeit && body.team1Score === 0 ? "FF" : body.team1Score}${body.team1Score > body.team2Score ? "**" : ""} - ${body.team2Score > body.team1Score ? "**" : ""}${body.forfeit && body.team2Score === 0 ? "FF" : body.team2Score} | ${body.team2Name}${body.team2Score > body.team1Score ? "**:medal:" : ""}`;
     if (!forfeit) {
         textBuilder += `\n[MP Link](<https://osu.ppy.sh/community/matches/${body.mpID}>)`;
 
