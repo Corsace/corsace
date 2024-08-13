@@ -620,6 +620,7 @@
             "scores": {
                 "nav": {
                     "sort": "СОРТИРОВАТЬ",
+                    "score": "SCORE",
                     "average": "СРЕДНЕЕ",
                     "sum": "СУММА",
                     "percentAvg": "%СРЕД.",
