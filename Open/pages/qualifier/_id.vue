@@ -95,6 +95,7 @@
                     :view="scoreView"
                     :placement-lock="false"
                     :pool="mappools[0]"
+                    default="zScore"
                 />
             </div>
         </div>

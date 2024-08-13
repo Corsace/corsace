@@ -148,13 +148,13 @@
                             >
                                 {{ row.worst }}
                             </td>
-                            <td>{{ row.sum === 0 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row.sum !== 0 ? "%" : "" }}</td>
+                            <td>{{ row.score === 0 ? "" : row[currentFilter].toFixed(currentFilter === "score" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row.score !== 0 ? "%" : "" }}</td>
                             <td 
                                 v-for="score in row.scores"
                                 :key="score.map"
                                 :class="{ 'scores__table--highlight': score.isBest }"
                             >
-                                {{ score.sum === 0 ? "" : score[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && score.sum !== 0 ? "%" : "" }}
+                                {{ score.score === 0 ? "" : score[currentFilter].toFixed(currentFilter === "score" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && score.score !== 0 ? "%" : "" }}
                             </td>
                         </tr>
                     </tbody>
@@ -185,11 +185,11 @@ const openModule = namespace("open");
 })
 
 export default class ScoresView extends Vue {
-
     @PropSync("view", { type: String }) syncView!: "players" | "teams";
     @PropSync("placementLock", { type: Boolean, default: false }) keepPlacementLocked!: boolean;
     @PropSync("pool", { default: null }) readonly selectedMappool!: Mappool | null;
     @PropSync("tiers", { type: Boolean, default: false }) readonly tierSync!: boolean;
+    @PropSync("default",{ type: String, default: "score" }) readonly defaultView!: scoreSortType;
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State scores!: MatchupScore[] | null;
@@ -230,6 +230,9 @@ export default class ScoresView extends Vue {
     }
     
     async mounted () {
+        if (this.defaultView)
+            this.currentFilter = this.defaultView;
+
         this.loading = true;
         if (this.tournament && (!this.teamList || this.teamList.length === 0))
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
@@ -258,7 +261,7 @@ export default class ScoresView extends Vue {
     maphover = false;
     showPlayers = true;
 
-    currentFilter: scoreSortType = "zScore";
+    currentFilter: scoreSortType = "score";
     sortDir: "asc" | "desc" = "desc";
     mapSort = -1;
     filters: scoreSortType[] = scoreFilters;

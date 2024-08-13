@@ -96,6 +96,7 @@
                 :view="scoreView"
                 :placement-lock="placementLock"
                 :pool="mappools[0]"
+                :default="'zScore'"
             />
             <QualifiersView
                 v-else-if="page === 'qualifiers'"
