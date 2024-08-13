@@ -1,6 +1,6 @@
 import { CorsaceRouter } from "../../../corsaceRouter";
 import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
-import { Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
+import { MapStatus, Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Stage } from "../../../../Models/tournaments/stage";
 import { Round } from "../../../../Models/tournaments/round";
@@ -169,9 +169,54 @@ refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:match
 });
 
 
-interface postResultsMap { 
-    team: string | undefined
-    map: string
+interface postResultsSet {
+    set: number;
+    maps: postResultsMap[];
+}
+interface postResultsMap {
+    name: string;
+    status: MapStatus;
+    team?: string;
+}
+function normalMatchText (team1Name: string, team2Name: string, maps: postResultsMap[]) {
+    let textBuilder = "";
+
+    const protects = maps.filter(m => m.status === MapStatus.Protected);
+    if (protects) {
+        textBuilder += "\n\n__**Protects**__";
+        textBuilder += `\n**${team1Name}**\n`;
+        textBuilder += protects.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => `\`${b.name}\``).join("\n");
+        textBuilder += "\n";
+        textBuilder += `\n**${team2Name}**\n`;
+        textBuilder += protects.filter((b: postResultsMap) => b.team === team2Name).map((b: postResultsMap) => `\`${b.name}\``).join("\n");
+    }
+
+    const bans = maps.filter(m => m.status === MapStatus.Banned);
+    if (bans) {
+        textBuilder += "\n\n__**Bans**__";
+        textBuilder += `\n**${team1Name}**\n`;
+        textBuilder += bans.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => `\`${b.name}\``).join("\n");
+        textBuilder += "\n";
+        textBuilder += `\n**${team2Name}**\n`;
+        textBuilder += bans.filter((b: postResultsMap) => b.team === team2Name).map((b: postResultsMap) => `\`${b.name}\``).join("\n");
+    }
+
+    return textBuilder;
+}
+function setBasedMatchText (team1Name: string, team2Name: string, maps: postResultsMap[], set: number) {
+    let textBuilder = `\n\nSet${set}`;
+
+    const protects = maps.filter(m => m.status === MapStatus.Protected);
+    const bans = maps.filter(m => m.status === MapStatus.Banned);
+    textBuilder += `\n${team1Name}`;
+    textBuilder += `�${protects.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => b.name.split(" | ")[0])}`;
+    textBuilder += `�${bans.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => b.name.split(" | ")[0])}`;
+    
+    textBuilder += `\n${team2Name}`;
+    textBuilder += `�${protects.filter((b: postResultsMap) => b.team === team2Name).map((b: postResultsMap) => b.name.split(" | ")[0])}`;
+    textBuilder += `�${bans.filter((b: postResultsMap) => b.team === team2Name).map((b: postResultsMap) => b.name.split(" | ")[0])}`;
+
+    return textBuilder;
 }
 refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/postResults", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const body = ctx.request.body;
@@ -223,10 +268,53 @@ refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/post
         return;
     }
 
-    if (typeof body.mpID !== "number" && !body.forfeit) {
+    if (body.forfeit !== undefined && typeof body.forfeit !== "boolean") {
+        ctx.body = {
+            success: false,
+            error: "Invalid forfeit.",
+        };
+        return;
+    }
+    const forfeit: boolean = body.forfeit ?? false;
+
+    if (typeof body.mpID !== "number" && !forfeit) {
         ctx.body = {
             success: false,
             error: "Invalid mp ID.",
+        };
+        return;
+    }
+
+    const sets: postResultsSet[] | undefined = body.sets;
+    if (!sets && !forfeit) {
+        ctx.body = {
+            success: false,
+            error: "Missing sets.",
+        };
+        return;
+    }
+
+    if (!Array.isArray(sets) || sets.some(s => typeof s.set !== "number" || !Array.isArray(s.maps))) {
+        ctx.body = {
+            success: false,
+            error: "Invalid sets.",
+        };
+        return;
+    }
+
+    if (sets.some(set => set.maps.some((map: postResultsMap) => typeof map.name !== "string" || typeof map.status !== "number" || (map.team && typeof map.team !== "string")))) {
+        ctx.body = {
+            success: false,
+            error: "Invalid maps.",
+        };
+        return;
+    }
+
+    const setsWithMaps = sets.filter(set => set.maps && set.maps.length > 0);
+    if (setsWithMaps.length === 0 && !forfeit) {
+        ctx.body = {
+            success: false,
+            error: "Missing sets.",
         };
         return;
     }
@@ -244,37 +332,6 @@ refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/post
         };
         return;
     }
-
-    const protects = body.protects;
-    if (protects)
-        protects.sort((a: postResultsMap, b: postResultsMap) => (a.team ?? "").localeCompare(b.team ?? ""));
-
-    const bans = body.bans;
-    if (bans)
-        bans.sort((a: postResultsMap, b: postResultsMap) => (a.team ?? "").localeCompare(b.team ?? ""));
-
-    let textBuilder = `**${body.stage}: ${body.matchID}**\n${body.team1Score > body.team2Score ? "**" : ""}${body.team1Name} | ${body.forfeit && body.team1Score === 0 ? "FF" : body.team1Score}${body.team1Score > body.team2Score ? "**" : ""} - ${body.team2Score > body.team1Score ? "**" : ""}${body.forfeit && body.team2Score === 0 ? "FF" : body.team2Score} | ${body.team2Name}${body.team2Score > body.team1Score ? "**" : ""}`;
-    if (!body.forfeit)
-        textBuilder += `\n[MP Link](<https://osu.ppy.sh/community/matches/${body.mpID}>)`;
-
-    if (protects && !body.forfeit) {
-        textBuilder += "\n\n__**Protects**__";
-        textBuilder += `\n**${body.team1Name}**\n`;
-        textBuilder += protects.filter((b: postResultsMap) => b.team === body.team1Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
-        textBuilder += "\n";
-        textBuilder += `\n**${body.team2Name}**\n`;
-        textBuilder += protects.filter((b: postResultsMap) => b.team === body.team2Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
-    }
-
-    if (bans && !body.forfeit) {
-        textBuilder += "\n\n__**Bans**__";
-        textBuilder += `\n**${body.team1Name}**\n`;
-        textBuilder += bans.filter((b: postResultsMap) => b.team === body.team1Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
-        textBuilder += "\n";
-        textBuilder += `\n**${body.team2Name}**\n`;
-        textBuilder += bans.filter((b: postResultsMap) => b.team === body.team2Name).map((b: postResultsMap) => `\`${b.map}\``).join("\n");
-    }
-
     const channel = await discordClient.channels.fetch(resultsChannel.channelID);
     if (!channel?.isTextBased()) {
         ctx.body = {
@@ -283,6 +340,19 @@ refereeMatchupsRouter.$post<{ message: string }>("/:tournamentID/:matchupID/post
         };
         return;
     }
+
+    let textBuilder = `**${body.stage}: ${body.matchID}**\n${body.team1Score > body.team2Score ? "�**" : ""}${body.team1Name} | ${body.forfeit && body.team1Score === 0 ? "FF" : body.team1Score}${body.team1Score > body.team2Score ? "**" : ""} - ${body.team2Score > body.team1Score ? "**" : ""}${body.forfeit && body.team2Score === 0 ? "FF" : body.team2Score} | ${body.team2Name}${body.team2Score > body.team1Score ? "**�" : ""}`;
+    if (!forfeit) {
+        textBuilder += `\n[MP Link](<https://osu.ppy.sh/community/matches/${body.mpID}>)`;
+
+        for (const set of setsWithMaps) {
+            if (setsWithMaps.length === 1)
+                textBuilder += normalMatchText(body.team1Name, body.team2Name, set.maps);
+            else
+                textBuilder += setBasedMatchText(body.team1Name, body.team2Name, set.maps, set.set);
+        }
+    }
+
     await channel.send(textBuilder);
 
     ctx.body = {

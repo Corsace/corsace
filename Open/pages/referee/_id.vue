@@ -1140,24 +1140,19 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             team2Name: this.matchup.team2?.name,
             forfeit: this.matchup.forfeit,
             mpID: this.matchup.mp,
-            bans: this.matchup.sets?.flatMap(set => set.maps?.filter(map => map.status === MapStatus.Banned).map((map, i) => {
-                const mapOrderTeam = this.mapOrder.find(o => o.set === set.order)?.order.filter(p => p.status === MapStatus.Banned).find((p, j) => i === j)?.team;
-                const slot = this.mappools.flatMap(m => m.slots).find(s => s.maps.some(m => m.ID === map.map.ID));
-                const mappoolMap = slot?.maps.find(m => m.ID === map.map.ID);
-                return {
-                    team: mapOrderTeam === MapOrderTeam.Team1 ? this.matchup!.team1?.name : mapOrderTeam === MapOrderTeam.Team2 ? this.matchup!.team2?.name : "N/A",
-                    map: `${slot?.acronym.toUpperCase()}${slot?.maps.length === 1 ? "" : mappoolMap?.order } | ${mappoolMap?.beatmap?.beatmapset?.artist} - ${mappoolMap?.beatmap?.beatmapset?.title} [${mappoolMap?.beatmap?.difficulty}]`,
-                };
-            }) ?? []) ?? [],
-            protects: this.matchup.sets?.flatMap(set => set.maps?.filter(map => map.status === MapStatus.Protected).map((map, i) => {
-                const mapOrderTeam = this.mapOrder.find(o => o.set === set.order)?.order.filter(p => p.status === MapStatus.Protected).find((p, j) => i === j)?.team;
-                const slot = this.mappools.flatMap(m => m.slots).find(s => s.maps.some(m => m.ID === map.map.ID));
-                const mappoolMap = slot?.maps.find(m => m.ID === map.map.ID);
-                return {
-                    team: mapOrderTeam === MapOrderTeam.Team1 ? this.matchup!.team1?.name : mapOrderTeam === MapOrderTeam.Team2 ? this.matchup!.team2?.name : "N/A",
-                    map: `${slot?.acronym.toUpperCase()}${slot?.maps.length === 1 ? "" : mappoolMap?.order } | ${mappoolMap?.beatmap?.beatmapset?.artist} - ${mappoolMap?.beatmap?.beatmapset?.title} [${mappoolMap?.beatmap?.difficulty}]`,
-                };
-            }) ?? []) ?? [],
+            sets: this.matchup.sets?.map(set => ({
+                set: set.order,
+                maps: set.maps?.map(map => {
+                    const slot = this.mappools.flatMap(m => m.slots).find(s => s.maps.some(m => m.ID === map.map.ID));
+                    const mappoolMap = slot?.maps.find(m => m.ID === map.map.ID);
+                    const mapOrder = this.mapOrder.find(o => o.set === set.order)?.order.find(o => o.order === map.order);
+                    return {
+                        name: `${slot?.acronym.toUpperCase()}${slot?.maps.length === 1 ? "" : mappoolMap?.order } | ${mappoolMap?.beatmap?.beatmapset?.artist} - ${mappoolMap?.beatmap?.beatmapset?.title} [${mappoolMap?.beatmap?.difficulty}]`,
+                        status: map.status,
+                        team: mapOrder?.team === MapOrderTeam.Team1 ? this.matchup!.team1?.name : mapOrder?.team === MapOrderTeam.Team2 ? this.matchup!.team2?.name : "N/A",
+                    };
+                }) ?? [],
+            })) ?? [],
         });
         if (!data.success) {
             alert(data.error);
