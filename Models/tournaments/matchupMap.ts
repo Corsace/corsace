@@ -22,12 +22,6 @@ export class MatchupMap extends BaseEntity {
     @Column()
         order!: number;
 
-    @Column({ type: "int", nullable: true })
-        team1Score?: number | null;
-
-    @Column({ type: "int", nullable: true })
-        team2Score?: number | null;
-
     @OneToMany(() => MatchupScore, score => score.map)
         scores?: MatchupScore[];
 
