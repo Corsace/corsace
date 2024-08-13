@@ -620,6 +620,7 @@
             "scores": {
                 "nav": {
                     "sort": "SORTIR",
+                    "score": "SCORE",
                     "average": "RATA-RATA",
                     "sum": "JUMLAH",
                     "percentAvg": "%RATA-RATA",
