@@ -620,6 +620,7 @@
             "scores": {
                 "nav": {
                     "sort": "排序方式",
+                    "score": "SCORE",
                     "average": "平均",
                     "sum": "总和",
                     "percentAvg": "%平均",
