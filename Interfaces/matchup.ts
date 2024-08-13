@@ -89,6 +89,16 @@ export const scoreFilters = ["zScore", "relMax", "percentMax", "relAvg", "percen
 
 export type scoreSortType = typeof scoreFilters[number];
 
+export const numberFormats: Record<scoreSortType, (v: number, hide: boolean) => string> = {
+    zScore: (v, hide) => hide ? "" : v.toFixed(2),
+    relMax: (v, hide) => hide ? "" : v.toFixed(2),
+    percentMax: (v, hide) => hide ? "" : v.toFixed(2) + "%",
+    relAvg: (v, hide) => hide ? "" : v.toFixed(2),
+    percentAvg: (v, hide) => hide ? "" : v.toFixed(2) + "%",
+    score: (v, hide) => hide ? "" : v.toLocaleString(),
+    average: (v, hide) => hide ? "" : v.toLocaleString(),
+};
+
 export type MatchupScoreFilterValues = {
     [K in scoreSortType]: number;
 };

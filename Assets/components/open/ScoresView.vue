@@ -148,13 +148,13 @@
                             >
                                 {{ row.worst }}
                             </td>
-                            <td>{{ row.score === 0 ? "" : row[currentFilter].toFixed(currentFilter === "score" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row.score !== 0 ? "%" : "" }}</td>
+                            <td>{{ numberFormats[currentFilter](row[currentFilter], row.score === 0) }}</td>
                             <td 
                                 v-for="score in row.scores"
                                 :key="score.map"
                                 :class="{ 'scores__table--highlight': score.isBest }"
                             >
-                                {{ score.score === 0 ? "" : score[currentFilter].toFixed(currentFilter === "score" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && score.score !== 0 ? "%" : "" }}
+                                {{ numberFormats[currentFilter](score[currentFilter], score.score === 0) }}
                             </td>
                         </tr>
                     </tbody>
@@ -167,7 +167,7 @@
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { MatchupScore, MatchupScoreView, computeScoreViews, mapNames, scoreFilters, scoreSortType } from "../../../Interfaces/matchup";
+import { MatchupScore, MatchupScoreView, computeScoreViews, mapNames, scoreFilters, scoreSortType, numberFormats } from "../../../Interfaces/matchup";
 import { Tournament } from "../../../Interfaces/tournament";
 import { Mappool } from "../../../Interfaces/mappool";
 import { TeamList } from "../../../Interfaces/team";
@@ -212,6 +212,8 @@ export default class ScoresView extends Vue {
     loading = true;
     teamSearchID: number | undefined = 0;
     mapSearchID = "";
+
+    numberFormats = numberFormats;
     
     get filteredTeam () {
         if (!this.teamSearchID)
