@@ -620,6 +620,7 @@
             "scores": {
                 "nav": {
                     "sort": "정렬",
+                    "score": "SCORE",
                     "average": "평균 점수",
                     "sum": "SUM",
                     "percentAvg": "%AVG",
