@@ -685,17 +685,17 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return matchupScore.save();
         }));
         if (matchup.stage!.stageType !== StageType.Qualifiers) {
-            matchupMap.team1Score = matchupMap.scores
+            const team1Score = matchupMap.scores
                 .filter(score => matchup.team1!.members.some(m => m.osu.userID === score.user.osu.userID))
                 .reduce((acc, score) => acc + score.score, 0);
-            matchupMap.team2Score = matchupMap.scores
+            const team2Score = matchupMap.scores
                 .filter(score => matchup.team2!.members.some(m => m.osu.userID === score.user.osu.userID))
                 .reduce((acc, score) => acc + score.score, 0);
 
-            if (matchupMap.team1Score > matchupMap.team2Score) {
+            if (team1Score > team2Score) {
                 matchup.sets![matchup.sets!.length - 1].team1Score++;
                 matchupMap.winner = matchup.team1;
-            } else if (matchupMap.team2Score > matchupMap.team1Score) {
+            } else if (team2Score > team1Score) {
                 matchup.sets![matchup.sets!.length - 1].team2Score++;
                 matchupMap.winner = matchup.team2;
             }

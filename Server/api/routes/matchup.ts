@@ -42,8 +42,6 @@ function sanitizeMatchupResponse (matchup: Matchup) {
                 ID: map.ID,
                 map: map.map,
                 order: map.order,
-                team1Score: map.team1Score,
-                team2Score: map.team2Score,
                 winner: map.winner,
                 scores: map.scores?.map(score => ({
                     ID: score.ID,
@@ -96,22 +94,23 @@ async function updateMatchup (matchupID: number) {
 
     if (matchup) {
         matchup.sets!.forEach(async set => {
+
             set.maps!.forEach(async map => {
-                map.team1Score = map.scores?.filter(score => matchup.team1!.members.some(member => member.ID === score.user.ID))
+                const team1Score = map.scores?.filter(score => matchup.team1!.members.some(member => member.ID === score.user.ID))
                     .reduce((acc, score) => acc + score.score, 0) ?? 0;
-                map.team2Score = map.scores?.filter(score => matchup.team2!.members.some(member => member.ID === score.user.ID))
+                const team2Score = map.scores?.filter(score => matchup.team2!.members.some(member => member.ID === score.user.ID))
                     .reduce((acc, score) => acc + score.score, 0) ?? 0;
 
-                if (map.team1Score > map.team2Score)
+                if (team1Score > team2Score)
                     map.winner = matchup.team1;
-                else if (map.team2Score > map.team1Score)
+                else if (team2Score > team1Score)
                     map.winner = matchup.team2;
 
                 await map.save();
             });
 
-            set.team1Score = set.maps!.filter(map => map.team1Score && map.team2Score ? map.team1Score > map.team2Score : false).length;
-            set.team2Score = set.maps!.filter(map => map.team1Score && map.team2Score ? map.team2Score > map.team1Score : false).length;
+            set.team1Score = matchup.team1 ? set.maps!.filter(map => map.winner?.ID === matchup.team1!.ID).length : 0;
+            set.team2Score = matchup.team2 ? set.maps!.filter(map => map.winner?.ID === matchup.team2!.ID).length : 0;
 
             if (set.team1Score > set.team2Score)
                 set.winner = matchup.team1;
@@ -906,13 +905,13 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
             map.scores!.push(matchupScore);
         });
         if (matchup.stage!.stageType !== StageType.Qualifiers) {
-            map.team1Score = map.scores
+            const team1Score = map.scores
                 .filter(score => matchup.team1!.members.some(member => member.osu.userID === score.user.osu.userID))
                 .reduce((acc, score) => acc + score.score, 0);
-            map.team2Score = map.scores
+            const team2Score = map.scores
                 .filter(score => matchup.team2!.members.some(member => member.osu.userID === score.user.osu.userID))
                 .reduce((acc, score) => acc + score.score, 0);
-            map.winner = map.team1Score > map.team2Score ? matchup.team1 : map.team2Score > map.team1Score ? matchup.team2 : undefined;
+            map.winner = team1Score > team2Score ? matchup.team1 : team2Score > team1Score ? matchup.team2 : undefined;
         }
         sets[sets.length - 1].maps!.push(map);
 
@@ -1084,23 +1083,23 @@ matchupRouter.$post<{ matchup: object }>("/score", isLoggedInDiscord, isCorsace,
         if (!map.scores)
             map.scores = [];
         map.scores.push(matchupScore);
-        map.team1Score = map.scores
+        const team1Score = map.scores
             .filter(mapScore => matchup.team1!.members.some(member => member.ID === mapScore.user.ID))
             .reduce((acc, mapScore) => acc + mapScore.score, 0);
-        map.team2Score = map.scores
+        const team2Score = map.scores
             .filter(mapScore => matchup.team2!.members.some(member => member.ID === mapScore.user.ID))
             .reduce((acc, mapScore) => acc + mapScore.score, 0);
-        if (map.team1Score > map.team2Score)
+        if (team1Score > team2Score)
             map.winner = matchup.team1;
-        else if (map.team2Score > map.team1Score)
+        else if (team2Score > team1Score)
             map.winner = matchup.team2;
         await map.save();
 
         const i = matchup.sets!.findIndex(m => m.ID === set.ID);
         const j = matchup.sets![i].maps!.findIndex(m => m.ID === map.ID);
         matchup.sets![i].maps![j] = map;
-        matchup.sets![i].team1Score = matchup.sets![i].maps!.filter(setMap => setMap.team1Score && setMap.team2Score ? setMap.team1Score > setMap.team2Score : false).length;
-        matchup.sets![i].team2Score = matchup.sets![i].maps!.filter(setMap => setMap.team1Score && setMap.team2Score ? setMap.team2Score > setMap.team1Score : false).length;
+        matchup.sets![i].team1Score = matchup.team1 ? matchup.sets![i].maps!.filter(setMap => setMap.winner?.ID === matchup.team1!.ID).length : 0;
+        matchup.sets![i].team2Score = matchup.team2 ? matchup.sets![i].maps!.filter(setMap => setMap.winner?.ID === matchup.team2!.ID).length : 0;
         matchup.team1Score = matchup.sets!.filter(matchupSet => matchupSet.team1Score && matchupSet.team2Score ? matchupSet.team1Score > matchupSet.team2Score : false).length;
         matchup.team2Score = matchup.sets!.filter(matchupSet => matchupSet.team1Score && matchupSet.team2Score ? matchupSet.team2Score > matchupSet.team1Score : false).length;
         if (matchup.team1Score > matchup.team2Score)
