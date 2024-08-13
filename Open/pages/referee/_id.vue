@@ -1130,7 +1130,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             this.tooltipText = "No matchup selected";
             return;
         }
-
+    
         const { data } = await this.$axios.post<{ message: string }>(`/api/referee/matchups/${this.tournament?.ID}/${this.$route.params.id}/postResults`, {
             matchID: this.matchup.matchID,
             stage: this.matchup.round?.name ?? this.matchup.stage?.name ?? "",
@@ -1140,19 +1140,23 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             team2Name: this.matchup.team2?.name,
             forfeit: this.matchup.forfeit,
             mpID: this.matchup.mp,
-            sets: this.matchup.sets?.map(set => ({
-                set: set.order,
-                maps: set.maps?.map(map => {
-                    const slot = this.mappools.flatMap(m => m.slots).find(s => s.maps.some(m => m.ID === map.map.ID));
-                    const mappoolMap = slot?.maps.find(m => m.ID === map.map.ID);
-                    const mapOrder = this.mapOrder.find(o => o.set === set.order)?.order.find(o => o.order === map.order);
-                    return {
-                        name: `${slot?.acronym.toUpperCase()}${slot?.maps.length === 1 ? "" : mappoolMap?.order } | ${mappoolMap?.beatmap?.beatmapset?.artist} - ${mappoolMap?.beatmap?.beatmapset?.title} [${mappoolMap?.beatmap?.difficulty}]`,
-                        status: map.status,
-                        team: mapOrder?.team === MapOrderTeam.Team1 ? this.matchup!.team1?.name : mapOrder?.team === MapOrderTeam.Team2 ? this.matchup!.team2?.name : "N/A",
-                    };
-                }) ?? [],
-            })) ?? [],
+            sets: this.matchup.sets?.map(set => {
+                const first = set.first;
+                const second = this.matchup!.team1?.ID === first?.ID ? this.matchup!.team2 : this.matchup!.team2?.ID === first ? this.matchup!.team1 : null;
+                return {
+                    set: set.order,
+                    maps: set.maps?.map(map => {
+                        const slot = this.mappools.flatMap(m => m.slots).find(s => s.maps.some(m => m.ID === map.map.ID));
+                        const mappoolMap = slot?.maps.find(m => m.ID === map.map.ID);
+                        const mapOrder = this.mapOrder.find(o => o.set === set.order)?.order.find(o => o.order === map.order);
+                        return {
+                            name: `${slot?.acronym.toUpperCase()}${slot?.maps.length === 1 ? "" : mappoolMap?.order } | ${mappoolMap?.beatmap?.beatmapset?.artist} - ${mappoolMap?.beatmap?.beatmapset?.title} [${mappoolMap?.beatmap?.difficulty}]`,
+                            status: map.status,
+                            team: mapOrder?.team === MapOrderTeam.Team1 ? first?.name : mapOrder?.team === MapOrderTeam.Team2 ? second?.name : "N/A",
+                        };
+                    }) ?? [],
+                };
+            }) ?? [],
         });
         if (!data.success) {
             alert(data.error);
