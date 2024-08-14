@@ -123,10 +123,15 @@ export function extractParameter<T> (m: Message | ChatInputCommandInteraction, p
     return m.options.get(parameterOption.name)?.value;
 }
 
-async function missingParameter<T> (m: Message | ChatInputCommandInteraction, parameterOption: parameterOptions<T>) {
+async function missingParameter<T> (m: Message | ChatInputCommandInteraction, param: any, parameterOption: parameterOptions<T>) {
     if (parameterOption.optional)
         return false;
-    await respond(m, `Missing or invalid parameter \`${parameterOption.name}\``);
+
+    let missingText = `Missing or invalid parameter \`${parameterOption.name}\``;
+    if (param instanceof Date && isNaN(param.getTime()))
+        missingText = `Invalid date\nProvide a valid date using either \`YYYY-MM-DD HH:MM UTC\` format\nOr a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)\n\nYour input: \`${param}\``;
+
+    await respond(m, missingText);
     return true;
 }
 
@@ -188,7 +193,7 @@ export async function extractParameters<T> (m: Message | ChatInputCommandInterac
             parameter = extractThreadParameter(m.channel, parameterOption);
 
         if (invalidParameter(parameter, parameterOption.optional)) {
-            await missingParameter(m, parameterOption);
+            await missingParameter(m, parameter, parameterOption);
             return;
         }
 
@@ -203,7 +208,7 @@ export async function extractParameters<T> (m: Message | ChatInputCommandInterac
                     Object.values(postProcess).some(v => invalidParameter(v))
                 )
             ) {
-                await missingParameter(m, parameterOption);
+                await missingParameter(m, parameter, parameterOption);
                 return;
             }
 
