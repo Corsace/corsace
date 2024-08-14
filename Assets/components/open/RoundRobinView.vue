@@ -208,22 +208,28 @@ export default class RoundRobinView extends Vue {
     @PropSync("matchups", { type: Array, required: true }) matchupList!: MatchupList[];
     @PropSync("current", { type: String, default: "" }) currentGroup!: string;
 
+    updated () {
+        const view = document.querySelector(".round_robin_view");
+        if (view instanceof HTMLElement)
+            view.style.width = `${view.scrollWidth + 2}px`;
+    }
+
+    hover = false;
+    teamSearchID = 0;
+
     // TODO: Change how making groups even works in the first place
-    groups: {
+    get groups (): {
         id: string;
         matches: MatchupList[];
         teams: TeamList[];
         collapsed: boolean;
-    }[] = [];
-
-    @Watch("matchupList")
-    updateGroups () {
+    }[] {
         const matchIDSet = new Set<string>();
         for (const matchup of this.matchupList)
             if (matchup.matchID[0])
                 matchIDSet.add(matchup.matchID[0]);
 
-        this.groups = Array.from(matchIDSet).map(id => {
+        return Array.from(matchIDSet).map(id => {
             const matches = this.matchupList.filter(m => m.matchID.startsWith(id));
 
             const teams: TeamList[] = [];
@@ -247,18 +253,9 @@ export default class RoundRobinView extends Vue {
         }).sort((a, b) => a.id > b.id ? 1 : -1);
     }
 
-    updated () {
-        const view = document.querySelector(".round_robin_view");
-        if (view instanceof HTMLElement)
-            view.style.width = `${view.scrollWidth + 2}px`;
-    }
-
     get group () {
         return this.groups.find(g => g.id === this.currentGroup);
     }
-
-    hover = false;
-    teamSearchID = 0;
 
     get filteredTeam () {
         return this.group?.teams.find(t => t.ID === this.teamSearchID);
