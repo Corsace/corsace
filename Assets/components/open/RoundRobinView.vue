@@ -193,7 +193,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, PropSync, Watch } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 import { MatchupList } from "../../../Interfaces/matchup";
 import { TeamList } from "../../../Interfaces/team";
 
