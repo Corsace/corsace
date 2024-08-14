@@ -217,7 +217,7 @@ export default class ScheduleMatchBox extends Vue {
             .filter((s, i, a) => a.findIndex(u => u.ID === s.ID) === i);
     }
 
-    @Watch("matchupSync")
+    @Watch("matchupSync", { immediate: true })
     onMatchupSyncChange () {
         this.matchReferee = this.matchupSync?.referee ?? null;
         this.matchCommentators = this.matchupSync?.commentators ?? [];
