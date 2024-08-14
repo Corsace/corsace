@@ -3,7 +3,7 @@
         {{ $t("open.components.filter.name") }}
         <div
             class="open_filter__icon"
-            @click="toggleDropdown()"
+            @click.stop="toggleDropdown()"
         >
             <div class="open_filter__icon_square" />
             <div class="open_filter__icon_square" />
@@ -12,6 +12,7 @@
             <div
                 v-if="visibleDropdown"
                 class="open_filter__dropdown"
+                @click.stop
             >
                 <div class="open_filter__dropdown_triangle_up" />
                 <div class="open_filter__dropdown_header">
@@ -20,7 +21,6 @@
                 </div>
                 <div
                     class="open_filter__dropdown__content"
-                    @click.stop
                 >
                     <div class="open_filter__dropdown__view_content">
                         <div
@@ -106,6 +106,13 @@ export default class OpenFilter extends Vue {
                     return false;
                 return !c.classList.contains("open_filter__diamond");
             }).forEach((c) => this.setListeners(c as HTMLElement, "right"));
+        });
+    }
+
+    mounted () {
+        document.addEventListener("click", () => {
+            if (this.visibleDropdown)
+                this.visibleDropdown = false;
         });
     }
 
