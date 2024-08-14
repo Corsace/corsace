@@ -110,10 +110,7 @@ export default class OpenFilter extends Vue {
     }
 
     mounted () {
-        document.addEventListener("click", () => {
-            if (this.visibleDropdown)
-                this.visibleDropdown = false;
-        });
+        document.addEventListener("click", () => this.visibleDropdown = false);
     }
 
     updated () {
