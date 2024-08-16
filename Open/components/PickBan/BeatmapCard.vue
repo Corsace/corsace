@@ -1,50 +1,73 @@
 <template>
-  <div :class="['beatmap', `beatmap--${statusLabel}`]">
-    <div :class="['beatmap__slot', `beatmap__slot--${slotType}`]">{{ mappoolSlot ?? '&nbsp;' }}</div>
-    <div class="beatmap__container">
-      <img v-if="beatmap" class="beatmap__background" :src="`https://assets.ppy.sh/beatmaps/${beatmap.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg`">
-      <div v-if="winner" :class="['beatmap__win', `beatmap__win--${winner}`]">
-        <span class="beatmap__win-label">win</span>
-      </div>
-      <div class="beatmap__state-gradient"></div>
-      <div class="beatmap__state-bar">
-        <div class="beatmap__state-label">{{ statusLabel }}</div>
-      </div>
+    <div :class="['beatmap', `beatmap--${statusLabel}`]">
+        <div :class="['beatmap__slot', `beatmap__slot--${slotType}`]">
+            {{ mappoolSlot ?? '&nbsp;' }}
+        </div>
+        <div class="beatmap__container">
+            <img
+                v-if="beatmap"
+                class="beatmap__background"
+                :src="`https://assets.ppy.sh/beatmaps/${beatmap.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg`"
+            >
+            <div
+                v-if="winner"
+                :class="['beatmap__win', `beatmap__win--${winner}`]"
+            >
+                <span class="beatmap__win-label">win</span>
+            </div>
+            <div class="beatmap__state-gradient" />
+            <div class="beatmap__state-bar">
+                <div class="beatmap__state-label">
+                    {{ statusLabel }}
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { MappoolMap } from '../../../Interfaces/mappool';
-import { MapStatus } from '../../../Interfaces/matchup';
+import { defineComponent, PropType } from "vue";
+import { MappoolMap } from "../../../Interfaces/mappool";
+import { MapStatus } from "../../../Interfaces/matchup";
 
 export default defineComponent({
-  props: {
-    mappoolSlot: String,
-    beatmap: Object as PropType<MappoolMap>,
-    status: Number as PropType<MapStatus>,
-    winner: String as PropType<'red'|'blue'>,
-  },
-  computed: {
-    statusLabel () {
-      if (this.beatmap === undefined) {
-        if (this.status === MapStatus.Picked) return "picking";
-        if (this.status === MapStatus.Banned) return "banning";
-        if (this.status === MapStatus.Protected) return "protecting";
-      }
-
-      if (this.beatmap !== undefined) {
-        if (this.status === MapStatus.Banned) return "banned";
-        if (this.status === MapStatus.Protected) return "protected";
-      }
-
-      return "";
+    props: {
+        mappoolSlot: {
+            type: String as PropType<string | null>,
+            default: null,
+        },
+        beatmap: {
+            type: Object as PropType<MappoolMap | null>,
+            default: null,
+        },
+        status: {
+            type: Number as PropType<MapStatus>,
+            required: true,
+        },
+        winner: {
+            type: String as PropType<"red" | "blue" | null>,
+            default: null,
+        },
     },
-    slotType () {
-      return this.mappoolSlot?.slice(0, 2).toLowerCase();
-    }
-  }
+    computed: {
+        statusLabel () {
+            if (this.beatmap === null) {
+                if (this.status === MapStatus.Picked) return "picking";
+                if (this.status === MapStatus.Banned) return "banning";
+                if (this.status === MapStatus.Protected) return "protecting";
+            }
+
+            if (this.beatmap !== null) {
+                if (this.status === MapStatus.Banned) return "banned";
+                if (this.status === MapStatus.Protected) return "protected";
+            }
+
+            return "";
+        },
+        slotType () {
+            return this.mappoolSlot?.slice(0, 2).toLowerCase();
+        },
+    },
 });
 </script>
 

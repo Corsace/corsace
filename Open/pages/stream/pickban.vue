@@ -199,20 +199,24 @@
         </div>
         <div class="pickban__picks">
             <Beatmap
-                v-for="map in maps" :key="map.ID"
+                v-for="map in maps"
+                :key="map.ID"
                 :class="['pickban__pick', `pickban__pick--order-${map.order}`]"
                 :beatmap="map.map"
-                :mappoolSlot="(map.map.slot?.acronym ?? '') + map.map.order"
+                :mappool-slot="(map.map.slot?.acronym ?? '') + map.map.order"
                 :status="map.status"
-                :winner="map.winner ? (map.winner?.ID === matchup.team1?.ID ? 'red' : 'blue') : undefined" />
+                :winner="map.winner ? (map.winner?.ID === matchup.team1?.ID ? 'red' : 'blue') : undefined"
+            />
             <Beatmap
                 v-if="nextPickOrder"
                 :class="['pickban__pick', `pickban__pick--order-${maps.length + 1}`]"
-                :status="nextPickOrder.status"/>
+                :status="nextPickOrder.status"
+            />
             <div
-                v-for="index in placeholderCount" :key="index + placeholderOffset"
+                v-for="index in placeholderCount"
+                :key="index + placeholderOffset"
                 :class="['pickban__pick', 'pickban__pick--placeholder', `pickban__pick--order-${index + placeholderOffset}`]"
-            ></div>
+            />
         </div>
         <style>{{ orderStyle }}</style>
     </div>
@@ -229,14 +233,14 @@ import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
 import { Centrifuge, ExtendedPublicationContext, Subscription } from "centrifuge";
 
 import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
-import Beatmap from "../../components/PickBan/Beatmap.vue";
+import BeatmapCard from "../../components/PickBan/BeatmapCard.vue";
 
 const streamModule = namespace("stream");
 
 @Component({
     components: {
         MappoolMapStats,
-        Beatmap,
+        Beatmap: BeatmapCard,
     },
     layout: "stream",
 })
@@ -252,7 +256,7 @@ export default class Pickban extends Vue {
     loading = false;
     picking = false;
 
-    get maps() {
+    get maps () {
         if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.maps)
             return [];
 
@@ -265,14 +269,14 @@ export default class Pickban extends Vue {
         return this.maps.filter(map => map.status === MapStatus.Picked);
     }
 
-    get latestPick() {
+    get latestPick () {
         if (!this.pickedMaps.length)
             return null;
 
         return this.pickedMaps[this.pickedMaps.length - 1];
     }
 
-    get nextPickOrder(): MapOrder | null {
+    get nextPickOrder (): MapOrder | null {
         const currentPickPosition = this.maps.length;
 
         if (currentPickPosition === this.mapOrder.length - 1) {
@@ -308,7 +312,7 @@ export default class Pickban extends Vue {
         return this.matchup?.team1?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team2 : this.matchup?.team1;
     }
 
-    get mapOrder() {
+    get mapOrder () {
         if (!this.matchup?.stage?.mapOrder && !this.matchup?.round?.mapOrder) {
             return [];
         }
@@ -316,16 +320,16 @@ export default class Pickban extends Vue {
         return this.matchup.stage?.mapOrder ?? this.matchup.round?.mapOrder ?? [];
     }
 
-    get placeholderCount() {
+    get placeholderCount () {
         return this.mapOrder.length - this.maps.length - (this.nextPickOrder ? 1 : 0);
     }
 
-    get placeholderOffset() {
+    get placeholderOffset () {
         return this.maps.length + (this.nextPickOrder ? 1 : 0);
     }
 
-    get orderStyle() {
-        let style = '';
+    get orderStyle () {
+        let style = "";
 
         let team1Count = 0;
         let team2Count = 0;
@@ -426,7 +430,7 @@ export default class Pickban extends Vue {
         this.matchup.team2Score = ctx.data.team2Score;
 
         this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.push(ctx.data.map);
-    }
+    };
 }
 </script>
 
