@@ -7,7 +7,6 @@ import { Team as TeamInterface, TeamMember } from "../../Interfaces/team";
 import { BaseTournament } from "../../Interfaces/tournament";
 import { MatchupSet } from "./matchupSet";
 import { ModeDivisionType } from "../../Interfaces/modes";
-import { MatchupMap } from "./matchupMap";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -66,9 +65,6 @@ export class Team extends BaseEntity {
     @OneToMany(() => MatchupSet, set => set.winner)
         setWins!: Matchup[];
 
-    @OneToMany(() => MatchupMap, map => map.winner)
-        mapWins!: MatchupMap[];
-
     @OneToMany(() => Matchup, matchup => matchup.winner)
         wins!: Matchup[];
 
@@ -98,7 +94,6 @@ export class Team extends BaseEntity {
             console.warn("Error in calculating team stats:\n", e);
             return false;
         }
-
     }
 
     public async teamInterface (queryQualifier = false, queryTournaments = false): Promise<TeamInterface> {

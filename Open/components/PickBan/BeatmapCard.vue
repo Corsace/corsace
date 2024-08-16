@@ -1,7 +1,7 @@
 <template>
     <div :class="['beatmap', `beatmap--${statusLabel}`]">
         <div :class="['beatmap__slot', `beatmap__slot--${slotType}`]">
-            {{ mappoolSlot ?? '&nbsp;' }}
+            {{ mappoolSlot }}
         </div>
         <div class="beatmap__container">
             <img

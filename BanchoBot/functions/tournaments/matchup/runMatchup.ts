@@ -740,7 +740,24 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 map: beatmap,
                 order: matchupMap.order,
                 status: matchupMap.status,
-                winner: await matchupMap.winner?.teamInterface(),
+                scores: matchupMap.scores.map(score => {
+                    const team = matchup.team1?.captain.ID === score.user.ID || matchup.team1?.members.find(member => member.ID === score.user.ID)
+                        ? matchup.team1
+                        : matchup.team2?.captain.ID === score.user.ID || matchup.team2?.members.find(member => member.ID === score.user.ID)
+                            ? matchup.team2
+                            : undefined;
+
+                    return {
+                        teamID: team?.ID ?? 0,
+                        teamName: team?.name ?? "",
+                        teamAvatar: team?.avatarURL ?? "",
+                        username: score.user.osu.username,
+                        userID: parseInt(score.user.osu.userID),
+                        score: score.score,
+                        map: `${matchupMap.map.slot.acronym}${matchupMap.order}`,
+                        mapID: matchupMap.ID,
+                    };
+                }),
             },
         });
 

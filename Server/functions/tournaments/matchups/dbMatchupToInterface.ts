@@ -61,18 +61,24 @@ export default async function dbMatchupToInterface (dbMatchup: Matchup, roundOrS
                 map: map.map,
                 order: map.order,
                 status: map.status,
-                winner: map.winner?.ID === team1?.ID ? team1 : map.winner?.ID === team2?.ID ? team2 : undefined,
-                scores: map.scores?.map(score => ({
-                    ID: score.ID,
-                    user: score.user,
-                    score: score.score,
-                    mods: score.mods,
-                    misses: score.misses,
-                    combo: score.combo,
-                    fail: score.fail,
-                    accuracy: score.accuracy,
-                    fullCombo: score.fullCombo,
-                })) ?? [],
+                scores: map.scores?.map(score => {
+                    const team = team1?.captain.ID === score.user.ID || team1?.members.find(member => member.ID === score.user.ID)
+                        ? team1
+                        : team2?.captain.ID === score.user.ID || team2?.members.find(member => member.ID === score.user.ID)
+                            ? team2
+                            : undefined;
+
+                    return {
+                        teamID: team?.ID ?? 0,
+                        teamName: team?.name ?? "",
+                        teamAvatar: team?.avatarURL ?? "",
+                        username: score.user.osu.username,
+                        userID: parseInt(score.user.osu.userID),
+                        score: score.score,
+                        map: `${map.map.slot.acronym}${map.order}`,
+                        mapID: map.ID,
+                    };
+                }) ?? [],
             })) ?? [],
         })) ?? []),
         forfeit: dbMatchup.forfeit,

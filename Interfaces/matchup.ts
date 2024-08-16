@@ -65,7 +65,7 @@ export interface MatchupMap {
     map: MappoolMap;
     order: number;
     status: MapStatus;
-    winner?: Team | null;
+    scores: MatchupScore[];
 }
 
 export interface MatchupMessage {

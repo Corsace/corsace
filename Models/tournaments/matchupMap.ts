@@ -25,7 +25,8 @@ export class MatchupMap extends BaseEntity {
     @OneToMany(() => MatchupScore, score => score.map)
         scores?: MatchupScore[];
 
-    @ManyToOne(() => Team, team => team.mapWins)
+    // TODO: yeet this
+    @ManyToOne(() => Team, team => team.wins)
         winner?: Team | null;
 
     @ManyToOne(() => MatchupSet, set => set.maps, {

@@ -205,7 +205,7 @@
                 :beatmap="map.map"
                 :mappool-slot="(map.map.slot?.acronym ?? '') + map.map.order"
                 :status="map.status"
-                :winner="map.winner ? (map.winner?.ID === matchup.team1?.ID ? 'red' : 'blue') : undefined"
+                :winner="map.scores.length > 0 ? calculateWinner(map) : undefined"
             />
             <Beatmap
                 v-if="nextPickOrder"
@@ -228,7 +228,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { MapStatus } from "../../../Interfaces/matchup";
 
-import { Matchup as MatchupInterface } from "../../../Interfaces/matchup";
+import { Matchup as MatchupInterface, MatchupMap } from "../../../Interfaces/matchup";
 import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
 import { Centrifuge, ExtendedPublicationContext, Subscription } from "centrifuge";
 
@@ -294,7 +294,7 @@ export default class Pickban extends Vue {
         if (
             previousPick.status === MapStatus.Protected
             || previousPick.status === MapStatus.Banned
-            || (previousPick.status === MapStatus.Picked && previousPick.winner)
+            || (previousPick.status === MapStatus.Picked && previousPick.scores.length > 0)
         ) {
             return currentOrder;
         }
@@ -347,6 +347,25 @@ export default class Pickban extends Vue {
         }
 
         return style;
+    }
+
+    calculateWinner (map: MatchupMap) {
+        let team1Score = 0;
+        let team2Score = 0;
+
+        if (map.scores) {
+            for (const score of map.scores) {
+                if (score.teamID === this.matchup?.team1?.ID) {
+                    team1Score += score.score;
+                }
+
+                if (score.teamID === this.matchup?.team2?.ID) {
+                    team2Score += score.score;
+                }
+            }
+        }
+
+        return team1Score > team2Score ? "red" : "blue";
     }
 
     async mounted () {
@@ -407,6 +426,7 @@ export default class Pickban extends Vue {
             console.log("subscribed", ctx);
         });
 
+        /* eslint-disable-next-line @typescript-eslint/unbound-method */
         this.matchupChannel.on("publication", this.handleData);
 
         this.matchupChannel.subscribe();
@@ -414,23 +434,37 @@ export default class Pickban extends Vue {
         this.loading = false;
     }
 
-    handleData = (ctx: ExtendedPublicationContext) => {
+    handleData (ctx: ExtendedPublicationContext) {
+        console.log(ctx.data);
+        console.log(ctx.channel);
+
         if (!ctx.channel.startsWith("matchup:"))
             return;
 
         const matchupID = parseInt(ctx.channel.split(":")[1]);
+        console.log(matchupID);
+        console.log(this);
         if (matchupID !== this.matchup?.ID)
             return;
 
-        if (ctx.data.type !== "matchFinished") {
+        if (ctx.data.type === "matchFinished") {
+            this.matchup.team1Score = ctx.data.team1Score;
+            this.matchup.team2Score = ctx.data.team2Score;
+
+            const order = ctx.data.map.order;
+            const index = this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.findIndex(map => map.order === order);
+
+            if (index) {
+                this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.splice(index, 1, ctx.data.map);
+            }
+
             return;
         }
 
-        this.matchup.team1Score = ctx.data.team1Score;
-        this.matchup.team2Score = ctx.data.team2Score;
-
-        this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.push(ctx.data.map);
-    };
+        if (ctx.data.type === "selectMap") {
+            this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.push(ctx.data.map);
+        }
+    }
 }
 </script>
 
