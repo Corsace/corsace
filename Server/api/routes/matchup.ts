@@ -218,6 +218,7 @@ matchupRouter.$get("/:matchupID", async (ctx) => {
         .leftJoinAndSelect("matchup.sets", "set")
         .leftJoinAndSelect("set.first", "first")
         .leftJoinAndSelect("set.maps", "maps")
+        .leftJoinAndSelect("maps.winner", "mapWinner")
         .leftJoinAndSelect("maps.map", "map")
         .leftJoinAndSelect("map.beatmap", "beatmap")
         .leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
@@ -418,14 +419,14 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
                 const dbMatchup = idToMatchup.get(matchup.ID)!;
                 if (matchup.loserNextMatchupID) {
                     const loserNextMatchup = idToMatchup.get(matchup.loserNextMatchupID);
-                    if (!loserNextMatchup) 
+                    if (!loserNextMatchup)
                         throw new Error(`Matchup with ID ${matchup.loserNextMatchupID} not found`);
                     dbMatchup.loserNextMatchup = loserNextMatchup;
                 }
 
                 if (matchup.winnerNextMatchupID) {
                     const winnerNextMatchup = idToMatchup.get(matchup.winnerNextMatchupID);
-                    if (!winnerNextMatchup) 
+                    if (!winnerNextMatchup)
                         throw new Error(`Matchup with ID ${matchup.winnerNextMatchupID} not found`);
                     dbMatchup.winnerNextMatchup = winnerNextMatchup;
                 }
@@ -457,7 +458,7 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
                         if (winnerPrevMatchup.team2)
                             winnerPrevMatchupTeams.push(winnerPrevMatchup.team2);
                     }
-                    
+
                     const teamArr: Team[][] = [currMatchTeams, loserPrevMatchupTeams, winnerPrevMatchupTeams];
 
                     dbMatchup.potentials = [];

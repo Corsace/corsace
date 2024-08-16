@@ -99,7 +99,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         firstSet: {
             ID: firstSet.ID,
             order: firstSet.order,
-            maps: firstSet.maps,
+            maps: [],
             team1Score: firstSet.team1Score,
             team2Score: firstSet.team2Score,
         },
@@ -190,9 +190,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await mpChannel.sendMessage(`reminder: !panic exists if something is going absurdly wrong`);
             aborts.set(team.ID, abortCount);
         } else if (
-            team && 
-            typeof matchup.stage!.tournament.teamAbortLimit === "number" && 
-            aborts.get(team.ID) && 
+            team &&
+            typeof matchup.stage!.tournament.teamAbortLimit === "number" &&
+            aborts.get(team.ID) &&
             aborts.get(team.ID)! >= matchup.stage!.tournament.teamAbortLimit
         ) {
             await mpChannel.sendMessage(`${username} has triggered an abort but the team has reached their abort limit`);
@@ -237,10 +237,10 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMessage.user = user;
         matchup.messages!.push(matchupMessage);
 
-        await publish(centrifugoChannel, { 
-            type: "message", 
-            timestamp: matchupMessage.timestamp, 
-            content: matchupMessage.content, 
+        await publish(centrifugoChannel, {
+            type: "message",
+            timestamp: matchupMessage.timestamp,
+            content: matchupMessage.content,
             user: {
                 ID: matchupMessage.user.ID,
                 osu: {
@@ -346,7 +346,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (message.self || !state.matchups[matchup.ID].autoRunning)
             return;
 
-        if (message.user.ircUsername === "BanchoBot") { 
+        if (message.user.ircUsername === "BanchoBot") {
             if (
                 message.content === "All players are ready" &&
                 allPlayersInMatchup(matchup, playersInLobby) &&
@@ -373,22 +373,22 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         if (
             (
-                message.message === "!abort" || 
+                message.message === "!abort" ||
                 message.message === "!stop" ||
-                message.message === "!mp abort" || 
+                message.message === "!mp abort" ||
                 message.message === "!mp stop"
-            ) && 
+            ) &&
             mpLobby.playing &&
             playersInLobby.some(p => p.user.id === message.user.id)
         )
             await abortMap(message.user);
         else if (
             (
-                message.message === "!panic" || 
+                message.message === "!panic" ||
                 message.message === "!alert" ||
-                message.message === "!mp panic" || 
+                message.message === "!mp panic" ||
                 message.message === "!mp alert"
-            ) && 
+            ) &&
             state.matchups[matchup.ID].autoRunning
         ) {
             await panic(`${message.user.username} ran !panic`);
@@ -396,9 +396,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             (
                 message.message === "!start" ||
                 message.message === "!mp start"
-            ) && 
+            ) &&
             (
-                !started && 
+                !started &&
                 (
                     message.user.id === undefined ||
                     message.user.id === 29191632 ||
@@ -485,7 +485,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         if (earlyStart)
             return;
-        
+
         earlyStart = true;
         if (matchup.date.getTime() > Date.now()) {
             await mpChannel.sendMessage("all captains now exist");
@@ -518,7 +518,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
 
         log(matchup, `Player ${player.user.username} left the lobby`);
-        
+
         await publishSettings(matchup, mpLobby.slots);
 
         if (!state.matchups[matchup.ID].autoRunning)
@@ -625,7 +625,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             } else {
                 await mpChannel.sendMessage("cant find the map in the pool(s) but not aborting since auto-lobby is off. Crashing is possible. Contact Corsace IMMEDIATELY");
             }
-        } else 
+        } else
             mapsPlayed.push(beatmap);
 
         // Panic if lobby is empty
@@ -740,6 +740,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 map: beatmap,
                 order: matchupMap.order,
                 status: matchupMap.status,
+                winner: await matchupMap.winner?.teamInterface(),
             },
         });
 
@@ -782,7 +783,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await matchup.save();
 
                 // await assignTeamsToNextMatchup(matchup.ID);
-            } else 
+            } else
                 await matchup.save();
 
             await publish(centrifugoChannel, { type: "closed" });
@@ -845,7 +846,7 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
                     .setLabel("Re-addref")
                     .setStyle(ButtonStyle.Primary)
             );
-            
+
         const discordChannel = discordClient.channels.cache.get(refChannel.channelID);
         if (discordChannel instanceof TextChannel) {
             const refMessage = await discordChannel.send({
@@ -921,7 +922,7 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
                     .setLabel("Resend invite")
                     .setStyle(ButtonStyle.Primary)
             );
-    
+
         const discordChannel = discordClient.channels.cache.get(generalChannel.channelID);
         if (discordChannel instanceof TextChannel) {
             const invMessage = await discordChannel.send({

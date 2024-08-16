@@ -61,7 +61,7 @@ export default async function dbMatchupToInterface (dbMatchup: Matchup, roundOrS
                 map: map.map,
                 order: map.order,
                 status: map.status,
-                winner: map.winner,
+                winner: map.winner?.ID === team1?.ID ? team1 : map.winner?.ID === team2?.ID ? team2 : undefined,
                 scores: map.scores?.map(score => ({
                     ID: score.ID,
                     user: score.user,

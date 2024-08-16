@@ -1,5 +1,5 @@
 <template>
-    <div 
+    <div
         v-if="matchup"
         class="pickban"
     >
@@ -12,7 +12,7 @@
         </div>
         <div class="pickban__header">
             <div
-                v-if="picking" 
+                v-if="picking"
                 class="pickban__header__picking"
                 :style="{ color: nextTeamToPick?.abbreviation === matchup?.team1?.abbreviation ? '#5BBCFA' : '#F24141' }"
             >
@@ -20,14 +20,14 @@
             </div>
         </div>
         <div
-            v-if="matchup.team1" 
+            v-if="matchup.team1"
             class="pickban__team1"
         >
             <div class="pickban__team1_abbreviation">
                 {{ matchup.team1.abbreviation.toUpperCase() }}
             </div>
             <div class="pickban__team1_notMembers">
-                <div 
+                <div
                     class="pickban__team1_avatar"
                     :style="{
                         'background-image': `url(${matchup.team1.avatarURL || '../../Assets/img/site/open/team/default.png'})`,
@@ -54,12 +54,12 @@
                 </div>
                 <div class="pickban__team1_score">
                     WINS
-                    <svg 
+                    <svg
                         v-for="n in 5"
                         :key="n"
-                        width="48" 
-                        height="22" 
-                        viewBox="0 0 48 22" 
+                        width="48"
+                        height="22"
+                        viewBox="0 0 48 22"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         class="pickban__team1_score__star"
@@ -74,7 +74,7 @@
             </div>
             <div class="pickban__team1_members">
                 <div class="pickban__team1_members_member">
-                    <div 
+                    <div
                         class="pickban__team1_members_member_avatar"
                         :style="{
                             'background-image': `url(https://a.ppy.sh/${matchup.team1.captain.osuID})`,
@@ -88,12 +88,12 @@
                     </div>
                     <div class="pickban__team1_members_member_captain" />
                 </div>
-                <div 
+                <div
                     v-for="member in matchup.team1.members.filter(member => !member.isCaptain)"
                     :key="member.ID"
                     class="pickban__team1_members_member"
                 >
-                    <div 
+                    <div
                         class="pickban__team1_members_member_avatar"
                         :style="{
                             'background-image': `url(https://a.ppy.sh/${member.osuID})`,
@@ -109,14 +109,14 @@
             </div>
         </div>
         <div
-            v-if="matchup.team2" 
+            v-if="matchup.team2"
             class="pickban__team2"
         >
             <div class="pickban__team2_abbreviation">
                 {{ matchup.team2.abbreviation.toUpperCase() }}
             </div>
             <div class="pickban__team2_notMembers">
-                <div 
+                <div
                     class="pickban__team2_avatar"
                     :style="{
                         'background-image': `url(${matchup.team2.avatarURL || '../../Assets/img/site/open/team/default.png'})`,
@@ -143,12 +143,12 @@
                 </div>
                 <div class="pickban__team2_score">
                     WINS
-                    <svg 
+                    <svg
                         v-for="n in 5"
                         :key="n"
-                        width="48" 
-                        height="22" 
-                        viewBox="0 0 48 22" 
+                        width="48"
+                        height="22"
+                        viewBox="0 0 48 22"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         class="pickban__team2_score__star"
@@ -163,7 +163,7 @@
             </div>
             <div class="pickban__team2_members">
                 <div class="pickban__team2_members_member">
-                    <div 
+                    <div
                         class="pickban__team2_members_member_avatar"
                         :style="{
                             'background-image': `url(https://a.ppy.sh/${matchup.team2.captain.osuID})`,
@@ -177,12 +177,12 @@
                     </div>
                     <div class="pickban__team2_members_member_captain" />
                 </div>
-                <div 
+                <div
                     v-for="member in matchup.team2.members.filter(member => !member.isCaptain)"
                     :key="member.ID"
                     class="pickban__team2_members_member"
                 >
-                    <div 
+                    <div
                         class="pickban__team2_members_member_avatar"
                         :style="{
                             'background-image': `url(https://a.ppy.sh/${member.osuID})`,
@@ -197,6 +197,24 @@
                 </div>
             </div>
         </div>
+        <div class="pickban__picks">
+            <Beatmap
+                v-for="map in maps" :key="map.ID"
+                :class="['pickban__pick', `pickban__pick--order-${map.order}`]"
+                :beatmap="map.map"
+                :mappoolSlot="(map.map.slot?.acronym ?? '') + map.map.order"
+                :status="map.status"
+                :winner="map.winner ? (map.winner?.ID === matchup.team1?.ID ? 'red' : 'blue') : undefined" />
+            <Beatmap
+                v-if="nextPickOrder"
+                :class="['pickban__pick', `pickban__pick--order-${maps.length + 1}`]"
+                :status="nextPickOrder.status"/>
+            <div
+                v-for="index in placeholderCount" :key="index + placeholderOffset"
+                :class="['pickban__pick', 'pickban__pick--placeholder', `pickban__pick--order-${index + placeholderOffset}`]"
+            ></div>
+        </div>
+        <style>{{ orderStyle }}</style>
     </div>
     <div v-else />
 </template>
@@ -205,16 +223,20 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { MapStatus } from "../../../Interfaces/matchup";
-import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
 
 import { Matchup as MatchupInterface } from "../../../Interfaces/matchup";
-import { freemodRGB, freemodButFreerRGB, modsToRGB } from "../../../Interfaces/mods";
+import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
+import { Centrifuge, ExtendedPublicationContext, Subscription } from "centrifuge";
+
+import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
+import Beatmap from "../../components/PickBan/Beatmap.vue";
 
 const streamModule = namespace("stream");
 
 @Component({
     components: {
         MappoolMapStats,
+        Beatmap,
     },
     layout: "stream",
 })
@@ -223,50 +245,105 @@ export default class Pickban extends Vue {
     @streamModule.State key!: string | null;
     @streamModule.State tournamentID!: number | null;
 
+    centrifuge: Centrifuge | null = null;
+    matchupChannel: Subscription | null = null;
+
     matchup: MatchupInterface | null = null;
     loading = false;
     picking = false;
 
-    get pickedMaps () {
+    get maps() {
         if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.maps)
             return [];
 
-        return this.matchup.sets[this.matchup.sets.length - 1].maps!.filter(map => map.status === MapStatus.Picked).sort((a, b) => a.order - b.order);
+        const maps = this.matchup.sets[this.matchup.sets.length - 1].maps ?? [];
+
+        return maps.sort((a, b) => a.order - b.order);
     }
 
-    get latestMap () {
+    get pickedMaps () {
+        return this.maps.filter(map => map.status === MapStatus.Picked);
+    }
+
+    get latestPick() {
         if (!this.pickedMaps.length)
             return null;
 
         return this.pickedMaps[this.pickedMaps.length - 1];
     }
 
+    get nextPickOrder(): MapOrder | null {
+        const currentPickPosition = this.maps.length;
+
+        if (currentPickPosition === this.mapOrder.length - 1) {
+            return null;
+        }
+
+        const currentOrder = this.mapOrder[currentPickPosition];
+
+        if (currentPickPosition === 0) {
+            return currentOrder;
+        }
+
+        const previousPick = this.maps[currentPickPosition - 1];
+
+        if (
+            previousPick.status === MapStatus.Protected
+            || previousPick.status === MapStatus.Banned
+            || (previousPick.status === MapStatus.Picked && previousPick.winner)
+        ) {
+            return currentOrder;
+        }
+
+        return null;
+    }
+
     get nextTeamToPick () {
-        if (!this.latestMap)
+        if (!this.latestPick)
             return null;
 
         if (this.pickedMaps.length % 2 === 0)
             return this.matchup?.sets?.[this.matchup.sets.length - 1]?.first;
-    
+
         return this.matchup?.team1?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team2 : this.matchup?.team1;
     }
 
-    get slotMod (): string {
-        if (!this.latestMap?.map?.slot)
-            return this.RGBValuesToRGBCSS(modsToRGB(0));
+    get mapOrder() {
+        if (!this.matchup?.stage?.mapOrder && !this.matchup?.round?.mapOrder) {
+            return [];
+        }
 
-        if (this.latestMap.map.slot.allowedMods === null && this.latestMap.map.slot.userModCount === null && this.latestMap.map.slot.uniqueModCount === null)
-            return this.RGBValuesToRGBCSS(freemodButFreerRGB);
-
-        if (this.latestMap.map.slot.userModCount !== null || this.latestMap.map.slot.uniqueModCount !== null)
-            return this.RGBValuesToRGBCSS(freemodRGB);
-
-        return this.RGBValuesToRGBCSS(modsToRGB(this.latestMap.map.slot.allowedMods));
+        return this.matchup.stage?.mapOrder ?? this.matchup.round?.mapOrder ?? [];
     }
 
-    RGBValuesToRGBCSS (values: [number, number, number]) {
-        return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
-    } 
+    get placeholderCount() {
+        return this.mapOrder.length - this.maps.length - (this.nextPickOrder ? 1 : 0);
+    }
+
+    get placeholderOffset() {
+        return this.maps.length + (this.nextPickOrder ? 1 : 0);
+    }
+
+    get orderStyle() {
+        let style = '';
+
+        let team1Count = 0;
+        let team2Count = 0;
+
+        for (const orderEl of this.mapOrder) {
+            style += `.pickban__pick--order-${orderEl.order} {grid-area: ${orderEl.team + 1} / `;
+
+            if (orderEl.team === MapOrderTeam.Team1) {
+                style += `${++team1Count};}\n`;
+            }
+
+            if (orderEl.team === MapOrderTeam.Team2) {
+                style += `${++team2Count};}\n`;
+            }
+        }
+
+        return style;
+    }
 
     async mounted () {
         this.loading = true;
@@ -274,13 +351,81 @@ export default class Pickban extends Vue {
         if (typeof matchupID !== "string")
             return;
 
+        const { data: centrifugoURLData } = await this.$axios.get<{ url: string }>("/api/centrifugo/publicUrl");
+        if (!centrifugoURLData.success) {
+            alert("Couldn't get centrifugo URL");
+            console.log(centrifugoURLData.error);
+            return;
+        }
+        const centrifuge = new Centrifuge(`${centrifugoURLData.url}/connection/websocket`, {});
+
+        centrifuge.on("connecting", (ctx) => {
+            console.log("connecting", ctx);
+        });
+
+        centrifuge.on("error", (err) => {
+            console.error("error", err);
+        });
+
+        centrifuge.on("connected", (ctx) => {
+            console.log("connected", ctx);
+        });
+
+        centrifuge.connect();
+        this.centrifuge = centrifuge;
+
         const { data } = await this.$axios.get<{ matchup: MatchupInterface }>(`/api/matchup/${matchupID}`);
         if (!data.success)
             return;
 
         this.matchup = data.matchup;
 
+        this.matchupChannel = this.centrifuge.newSubscription(`matchup:${matchupID}`);
+
+        this.matchupChannel.on("error", (err) => {
+            alert("Error in console for matchup channel subscription");
+            console.error("error", err);
+        });
+
+        this.matchupChannel.on("unsubscribed", (ctx) => {
+            if (ctx.code === 102)
+                alert("Couldn't find matchup channel");
+            else if (ctx.code === 103)
+                alert("Unauthorized to subscribe to matchup channel");
+            else if (ctx.code !== 0) {
+                alert("Error in console for matchup channel subscription");
+                console.error("unsubscribed", ctx);
+            } else
+                console.log("unsubscribed", ctx);
+        });
+
+        this.matchupChannel.on("subscribed", (ctx) => {
+            console.log("subscribed", ctx);
+        });
+
+        this.matchupChannel.on("publication", this.handleData);
+
+        this.matchupChannel.subscribe();
+
         this.loading = false;
+    }
+
+    handleData = (ctx: ExtendedPublicationContext) => {
+        if (!ctx.channel.startsWith("matchup:"))
+            return;
+
+        const matchupID = parseInt(ctx.channel.split(":")[1]);
+        if (matchupID !== this.matchup?.ID)
+            return;
+
+        if (ctx.data.type !== "matchFinished") {
+            return;
+        }
+
+        this.matchup.team1Score = ctx.data.team1Score;
+        this.matchup.team2Score = ctx.data.team2Score;
+
+        this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.push(ctx.data.map);
     }
 }
 </script>
@@ -356,7 +501,7 @@ export default class Pickban extends Vue {
             font-size: 40px;
             font-weight: bold;
         }
-    } 
+    }
 
     &__team1, &__team2 {
 
@@ -449,7 +594,7 @@ export default class Pickban extends Vue {
             align-items: center;
             gap: 11px;
         }
-        
+
         &_members {
             position: fixed;
             width: 395px;
@@ -558,13 +703,34 @@ export default class Pickban extends Vue {
         &_info {
             top: 948px;
         }
-        
+
         &_members {
             top: 724px;
         }
 
         &_name {
             top: 818px;
+        }
+    }
+
+    &__picks {
+        position: absolute;
+        top: 208px;
+        left: 456px;
+
+        width: 1432px;
+        height: 872px;
+
+        display: grid;
+        grid-template: repeat(2, 435px) / repeat(9, 144px);
+
+        gap: 2px 17px;
+    }
+
+    &__pick {
+        &--placeholder {
+            background-color: #D9D9D9;
+            opacity: 0.22;
         }
     }
 }
