@@ -1,17 +1,17 @@
 <template>
     <div :class="['beatmap', `beatmap--${statusLabel}`]">
         <div :class="['beatmap__slot', `beatmap__slot--${slotType}`]">
-            {{ mappoolSlot }}
+            {{ mappoolSlotSync }}
         </div>
         <div class="beatmap__container">
             <img
-                v-if="beatmap"
+                v-if="beatmapSync"
                 class="beatmap__background"
-                :src="`https://assets.ppy.sh/beatmaps/${beatmap.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg`"
+                :src="`https://assets.ppy.sh/beatmaps/${beatmapSync.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg`"
             >
             <div
-                v-if="winner"
-                :class="['beatmap__win', `beatmap__win--${winner}`]"
+                v-if="winnerSync"
+                :class="['beatmap__win', `beatmap__win--${winnerSync}`]"
             >
                 <span class="beatmap__win-label">win</span>
             </div>
@@ -51,7 +51,7 @@ export default class BeatmapCard extends Vue {
     };
 
     get statusLabel () {
-        if (!this.beatmap)
+        if (!this.beatmapSync)
             return this.statusToLabel.progress[this.statusSync];
         return this.statusToLabel.done[this.statusSync];
     }
