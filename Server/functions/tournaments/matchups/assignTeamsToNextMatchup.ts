@@ -54,6 +54,17 @@ async function invalidatePotentials (manager: EntityManager, team: Team, matchup
             await manager.save(matchup2Potential);
         }
     }
+    const dateTimes = matchup2Potentials.filter(p => !p.invalid).map(p => p.date.getTime()).filter((value, index, self) => self.indexOf(value) === index);
+    if (dateTimes.length === 1) {
+        const matchup2 = await manager
+            .createQueryBuilder(Matchup, "matchup")
+            .where("matchup.ID = :matchupID", { matchupID: matchup2ID })
+            .getOne();
+        if (!matchup2)
+            throw new Error(`Failed to find matchup ID \`${matchup2ID}\` to set final date time for`);
+        matchup2.date = new Date(dateTimes[0]);
+        await manager.save(matchup2);
+    }
 }
 
 async function assignTeam (manager: EntityManager, team: Team, matchup2ID: number) {
