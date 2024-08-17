@@ -30,8 +30,6 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
     let matchups: (Omit<Matchup, "team1" | "team2" | "teams" | "commentators"> & { team1: number; team2: number; teams: number[]; commentators: number[] })[] = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
-        .leftJoinAndSelect("matchup.team1", "team1")
-        .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("matchup.referee", "referee")
         .leftJoinAndSelect("matchup.streamer", "streamer")
         .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
