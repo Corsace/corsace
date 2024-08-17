@@ -228,6 +228,7 @@ matchupRouter.$get("/:matchupID", async (ctx) => {
         .leftJoinAndSelect("map.customMappers", "customMappers")
         .leftJoinAndSelect("map.slot", "slot")
         .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
+        .orWhere("matchup.matchID = :ID", { ID: ctx.params.matchupID })
         .getOne();
 
     if (!dbMatchup) {
