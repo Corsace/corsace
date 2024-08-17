@@ -65,6 +65,11 @@ export default class BeatmapCard extends Vue {
 <style lang="scss">
 @import '@s-sass/_variables';
 
+@keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 .beatmap {
     $self: &;
 
@@ -137,6 +142,8 @@ export default class BeatmapCard extends Vue {
 
         width: 100%;
         height: 100%;
+
+        animation: fade 0.4s;
     }
 
     &__background {
@@ -145,6 +152,7 @@ export default class BeatmapCard extends Vue {
         object-fit: cover;
 
         background: linear-gradient(238.85deg, #5BBCFA -12.24%, rgba(91, 188, 250, 0) 70.46%);
+        animation: fade 0.4s;
     }
 
     &__state-gradient {
@@ -169,6 +177,10 @@ export default class BeatmapCard extends Vue {
         padding-top: 10px;
 
         background: linear-gradient(180deg, var(--bar-color) 59.7%, rgba(217, 217, 217, 0) 99%);
+    }
+
+    &__state-gradient, &__state-bar {
+        animation: fade 2.5s alternate infinite;
     }
 
     &__state-label {

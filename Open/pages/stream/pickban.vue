@@ -452,9 +452,8 @@ export default class Pickban extends Vue {
             const order = ctx.data.map.order;
             const index = this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.findIndex(map => map.order === order);
 
-            if (index) {
-                this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.splice(index, 1, ctx.data.map);
-            }
+            if (index && index > -1)
+                this.matchup.sets![this.matchup.sets!.length - 1].maps!.splice(index, 1, ctx.data.map);
 
             return;
         }
@@ -491,9 +490,9 @@ export default class Pickban extends Vue {
             });
         }
 
-        if (ctx.data.type === "selectMap") {
+        if (ctx.data.type === "selectMap")
             this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.push(ctx.data.map);
-        }
+
     }
 }
 </script>
