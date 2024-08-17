@@ -13,6 +13,7 @@ import ormConfig from "../../../../ormconfig";
 import { StageType } from "../../../../Interfaces/stage";
 import { MapStatus } from "../../../../Interfaces/matchup";
 import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
+import assignTeamsToNextMatchup from "../../../functions/tournaments/matchups/assignTeamsToNextMatchup";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
@@ -647,6 +648,8 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
 
     if (state.matchups[ctx.state.matchupID])
         await state.matchups[ctx.state.matchupID].lobby.closeLobby();
+    else
+        await assignTeamsToNextMatchup(matchup.ID);
 
     ctx.body = {
         success: true,
