@@ -21,6 +21,8 @@ import { config } from "node-config-ts";
 import { MatchupSet } from "../../../Models/tournaments/matchupSet";
 import dbMatchupToInterface from "../../functions/tournaments/matchups/dbMatchupToInterface";
 import { ResponseBody, TournamentStageState, TournamentState } from "koa";
+import { Mappool } from "../../../Models/tournaments/mappools/mappool";
+import { Round } from "../../../Models/tournaments/round";
 
 const matchupRouter  = new CorsaceRouter();
 
@@ -777,151 +779,194 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
 
     const { mpID, matchID } = obj;
 
-    const matchup = await Matchup
+    const baseMatchup = await Matchup
         .createQueryBuilder("matchup")
-        .leftJoinAndSelect("matchup.round", "round")
-        .leftJoinAndSelect("round.mappool", "roundMappool")
-        .leftJoinAndSelect("roundMappool.slots", "roundSlot")
-        .leftJoinAndSelect("roundSlot.maps", "roundMap")
-        .leftJoinAndSelect("roundMap.beatmap", "roundBeatmap")
-        .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
-        .innerJoinAndSelect("matchup.stage", "stage")
-        .leftJoinAndSelect("stage.mappool", "stageMappool")
-        .leftJoinAndSelect("stageMappool.slots", "stageSlot")
-        .leftJoinAndSelect("stageSlot.maps", "stageMap")
-        .leftJoinAndSelect("stageMap.beatmap", "stageBeatmap")
-        .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
-        .leftJoinAndSelect("matchup.teams", "team")
-        .leftJoinAndSelect("matchup.team1", "team1")
-        .leftJoinAndSelect("matchup.team2", "team2")
-        .leftJoinAndSelect("team.captain", "captain")
-        .leftJoinAndSelect("team.members", "member")
-        .leftJoinAndSelect("team1.captain", "team1captain")
-        .leftJoinAndSelect("team1.members", "team1member")
-        .leftJoinAndSelect("team2.captain", "team2captain")
-        .leftJoinAndSelect("team2.members", "team2member")
-        .leftJoinAndSelect("matchup.sets", "set")
-        .leftJoinAndSelect("set.maps", "matchupMap")
-        .leftJoinAndSelect("matchupMap.scores", "score")
-        .where("matchup.ID = :matchID", { matchID })
+        .where("matchup.ID = :ID", { ID: mpID })
         .getOne();
-    if (!matchup) {
+    if (!baseMatchup) {
         ctx.body = {
             success: false,
-            error: "Matchup not found",
+            error: "Base matchup not found",
         };
         return;
     }
 
-    const mpData = await osuClient.multi.getMatch(mpID) as Multi;
-    const set = new MatchupSet();
-    set.matchup = matchup;
-    set.order = 1;
-    set.maps = [];
-    const sets: MatchupSet[] = [set];
-    mpData.games.forEach((game, i) => {
-        const beatmap = matchup.stage!.mappool![0].slots.find(slot => slot.maps.some(map => map.beatmap!.ID === game.beatmapId))!.maps.find(map => map.beatmap!.ID === game.beatmapId);
-        if (!beatmap)
+    await ormConfig.transaction(async (manager) => {
+        const matchupQ: Omit<Matchup, "round" | "stage" | "teams" | "team1" | "team2"> & { round: number | null; stage: number; teams: number[]; team1: number | null; team2: number | null } = await manager
+            .createQueryBuilder(Matchup, "matchup")
+            .leftJoinAndSelect("matchup.sets", "set")
+            .leftJoinAndSelect("set.maps", "map")
+            .leftJoinAndSelect("map.scores", "score")
+            .where("matchup.ID = :matchID", { matchID })
+            .loadAllRelationIds({
+                relations: ["round", "stage", "team1", "team2", "teams"],
+            })
+            .getOne() as any;
+        if (!matchupQ) {
+            ctx.body = {
+                success: false,
+                error: "Matchup not found",
+            };
             return;
+        }
 
-        const map = new MatchupMap();
-        map.set = sets[sets.length - 1];
-        map.map = beatmap;
-        map.order = i + 1;
-        map.scores = [];
-        game.scores.forEach(score => {
-            let user: User | undefined = undefined;
-            if (matchup.stage!.stageType === StageType.Qualifiers)
-                user = matchup.teams!.flatMap(team => team.members).find(member => member.osu.userID === score.userId.toString());
-            else
-                user = matchup.team1!.members.find(member => member.osu.userID === score.userId.toString()) ?? matchup.team2!.members.find(member => member.osu.userID === score.userId.toString());
-            if (!user)
+        const teamIds = new Set<number>();
+        if (matchupQ.team1) teamIds.add(matchupQ.team1);
+        if (matchupQ.team2) teamIds.add(matchupQ.team2);
+        for (const team of matchupQ.teams)
+            teamIds.add(team);
+        const teamQuery = teamIds.size === 0 ? [] : await manager
+            .createQueryBuilder(Team, "team")
+            .innerJoinAndSelect("team.members", "members")
+            .where("team.ID IN (:...teamIds)", { teamIds: Array.from(teamIds) })
+            .getMany();
+        const team1 = matchupQ.team1 ? teamQuery.find(team => team.ID === matchupQ.team1) : null;
+        const team2 = matchupQ.team2 ? teamQuery.find(team => team.ID === matchupQ.team2) : null;
+        const teams = teamQuery.filter(team => matchupQ.teams.includes(team.ID));
+
+        const roundOrStage: Round | Stage | null = 
+            matchupQ.round ? 
+                await manager
+                    .createQueryBuilder(Round, "round")
+                    .innerJoin("round.matchups", "matchup")
+                    .leftJoinAndSelect("round.mapOrder", "mapOrder")
+                    .where("matchup.ID = :ID", { ID: matchupQ.ID })
+                    .getOne() :
+                matchupQ.stage ?
+                    await manager
+                        .createQueryBuilder(Stage, "stage")
+                        .innerJoin("stage.matchups", "matchup")
+                        .leftJoinAndSelect("stage.mapOrder", "mapOrder")
+                        .where("matchup.ID = :ID", { ID: matchupQ.ID })
+                        .getOne() : 
+                    null;
+        if (!roundOrStage) {
+            ctx.body = {
+                success: false,
+                error: "Round or Stage not found",
+            };
+            return;
+        }
+        
+        const mappools = await manager
+            .createQueryBuilder(Mappool, "mappool")
+            .innerJoinAndSelect("mappool.slots", "slots")
+            .innerJoinAndSelect("slots.maps", "maps")
+            .leftJoinAndSelect("maps.beatmap", "map")
+            .leftJoinAndSelect("map.beatmapset", "beatmapset")
+            .where(`mappool.${roundOrStage instanceof Round ? "round" : "stage"}ID = :ID`, { ID: roundOrStage.ID })
+            .getMany();
+        
+        const mpData = await osuClient.multi.getMatch(mpID) as Multi;
+        const set = new MatchupSet();
+        set.matchup = baseMatchup;
+        set.order = 1;
+        set.maps = [];
+        const sets: MatchupSet[] = [set];
+        mpData.games.forEach((game, i) => {
+            const beatmap = mappools.flatMap(pool => pool.slots).find(slot => slot.maps.some(map => map.beatmap!.ID === game.beatmapId))!.maps.find(map => map.beatmap!.ID === game.beatmapId);
+            if (!beatmap)
                 return;
 
-            const matchupScore      = new MatchupScore();
-            matchupScore.user       = user;
-            matchupScore.score      = score.score;
-            matchupScore.mods       = ((score.enabledMods ?? game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
-            matchupScore.misses     = score.countMiss;
-            matchupScore.combo      = score.maxCombo;
-            matchupScore.fail       = !score.pass;
-            matchupScore.accuracy   = (score.count50 + 2 * score.count100 + 6 * score.count300) / Math.max(6 * (score.countMiss + score.count50 + score.count100 + score.count300), 1);
-            matchupScore.fullCombo  = score.perfect ?? score.maxCombo === beatmap.beatmap!.maxCombo;
+            const map = new MatchupMap();
+            map.set = sets[sets.length - 1];
+            map.map = beatmap;
+            map.order = i + 1;
+            map.scores = [];
+            game.scores.forEach(score => {
+                let user: User | undefined = undefined;
+                if (roundOrStage instanceof Stage && roundOrStage.stageType === StageType.Qualifiers)
+                    user = teams.flatMap(team => team.members).find(member => member.osu.userID === score.userId.toString());
+                else
+                    user = team1?.members.find(member => member.osu.userID === score.userId.toString()) ?? team2?.members.find(member => member.osu.userID === score.userId.toString());
+                if (!user)
+                    return;
 
-            map.scores!.push(matchupScore);
-        });
-        if (matchup.stage!.stageType !== StageType.Qualifiers) {
-            const team1Score = map.scores
-                .filter(score => matchup.team1!.members.some(member => member.osu.userID === score.user.osu.userID))
-                .reduce((acc, score) => acc + score.score, 0);
-            const team2Score = map.scores
-                .filter(score => matchup.team2!.members.some(member => member.osu.userID === score.user.osu.userID))
-                .reduce((acc, score) => acc + score.score, 0);
-            map.winner = team1Score > team2Score ? matchup.team1 : team2Score > team1Score ? matchup.team2 : undefined;
-        }
-        sets[sets.length - 1].maps!.push(map);
+                const matchupScore      = new MatchupScore();
+                matchupScore.user       = user;
+                matchupScore.score      = score.score;
+                matchupScore.mods       = ((score.enabledMods ?? game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
+                matchupScore.misses     = score.countMiss;
+                matchupScore.combo      = score.maxCombo;
+                matchupScore.fail       = !score.pass;
+                matchupScore.accuracy   = (score.count50 + 2 * score.count100 + 6 * score.count300) / Math.max(6 * (score.countMiss + score.count50 + score.count100 + score.count300), 1);
+                matchupScore.fullCombo  = score.perfect ?? score.maxCombo === beatmap.beatmap!.maxCombo;
 
-        if (matchup.stage!.stageType !== StageType.Qualifiers && (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)) {
-            if (map.winner === matchup.team1)
-                sets[sets.length - 1].team1Score = (sets[sets.length - 1].team1Score ?? 0) + 1;
-            else if (map.winner === matchup.team2)
-                sets[sets.length - 1].team2Score = (sets[sets.length - 1].team2Score ?? 0) + 1;
+                map.scores!.push(matchupScore);
+            });
+            if (roundOrStage instanceof Stage && roundOrStage.stageType !== StageType.Qualifiers) {
+                const team1Score = map.scores
+                    .filter(score => team1?.members.some(member => member.osu.userID === score.user.osu.userID))
+                    .reduce((acc, score) => acc + score.score, 0);
+                const team2Score = map.scores
+                    .filter(score => team2?.members.some(member => member.osu.userID === score.user.osu.userID))
+                    .reduce((acc, score) => acc + score.score, 0);
+                map.winner = team1Score > team2Score ? team1 : team2Score > team1Score ? team2 : undefined;
+            }
+            sets[sets.length - 1].maps!.push(map);
 
-            const setOrders = (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)!.map(order => order.set).filter((orderSet, j, arr) => arr.indexOf(orderSet) === j).map(orderSet => ({
-                set: orderSet,
-                maps: (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)!.filter(mapOrder => mapOrder.set === orderSet),
-            }));
-            if (setOrders.find(setOrder => setOrder.set === sets.length)) {
-                const setOrder = setOrders.find(o => o.set === sets.length)!;
-                const firstTo = setOrder.maps.filter(mapOrder => mapOrder.status === MapStatus.Picked).length / 2 + 1;
-                if (sets[sets.length - 1].team1Score === firstTo)
-                    sets[sets.length - 1].winner = matchup.team1;
-                else if (sets[sets.length - 1].team2Score === firstTo)
-                    sets[sets.length - 1].winner = matchup.team2;
+            if (roundOrStage instanceof Stage && roundOrStage.stageType !== StageType.Qualifiers && roundOrStage.mapOrder) {
+                if (map.winner === team1)
+                    sets[sets.length - 1].team1Score = (sets[sets.length - 1].team1Score ?? 0) + 1;
+                else if (map.winner === team2)
+                    sets[sets.length - 1].team2Score = (sets[sets.length - 1].team2Score ?? 0) + 1;
 
-                if (sets[sets.length - 1].winner) {
-                    const nextSet = new MatchupSet();
-                    nextSet.matchup = matchup;
-                    nextSet.order = sets.length + 1;
-                    nextSet.maps = [];
-                    sets.push(nextSet);
+                const setOrders = roundOrStage.mapOrder.map(order => order.set).filter((orderSet, j, arr) => arr.indexOf(orderSet) === j).map(orderSet => ({
+                    set: orderSet,
+                    maps: roundOrStage.mapOrder!.filter(mapOrder => mapOrder.set === orderSet),
+                }));
+                if (setOrders.find(setOrder => setOrder.set === sets.length)) {
+                    const setOrder = setOrders.find(o => o.set === sets.length)!;
+                    const firstTo = setOrder.maps.filter(mapOrder => mapOrder.status === MapStatus.Picked).length / 2 + 1;
+                    if (sets[sets.length - 1].team1Score === firstTo)
+                        sets[sets.length - 1].winner = team1;
+                    else if (sets[sets.length - 1].team2Score === firstTo)
+                        sets[sets.length - 1].winner = team2;
+
+                    if (sets[sets.length - 1].winner) {
+                        const nextSet = new MatchupSet();
+                        nextSet.matchup = baseMatchup;
+                        nextSet.order = sets.length + 1;
+                        nextSet.maps = [];
+                        sets.push(nextSet);
+                    }
                 }
             }
+        });
+
+        matchupQ.sets?.forEach(async matchupSet => {
+            await Promise.all(matchupSet.maps?.map(map => map.scores?.map(score => manager.remove(score)) ?? []) ?? []);
+            await Promise.all(matchupSet.maps?.map(map => manager.remove(map)) ?? []);
+            await manager.remove(matchupSet);
+        });
+
+        sets.forEach(async matchupSet => {
+            await manager.save(matchupSet);
+            await Promise.all(matchupSet.maps?.map(map => manager.save(map)) ?? []);
+            await Promise.all(matchupSet.maps?.flatMap(map => map.scores?.map(score => {
+                score.map = map;
+                return manager.save(score);
+            }) ?? []) ?? []);
+        });
+
+        baseMatchup.sets = sets;
+        if (roundOrStage instanceof Stage && roundOrStage.stageType !== StageType.Qualifiers) {
+            baseMatchup.team1Score = sets.filter(map => map.team1Score && map.team2Score ? map.team1Score > map.team2Score : false).length;
+            baseMatchup.team2Score = sets.filter(map => map.team1Score && map.team2Score ? map.team2Score > map.team1Score : false).length;
+            if (baseMatchup.team1Score > baseMatchup.team2Score)
+                baseMatchup.winner = team1;
+            else if (baseMatchup.team2Score > baseMatchup.team1Score)
+                baseMatchup.winner = team2;
         }
+        baseMatchup.mp = mpID;
+        await manager.save(baseMatchup);
     });
 
-    matchup.sets?.forEach(async matchupSet => {
-        await Promise.all(matchupSet.maps?.map(map => map.scores?.map(score => score.remove()) ?? []) ?? []);
-        await Promise.all(matchupSet.maps?.map(map => map.remove()) ?? []);
-        await matchupSet.remove();
-    });
-
-    sets.forEach(async matchupSet => {
-        await matchupSet.save();
-        await Promise.all(matchupSet.maps?.map(map => map.save()) ?? []);
-        await Promise.all(matchupSet.maps?.flatMap(map => map.scores?.map(score => {
-            score.map = map;
-            return score.save();
-        }) ?? []) ?? []);
-    });
-
-    matchup.sets = sets;
-    if (matchup.stage!.stageType !== StageType.Qualifiers) {
-        matchup.team1Score = sets.filter(map => map.team1Score && map.team2Score ? map.team1Score > map.team2Score : false).length;
-        matchup.team2Score = sets.filter(map => map.team1Score && map.team2Score ? map.team2Score > map.team1Score : false).length;
-        if (matchup.team1Score > matchup.team2Score)
-            matchup.winner = matchup.team1;
-        else if (matchup.team2Score > matchup.team1Score)
-            matchup.winner = matchup.team2;
-    }
-    matchup.mp = mpID;
-    await matchup.save();
-
-    await assignTeamsToNextMatchup(matchup.ID);
+    await assignTeamsToNextMatchup(baseMatchup.ID);
 
     ctx.body = {
         success: true,
-        matchup: sanitizeMatchupResponse(matchup),
+        matchup: sanitizeMatchupResponse(baseMatchup),
     };
 });
 
