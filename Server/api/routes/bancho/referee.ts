@@ -576,9 +576,6 @@ banchoRefereeRouter.$post("/:matchupID/message", async (ctx) => {
 });
 
 banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
-    if (state.matchups[ctx.state.matchupID])
-        await state.matchups[ctx.state.matchupID].lobby.closeLobby();
-
     const teamForfeitNumber = ctx.request.body.team;
     if (teamForfeitNumber !== 1 && teamForfeitNumber !== 2) {
         ctx.body = {
@@ -635,6 +632,9 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
     }
 
     await matchup.save();
+
+    if (state.matchups[ctx.state.matchupID])
+        await state.matchups[ctx.state.matchupID].lobby.closeLobby();
 
     ctx.body = {
         success: true,
