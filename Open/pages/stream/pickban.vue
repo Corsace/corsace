@@ -331,7 +331,7 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
         let team2Count = 0;
 
         for (const orderEl of this.mapOrder) {
-            style += `.pickban__pick--order-${orderEl.order} {grid-area: ${orderEl.team + 1} / `;
+            style += `.pickban__pick--order-${orderEl.order} {grid-area: ${this.gridRowCalc(orderEl.team)} / `;
 
             if (orderEl.team === MapOrderTeam.Team1) {
                 style += `${++team1Count};}\n`;
@@ -343,6 +343,13 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
         }
 
         return style;
+    }
+
+    gridRowCalc (teamOrder: MapOrderTeam) {
+        if (this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID === this.matchup?.team2?.ID)
+            return 2 - teamOrder;
+        // Default as if team1 is roll winner
+        return teamOrder + 1;
     }
 
     calculateWinner (map: MatchupMap) {
