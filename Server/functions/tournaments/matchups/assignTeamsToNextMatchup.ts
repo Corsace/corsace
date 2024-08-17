@@ -80,13 +80,17 @@ async function assignTeam (manager: EntityManager, team: Team, matchup2: Matchup
     await assignTeamToNextPotentials(manager, team, matchup2.ID); // Find any matchups that this NEW matchup is a previous matchup for to assign this team to some of the potentials that may exist for them (Match 3 in example below)
 }
 
-// Example to explain the entire purpose of this:
-// IF match 1 is a previous winner matchup for match 2
-// AND match 2 is a previous loser/winner matchup for match 3
-// AND if team A won match 1
-// THEN team A should be assigned to match 2 as team 1 or 2,
-// AND team A should be assigned into some of match 3's potentials as team 1 or 2 
-// Variables are named based on this example
+/**
+ * Example to explain the entire functionality of this:
+ * IF match 1 is a previous winner matchup for match 2
+ * AND match 2 is a previous loser/winner matchup for match 3
+ * AND if team A won match 1
+ * THEN team A should be assigned to match 2 as team 1 or 2,
+ * AND team A should be assigned into some of match 3's potentials as team 1 or 2 
+ * Variables are named based on this example
+ * 
+ * @param matchup1ID The ID of the matchup that just finished with a winner to assign to their next matchups
+ */
 export default async function assignTeamsToNextMatchup (matchup1ID: number) {
     await ormConfig.transaction(async (manager) => {
         const matchup1 = await manager
