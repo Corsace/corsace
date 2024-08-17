@@ -66,8 +66,8 @@
                     >
                         <path
                             d="M 31 22 H 0 L 16 0 H 48 L 31 22 Z"
-                            :fill="matchup.team2Score >= n ? '#5BBCFAFF' : '#5BBCFA00'"
-                            :stroke="matchup.team2Score >= n ? '#5BBCFA00' : '#5BBCFAFF'"
+                            :fill="(matchup.sets?.[matchup.sets?.length - 1].team2Score || 0) >= n ? '#5BBCFAFF' : '#5BBCFA00'"
+                            :stroke="(matchup.sets?.[matchup.sets?.length - 1].team2Score || 0) >= n ? '#5BBCFA00' : '#5BBCFAFF'"
                         />
                     </svg>
                 </div>
@@ -155,8 +155,8 @@
                     >
                         <path
                             d="M 31 22 H 0 L 16 0 H 48 L 31 22 Z"
-                            :fill="matchup.team1Score >= n ? '#F24141FF' : '#F2414100'"
-                            :stroke="matchup.team1Score >= n ? '#F2414100' : '#F24141FF'"
+                            :fill="(matchup.sets?.[matchup.sets?.length - 1].team1Score || 0) >= n ? '#F24141FF' : '#F2414100'"
+                            :stroke="(matchup.sets?.[matchup.sets?.length - 1].team1Score || 0) >= n ? '#F2414100' : '#F24141FF'"
                         />
                     </svg>
                 </div>
@@ -401,6 +401,8 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
             case "matchFinished": {
                 this.matchup.team1Score = ctx.data.team1Score;
                 this.matchup.team2Score = ctx.data.team2Score;
+                this.matchup.sets![this.matchup.sets!.length - 1].team1Score = ctx.data.setTeam1Score;
+                this.matchup.sets![this.matchup.sets!.length - 1].team2Score = ctx.data.setTeam2Score;
 
                 const order = ctx.data.map.order;
                 const index = this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.findIndex(map => map.order === order);
