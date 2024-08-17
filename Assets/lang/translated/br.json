@@ -620,6 +620,7 @@
             "scores": {
                 "nav": {
                     "sort": "ORDENAR",
+                    "score": "SCORE",
                     "average": "MÉDIA",
                     "sum": "SOMA",
                     "percentAvg": "%MÉDIA",

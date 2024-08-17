@@ -12,6 +12,8 @@ import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import ormConfig from "../../../../ormconfig";
 import { StageType } from "../../../../Interfaces/stage";
 import { MapStatus } from "../../../../Interfaces/matchup";
+import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
+import assignTeamsToNextMatchup from "../../../functions/tournaments/matchups/assignTeamsToNextMatchup";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
@@ -61,7 +63,7 @@ banchoRefereeRouter.$use<{ pulse: boolean }>("/:matchupID", async (ctx, next) =>
                 success: false,
                 error: "Matchup not found",
             };
-        
+
         if (endpoint !== "createLobby" && endpoint !== "forfeit")
             return;
     }
@@ -83,7 +85,7 @@ banchoRefereeRouter.$post<{ pulse: boolean }>("/:matchupID/pulse", async (ctx) =
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
-    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, { 
+    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
         type: "settings",
         slots: mpLobby.slots.map((slot, i) => ({
             playerOsuID: slot?.user.id,
@@ -382,6 +384,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
                 map,
                 order: matchupMap.order,
                 status: matchupMap.status,
+                scores: [],
             },
         });
     } else {
@@ -438,7 +441,7 @@ banchoRefereeRouter.$post<{ mapID: number }>("/:matchupID/deleteMap", async (ctx
         await ormConfig.transaction(async manager => {
             state.matchups[ctx.state.matchupID].matchup.sets![set].maps = state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.filter(map => map.ID !== mapID);
             state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.forEach((map, i) => map.order = i + 1);
-            
+
             await manager.remove(matchupMap);
             await Promise.all(state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.map(map => manager.save(map)));
 
@@ -525,7 +528,7 @@ banchoRefereeRouter.$post("/:matchupID/settings", async (ctx) => {
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
-    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, { 
+    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
         type: "settings",
         slots: mpLobby.slots.map((slot, i) => ({
             playerOsuID: slot?.user.id,
@@ -576,9 +579,6 @@ banchoRefereeRouter.$post("/:matchupID/message", async (ctx) => {
 });
 
 banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
-    if (state.matchups[ctx.state.matchupID])
-        await state.matchups[ctx.state.matchupID].lobby.closeLobby();
-
     const teamForfeitNumber = ctx.request.body.team;
     if (teamForfeitNumber !== 1 && teamForfeitNumber !== 2) {
         ctx.body = {
@@ -592,6 +592,7 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
         .createQueryBuilder("matchup")
         .innerJoinAndSelect("matchup.team1", "team1")
         .innerJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("matchup.sets", "set")
         .leftJoinAndSelect("matchup.stage", "stage")
         .leftJoinAndSelect("matchup.round", "round")
         .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
@@ -610,7 +611,16 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
 
     matchup.forfeit = true;
     matchup.winner = teamForfeitNumber === 1 ? matchup.team2 : matchup.team1;
-    
+    let firstSet = matchup.sets?.[0];
+    if (!firstSet) {
+        firstSet = new MatchupSet();
+        firstSet.order = 1;
+        firstSet.matchup = matchup;
+        firstSet.maps = [];
+        firstSet.team1Score = 0;
+        firstSet.team2Score = 0;
+    }
+
     const stage = matchup.stage ?? matchup.round?.stage;
     const baseMapOrder = matchup.stage?.mapOrder ?? matchup.round?.mapOrder;
     if (baseMapOrder && stage && stage.stageType === StageType.Roundrobin) {
@@ -622,19 +632,27 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
             }));
         if (mapOrder.length > 1) {
             const firstTo = (mapOrder.length + 1) / 2;
-            matchup.team1Score = teamForfeitNumber === 1 ? 0 : firstTo;
-            matchup.team2Score = teamForfeitNumber === 2 ? 0 : firstTo;
+            firstSet.team1Score = teamForfeitNumber === 1 ? 0 : firstTo;
+            firstSet.team2Score = teamForfeitNumber === 2 ? 0 : firstTo;
         } else {
             const firstTo = mapOrder[0].order.filter(o => o.status === MapStatus.Picked).length / 2 + 1;
-            matchup.team1Score = teamForfeitNumber === 1 ? 0 : firstTo;
-            matchup.team2Score = teamForfeitNumber === 2 ? 0 : firstTo;
+            firstSet.team1Score = teamForfeitNumber === 1 ? 0 : firstTo;
+            firstSet.team2Score = teamForfeitNumber === 2 ? 0 : firstTo;
         }
     } else {
-        matchup.team1Score = teamForfeitNumber === 1 ? 0 : 1;
-        matchup.team2Score = teamForfeitNumber === 2 ? 0 : 1;
+        firstSet.team1Score = teamForfeitNumber === 1 ? 0 : 1;
+        firstSet.team2Score = teamForfeitNumber === 2 ? 0 : 1;
     }
+    await firstSet.save();
 
     await matchup.save();
+
+    // assignTeamsToNextMatchup is run in bancho's runMatchup if there is a lobby running, so it's only run here if there's no lobby at all
+    if (state.matchups[ctx.state.matchupID]) {
+        state.matchups[ctx.state.matchupID].matchup = matchup;
+        await state.matchups[ctx.state.matchupID].lobby.closeLobby();
+    } else
+        await assignTeamsToNextMatchup(matchup.ID);
 
     ctx.body = {
         success: true,

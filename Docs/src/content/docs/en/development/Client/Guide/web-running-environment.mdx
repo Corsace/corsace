@@ -25,6 +25,10 @@ See the [Config Reference](../config) for more information.
 Make sure to start the API server if you haven't already. See the [Server + CrunRunner - Running Environment](../../../server/guide/server-running-environment) guide for more information.
 :::
 
+:::danger
+In order to use the website's login services, you will **NEED** to have the Main website running alongside the API server, and the website(s) you are working on. 
+:::
+
 Depending on which website(s) you want to run, you will need to run the following command(s) in a separate terminal:
 
 |Website| Cmd |
@@ -42,3 +46,5 @@ The website should now be available at the URL you configured in the [Config Ref
 :::caution
 If you are using `localhost` or `127.0.0.1` as the host, and you are unable to see the website after running the command, you may need to check your hosts file to make sure they are connected (this may be necessary in Linux if not done already).
 :::
+import { server } from "process"
+
