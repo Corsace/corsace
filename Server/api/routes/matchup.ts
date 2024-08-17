@@ -6,7 +6,7 @@ import { Brackets } from "typeorm";
 import { StageType } from "../../../Interfaces/stage";
 import { TournamentRoleType } from "../../../Interfaces/tournament";
 import { MapStatus, Matchup as MatchupInterface } from "../../../Interfaces/matchup";
-import { Matchup } from "../../../Models/tournaments/matchup";
+import { Matchup, MatchupWithRelationIDs } from "../../../Models/tournaments/matchup";
 import { MatchupMap } from "../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../Models/tournaments/matchupScore";
 import { Team } from "../../../Models/tournaments/team";
@@ -16,7 +16,6 @@ import { validateTournament, hasRoles, validateStageOrRound } from "../../middle
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
 import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
-import { Round } from "../../../Models/tournaments/round";
 import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
 import { MatchupSet } from "../../../Models/tournaments/matchupSet";
@@ -202,42 +201,16 @@ function validatePOSTMatchups (matchups: Partial<postMatchup>[]): asserts matchu
         throw new Error(`Matchup IDs show up more than twice as any form of nextMatchupID: ${allNextMatchupIDs.filter((v, i, arr) => arr.filter(t => t === v).length > 2).join(", ")}`);
 }
 
-matchupRouter.$get("/:matchupID", async (ctx) => {
-    const dbMatchup = await Matchup
+matchupRouter.$get<{ matchup: MatchupInterface }>("/:matchupID", async (ctx) => {
+    const dbMatchup: MatchupWithRelationIDs = await Matchup
         .createQueryBuilder("matchup")
-        .leftJoinAndSelect("matchup.round", "round")
-        .innerJoinAndSelect("matchup.stage", "stage")
-        .innerJoinAndSelect("stage.tournament", "tournament")
-        .leftJoinAndSelect("matchup.team1", "team1")
-        .leftJoinAndSelect("matchup.team2", "team2")
-        .leftJoinAndSelect("team1.captain", "captain1")
-        .leftJoinAndSelect("team2.captain", "captain2")
-        .leftJoinAndSelect("captain1.userStatistics", "team1CaptainStats")
-        .leftJoinAndSelect("team1CaptainStats.modeDivision", "team1CaptainMode")
-        .leftJoinAndSelect("captain2.userStatistics", "team2CaptainStats")
-        .leftJoinAndSelect("team2CaptainStats.modeDivision", "team2CaptainMode")
-        .leftJoinAndSelect("team1.members", "members1")
-        .leftJoinAndSelect("team2.members", "members2")
-        .leftJoinAndSelect("members1.userStatistics", "team1MembersStats")
-        .leftJoinAndSelect("team1MembersStats.modeDivision", "team1MembersMode")
-        .leftJoinAndSelect("members2.userStatistics", "team2MembersStats")
-        .leftJoinAndSelect("team2MembersStats.modeDivision", "team3MembersMode")
-        .leftJoinAndSelect("matchup.winner", "winner")
-        .leftJoinAndSelect("matchup.sets", "set")
-        .leftJoinAndSelect("set.first", "first")
-        .leftJoinAndSelect("set.maps", "maps")
-        .leftJoinAndSelect("maps.map", "map")
-        .leftJoinAndSelect("maps.scores", "mapScores")
-        .leftJoinAndSelect("mapScores.user", "scoreUser")
-        .leftJoinAndSelect("map.beatmap", "beatmap")
-        .leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
-        .leftJoinAndSelect("beatmapset.creator", "creator")
-        .leftJoinAndSelect("map.customBeatmap", "customBeatmap")
-        .leftJoinAndSelect("map.customMappers", "customMappers")
-        .leftJoinAndSelect("map.slot", "slot")
+        .leftJoinAndSelect("matchup.referee", "referee")
+        .leftJoinAndSelect("matchup.streamer", "streamer")
         .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
-        .orWhere("matchup.matchID = :ID", { ID: ctx.params.matchupID })
-        .getOne();
+        .loadAllRelationIds({
+            relations: ["winner", "round", "stage", "team1", "team2", "teams", "commentators", "sets"],
+        })
+        .getOne() as any;
 
     if (!dbMatchup) {
         ctx.body = {
@@ -247,48 +220,10 @@ matchupRouter.$get("/:matchupID", async (ctx) => {
         return;
     }
 
-    const roundOrStage: Round | Stage | null =
-        dbMatchup.round ?
-            await Round
-                .createQueryBuilder("round")
-                .innerJoin("round.matchups", "matchup")
-                .leftJoinAndSelect("round.mappool", "mappool")
-                .leftJoinAndSelect("mappool.slots", "slots")
-                .leftJoinAndSelect("slots.maps", "maps")
-                .leftJoinAndSelect("maps.beatmap", "map")
-                .leftJoinAndSelect("map.beatmapset", "beatmapset")
-                .leftJoinAndSelect("beatmapset.creator", "creator")
-                .leftJoinAndSelect("maps.customBeatmap", "customBeatmap")
-                .leftJoinAndSelect("maps.customMappers", "customMappers")
-                .leftJoinAndSelect("round.mapOrder", "mapOrder")
-                .where("matchup.ID = :ID", { ID: dbMatchup.ID })
-                .getOne() :
-            dbMatchup.stage ?
-                await Stage
-                    .createQueryBuilder("stage")
-                    .innerJoin("stage.matchups", "matchup")
-                    .leftJoinAndSelect("stage.mappool", "mappool")
-                    .leftJoinAndSelect("mappool.slots", "slots")
-                    .leftJoinAndSelect("slots.maps", "maps")
-                    .leftJoinAndSelect("maps.beatmap", "map")
-                    .leftJoinAndSelect("map.beatmapset", "beatmapset")
-                    .leftJoinAndSelect("beatmapset.creator", "creator")
-                    .leftJoinAndSelect("maps.customBeatmap", "customBeatmap")
-                    .leftJoinAndSelect("maps.customMappers", "customMappers")
-                    .leftJoinAndSelect("stage.mapOrder", "mapOrder")
-                    .where("matchup.ID = :ID", { ID: dbMatchup.ID })
-                    .getOne() :
-                null;
-
-    const body: {
-        success: true;
-        matchup: MatchupInterface;
-    } = {
+    ctx.body = {
         success: true,
-        matchup: await dbMatchupToInterface(dbMatchup, roundOrStage),
+        matchup: await dbMatchupToInterface(dbMatchup, true, true),
     };
-
-    ctx.body = body;
 });
 
 matchupRouter.$get("/:matchupID/bancho/:endpoint", async (ctx) => {

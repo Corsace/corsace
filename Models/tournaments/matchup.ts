@@ -8,6 +8,8 @@ import { Team } from "./team";
 
 export const preInviteTime = 10 * 60 * 1000; // Time to invite before matchup starts for players to come in
 
+export type MatchupWithRelationIDs = Omit<Matchup, "winner" | "round" | "stage" | "team1" | "team2" | "teams" | "commentators" | "sets"> & { winner: number | null; round: number | null; stage: number | null; team1: number | null; team2: number | null; teams: number[]; commentators: number[]; sets: number[] }
+
 @Entity()
 export class Matchup extends BaseEntity {
 

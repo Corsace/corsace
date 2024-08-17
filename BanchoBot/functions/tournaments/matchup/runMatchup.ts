@@ -728,6 +728,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
 
+        const mappoolSlot = pools.flatMap(pool => pool.slots).find(slot => slot.maps.some(map => map.ID === beatmap.ID));
         await publish(centrifugoChannel, {
             type: "matchFinished",
             setTeam1Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team1Score ?? 0,
@@ -754,7 +755,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                         username: score.user.osu.username,
                         userID: parseInt(score.user.osu.userID),
                         score: score.score,
-                        map: `${matchupMap.map.slot.acronym}${matchupMap.order}`,
+                        map: `${mappoolSlot?.acronym}${matchupMap.order}`,
                         mapID: matchupMap.ID,
                     };
                 }),
