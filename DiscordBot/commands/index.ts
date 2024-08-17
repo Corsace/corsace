@@ -55,6 +55,7 @@ import matchupReschedule from "./tournaments/matchup/reschedule";
 import matchupScores from "./tournaments/matchup/scores";
 import matchupStaff from "./tournaments/matchup/staff";
 import matchupStopAutoLobby from "./tournaments/matchup/stopAutoLobby";
+import matchupVod from "./tournaments/matchup/vod";
 
 import avatar from "./utility/avatar";
 import help from "./utility/help";
@@ -149,6 +150,7 @@ commands.push(matchupReschedule);
 commands.push(matchupScores);
 commands.push(matchupStaff);
 commands.push(matchupStopAutoLobby);
+commands.push(matchupVod);
 
 // general utility commands
 commands.push(avatar);
