@@ -273,17 +273,18 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
     }
 
     get nextPickOrder (): MapOrder | null {
+        if (this.matchup?.sets?.length === 0 || !this.matchup?.sets?.[this.matchup.sets.length - 1]?.first)
+            return null;
+
         const currentPickPosition = this.maps.length;
 
-        if (currentPickPosition === this.mapOrder.length - 1) {
+        if (currentPickPosition === this.mapOrder.length - 1)
             return null;
-        }
 
         const currentOrder = this.mapOrder[currentPickPosition];
 
-        if (currentPickPosition === 0) {
+        if (currentPickPosition === 0)
             return currentOrder;
-        }
 
         const previousPick = this.maps[currentPickPosition - 1];
 
@@ -291,9 +292,8 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
             previousPick.status === MapStatus.Protected
             || previousPick.status === MapStatus.Banned
             || (previousPick.status === MapStatus.Picked && previousPick.scores.length > 0)
-        ) {
+        )
             return currentOrder;
-        }
 
         return null;
     }
@@ -386,61 +386,76 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
 
         if (!ctx.channel.startsWith("matchup:"))
             return;
-
         const matchupID = parseInt(ctx.channel.split(":")[1]);
-        console.log(matchupID);
-        console.log(this);
         if (matchupID !== this.matchup?.ID)
             return;
 
-        if (ctx.data.type === "matchFinished") {
-            this.matchup.team1Score = ctx.data.team1Score;
-            this.matchup.team2Score = ctx.data.team2Score;
+        switch (ctx.data.type) {
+            case "matchFinished": {
+                this.matchup.team1Score = ctx.data.team1Score;
+                this.matchup.team2Score = ctx.data.team2Score;
 
-            const order = ctx.data.map.order;
-            const index = this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.findIndex(map => map.order === order);
+                const order = ctx.data.map.order;
+                const index = this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.findIndex(map => map.order === order);
 
-            if (index && index > -1)
-                this.matchup.sets![this.matchup.sets!.length - 1].maps!.splice(index, 1, ctx.data.map);
+                if (index && index > -1)
+                    this.matchup.sets![this.matchup.sets!.length - 1].maps!.splice(index, 1, ctx.data.map);
 
-            return;
-        }
-
-        if (ctx.data.type === "beatmap") {
-            const beatmapData = ctx.data;
-            const mappool = this.matchup.stage?.mappool?.find(m => m.slots.flatMap(s => s.maps).find(map => map.beatmap?.ID === beatmapData.beatmapID));
-            if (!mappool)
-                return;
-            const slot = mappool.slots.find(s => s.maps.find(map => map.beatmap?.ID === beatmapData.beatmapID));
-            if (!slot)
-                return;
-            const mappoolMap = slot.maps.find(map => map.beatmap?.ID === beatmapData.beatmapID);
-            if (!mappoolMap)
-                return;
-            mappoolMap.slot = slot; // mappool maps don't contain slot as they are children of the slot object
-
-            const lastSetMaps = this.matchup.sets?.[this.matchup.sets?.length - 1].maps;
-            if (!lastSetMaps)
-                return;
-
-            // Current last map is still an unconfirmed pick
-            if (lastSetMaps[lastSetMaps.length - 1].ID === -1) {
-                this.matchup.sets![this.matchup.sets!.length - 1].maps![lastSetMaps.length - 1].map = mappoolMap;
-                return;
+                break;
             }
-            
-            this.matchup.sets![this.matchup.sets!.length - 1].maps?.push({
-                ID: -1,
-                order: lastSetMaps.length + 1,
-                map: mappoolMap,
-                status: MapStatus.Picked,
-                scores: [],
-            });
+            case "beatmap": {
+                const beatmapData = ctx.data;
+                const mappool = this.matchup.stage?.mappool?.find(m => m.slots.flatMap(s => s.maps).find(map => map.beatmap?.ID === beatmapData.beatmapID));
+                if (!mappool)
+                    break;
+                const slot = mappool.slots.find(s => s.maps.find(map => map.beatmap?.ID === beatmapData.beatmapID));
+                if (!slot)
+                    break;
+                const mappoolMap = slot.maps.find(map => map.beatmap?.ID === beatmapData.beatmapID);
+                if (!mappoolMap)
+                    break;
+                mappoolMap.slot = slot; // mappool maps don't contain slot as they are children of the slot object
+
+                const lastSetMaps = this.matchup.sets?.[this.matchup.sets?.length - 1].maps;
+                console.log(lastSetMaps);
+                if (!lastSetMaps)
+                    break;
+
+                // Current last map is still an unconfirmed pick
+                if (lastSetMaps[lastSetMaps.length - 1]?.ID === -1) {
+                    this.matchup.sets![this.matchup.sets!.length - 1].maps![lastSetMaps.length - 1].map = mappoolMap;
+                    break;
+                }
+                
+                this.matchup.sets![this.matchup.sets!.length - 1].maps?.push({
+                    ID: -1,
+                    order: lastSetMaps.length + 1,
+                    map: mappoolMap,
+                    status: MapStatus.Picked,
+                    scores: [],
+                });
+                break;
+            }
+            case "selectMap": {
+                this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.push(ctx.data.map);
+                break;
+            }
+            case "first": {
+                const first = ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2;
+                if (!this.matchup.sets || this.matchup.sets.length === 0)
+                    this.matchup.sets = [{
+                        ID: 0,
+                        order: 1,
+                        first,
+                        maps: [],
+                        team1Score: 0,
+                        team2Score: 0,
+                    }];
+                else
+                    this.$set(this.matchup.sets[this.matchup.sets.length - 1], "first", first); // In order to make the computed properties watchers work 
+                break;
+            }
         }
-
-        if (ctx.data.type === "selectMap")
-            this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.push(ctx.data.map);
-
     }
 }
 </script>
