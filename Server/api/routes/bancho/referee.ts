@@ -61,7 +61,7 @@ banchoRefereeRouter.$use<{ pulse: boolean }>("/:matchupID", async (ctx, next) =>
                 success: false,
                 error: "Matchup not found",
             };
-        
+
         if (endpoint !== "createLobby" && endpoint !== "forfeit")
             return;
     }
@@ -83,7 +83,7 @@ banchoRefereeRouter.$post<{ pulse: boolean }>("/:matchupID/pulse", async (ctx) =
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
-    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, { 
+    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
         type: "settings",
         slots: mpLobby.slots.map((slot, i) => ({
             playerOsuID: slot?.user.id,
@@ -382,6 +382,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
                 map,
                 order: matchupMap.order,
                 status: matchupMap.status,
+                scores: [],
             },
         });
     } else {
@@ -438,7 +439,7 @@ banchoRefereeRouter.$post<{ mapID: number }>("/:matchupID/deleteMap", async (ctx
         await ormConfig.transaction(async manager => {
             state.matchups[ctx.state.matchupID].matchup.sets![set].maps = state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.filter(map => map.ID !== mapID);
             state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.forEach((map, i) => map.order = i + 1);
-            
+
             await manager.remove(matchupMap);
             await Promise.all(state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.map(map => manager.save(map)));
 
@@ -525,7 +526,7 @@ banchoRefereeRouter.$post("/:matchupID/settings", async (ctx) => {
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
-    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, { 
+    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
         type: "settings",
         slots: mpLobby.slots.map((slot, i) => ({
             playerOsuID: slot?.user.id,
@@ -610,7 +611,7 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
 
     matchup.forfeit = true;
     matchup.winner = teamForfeitNumber === 1 ? matchup.team2 : matchup.team1;
-    
+
     const stage = matchup.stage ?? matchup.round?.stage;
     const baseMapOrder = matchup.stage?.mapOrder ?? matchup.round?.mapOrder;
     if (baseMapOrder && stage && stage.stageType === StageType.Roundrobin) {
