@@ -1,5 +1,5 @@
 <template>
-    <div 
+    <div
         v-if="matchup"
         class="pickban"
     >
@@ -12,7 +12,7 @@
         </div>
         <div class="pickban__header">
             <div
-                v-if="picking" 
+                v-if="picking"
                 class="pickban__header__picking"
                 :style="{ color: nextTeamToPick?.abbreviation === matchup?.team1?.abbreviation ? '#5BBCFA' : '#F24141' }"
             >
@@ -20,14 +20,14 @@
             </div>
         </div>
         <div
-            v-if="matchup.team1" 
+            v-if="matchup.team1"
             class="pickban__team1"
         >
             <div class="pickban__team1_abbreviation">
                 {{ matchup.team1.abbreviation.toUpperCase() }}
             </div>
             <div class="pickban__team1_notMembers">
-                <div 
+                <div
                     class="pickban__team1_avatar"
                     :style="{
                         'background-image': `url(${matchup.team1.avatarURL || '../../Assets/img/site/open/team/default.png'})`,
@@ -54,12 +54,12 @@
                 </div>
                 <div class="pickban__team1_score">
                     WINS
-                    <svg 
+                    <svg
                         v-for="n in 5"
                         :key="n"
-                        width="48" 
-                        height="22" 
-                        viewBox="0 0 48 22" 
+                        width="48"
+                        height="22"
+                        viewBox="0 0 48 22"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         class="pickban__team1_score__star"
@@ -74,7 +74,7 @@
             </div>
             <div class="pickban__team1_members">
                 <div class="pickban__team1_members_member">
-                    <div 
+                    <div
                         class="pickban__team1_members_member_avatar"
                         :style="{
                             'background-image': `url(https://a.ppy.sh/${matchup.team1.captain.osuID})`,
@@ -88,12 +88,12 @@
                     </div>
                     <div class="pickban__team1_members_member_captain" />
                 </div>
-                <div 
+                <div
                     v-for="member in matchup.team1.members.filter(member => !member.isCaptain)"
                     :key="member.ID"
                     class="pickban__team1_members_member"
                 >
-                    <div 
+                    <div
                         class="pickban__team1_members_member_avatar"
                         :style="{
                             'background-image': `url(https://a.ppy.sh/${member.osuID})`,
@@ -103,20 +103,20 @@
                         {{ member.username.toUpperCase() }}
                     </div>
                     <div class="pickban__team1_members_member_BWS">
-                        {{ Math.round(member.BWS) }} BWS
+                        #{{ Math.round(member.rank) }}
                     </div>
                 </div>
             </div>
         </div>
         <div
-            v-if="matchup.team2" 
+            v-if="matchup.team2"
             class="pickban__team2"
         >
             <div class="pickban__team2_abbreviation">
                 {{ matchup.team2.abbreviation.toUpperCase() }}
             </div>
             <div class="pickban__team2_notMembers">
-                <div 
+                <div
                     class="pickban__team2_avatar"
                     :style="{
                         'background-image': `url(${matchup.team2.avatarURL || '../../Assets/img/site/open/team/default.png'})`,
@@ -143,12 +143,12 @@
                 </div>
                 <div class="pickban__team2_score">
                     WINS
-                    <svg 
+                    <svg
                         v-for="n in 5"
                         :key="n"
-                        width="48" 
-                        height="22" 
-                        viewBox="0 0 48 22" 
+                        width="48"
+                        height="22"
+                        viewBox="0 0 48 22"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         class="pickban__team2_score__star"
@@ -163,7 +163,7 @@
             </div>
             <div class="pickban__team2_members">
                 <div class="pickban__team2_members_member">
-                    <div 
+                    <div
                         class="pickban__team2_members_member_avatar"
                         :style="{
                             'background-image': `url(https://a.ppy.sh/${matchup.team2.captain.osuID})`,
@@ -177,12 +177,12 @@
                     </div>
                     <div class="pickban__team2_members_member_captain" />
                 </div>
-                <div 
+                <div
                     v-for="member in matchup.team2.members.filter(member => !member.isCaptain)"
                     :key="member.ID"
                     class="pickban__team2_members_member"
                 >
-                    <div 
+                    <div
                         class="pickban__team2_members_member_avatar"
                         :style="{
                             'background-image': `url(https://a.ppy.sh/${member.osuID})`,
@@ -192,33 +192,58 @@
                         {{ member.username.toUpperCase() }}
                     </div>
                     <div class="pickban__team2_members_member_BWS">
-                        {{ Math.round(member.BWS) }} BWS
+                        #{{ Math.round(member.rank) }}
                     </div>
                 </div>
             </div>
         </div>
+        <div class="pickban__picks">
+            <BeatmapCard
+                v-for="map in maps"
+                :key="map.ID"
+                :class="['pickban__pick', `pickban__pick--order-${map.order}`]"
+                :beatmap="map.map"
+                :mappool-slot="(map.map.slot?.acronym ?? '') + map.map.order"
+                :status="map.status"
+                :winner="map.scores.length > 0 ? calculateWinner(map) : undefined"
+            />
+            <BeatmapCard
+                v-if="nextPickOrder"
+                :class="['pickban__pick', `pickban__pick--order-${maps.length + 1}`]"
+                :status="nextPickOrder.status"
+            />
+            <div
+                v-for="index in placeholderCount"
+                :key="index + placeholderOffset"
+                :class="['pickban__pick', 'pickban__pick--placeholder', `pickban__pick--order-${index + placeholderOffset}`]"
+            />
+        </div>
+        <style>{{ orderStyle }}</style>
     </div>
     <div v-else />
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Mixins, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import CentrifugeMixin from "../../../Assets/mixins/centrifuge";
 import { MapStatus } from "../../../Interfaces/matchup";
-import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
 
-import { Matchup as MatchupInterface } from "../../../Interfaces/matchup";
-import { freemodRGB, freemodButFreerRGB, modsToRGB } from "../../../Interfaces/mods";
+import { Matchup as MatchupInterface, MatchupMap } from "../../../Interfaces/matchup";
+import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
+import { ExtendedPublicationContext } from "centrifuge";
+
+import BeatmapCard from "../../../Assets/components/open/PickBan/BeatmapCard.vue";
 
 const streamModule = namespace("stream");
 
 @Component({
     components: {
-        MappoolMapStats,
+        BeatmapCard,
     },
     layout: "stream",
 })
-export default class Pickban extends Vue {
+export default class Pickban extends Mixins(CentrifugeMixin) {
 
     @streamModule.State key!: string | null;
     @streamModule.State tournamentID!: number | null;
@@ -227,46 +252,124 @@ export default class Pickban extends Vue {
     loading = false;
     picking = false;
 
-    get pickedMaps () {
+    get maps () {
         if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.maps)
             return [];
 
-        return this.matchup.sets[this.matchup.sets.length - 1].maps!.filter(map => map.status === MapStatus.Picked).sort((a, b) => a.order - b.order);
+        const maps = this.matchup.sets[this.matchup.sets.length - 1].maps ?? [];
+
+        return maps.sort((a, b) => a.order - b.order);
     }
 
-    get latestMap () {
+    get pickedMaps () {
+        return this.maps.filter(map => map.status === MapStatus.Picked);
+    }
+
+    get latestPick () {
         if (!this.pickedMaps.length)
             return null;
 
         return this.pickedMaps[this.pickedMaps.length - 1];
     }
 
+    get nextPickOrder (): MapOrder | null {
+        if (this.matchup?.sets?.length === 0 || !this.matchup?.sets?.[this.matchup.sets.length - 1]?.first)
+            return null;
+
+        const currentPickPosition = this.maps.length;
+
+        if (currentPickPosition === this.mapOrder.length - 1)
+            return null;
+
+        const currentOrder = this.mapOrder[currentPickPosition];
+
+        if (currentPickPosition === 0)
+            return currentOrder;
+
+        const previousPick = this.maps[currentPickPosition - 1];
+
+        if (
+            previousPick.status === MapStatus.Protected
+            || previousPick.status === MapStatus.Banned
+            || (previousPick.status === MapStatus.Picked && previousPick.scores.length > 0)
+        )
+            return currentOrder;
+
+        return null;
+    }
+
     get nextTeamToPick () {
-        if (!this.latestMap)
+        if (!this.latestPick)
             return null;
 
         if (this.pickedMaps.length % 2 === 0)
             return this.matchup?.sets?.[this.matchup.sets.length - 1]?.first;
-    
+
         return this.matchup?.team1?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team2 : this.matchup?.team1;
     }
 
-    get slotMod (): string {
-        if (!this.latestMap?.map?.slot)
-            return this.RGBValuesToRGBCSS(modsToRGB(0));
+    get mapOrder () {
+        if (!this.matchup?.stage?.mapOrder && !this.matchup?.round?.mapOrder) {
+            return [];
+        }
 
-        if (this.latestMap.map.slot.allowedMods === null && this.latestMap.map.slot.userModCount === null && this.latestMap.map.slot.uniqueModCount === null)
-            return this.RGBValuesToRGBCSS(freemodButFreerRGB);
-
-        if (this.latestMap.map.slot.userModCount !== null || this.latestMap.map.slot.uniqueModCount !== null)
-            return this.RGBValuesToRGBCSS(freemodRGB);
-
-        return this.RGBValuesToRGBCSS(modsToRGB(this.latestMap.map.slot.allowedMods));
+        return this.matchup.stage?.mapOrder ?? this.matchup.round?.mapOrder ?? [];
     }
 
-    RGBValuesToRGBCSS (values: [number, number, number]) {
-        return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
-    } 
+    get placeholderCount () {
+        return this.mapOrder.length - this.maps.length - (this.nextPickOrder ? 1 : 0);
+    }
+
+    get placeholderOffset () {
+        return this.maps.length + (this.nextPickOrder ? 1 : 0);
+    }
+
+    get orderStyle () {
+        let style = "";
+
+        let team1Count = 0;
+        let team2Count = 0;
+
+        for (const orderEl of this.mapOrder) {
+            style += `.pickban__pick--order-${orderEl.order} {grid-area: ${this.gridRowCalc(orderEl.team)} / `;
+
+            if (orderEl.team === MapOrderTeam.Team1) {
+                style += `${++team1Count};}\n`;
+            }
+
+            if (orderEl.team === MapOrderTeam.Team2) {
+                style += `${++team2Count};}\n`;
+            }
+        }
+
+        return style;
+    }
+
+    gridRowCalc (teamOrder: MapOrderTeam) {
+        if (this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID === this.matchup?.team2?.ID)
+            return 2 - teamOrder;
+        // Default as if team1 is roll winner
+        return teamOrder + 1;
+    }
+
+    calculateWinner (map: MatchupMap) {
+        let team1Score = 0;
+        let team2Score = 0;
+
+        if (map.scores) {
+            for (const score of map.scores) {
+                if (score.teamID === this.matchup?.team1?.ID) {
+                    team1Score += score.score;
+                }
+
+                if (score.teamID === this.matchup?.team2?.ID) {
+                    team2Score += score.score;
+                }
+            }
+        }
+
+        return team1Score > team2Score ? "red" : "blue";
+    }
 
     async mounted () {
         this.loading = true;
@@ -281,6 +384,85 @@ export default class Pickban extends Vue {
         this.matchup = data.matchup;
 
         this.loading = false;
+
+        await this.initCentrifuge(`matchup:${this.matchup.ID}`);
+    }
+
+    handleData (ctx: ExtendedPublicationContext) {
+        console.log("publication", ctx.channel, ctx.data);
+
+        if (!ctx.channel.startsWith("matchup:"))
+            return;
+        const matchupID = parseInt(ctx.channel.split(":")[1]);
+        if (matchupID !== this.matchup?.ID)
+            return;
+
+        switch (ctx.data.type) {
+            case "matchFinished": {
+                this.matchup.team1Score = ctx.data.team1Score;
+                this.matchup.team2Score = ctx.data.team2Score;
+
+                const order = ctx.data.map.order;
+                const index = this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.findIndex(map => map.order === order);
+
+                if (index && index > -1)
+                    this.matchup.sets![this.matchup.sets!.length - 1].maps!.splice(index, 1, ctx.data.map);
+
+                break;
+            }
+            case "beatmap": {
+                const beatmapData = ctx.data;
+                const mappool = this.matchup.stage?.mappool?.find(m => m.slots.flatMap(s => s.maps).find(map => map.beatmap?.ID === beatmapData.beatmapID));
+                if (!mappool)
+                    break;
+                const slot = mappool.slots.find(s => s.maps.find(map => map.beatmap?.ID === beatmapData.beatmapID));
+                if (!slot)
+                    break;
+                const mappoolMap = slot.maps.find(map => map.beatmap?.ID === beatmapData.beatmapID);
+                if (!mappoolMap)
+                    break;
+                mappoolMap.slot = slot; // mappool maps don't contain slot as they are children of the slot object
+
+                const lastSetMaps = this.matchup.sets?.[this.matchup.sets?.length - 1].maps;
+                console.log(lastSetMaps);
+                if (!lastSetMaps)
+                    break;
+
+                // Current last map is still an unconfirmed pick
+                if (lastSetMaps[lastSetMaps.length - 1]?.ID === -1) {
+                    this.matchup.sets![this.matchup.sets!.length - 1].maps![lastSetMaps.length - 1].map = mappoolMap;
+                    break;
+                }
+                
+                this.matchup.sets![this.matchup.sets!.length - 1].maps?.push({
+                    ID: -1,
+                    order: lastSetMaps.length + 1,
+                    map: mappoolMap,
+                    status: MapStatus.Picked,
+                    scores: [],
+                });
+                break;
+            }
+            case "selectMap": {
+                this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.push(ctx.data.map);
+                break;
+            }
+            case "first": {
+                const first = ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2;
+                if (!this.matchup.sets || this.matchup.sets.length === 0)
+                    this.matchup.sets = [{
+                        ID: 0,
+                        order: 1,
+                        first,
+                        maps: [],
+                        team1Score: 0,
+                        team2Score: 0,
+                    }];
+                else
+                    this.$set(this.matchup.sets[this.matchup.sets.length - 1], "first", first); // In order to make the computed properties watchers work 
+                break;
+            }
+        }
     }
 }
 </script>
@@ -356,7 +538,7 @@ export default class Pickban extends Vue {
             font-size: 40px;
             font-weight: bold;
         }
-    } 
+    }
 
     &__team1, &__team2 {
 
@@ -449,7 +631,7 @@ export default class Pickban extends Vue {
             align-items: center;
             gap: 11px;
         }
-        
+
         &_members {
             position: fixed;
             width: 395px;
@@ -558,13 +740,34 @@ export default class Pickban extends Vue {
         &_info {
             top: 948px;
         }
-        
+
         &_members {
             top: 724px;
         }
 
         &_name {
             top: 818px;
+        }
+    }
+
+    &__picks {
+        position: absolute;
+        top: 208px;
+        left: 456px;
+
+        width: 1432px;
+        height: 872px;
+
+        display: grid;
+        grid-template: repeat(2, 435px) / repeat(9, 144px);
+
+        gap: 2px 17px;
+    }
+
+    &__pick {
+        &--placeholder {
+            background-color: #D9D9D9;
+            opacity: 0.22;
         }
     }
 }

@@ -94,7 +94,6 @@ export class Team extends BaseEntity {
             console.warn("Error in calculating team stats:\n", e);
             return false;
         }
-            
     }
 
     public async teamInterface (queryQualifier = false, queryTournaments = false): Promise<TeamInterface> {
