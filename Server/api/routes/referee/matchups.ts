@@ -36,28 +36,6 @@ refereeMatchupsRouter.$get<{ matchups: MatchupInterface[] }>("/:tournamentID", v
         .leftJoin("matchup.referee", "referee")
         .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
         .andWhere("matchup.potentialFor IS NULL");
-
-    // For organizers to see all matchups
-    const roles = await TournamentRole
-        .createQueryBuilder("role")
-        .innerJoin("role.tournament", "tournament")
-        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
-        .getMany();
-    let bypass = false;
-    if (roles.length > 0) {
-        try {
-            const organizerRoles = roles.filter(r => r.roleType === TournamentRoleType.Organizer);
-            const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
-            const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
-            bypass = organizerRoles.some(r => discordMember.roles.cache.has(r.roleID));
-        } catch (e) {
-            bypass = false;
-        }
-    }
-
-    if (!bypass)
-        matchupQ
-            .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID });
         
     const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") || 0;
     const matchups = await matchupQ
@@ -102,28 +80,6 @@ refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:match
         .where("matchup.ID = :ID", { ID: ctx.params.matchupID });
 
     // TODO: Add x amount of latest messages to the query, and support scrolling pagination on ref page and matchup page
-
-    // For organizers to see all matchups
-    const roles = await TournamentRole
-        .createQueryBuilder("role")
-        .innerJoin("role.tournament", "tournament")
-        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
-        .getMany();
-    let bypass = false;
-    if (roles.length > 0) {
-        try {
-            const privilegedRoles = roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
-            const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
-            const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
-            bypass = privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID));
-        } catch (e) {
-            bypass = false;
-        }
-    }
-
-    if (!bypass)
-        matchupQ
-            .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID });
         
     const dbMatchup = await matchupQ.getOne();
 
