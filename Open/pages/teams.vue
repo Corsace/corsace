@@ -204,7 +204,7 @@ export default class Teams extends Mixins(CentrifugeMixin) {
         "ID": (a, b) => a.ID - b.ID,
         "TEAM SIZE": (a, b) => a.members.length - b.members.length,
     };
-    currentSort: typeof this.sorts[number] = "A-Z";
+    currentSort: typeof this.sorts[number] = "BWS AVG";
     searchValue = "";
     page: "list" | "management" = "list";
     unregisteredTeams: TeamList[] | null = null;
