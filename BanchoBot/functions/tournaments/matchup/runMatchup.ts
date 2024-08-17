@@ -31,7 +31,7 @@ import { loginRow } from "../../../../DiscordBot/functions/loginResponse";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { unallowedToPlay } from "../../../../Interfaces/tournament";
 import { publishSettings } from "./centrifugo";
-// import assignTeamsToNextMatchup from "../../../../Server/functions/tournaments/matchups/assignTeamsToNextMatchup";
+import assignTeamsToNextMatchup from "../../../../Server/functions/tournaments/matchups/assignTeamsToNextMatchup";
 import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
 import { MapStatus } from "../../../../Interfaces/matchup";
 import { publish } from "../../../../Server/functions/centrifugo";
@@ -791,21 +791,25 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             invCollector?.stop();
             refCollector?.stop();
 
+            // If forfeit, save from the state because forfeit is assigned from the ref endpoint, not the bot (and the below functionality would remove it otherwise)
+            if (state.matchups[matchup.ID] && state.matchups[matchup.ID].matchup.forfeit)
+                matchup = state.matchups[matchup.ID].matchup;
+
             matchup.baseURL = null;
             if (matchup.stage!.stageType !== StageType.Qualifiers) {
-                if (matchup.team1Score > matchup.team2Score)
+                if (!matchup.forfeit && matchup.team1Score > matchup.team2Score)
                     matchup.winner = matchup.team1;
-                else if (matchup.team2Score > matchup.team1Score)
+                else if (!matchup.forfeit && matchup.team2Score > matchup.team1Score)
                     matchup.winner = matchup.team2;
                 await matchup.save();
 
-                // await assignTeamsToNextMatchup(matchup.ID);
-            } else
+                await assignTeamsToNextMatchup(matchup.ID);
+            } else 
                 await matchup.save();
 
             await publish(centrifugoChannel, { type: "closed" });
 
-            // Let it run one more time before clearing
+            // Let messageSaver run one more time before clearing
             await pause(15 * 1000);
             clearInterval(messageSaver);
 

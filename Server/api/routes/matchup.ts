@@ -1,3 +1,4 @@
+import ormConfig from "../../../ormconfig";
 import axios from "axios";
 import { CorsaceRouter } from "../../corsaceRouter";
 import { Multi } from "nodesu";
@@ -10,12 +11,11 @@ import { MatchupMap } from "../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../Models/tournaments/matchupScore";
 import { Team } from "../../../Models/tournaments/team";
 import { User } from "../../../Models/user";
-import ormConfig from "../../../ormconfig";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
-// import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
+import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
 import { Round } from "../../../Models/tournaments/round";
 import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
@@ -973,6 +973,8 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
     }
     matchup.mp = mpID;
     await matchup.save();
+
+    await assignTeamsToNextMatchup(matchup.ID);
 
     ctx.body = {
         success: true,
