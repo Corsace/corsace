@@ -646,9 +646,10 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
 
     await matchup.save();
 
-    if (state.matchups[ctx.state.matchupID])
+    if (state.matchups[ctx.state.matchupID]) {
+        state.matchups[ctx.state.matchupID].matchup = matchup;
         await state.matchups[ctx.state.matchupID].lobby.closeLobby();
-    else
+    } else
         await assignTeamsToNextMatchup(matchup.ID);
 
     ctx.body = {

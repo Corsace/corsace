@@ -97,15 +97,15 @@ export default async function assignTeamsToNextMatchup (matchup1ID: number) {
             .where("matchup.ID = :matchupID", { matchupID: matchup1ID })
             .getOne(); // Match 1 in example above
         if (!matchup1) {
-            await sendDiscordError(`Failed to find matchup ID \`${matchup1ID}\` to assign teams to their next matchup`);
+            await sendDiscordError(`\`assignTeamsToNextMatchup error\`\nFailed to find matchup ID \`${matchup1ID}\` to assign teams to their next matchup`);
             return;
         }
         if (!matchup1.winner) {
-            await sendDiscordError(`Matchup ID \`${matchup1ID}\` has no winner to assign teams to their next matchup`);
+            await sendDiscordError(`\`assignTeamsToNextMatchup error\`\nMatchup ID \`${matchup1ID}\` has no winner to assign teams to their next matchup`);
             return;
         }
         if (!matchup1.team1 || !matchup1.team2) {
-            await sendDiscordError(`Matchup ID \`${matchup1ID}\` has teams missing to assign to their next matchup`);
+            await sendDiscordError(`\`assignTeamsToNextMatchup error\`\nMatchup ID \`${matchup1ID}\` has teams missing to assign to their next matchup`);
             return;
         }
 
@@ -126,7 +126,7 @@ export default async function assignTeamsToNextMatchup (matchup1ID: number) {
                     await assignTeam(manager, winner, matchup2);
             }
         } catch (error) {
-            await sendDiscordError(`Failed to assign teams to their next matchups from matchup ID \`${matchup1ID}\`\n\`\`\`${error}\`\`\``);
+            await sendDiscordError(`\`assignTeamsToNextMatchup error\`\nFailed to assign teams to their next matchups from matchup ID \`${matchup1ID}\`\n\`\`\`${error}\`\`\``);
         }
     }); 
 }

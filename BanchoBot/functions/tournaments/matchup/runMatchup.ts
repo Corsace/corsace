@@ -773,6 +773,10 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             invCollector?.stop();
             refCollector?.stop();
 
+            // If forfeit, save from the state because forfeit is assigneed from the ref endpoint, and the above logic will remove the winner because state management moment :D
+            if (state.matchups[matchup.ID] && state.matchups[matchup.ID].matchup.forfeit)
+                matchup = state.matchups[matchup.ID].matchup;
+
             matchup.baseURL = null;
             if (matchup.stage!.stageType !== StageType.Qualifiers) {
                 if (matchup.team1Score > matchup.team2Score)
