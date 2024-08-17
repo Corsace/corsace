@@ -212,16 +212,8 @@ matchupRouter.$get("/:matchupID", async (ctx) => {
         .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("team1.captain", "captain1")
         .leftJoinAndSelect("team2.captain", "captain2")
-        .leftJoinAndSelect("captain1.userStatistics", "team1CaptainStats")
-        .leftJoinAndSelect("team1CaptainStats.modeDivision", "team1CaptainMode")
-        .leftJoinAndSelect("captain2.userStatistics", "team2CaptainStats")
-        .leftJoinAndSelect("team2CaptainStats.modeDivision", "team2CaptainMode")
         .leftJoinAndSelect("team1.members", "members1")
         .leftJoinAndSelect("team2.members", "members2")
-        .leftJoinAndSelect("members1.userStatistics", "team1MembersStats")
-        .leftJoinAndSelect("team1MembersStats.modeDivision", "team1MembersMode")
-        .leftJoinAndSelect("members2.userStatistics", "team2MembersStats")
-        .leftJoinAndSelect("team2MembersStats.modeDivision", "team3MembersMode")
         .leftJoinAndSelect("matchup.winner", "winner")
         .leftJoinAndSelect("matchup.sets", "set")
         .leftJoinAndSelect("set.first", "first")
@@ -426,14 +418,14 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
                 const dbMatchup = idToMatchup.get(matchup.ID)!;
                 if (matchup.loserNextMatchupID) {
                     const loserNextMatchup = idToMatchup.get(matchup.loserNextMatchupID);
-                    if (!loserNextMatchup) 
+                    if (!loserNextMatchup)
                         throw new Error(`Matchup with ID ${matchup.loserNextMatchupID} not found`);
                     dbMatchup.loserNextMatchup = loserNextMatchup;
                 }
 
                 if (matchup.winnerNextMatchupID) {
                     const winnerNextMatchup = idToMatchup.get(matchup.winnerNextMatchupID);
-                    if (!winnerNextMatchup) 
+                    if (!winnerNextMatchup)
                         throw new Error(`Matchup with ID ${matchup.winnerNextMatchupID} not found`);
                     dbMatchup.winnerNextMatchup = winnerNextMatchup;
                 }
@@ -465,7 +457,7 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
                         if (winnerPrevMatchup.team2)
                             winnerPrevMatchupTeams.push(winnerPrevMatchup.team2);
                     }
-                    
+
                     const teamArr: Team[][] = [currMatchTeams, loserPrevMatchupTeams, winnerPrevMatchupTeams];
 
                     dbMatchup.potentials = [];

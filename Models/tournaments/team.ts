@@ -7,6 +7,7 @@ import { Team as TeamInterface, TeamMember } from "../../Interfaces/team";
 import { BaseTournament } from "../../Interfaces/tournament";
 import { MatchupSet } from "./matchupSet";
 import { ModeDivisionType } from "../../Interfaces/modes";
+import { UserStatistics } from "../userStatistics";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -94,7 +95,6 @@ export class Team extends BaseEntity {
             console.warn("Error in calculating team stats:\n", e);
             return false;
         }
-            
     }
 
     public async teamInterface (queryQualifier = false, queryTournaments = false): Promise<TeamInterface> {
@@ -128,19 +128,19 @@ export class Team extends BaseEntity {
                 username: this.captain.osu.username,
                 osuID: this.captain.osu.userID,
                 country: this.captain.country,
-                rank: this.captain.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
+                rank: (await UserStatistics.findOne({ where: { user: { ID: this.captain.ID }, modeDivision: { ID: 1 } } }))?.rank ?? 0,
                 isCaptain: true,
             },
-            members: this.members.map<TeamMember>(member => {
+            members: await Promise.all(this.members.map<Promise<TeamMember>>(async member => {
                 return {
                     ID: member.ID,
                     username: member.osu.username,
                     osuID: member.osu.userID,
                     country: member.country,
-                    rank: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
+                    rank: (await UserStatistics.findOne({ where: { user: { ID: member.ID }, modeDivision: { ID: 1 } } }))?.rank ?? 0,
                     isCaptain: member.ID === this.captain.ID,
                 };
-            }),
+            })),
             pp: this.pp,
             BWS: this.BWS,
             rank: this.rank,
