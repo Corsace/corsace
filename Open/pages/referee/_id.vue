@@ -1496,6 +1496,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
         &__content {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
 
             grid-column: 1 / 3;
