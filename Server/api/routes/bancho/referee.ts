@@ -647,6 +647,7 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
 
     await matchup.save();
 
+    // assignTeamsToNextMatchup is run in bancho's runMatchup if there is a lobby running, so it's only run here if there's no lobby at all
     if (state.matchups[ctx.state.matchupID]) {
         state.matchups[ctx.state.matchupID].matchup = matchup;
         await state.matchups[ctx.state.matchupID].lobby.closeLobby();
