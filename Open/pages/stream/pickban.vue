@@ -224,13 +224,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Mixins, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import CentrifugeMixin from "../../../Assets/mixins/centrifuge";
 import { MapStatus } from "../../../Interfaces/matchup";
 
 import { Matchup as MatchupInterface, MatchupMap } from "../../../Interfaces/matchup";
 import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
-import { Centrifuge, ExtendedPublicationContext, Subscription } from "centrifuge";
+import { ExtendedPublicationContext } from "centrifuge";
 
 import BeatmapCard from "../../../Assets/components/open/PickBan/BeatmapCard.vue";
 
@@ -242,13 +243,10 @@ const streamModule = namespace("stream");
     },
     layout: "stream",
 })
-export default class Pickban extends Vue {
+export default class Pickban extends Mixins(CentrifugeMixin) {
 
     @streamModule.State key!: string | null;
     @streamModule.State tournamentID!: number | null;
-
-    centrifuge: Centrifuge | null = null;
-    matchupChannel: Subscription | null = null;
 
     matchup: MatchupInterface | null = null;
     loading = false;
@@ -372,69 +370,19 @@ export default class Pickban extends Vue {
         if (typeof matchupID !== "string")
             return;
 
-        const { data: centrifugoURLData } = await this.$axios.get<{ url: string }>("/api/centrifugo/publicUrl");
-        if (!centrifugoURLData.success) {
-            alert("Couldn't get centrifugo URL");
-            console.log(centrifugoURLData.error);
-            return;
-        }
-        const centrifuge = new Centrifuge(`${centrifugoURLData.url}/connection/websocket`, {});
-
-        centrifuge.on("connecting", (ctx) => {
-            console.log("connecting", ctx);
-        });
-
-        centrifuge.on("error", (err) => {
-            console.error("error", err);
-        });
-
-        centrifuge.on("connected", (ctx) => {
-            console.log("connected", ctx);
-        });
-
-        centrifuge.connect();
-        this.centrifuge = centrifuge;
-
         const { data } = await this.$axios.get<{ matchup: MatchupInterface }>(`/api/matchup/${matchupID}`);
         if (!data.success)
             return;
 
         this.matchup = data.matchup;
 
-        this.matchupChannel = this.centrifuge.newSubscription(`matchup:${matchupID}`);
-
-        this.matchupChannel.on("error", (err) => {
-            alert("Error in console for matchup channel subscription");
-            console.error("error", err);
-        });
-
-        this.matchupChannel.on("unsubscribed", (ctx) => {
-            if (ctx.code === 102)
-                alert("Couldn't find matchup channel");
-            else if (ctx.code === 103)
-                alert("Unauthorized to subscribe to matchup channel");
-            else if (ctx.code !== 0) {
-                alert("Error in console for matchup channel subscription");
-                console.error("unsubscribed", ctx);
-            } else
-                console.log("unsubscribed", ctx);
-        });
-
-        this.matchupChannel.on("subscribed", (ctx) => {
-            console.log("subscribed", ctx);
-        });
-
-        /* eslint-disable-next-line @typescript-eslint/unbound-method */
-        this.matchupChannel.on("publication", this.handleData);
-
-        this.matchupChannel.subscribe();
-
         this.loading = false;
+
+        await this.initCentrifuge(`matchup:${matchupID}`);
     }
 
     handleData (ctx: ExtendedPublicationContext) {
-        console.log(ctx.data);
-        console.log(ctx.channel);
+        console.log("publication", ctx.channel, ctx.data);
 
         if (!ctx.channel.startsWith("matchup:"))
             return;
