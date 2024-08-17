@@ -16,7 +16,6 @@ import { validateTournament, hasRoles, validateStageOrRound } from "../../middle
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
 import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
-import { Round } from "../../../Models/tournaments/round";
 import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
 import { MatchupSet } from "../../../Models/tournaments/matchupSet";

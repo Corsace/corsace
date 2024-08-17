@@ -2,8 +2,6 @@ import { CorsaceRouter } from "../../../corsaceRouter";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { MapStatus, MatchupList, Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
 import { Matchup, MatchupWithRelationIDs } from "../../../../Models/tournaments/matchup";
-import { Stage } from "../../../../Models/tournaments/stage";
-import { Round } from "../../../../Models/tournaments/round";
 import { discordClient } from "../../../discord";
 import { isLoggedInDiscord } from "../../../middleware";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
@@ -12,11 +10,6 @@ import dbMatchupToInterface from "../../../functions/tournaments/matchups/dbMatc
 import { TournamentAuthenticatedState } from "koa";
 import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
 import { Team } from "../../../../Models/tournaments/team";
-import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
-import { User } from "../../../../Models/user";
-import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
-import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
-import dbMappoolToInterface from "../../../functions/tournaments/mappool/dbMappoolToInterface";
 
 const refereeMatchupsRouter  = new CorsaceRouter<TournamentAuthenticatedState>();
 
