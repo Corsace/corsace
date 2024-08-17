@@ -1,10 +1,9 @@
 import { CorsaceRouter } from "../../../corsaceRouter";
-import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
+import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { MapStatus, Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Stage } from "../../../../Models/tournaments/stage";
 import { Round } from "../../../../Models/tournaments/round";
-import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
 import { isLoggedInDiscord } from "../../../middleware";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
