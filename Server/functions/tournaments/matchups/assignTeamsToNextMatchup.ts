@@ -12,25 +12,15 @@ async function sendDiscordError (error: string) {
         await channel.send(error);
 }
 
-async function getMatchupWithTeams (manager: EntityManager, matchupID: number) {
-    return manager
-        .createQueryBuilder(Matchup, "matchup")
-        .innerJoinAndSelect("matchup.team1", "team1")
-        .innerJoinAndSelect("matchup.team2", "team2")
-        .innerJoinAndSelect("matchup.winner", "winner")
-        .where("matchup.ID = :matchupID", { matchupID })
-        .getOne();
-}
-
 async function assignTeamToNextPotentials (manager: EntityManager, team: Team, matchup2ID: number) {
     const matchup2NextMatchups = await manager
         .createQueryBuilder(Matchup, "matchup")
         .leftJoinAndSelect("matchup.potentials", "potential")
         .leftJoinAndSelect("potential.team1", "team1")
         .leftJoinAndSelect("potential.team2", "team2")
-        .innerJoin("matchup.loserPreviousMatchups", "loserPreviousMatchup")
-        .innerJoin("matchup.winnerPreviousMatchups", "winnerPreviousMatchup")
-        .where("potential.invalid = 0 AND (loserPreviousMatchup.ID = :matchupID OR winnerPreviousMatchup.ID = :matchupID)", { matchupID: matchup2ID })
+        .leftJoin("matchup.loserPreviousMatchups", "loserPreviousMatchup")
+        .leftJoin("matchup.winnerPreviousMatchups", "winnerPreviousMatchup")
+        .where("loserPreviousMatchup.ID = :matchupID OR winnerPreviousMatchup.ID = :matchupID", { matchupID: matchup2ID })
         .getMany();
     for (const matchup3 of matchup2NextMatchups) {
         if (!matchup3.potentials)
@@ -67,7 +57,13 @@ async function invalidatePotentials (manager: EntityManager, team: Team, matchup
 }
 
 async function assignTeam (manager: EntityManager, team: Team, matchup2: Matchup) {
-    const matchup2WithTeams = await getMatchupWithTeams(manager, matchup2.ID);
+    const matchup2WithTeams = await manager
+        .createQueryBuilder(Matchup, "matchup")
+        .leftJoinAndSelect("matchup.team1", "team1")
+        .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("matchup.winner", "winner")
+        .where("matchup.ID = :matchupID", { matchupID: matchup2.ID })
+        .getOne();
     if (!matchup2WithTeams)
         throw new Error(`Failed to find matchup ID \`${matchup2.ID}\` to assign teams to their next matchup`);
     if (matchup2WithTeams.team1 && matchup2WithTeams.team2)
@@ -93,7 +89,13 @@ async function assignTeam (manager: EntityManager, team: Team, matchup2: Matchup
 // Variables are named based on this example
 export default async function assignTeamsToNextMatchup (matchup1ID: number) {
     await ormConfig.transaction(async (manager) => {
-        const matchup1 = await getMatchupWithTeams(manager, matchup1ID); // Match 1 in example above
+        const matchup1 = await manager
+            .createQueryBuilder(Matchup, "matchup")
+            .innerJoinAndSelect("matchup.team1", "team1")
+            .innerJoinAndSelect("matchup.team2", "team2")
+            .innerJoinAndSelect("matchup.winner", "winner")
+            .where("matchup.ID = :matchupID", { matchupID: matchup1ID })
+            .getOne(); // Match 1 in example above
         if (!matchup1) {
             await sendDiscordError(`Failed to find matchup ID \`${matchup1ID}\` to assign teams to their next matchup`);
             return;
