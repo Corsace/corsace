@@ -13,7 +13,7 @@
                     :to="`/referee/${matchup.ID}`"
                 >
                     <div class="referee__matchups__matchup_name">
-                        ({{ matchup.matchID }} | {{ matchup.ID }}) {{ matchup.teams?.map(team => team.name).join(" vs ") || (matchup.team1 || matchup.team2) ? `${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "TBD" }}
+                        ({{ matchup.matchID }} | {{ matchup.ID }}) {{ matchup.teams?.map(team => team.name).join(" vs ") }}
                     </div>
                     <div class="referee__matchups__matchup_date">
                         {{ formatDate(matchup.date) }} {{ formatTime(matchup.date) }}
@@ -38,7 +38,7 @@ import { namespace } from "vuex-class";
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
-import { Matchup } from "../../../Interfaces/matchup";
+import { MatchupList } from "../../../Interfaces/matchup";
 import { Tournament } from "../../../Interfaces/tournament";
 
 const openModule = namespace("open");
@@ -74,11 +74,11 @@ export default class Referee extends Vue {
 
     @openModule.State tournament!: Tournament | null;
 
-    matchupList: Matchup[] = [];
+    matchupList: MatchupList[] = [];
     moreMatchups = true;
 
     async mounted () {
-        const { data: matchupData } = await this.$axios.get<{ matchups: Matchup[] }>(`/api/referee/matchups/${this.tournament?.ID}`);
+        const { data: matchupData } = await this.$axios.get<{ matchups: MatchupList[] }>(`/api/referee/matchups/${this.tournament?.ID}`);
         if (!matchupData.success) {
             alert(matchupData.error);
             await this.$router.push("/");
@@ -100,7 +100,7 @@ export default class Referee extends Vue {
             error: string;
         } | {
             success: true;
-            matchups: Matchup[];
+            matchups: MatchupList[];
         }>(`/api/referee/matchups/${this.tournament?.ID}?skip=${this.matchupList.length}`);
         if (!matchupData.success) {
             alert(matchupData.error);

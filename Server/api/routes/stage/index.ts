@@ -9,7 +9,7 @@ import { unallowedToPlay } from "../../../../Interfaces/tournament";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
-import { Matchup } from "../../../../Models/tournaments/matchup";
+import { Matchup, MatchupWithRelationIDs } from "../../../../Models/tournaments/matchup";
 import { Team } from "../../../../Models/tournaments/team";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { discordClient } from "../../../discord";
@@ -27,7 +27,7 @@ stageRouter.$use("/:stageID", validateStageOrRound);
 stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) => {
     const stage = ctx.state.stage;
 
-    let matchups: (Omit<Matchup, "team1" | "team2" | "teams" | "commentators"> & { team1: number; team2: number; teams: number[]; commentators: number[] })[] = await Matchup
+    let matchups: MatchupWithRelationIDs[] = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
         .leftJoinAndSelect("matchup.referee", "referee")
@@ -42,11 +42,10 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
 
     const teamIds = new Set<number>();
     for (const matchup of matchups) {
-        teamIds.add(matchup.team1);
-        teamIds.add(matchup.team2);
-        for (const team of matchup.teams) {
+        if (matchup.team1) teamIds.add(matchup.team1);
+        if (matchup.team2) teamIds.add(matchup.team2);
+        for (const team of matchup.teams)
             teamIds.add(team);
-        }
     }
 
     const commentatorIds = new Set<number>();
