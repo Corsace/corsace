@@ -85,9 +85,9 @@ export default async function dbMatchupToInterface (dbMatchup: MatchupWithRelati
         .where(`mappool.${roundOrStage instanceof Round ? "round" : "stage"}ID = :ID`, { ID: roundOrStage?.ID })
         .getMany();
     
-    const team1 = dbMatchup.team1 && teams.find(t => t.ID === dbMatchup.team1) ? await teams.find(t => t.ID === dbMatchup.team1)!.teamInterface() : undefined;
-    const team2 = dbMatchup.team2 && teams.find(t => t.ID === dbMatchup.team2) ? await teams.find(t => t.ID === dbMatchup.team2)!.teamInterface() : undefined;
-    const winner = dbMatchup.winner && teams.find(t => t.ID === dbMatchup.winner) ? await teams.find(t => t.ID === dbMatchup.winner)!.teamInterface() : undefined;
+    const team1 = dbMatchup.team1 && teams.find(t => t.ID === dbMatchup.team1) ? await teams.find(t => t.ID === dbMatchup.team1)!.teamInterface(false, false, true) : undefined;
+    const team2 = dbMatchup.team2 && teams.find(t => t.ID === dbMatchup.team2) ? await teams.find(t => t.ID === dbMatchup.team2)!.teamInterface(false, false, true) : undefined;
+    const winner = dbMatchup.winner && teams.find(t => t.ID === dbMatchup.winner) ? await teams.find(t => t.ID === dbMatchup.winner)!.teamInterface(false, false, true) : undefined;
 
     return {
         ID: dbMatchup.ID,
