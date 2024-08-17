@@ -179,7 +179,12 @@ export default class BeatmapCard extends Vue {
         background: linear-gradient(180deg, var(--bar-color) 59.7%, rgba(217, 217, 217, 0) 99%);
     }
 
-    &__state-gradient, &__state-bar {
+    #{$self}--banning &__state-gradient,
+    #{$self}--banning &__state-bar,
+    #{$self}--protecting &__state-gradient,
+    #{$self}--protecting &__state-bar,
+    #{$self}--picking &__state-gradient,
+    #{$self}--picking &__state-bar {
         animation: fade 2.5s alternate infinite;
     }
 
