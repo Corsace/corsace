@@ -103,7 +103,7 @@
                         {{ member.username.toUpperCase() }}
                     </div>
                     <div class="pickban__team1_members_member_BWS">
-                        {{ Math.round(member.BWS) }} BWS
+                        #{{ Math.round(member.rank) }}
                     </div>
                 </div>
             </div>
@@ -192,13 +192,13 @@
                         {{ member.username.toUpperCase() }}
                     </div>
                     <div class="pickban__team2_members_member_BWS">
-                        {{ Math.round(member.BWS) }} BWS
+                        #{{ Math.round(member.rank) }}
                     </div>
                 </div>
             </div>
         </div>
         <div class="pickban__picks">
-            <Beatmap
+            <BeatmapCard
                 v-for="map in maps"
                 :key="map.ID"
                 :class="['pickban__pick', `pickban__pick--order-${map.order}`]"
@@ -207,7 +207,7 @@
                 :status="map.status"
                 :winner="map.scores.length > 0 ? calculateWinner(map) : undefined"
             />
-            <Beatmap
+            <BeatmapCard
                 v-if="nextPickOrder"
                 :class="['pickban__pick', `pickban__pick--order-${maps.length + 1}`]"
                 :status="nextPickOrder.status"
@@ -232,15 +232,13 @@ import { Matchup as MatchupInterface, MatchupMap } from "../../../Interfaces/mat
 import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
 import { Centrifuge, ExtendedPublicationContext, Subscription } from "centrifuge";
 
-import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
-import BeatmapCard from "../../components/PickBan/BeatmapCard.vue";
+import BeatmapCard from "../../../Assets/components/open/PickBan/BeatmapCard.vue";
 
 const streamModule = namespace("stream");
 
 @Component({
     components: {
-        MappoolMapStats,
-        Beatmap: BeatmapCard,
+        BeatmapCard,
     },
     layout: "stream",
 })
