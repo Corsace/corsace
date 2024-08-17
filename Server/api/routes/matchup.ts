@@ -222,7 +222,7 @@ matchupRouter.$get<{ matchup: MatchupInterface }>("/:matchupID", async (ctx) => 
 
     ctx.body = {
         success: true,
-        matchup: await dbMatchupToInterface(dbMatchup),
+        matchup: await dbMatchupToInterface(dbMatchup, true, true),
     };
 });
 

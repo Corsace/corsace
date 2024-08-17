@@ -9,7 +9,7 @@ import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 
-export default async function dbMatchupToInterface (dbMatchup: MatchupWithRelationIDs): Promise<MatchupInterface> {
+export default async function dbMatchupToInterface (dbMatchup: MatchupWithRelationIDs, getMatchupMapBeatmaps = false, getMatchupMapScores = false): Promise<MatchupInterface> {
     const teamIds = new Set<number>();
     if (dbMatchup.team1) teamIds.add(dbMatchup.team1);
     if (dbMatchup.team2) teamIds.add(dbMatchup.team2);
@@ -39,10 +39,21 @@ export default async function dbMatchupToInterface (dbMatchup: MatchupWithRelati
         .getMany() as any;
 
     for (const set of sets) {
-        const matchupMaps = await MatchupMap
+        const matchupMapQ = MatchupMap
             .createQueryBuilder("matchupMap")
             .leftJoinAndSelect("matchupMap.map", "map")
-            .leftJoinAndSelect("map.slot", "slot")
+            .leftJoinAndSelect("map.slot", "slot");
+        if (getMatchupMapBeatmaps) {
+            matchupMapQ
+                .leftJoinAndSelect("map.beatmap", "beatmap")
+                .leftJoinAndSelect("beatmap.beatmapset", "beatmapset");
+        }
+        if (getMatchupMapScores) {
+            matchupMapQ
+                .leftJoinAndSelect("matchupMap.scores", "scores")
+                .leftJoinAndSelect("scores.user", "user");
+        }
+        const matchupMaps = await matchupMapQ
             .where("matchupMap.setID = :ID", { ID: set.ID })
             .getMany();
         set.maps = matchupMaps;
