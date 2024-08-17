@@ -378,7 +378,7 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
 
         this.loading = false;
 
-        await this.initCentrifuge(`matchup:${matchupID}`);
+        await this.initCentrifuge(`matchup:${this.matchup.ID}`);
     }
 
     handleData (ctx: ExtendedPublicationContext) {
