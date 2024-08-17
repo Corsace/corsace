@@ -461,6 +461,38 @@ export default class Pickban extends Vue {
             return;
         }
 
+        if (ctx.data.type === "beatmap") {
+            const beatmapData = ctx.data;
+            const mappool = this.matchup.stage?.mappool?.find(m => m.slots.flatMap(s => s.maps).find(map => map.beatmap?.ID === beatmapData.beatmapID));
+            if (!mappool)
+                return;
+            const slot = mappool.slots.find(s => s.maps.find(map => map.beatmap?.ID === beatmapData.beatmapID));
+            if (!slot)
+                return;
+            const mappoolMap = slot.maps.find(map => map.beatmap?.ID === beatmapData.beatmapID);
+            if (!mappoolMap)
+                return;
+            mappoolMap.slot = slot; // mappool maps don't contain slot as they are children of the slot object
+
+            const lastSetMaps = this.matchup.sets?.[this.matchup.sets?.length - 1].maps;
+            if (!lastSetMaps)
+                return;
+
+            // Current last map is still an unconfirmed pick
+            if (lastSetMaps[lastSetMaps.length - 1].ID === -1) {
+                this.matchup.sets![this.matchup.sets!.length - 1].maps![lastSetMaps.length - 1].map = mappoolMap;
+                return;
+            }
+            
+            this.matchup.sets![this.matchup.sets!.length - 1].maps?.push({
+                ID: -1,
+                order: lastSetMaps.length + 1,
+                map: mappoolMap,
+                status: MapStatus.Picked,
+                scores: [],
+            });
+        }
+
         if (ctx.data.type === "selectMap") {
             this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.push(ctx.data.map);
         }
