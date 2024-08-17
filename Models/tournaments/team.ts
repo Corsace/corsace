@@ -7,6 +7,7 @@ import { Team as TeamInterface, TeamMember } from "../../Interfaces/team";
 import { BaseTournament } from "../../Interfaces/tournament";
 import { MatchupSet } from "./matchupSet";
 import { ModeDivisionType } from "../../Interfaces/modes";
+import { UserStatistics } from "../userStatistics";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -96,7 +97,7 @@ export class Team extends BaseEntity {
         }
     }
 
-    public async teamInterface (queryQualifier = false, queryTournaments = false): Promise<TeamInterface> {
+    public async teamInterface (queryQualifier = false, queryTournaments = false, queryMemberRanks = false): Promise<TeamInterface> {
         const qualifier = queryQualifier ? await Matchup
             .createQueryBuilder("matchup")
             .innerJoin("matchup.teams", "team")
@@ -127,19 +128,29 @@ export class Team extends BaseEntity {
                 username: this.captain.osu.username,
                 osuID: this.captain.osu.userID,
                 country: this.captain.country,
-                rank: this.captain.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
+                rank: this.captain.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? queryMemberRanks ? (await UserStatistics
+                    .createQueryBuilder("userStatistics")
+                    .where("userStatistics.userID = :userID", { userID: this.captain.ID })
+                    .andWhere("userStatistics.modeDivisionID = 1")
+                    .select("userStatistics.rank")
+                    .getOne())?.rank ?? 0 : 0,
                 isCaptain: true,
             },
-            members: this.members.map<TeamMember>(member => {
+            members: await Promise.all(this.members.map<Promise<TeamMember>>(async member => {
                 return {
                     ID: member.ID,
                     username: member.osu.username,
                     osuID: member.osu.userID,
                     country: member.country,
-                    rank: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? 0,
+                    rank: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.rank ?? queryMemberRanks ? (await UserStatistics
+                        .createQueryBuilder("userStatistics")
+                        .where("userStatistics.userID = :userID", { userID: member.ID })
+                        .andWhere("userStatistics.modeDivisionID = 1")
+                        .select("userStatistics.rank")
+                        .getOne())?.rank ?? 0 : 0,
                     isCaptain: member.ID === this.captain.ID,
                 };
-            }),
+            })),
             pp: this.pp,
             BWS: this.BWS,
             rank: this.rank,
