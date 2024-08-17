@@ -358,13 +358,10 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
 
         if (map.scores) {
             for (const score of map.scores) {
-                if (score.teamID === this.matchup?.team1?.ID) {
+                if (score.teamID === this.matchup?.team1?.ID)
                     team1Score += score.score;
-                }
-
-                if (score.teamID === this.matchup?.team2?.ID) {
+                if (score.teamID === this.matchup?.team2?.ID)
                     team2Score += score.score;
-                }
             }
         }
 
@@ -720,7 +717,7 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
     }
 
     &__team1 {
-        color: #5BBCFA;
+        color: #F24141;
 
         &_avatar {
             top: 259px;
@@ -748,7 +745,7 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
     }
 
     &__team2 {
-        color: #F24141;
+        color: #5BBCFA;
 
         &_avatar {
             top: 695px;
