@@ -56,28 +56,28 @@ async function invalidatePotentials (manager: EntityManager, team: Team, matchup
     }
 }
 
-async function assignTeam (manager: EntityManager, team: Team, matchup2: Matchup) {
-    const matchup2WithTeams = await manager
+async function assignTeam (manager: EntityManager, team: Team, matchup2ID: number) {
+    const matchup2 = await manager
         .createQueryBuilder(Matchup, "matchup")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("matchup.winner", "winner")
-        .where("matchup.ID = :matchupID", { matchupID: matchup2.ID })
+        .where("matchup.ID = :matchupID", { matchupID: matchup2ID })
         .getOne();
-    if (!matchup2WithTeams)
-        throw new Error(`Failed to find matchup ID \`${matchup2.ID}\` to assign teams to their next matchup`);
-    if (matchup2WithTeams.team1 && matchup2WithTeams.team2)
-        throw new Error(`Matchup ID \`${matchup2.ID}\` already has 2 teams assigned to it`);
-    if (matchup2WithTeams.winner)
-        throw new Error(`Matchup ID \`${matchup2.ID}\` already has a winner assigned to it`);
+    if (!matchup2)
+        throw new Error(`Failed to find matchup ID \`${matchup2ID}\` to assign teams to their next matchup`);
+    if (matchup2.team1 && matchup2.team2)
+        throw new Error(`Matchup ID \`${matchup2ID}\` already has 2 teams assigned to it`);
+    if (matchup2.winner)
+        throw new Error(`Matchup ID \`${matchup2ID}\` already has a winner assigned to it`);
 
-    if (!matchup2WithTeams.team1)
-        matchup2WithTeams.team1 = team;
+    if (!matchup2.team1)
+        matchup2.team1 = team;
     else
-        matchup2WithTeams.team2 = team;
-    await manager.save(matchup2WithTeams);
-    await invalidatePotentials(manager, team, matchup2.ID); // Invalidate any potentials that don't contain the team now that the team is definitely playing in this matchup
-    await assignTeamToNextPotentials(manager, team, matchup2.ID); // Find any matchups that this NEW matchup is a previous matchup for to assign this team to some of the potentials that may exist for them (Match 3 in example below)
+        matchup2.team2 = team;
+    await manager.save(matchup2);
+    await invalidatePotentials(manager, team, matchup2ID); // Invalidate any potentials that don't contain the team now that the team is definitely playing in this matchup
+    await assignTeamToNextPotentials(manager, team, matchup2ID); // Find any matchups that this NEW matchup is a previous matchup for to assign this team to some of the potentials that may exist for them (Match 3 in example below)
 }
 
 /**
@@ -125,9 +125,9 @@ export default async function assignTeamsToNextMatchup (matchup1ID: number) {
         try {
             for (const matchup2 of matchup1NextMatchups) { // Match 2s in example above
                 if (matchup2.loserPreviousMatchups?.some(m => m.ID === matchup1.ID))
-                    await assignTeam(manager, loser, matchup2);
+                    await assignTeam(manager, loser, matchup2.ID);
                 if (matchup2.winnerPreviousMatchups?.some(m => m.ID === matchup1.ID))
-                    await assignTeam(manager, winner, matchup2);
+                    await assignTeam(manager, winner, matchup2.ID);
             }
         } catch (error) {
             await sendDiscordError(`\`assignTeamsToNextMatchup error\`\nFailed to assign teams to their next matchups from matchup ID \`${matchup1ID}\`\n\`\`\`${error}\`\`\``);
