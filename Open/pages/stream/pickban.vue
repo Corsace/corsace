@@ -55,7 +55,7 @@
                 <div class="pickban__team1_score">
                     WINS
                     <svg
-                        v-for="n in 5"
+                        v-for="n in firstTo"
                         :key="n"
                         width="48"
                         height="22"
@@ -144,7 +144,7 @@
                 <div class="pickban__team2_score">
                     WINS
                     <svg
-                        v-for="n in 5"
+                        v-for="n in firstTo"
                         :key="n"
                         width="48"
                         height="22"
@@ -309,11 +309,14 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
     }
 
     get mapOrder () {
-        if (!this.matchup?.stage?.mapOrder && !this.matchup?.round?.mapOrder) {
+        if (!this.matchup?.stage?.mapOrder && !this.matchup?.round?.mapOrder)
             return [];
-        }
 
         return this.matchup.stage?.mapOrder ?? this.matchup.round?.mapOrder ?? [];
+    }
+
+    get firstTo () {
+        return this.mapOrder.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
     }
 
     get placeholderCount () {
