@@ -791,15 +791,15 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             invCollector?.stop();
             refCollector?.stop();
 
-            // If forfeit, save from the state because forfeit is assigneed from the ref endpoint, and the above logic will remove the winner because state management moment :D
+            // If forfeit, save from the state because forfeit is assigned from the ref endpoint, not the bot (and the below functionality would remove it otherwise)
             if (state.matchups[matchup.ID] && state.matchups[matchup.ID].matchup.forfeit)
                 matchup = state.matchups[matchup.ID].matchup;
 
             matchup.baseURL = null;
             if (matchup.stage!.stageType !== StageType.Qualifiers) {
-                if (matchup.team1Score > matchup.team2Score)
+                if (!matchup.forfeit && matchup.team1Score > matchup.team2Score)
                     matchup.winner = matchup.team1;
-                else if (matchup.team2Score > matchup.team1Score)
+                else if (!matchup.forfeit && matchup.team2Score > matchup.team1Score)
                     matchup.winner = matchup.team2;
                 await matchup.save();
 
@@ -809,7 +809,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
             await publish(centrifugoChannel, { type: "closed" });
 
-            // Let it run one more time before clearing
+            // Let messageSaver run one more time before clearing
             await pause(15 * 1000);
             clearInterval(messageSaver);
 
