@@ -405,8 +405,21 @@ export default class Pickban extends Mixins(CentrifugeMixin) {
                 const order = ctx.data.map.order;
                 const index = this.matchup.sets?.[this.matchup.sets?.length - 1].maps?.findIndex(map => map.order === order);
 
-                if (index && index > -1)
+                if (index && index > -1) {
+                    const mappoolMapData = ctx.data.map.map;
+                    const mappool = this.matchup.stage?.mappool?.find(m => m.slots.flatMap(s => s.maps).find(map => map.ID === mappoolMapData.ID));
+                    if (mappool) {
+                        const slot = mappool.slots.find(s => s.maps.find(map => map.ID === mappoolMapData.ID));
+                        if (slot) {
+                            const mappoolMap = slot.maps.find(map => map.ID === mappoolMapData.ID);
+                            if (mappoolMap) {
+                                mappoolMap.slot = slot; // mappool maps don't contain slot as they are children of the slot object
+                                ctx.data.map.map = mappoolMap;
+                            }
+                        }
+                    }
                     this.matchup.sets![this.matchup.sets!.length - 1].maps!.splice(index, 1, ctx.data.map);
+                }
 
                 break;
             }
