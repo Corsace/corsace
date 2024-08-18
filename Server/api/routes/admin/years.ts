@@ -5,7 +5,6 @@ import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
 import { CategoryType } from "../../../../Interfaces/category";
 import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
-import { cache } from "../../../../Server/cache";
 import { CorsaceMiddleware, CorsaceRouter } from "../../../corsaceRouter";
 import { MCAInfo } from "../../../../Interfaces/mca";
 
@@ -81,10 +80,6 @@ adminYearsRouter.$post<{ mca: MCAInfo }>("/", validate, async (ctx) => {
         ]);
     }
 
-    cache.del("/api/mcaInfo/front?year=" + data.year);
-    cache.del("/api/mca?year=" + data.year);
-    cache.del("/api/staff");
-
     ctx.body = {
         success: true,
         mca: mca.getInfo(),
@@ -101,10 +96,6 @@ adminYearsRouter.$put<{ mca: MCAInfo }>("/:year", validate, async (ctx) => {
         },
     });
     mca = await MCA.fillAndSave(data, mca);
-
-    cache.del("/api/mcaInfo/front?year=" + data.year);
-    cache.del("/api/mca?year=" + data.year);
-    cache.del("/api/staff");
 
     ctx.body = {
         success: true,
