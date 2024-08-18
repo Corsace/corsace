@@ -30,11 +30,21 @@ async function assignTeamToNextPotentials (manager: EntityManager, team: Team, m
             throw new Error(`Team ID \`${team.ID}\` is already assigned to some potentials for matchup ID \`${matchup3.ID}\``);
         
         // Only concerned with half of the potentials that don't have both teams assigned, and don't have the opponent team assigned
+        const teamIDsSeen = new Set<number>();
         for (const potential of matchup3.potentials.filter(p => (!p.team1 || !p.team2) && (!opponentTeam || (p.team1?.ID !== opponentTeam?.ID && p.team2?.ID !== opponentTeam?.ID))).slice(0, Math.ceil(matchup3.potentials.length / 2))) {
+            if (teamIDsSeen.has(potential.team1?.ID ?? -1) || teamIDsSeen.has(potential.team2?.ID ?? -1))
+                continue;
+
+            if (potential.team1)
+                teamIDsSeen.add(potential.team1.ID);
+            if (potential.team2)
+                teamIDsSeen.add(potential.team2.ID);
+
             if (!potential.team1)
                 potential.team1 = team;
             else
                 potential.team2 = team;
+
             await manager.save(potential);
         }
     }
