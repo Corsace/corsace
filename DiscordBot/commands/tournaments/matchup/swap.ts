@@ -32,6 +32,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const matchup = await Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.team1", "team1")
+        .leftJoinAndSelect("matchup.team2", "team2")
         .where("(matchup.ID = :matchupID OR matchup.matchID = :matchupID)", { matchupID })
         .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
         .getOne();
