@@ -679,7 +679,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     get nextMapMessage () {
         // TODO: Support sets
-        const score = `${this.matchup?.team1?.name ?? "TBD"} | ${this.mapOrder.length > 1 && Number.isInteger(this.matchupSet?.team1Score) ? this.matchupSet?.team1Score : this.matchup?.team1Score} - ${this.mapOrder.length > 1 && Number.isInteger(this.matchupSet?.team2Score) ? this.matchupSet?.team2Score : this.matchup?.team2Score} | ${this.matchup?.team2?.name ?? "TBD"}`;
+        const score = `${this.matchup?.team1?.name ?? "TBD"} | ${Number.isInteger(this.matchupSet?.team1Score) ? this.matchupSet?.team1Score : this.matchup?.team1Score} - ${Number.isInteger(this.matchupSet?.team2Score) ? this.matchupSet?.team2Score : this.matchup?.team2Score} | ${this.matchup?.team2?.name ?? "TBD"}`;
         let bestOf = `BO${this.mapOrder[(this.matchupSet?.order ?? 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1 ?? ""}`;
         if (this.mapOrder.length > 1)
             bestOf = `BO${this.mapOrder.length + 1 / 2} ${bestOf}`;
