@@ -923,7 +923,7 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
                     else if (sets[sets.length - 1].team2Score === firstTo)
                         sets[sets.length - 1].winner = team2;
 
-                    if (sets[sets.length - 1].winner) {
+                    if (sets[sets.length - 1].winner && setOrders.find(o => o.set === sets.length + 1)) {
                         const nextSet = new MatchupSet();
                         nextSet.matchup = baseMatchup;
                         nextSet.order = sets.length + 1;
