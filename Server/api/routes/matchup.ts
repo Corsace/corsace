@@ -951,8 +951,8 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
 
         baseMatchup.sets = sets;
         if (roundOrStage instanceof Stage && roundOrStage.stageType !== StageType.Qualifiers) {
-            baseMatchup.team1Score = sets.filter(map => map.team1Score && map.team2Score ? map.team1Score > map.team2Score : false).length;
-            baseMatchup.team2Score = sets.filter(map => map.team1Score && map.team2Score ? map.team2Score > map.team1Score : false).length;
+            baseMatchup.team1Score = sets.filter(map => map.team1Score > map.team2Score).length;
+            baseMatchup.team2Score = sets.filter(map => map.team2Score > map.team1Score).length;
             if (baseMatchup.team1Score > baseMatchup.team2Score)
                 baseMatchup.winner = team1;
             else if (baseMatchup.team2Score > baseMatchup.team1Score)
