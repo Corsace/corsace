@@ -31,6 +31,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const matchup = await Matchup
         .createQueryBuilder("matchup")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
         .where("(matchup.ID = :matchupID OR matchup.matchID = :matchupID)", { matchupID })
@@ -41,8 +43,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    if (!confirmCommand(m, `Are you sure you want to swap the teams for matchup ID \`${matchup.matchID}\`?\nTeam 1: ${matchup.team1?.name ?? "N/A"}\nTeam 2: ${matchup.team2?.name ?? "N/A"}`))
+    if (!await confirmCommand(m, `Are you sure you want to swap the teams for matchup ID \`${matchup.matchID}\`?\nTeam 1: ${matchup.team1?.name ?? "N/A"}\nTeam 2: ${matchup.team2?.name ?? "N/A"}`)) {
+        await respond(m, "Command cancelled");
         return;
+    }
 
     const temp = matchup.team1;
     matchup.team1 = matchup.team2;
