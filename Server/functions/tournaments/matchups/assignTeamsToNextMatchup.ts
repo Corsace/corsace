@@ -12,7 +12,7 @@ async function sendDiscordError (error: string) {
         await channel.send(error);
 }
 
-async function assignTeamToNextPotentials (manager: EntityManager, team: Team, matchup2ID: number) {
+async function assignTeamToNextPotentials (manager: EntityManager, team: Team, matchup2ID: number, opponentTeam: Team | null | undefined) {
     const matchup2NextMatchups = await manager
         .createQueryBuilder(Matchup, "matchup")
         .leftJoinAndSelect("matchup.potentials", "potential")
@@ -29,8 +29,8 @@ async function assignTeamToNextPotentials (manager: EntityManager, team: Team, m
         if (matchup3.potentials.some(p => p.team1?.ID === team.ID || p.team2?.ID === team.ID))
             throw new Error(`Team ID \`${team.ID}\` is already assigned to some potentials for matchup ID \`${matchup3.ID}\``);
         
-        // Only concerned with half of the potentials that don't have both teams assigned
-        for (const potential of matchup3.potentials.filter(p => !p.team1 || !p.team2).slice(0, Math.ceil(matchup3.potentials.length / 2))) {
+        // Only concerned with half of the potentials that don't have both teams assigned, and don't have the opponent team assigned
+        for (const potential of matchup3.potentials.filter(p => (!p.team1 || !p.team2) && (!opponentTeam || (p.team1?.ID !== opponentTeam?.ID && p.team2?.ID !== opponentTeam?.ID))).slice(0, Math.ceil(matchup3.potentials.length / 2))) {
             if (!potential.team1)
                 potential.team1 = team;
             else
@@ -88,7 +88,7 @@ async function assignTeam (manager: EntityManager, team: Team, matchup2ID: numbe
         matchup2.team2 = team;
     await manager.save(matchup2);
     await invalidatePotentials(manager, team, matchup2ID); // Invalidate any potentials that don't contain the team now that the team is definitely playing in this matchup
-    await assignTeamToNextPotentials(manager, team, matchup2ID); // Find any matchups that this NEW matchup is a previous matchup for to assign this team to some of the potentials that may exist for them (Match 3 in example below)
+    await assignTeamToNextPotentials(manager, team, matchup2ID, matchup2.team1?.ID === team.ID ? matchup2.team2 : matchup2.team1); // Find any matchups that this NEW matchup is a previous matchup for to assign this team to some of the potentials that may exist for them (Match 3 in example below)
 }
 
 /**
