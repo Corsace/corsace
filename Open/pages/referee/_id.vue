@@ -678,8 +678,8 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     }
 
     get nextMapMessage () {
-        // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
-        const score = `${this.matchup?.team1?.name ?? "TBD"} | ${Number.isInteger(this.matchupSet?.team1Score) ? this.matchupSet?.team1Score : this.matchup?.team1Score} - ${Number.isInteger(this.matchupSet?.team2Score) ? this.matchupSet?.team2Score : this.matchup?.team2Score} | ${this.matchup?.team2?.name ?? "TBD"}`;
+        // TODO: Support sets
+        const score = `${this.matchup?.team1?.name ?? "TBD"} | ${this.mapOrder.length > 1 && Number.isInteger(this.matchupSet?.team1Score) ? this.matchupSet?.team1Score : this.matchup?.team1Score} - ${this.mapOrder.length > 1 && Number.isInteger(this.matchupSet?.team2Score) ? this.matchupSet?.team2Score : this.matchup?.team2Score} | ${this.matchup?.team2?.name ?? "TBD"}`;
         let bestOf = `BO${this.mapOrder[(this.matchupSet?.order ?? 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1 ?? ""}`;
         if (this.mapOrder.length > 1)
             bestOf = `BO${this.mapOrder.length + 1 / 2} ${bestOf}`;
@@ -697,6 +697,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         const first = this.matchupSet?.first?.name;
         const second = this.matchup?.team1?.ID === this.matchupSet?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchupSet?.first?.ID ? this.matchup?.team1?.name : null;
     
+        // TODO: Don't hardcode no losing -> second and no winning -> first
         let winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
         let losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.name : this.matchup?.team1?.name : null;
         if (this.mapOrder.length > 1 && (this.matchupSet?.team1Score > 0 || this.matchupSet?.team2Score > 0)) {
