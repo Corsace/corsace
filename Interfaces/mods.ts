@@ -135,7 +135,6 @@ export function modsToRGB (modNum?: ModsType | null): [number, number, number] {
 
 export function contrastColourText (slotColour: string): string {
     const rgb = slotColour.match(/\d+/g);
-    console.log(rgb);
     if (!rgb) return "#FFFFFF";
 
     const r = parseInt(rgb[0]) / 255.0;
