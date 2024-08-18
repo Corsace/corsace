@@ -781,7 +781,7 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
 
     const baseMatchup = await Matchup
         .createQueryBuilder("matchup")
-        .where("matchup.ID = :ID", { ID: mpID })
+        .where("matchup.ID = :ID", { ID: matchID })
         .getOne();
     if (!baseMatchup) {
         ctx.body = {
@@ -824,8 +824,8 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
         const team2 = matchupQ.team2 ? teamQuery.find(team => team.ID === matchupQ.team2) : null;
         const teams = teamQuery.filter(team => matchupQ.teams.includes(team.ID));
 
-        const roundOrStage: Round | Stage | null = 
-            matchupQ.round ? 
+        const roundOrStage: Round | Stage | null =
+            matchupQ.round ?
                 await manager
                     .createQueryBuilder(Round, "round")
                     .innerJoin("round.matchups", "matchup")
@@ -838,7 +838,7 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
                         .innerJoin("stage.matchups", "matchup")
                         .leftJoinAndSelect("stage.mapOrder", "mapOrder")
                         .where("matchup.ID = :ID", { ID: matchupQ.ID })
-                        .getOne() : 
+                        .getOne() :
                     null;
         if (!roundOrStage) {
             ctx.body = {
@@ -847,7 +847,7 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
             };
             return;
         }
-        
+
         const mappools = await manager
             .createQueryBuilder(Mappool, "mappool")
             .innerJoinAndSelect("mappool.slots", "slots")
@@ -856,7 +856,7 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
             .leftJoinAndSelect("map.beatmapset", "beatmapset")
             .where(`mappool.${roundOrStage instanceof Round ? "round" : "stage"}ID = :ID`, { ID: roundOrStage.ID })
             .getMany();
-        
+
         const mpData = await osuClient.multi.getMatch(mpID) as Multi;
         const set = new MatchupSet();
         set.matchup = baseMatchup;
