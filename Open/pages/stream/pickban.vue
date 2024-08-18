@@ -66,8 +66,8 @@
                     >
                         <path
                             d="M 31 22 H 0 L 16 0 H 48 L 31 22 Z"
-                            :fill="(matchup.sets?.[matchup.sets?.length - 1]?.team2Score || 0) >= n ? '#F24141FF' : '#F2414100'"
-                            :stroke="(matchup.sets?.[matchup.sets?.length - 1]?.team2Score || 0) >= n ? '#F2414100' : '#F24141FF'"
+                            :fill="(matchup.sets?.[matchup.sets?.length - 1]?.team1Score || 0) >= n ? '#F24141FF' : '#F2414100'"
+                            :stroke="(matchup.sets?.[matchup.sets?.length - 1]?.team1Score || 0) >= n ? '#F2414100' : '#F24141FF'"
                         />
                     </svg>
                 </div>
@@ -155,8 +155,8 @@
                     >
                         <path
                             d="M 31 22 H 0 L 16 0 H 48 L 31 22 Z"
-                            :fill="(matchup.sets?.[matchup.sets?.length - 1]?.team1Score || 0) >= n ? '#5BBCFAFF' : '#5BBCFA00'"
-                            :stroke="(matchup.sets?.[matchup.sets?.length - 1]?.team1Score || 0) >= n ? '#5BBCFA00' : '#5BBCFAFF'"
+                            :fill="(matchup.sets?.[matchup.sets?.length - 1]?.team2Score || 0) >= n ? '#5BBCFAFF' : '#5BBCFA00'"
+                            :stroke="(matchup.sets?.[matchup.sets?.length - 1]?.team2Score || 0) >= n ? '#5BBCFA00' : '#5BBCFAFF'"
                         />
                     </svg>
                 </div>
