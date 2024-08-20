@@ -166,10 +166,10 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
         const team1 = matchupWithRelationIDs.team1 ? teamQuery.find(team => team.ID === matchupWithRelationIDs.team1) : null;
         const team2 = matchupWithRelationIDs.team2 ? teamQuery.find(team => team.ID === matchupWithRelationIDs.team2) : null;
 
+        stage.mappool = mappools;
         baseMatchup.stage = stage;
         baseMatchup.team1 = team1;
         baseMatchup.team2 = team2;
-        baseMatchup.stage.mappool = mappools;
 
         matchup = baseMatchup;
     }
