@@ -290,7 +290,8 @@ export default class ScoresView extends Vue {
             this.syncView,
             this.currentFilter,
             this.mapSort,
-            this.sortDir
+            this.sortDir,
+            this.tournament?.matchupSize ?? 4
         );
     }
 
@@ -301,7 +302,8 @@ export default class ScoresView extends Vue {
             this.syncView,
             this.currentFilter,
             this.mapSort,
-            this.sortDir
+            this.sortDir,
+            this.tournament?.matchupSize ?? 4
         );
     }
 

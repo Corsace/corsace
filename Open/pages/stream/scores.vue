@@ -220,7 +220,8 @@ export default class Scores extends Vue {
             "teams",
             "zScore",
             this.mapName ? this.filteredScores?.[0]?.mapID ?? -1 : -1,
-            "desc"
+            "desc",
+            4
         );
 
         if (this.mapName) {

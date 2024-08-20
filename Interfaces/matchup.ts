@@ -151,7 +151,8 @@ export function matchIDAlphanumericSort (a: MatchupList, b: MatchupList): number
     const aParts = a.matchID.match(regex);
     const bParts = b.matchID.match(regex);
 
-    if (aParts === null || bParts === null) return 0;
+    if (aParts === null || bParts === null)
+        return 0;
 
     for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
         const aPart = aParts[i] || "";
@@ -163,9 +164,8 @@ export function matchIDAlphanumericSort (a: MatchupList, b: MatchupList): number
         if (aIsNumber && bIsNumber) {
             const comparison = Number(aPart) - Number(bPart);
             if (comparison !== 0) return comparison;
-        } else {
+        } else
             if (aPart !== bPart) return aPart.localeCompare(bPart);
-        }
     }
 
     return 0;
@@ -177,9 +177,10 @@ export function computeScoreViews (
     syncView: "players" | "teams",
     currentFilter: scoreSortType,
     mapSort: number,
-    sortDir: "asc" | "desc"
+    sortDir: "asc" | "desc",
+    matchupSize: number
 ): MatchupScoreView[] {
-    if (!scores)
+    if (!scores || scores.length === 0)
         return [];
 
     const scoreViews: MatchupScoreView[] = [];
@@ -198,12 +199,28 @@ export function computeScoreViews (
     // Create score objects for each player
     for (const idName of idNames) {
         const accessedScores = scoresByAccessorID.get(idName.id)!;
-        const nonZeroScores = accessedScores.filter(score => score.score !== 0);
+
+        // For any maps played more than once, only save the average of the scores
+        const uniqueScoring = new Map<number, number>();
+        accessedScores.forEach(score => {
+            const mapScore = uniqueScoring.get(score.mapID) ?? 0;
+            uniqueScoring.set(score.mapID, mapScore + score.score);
+        });
+        const uniqueMapScores = accessedScores.map(score => {
+            const mapScore = uniqueScoring.get(score.mapID)!;
+            const scoreCount = accessedScores.filter(s => s.mapID === score.mapID).length || 1;
+            return {
+                ...score,
+                score: Math.round(mapScore / (syncView === "players" ? scoreCount : Math.floor((scoreCount - 1) / matchupSize) + 1)),
+            };
+        }).filter((v, i, a) => a.findIndex(t => (t.mapID === v.mapID)) === i);
+
+        const nonZeroScores = uniqueMapScores.filter(score => score.score !== 0);
         if (nonZeroScores.length === 0)
             continue;
 
         const filterValues: MatchupScoreFilterValues = {
-            score: accessedScores.reduce((a, b) => a + b.score, 0),
+            score: uniqueMapScores.reduce((a, b) => a + b.score, 0),
             average: Math.round(nonZeroScores.reduce((a, b) => a + b.score, 0) / (nonZeroScores.length || 1)),
             relMax: -100,
             percentMax: -100,
@@ -218,7 +235,7 @@ export function computeScoreViews (
             name: idName.name,
             avatar: idName.avatar,
             scores: mapNameList.map(map => {
-                const mapScores = accessedScores.filter(score => score.mapID === map.mapID);
+                const mapScores = uniqueMapScores.filter(score => score.mapID === map.mapID);
                 const score = mapScores.reduce((a, b) => a + b.score, 0);
                 const avgScore = Math.round(score / (mapScores.length || 1));
 
@@ -254,7 +271,7 @@ export function computeScoreViews (
         scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
         if (syncView === "players") {
-            const team = accessedScores.find(s => s.userID === idName.id);
+            const team = uniqueMapScores.find(s => s.userID === idName.id);
             if (team) {
                 scoreView.team = team.teamName;
                 scoreView.teamID = team.teamID;
