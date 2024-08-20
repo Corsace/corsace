@@ -219,7 +219,7 @@ export default class BeatmapCard extends Vue {
 
         display: flex;
         flex-direction: column;
-        justify-content: end;
+        justify-content: flex-end;
 
         &--red {
             color: #F24141;
