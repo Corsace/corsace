@@ -59,22 +59,18 @@ export default async function dbMatchupToInterface (dbMatchup: MatchupWithRelati
         set.maps = matchupMaps;
     }
 
-    const roundOrStage: Round | Stage | null = 
-        dbMatchup.round ? 
-            await Round
-                .createQueryBuilder("round")
-                .innerJoin("round.matchups", "matchup")
-                .leftJoinAndSelect("round.mapOrder", "mapOrder")
-                .where("matchup.ID = :ID", { ID: dbMatchup.ID })
-                .getOne() :
-            dbMatchup.stage ?
-                await Stage
-                    .createQueryBuilder("stage")
-                    .innerJoin("stage.matchups", "matchup")
-                    .leftJoinAndSelect("stage.mapOrder", "mapOrder")
-                    .where("matchup.ID = :ID", { ID: dbMatchup.ID })
-                    .getOne() : 
-                null;
+    const roundOrStage: Round | Stage | null = dbMatchup.round ? 
+        await Round
+            .createQueryBuilder("round")
+            .leftJoinAndSelect("round.mapOrder", "mapOrder")
+            .where("round.ID = :ID", { ID: dbMatchup.round })
+            .getOne() :
+        dbMatchup.stage ?
+            await Stage
+                .createQueryBuilder("stage")
+                .leftJoinAndSelect("stage.mapOrder", "mapOrder")
+                .where("stage.ID = :ID", { ID: dbMatchup.stage })
+                .getOne() : null;
     
     const mappools = await Mappool
         .createQueryBuilder("mappool")
