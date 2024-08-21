@@ -65,7 +65,17 @@ banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
         })
         .getMany() as any;
 
-    const matchups: Matchup[] = await Promise.all(matchupsQ.map(async matchupQ => {
+    const baseMatchups = await Matchup
+        .createQueryBuilder("matchup")
+        .where("matchup.ID IN (:...matchupIds)", { matchupIds: matchupsQ.map(m => m.ID) })
+        .getMany();
+
+    const matchups: Matchup[] = await Promise.all(baseMatchups.map(async baseMatchup => {
+        const matchupQ = matchupsQ.find(m => m.ID === baseMatchup.ID)!;
+        baseMatchup.referee = matchupQ.referee;
+        baseMatchup.streamer = matchupQ.streamer;
+        baseMatchup.stage = matchupQ.stage;
+
         const mappools = await Mappool
             .createQueryBuilder("mappool")
             .innerJoinAndSelect("mappool.slots", "slot")
@@ -73,6 +83,7 @@ banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
             .innerJoinAndSelect("map.beatmap", "beatmap")
             .where("mappool.stageID = :stageID", { stageID: matchupQ.stage!.ID })
             .getMany();
+        baseMatchup.stage!.mappool = mappools;
 
         const teams = matchupQ.teams.length === 0 ? [] : await Team
             .createQueryBuilder("team")
@@ -80,13 +91,9 @@ banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
             .innerJoinAndSelect("team.captain", "captain")
             .where("team.ID IN (:...teamIds)", { teamIds: matchupQ.teams })
             .getMany();
+        baseMatchup.teams = teams;
 
-        matchupQ.stage!.mappool = mappools;
-
-        return {
-            ...matchupQ,
-            teams,
-        };
+        return baseMatchup;
     }));
 
     for (const matchup of matchups) {
