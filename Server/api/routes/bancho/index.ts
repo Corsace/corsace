@@ -7,6 +7,8 @@ import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
 import { TextChannel } from "discord.js";
 import { discordClient } from "../../../discord";
 import state from "../../../../BanchoBot/state";
+import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
+import { Team } from "../../../../Models/tournaments/team";
 
 async function validateData (ctx: CorsaceContext<object>, next: Next) {
     const body = ctx.request.body;
@@ -48,24 +50,51 @@ banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
     };
 
     // Get all qualifiers that are in the past and have not been played
-    const matchups = await Matchup
+    const matchupsQ: (Omit<Matchup, "teams"> & { teams: number[] })[] = await Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.referee", "referee")
         .leftJoinAndSelect("matchup.streamer", "streamer")
         .innerJoinAndSelect("matchup.stage", "stage")
-        .innerJoinAndSelect("stage.mappool", "mappool")
-        .innerJoinAndSelect("mappool.slots", "slot")
-        .innerJoinAndSelect("slot.maps", "map")
-        .innerJoinAndSelect("map.beatmap", "beatmap")
         .innerJoinAndSelect("stage.tournament", "tournament")
         .innerJoinAndSelect("tournament.organizer", "organizer")
-        .leftJoinAndSelect("matchup.teams", "team")
-        .leftJoinAndSelect("team.captain", "captain")
-        .leftJoinAndSelect("team.members", "member")
         .where("matchup.date <= :now", { now: ctx.state.matchupDate })
         .andWhere("stage.stageType = '0'")
         .andWhere("matchup.mp IS NULL")
+        .loadAllRelationIds({
+            relations: ["teams"],
+        })
+        .getMany() as any;
+
+    const baseMatchups = await Matchup
+        .createQueryBuilder("matchup")
+        .where("matchup.ID IN (:...matchupIds)", { matchupIds: matchupsQ.map(m => m.ID) })
         .getMany();
+
+    const matchups: Matchup[] = await Promise.all(baseMatchups.map(async baseMatchup => {
+        const matchupQ = matchupsQ.find(m => m.ID === baseMatchup.ID)!;
+        baseMatchup.referee = matchupQ.referee;
+        baseMatchup.streamer = matchupQ.streamer;
+        baseMatchup.stage = matchupQ.stage;
+
+        const mappools = await Mappool
+            .createQueryBuilder("mappool")
+            .innerJoinAndSelect("mappool.slots", "slot")
+            .innerJoinAndSelect("slot.maps", "map")
+            .innerJoinAndSelect("map.beatmap", "beatmap")
+            .where("mappool.stageID = :stageID", { stageID: matchupQ.stage!.ID })
+            .getMany();
+        baseMatchup.stage!.mappool = mappools;
+
+        const teams = matchupQ.teams.length === 0 ? [] : await Team
+            .createQueryBuilder("team")
+            .innerJoinAndSelect("team.members", "members")
+            .innerJoinAndSelect("team.captain", "captain")
+            .where("team.ID IN (:...teamIds)", { teamIds: matchupQ.teams })
+            .getMany();
+        baseMatchup.teams = teams;
+
+        return baseMatchup;
+    }));
 
     for (const matchup of matchups) {
         await runMatchup(matchup, false, true).catch(async err => {

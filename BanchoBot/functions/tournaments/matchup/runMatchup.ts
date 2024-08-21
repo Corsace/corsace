@@ -710,7 +710,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await matchup.sets![matchup.sets!.length - 1].save();
         }
 
-        if (matchup.sets![matchup.sets!.length - 1].winner) {
+        if (matchup.sets![matchup.sets!.length - 1].winner && setOrder.length > matchup.sets!.length) {
             const nextSet = new MatchupSet();
             nextSet.order = matchup.sets![matchup.sets!.length - 1].order + 1;
             nextSet.matchup = matchup;

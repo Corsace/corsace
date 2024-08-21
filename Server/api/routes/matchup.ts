@@ -824,22 +824,18 @@ matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, as
         const team2 = matchupQ.team2 ? teamQuery.find(team => team.ID === matchupQ.team2) : null;
         const teams = teamQuery.filter(team => matchupQ.teams.includes(team.ID));
 
-        const roundOrStage: Round | Stage | null =
-            matchupQ.round ?
+        const roundOrStage: Round | Stage | null = matchupQ.round ?
+            await manager
+                .createQueryBuilder(Round, "round")
+                .leftJoinAndSelect("round.mapOrder", "mapOrder")
+                .where("round.ID = :ID", { ID: matchupQ.round })
+                .getOne() :
+            matchupQ.stage ?
                 await manager
-                    .createQueryBuilder(Round, "round")
-                    .innerJoin("round.matchups", "matchup")
-                    .leftJoinAndSelect("round.mapOrder", "mapOrder")
-                    .where("matchup.ID = :ID", { ID: matchupQ.ID })
-                    .getOne() :
-                matchupQ.stage ?
-                    await manager
-                        .createQueryBuilder(Stage, "stage")
-                        .innerJoin("stage.matchups", "matchup")
-                        .leftJoinAndSelect("stage.mapOrder", "mapOrder")
-                        .where("matchup.ID = :ID", { ID: matchupQ.ID })
-                        .getOne() :
-                    null;
+                    .createQueryBuilder(Stage, "stage")
+                    .leftJoinAndSelect("stage.mapOrder", "mapOrder")
+                    .where("stage.ID = :ID", { ID: matchupQ.stage })
+                    .getOne() : null;
         if (!roundOrStage) {
             ctx.body = {
                 success: false,

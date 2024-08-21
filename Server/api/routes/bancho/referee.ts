@@ -1,7 +1,7 @@
 import { CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
-import { Matchup } from "../../../../Models/tournaments/matchup";
+import { Matchup, MatchupWithRelationIDs } from "../../../../Models/tournaments/matchup";
 import { BanchoMatchupState } from "koa";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
 import state, { MatchupList } from "../../../../BanchoBot/state";
@@ -14,6 +14,10 @@ import { StageType } from "../../../../Interfaces/stage";
 import { MapStatus } from "../../../../Interfaces/matchup";
 import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
 import assignTeamsToNextMatchup from "../../../functions/tournaments/matchups/assignTeamsToNextMatchup";
+import { Stage } from "../../../../Models/tournaments/stage";
+import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
+import { Team } from "../../../../Models/tournaments/team";
+import { Round } from "../../../../Models/tournaments/round";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
@@ -106,39 +110,95 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
     const matchupList: MatchupList | undefined | null = state.matchups[ctx.state.matchupID];
     let matchup: Matchup | undefined | null = matchupList?.matchup;
     if (!matchup) {
-        matchup = await Matchup
+        const baseMatchup = await Matchup
             .createQueryBuilder("matchup")
-            .leftJoinAndSelect("matchup.referee", "referee")
-            .leftJoinAndSelect("matchup.streamer", "streamer")
-            .leftJoinAndSelect("matchup.round", "round")
-            .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
-            .leftJoinAndSelect("round.mappool", "roundMappool")
-            .leftJoinAndSelect("roundMappool.slots", "roundSlot")
-            .leftJoinAndSelect("roundSlot.maps", "roundMap")
-            .leftJoinAndSelect("roundMap.beatmap", "roundBeatmap")
-            .innerJoinAndSelect("matchup.stage", "stage")
-            .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
-            .leftJoinAndSelect("stage.mappool", "stageMappool")
-            .leftJoinAndSelect("stageMappool.slots", "stageSlot")
-            .leftJoinAndSelect("stageSlot.maps", "stageMap")
-            .leftJoinAndSelect("stageMap.beatmap", "stageBeatmap")
-            .innerJoinAndSelect("stage.tournament", "tournament")
-            .innerJoinAndSelect("tournament.organizer", "organizer")
-            .leftJoinAndSelect("matchup.team1", "team1")
-            .leftJoinAndSelect("team1.captain", "captain1")
-            .leftJoinAndSelect("team1.members", "member1")
-            .leftJoinAndSelect("matchup.team2", "team2")
-            .leftJoinAndSelect("team2.captain", "captain2")
-            .leftJoinAndSelect("team2.members", "member2")
-            .where("matchup.ID = :id", { id: ctx.params.matchupID })
+            .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
             .getOne();
-        if (!matchup) {
+        if (!baseMatchup) {
             ctx.body = {
                 success: false,
-                error: "Matchup not found",
+                error: "Base matchup not found",
             };
             return;
         }
+
+        const matchupWithRelationIDs: MatchupWithRelationIDs = await Matchup
+            .createQueryBuilder("matchup")
+            .leftJoinAndSelect("matchup.referee", "referee")
+            .leftJoinAndSelect("matchup.streamer", "streamer")
+            .where("matchup.ID = :matchID", { matchID: ctx.params.matchupID })
+            .loadAllRelationIds({
+                relations: ["round", "stage", "team1", "team2"],
+            })
+            .getOne() as any;
+
+        const stage = matchupWithRelationIDs.stage ? await Stage
+            .createQueryBuilder("stage")
+            .leftJoinAndSelect("stage.mapOrder", "mapOrder")
+            .innerJoinAndSelect("stage.tournament", "tournament")
+            .innerJoinAndSelect("tournament.organizer", "organizer")
+            .where("stage.ID = :ID", { ID: matchupWithRelationIDs.stage })
+            .getOne() : null;
+        if (!stage) {
+            ctx.body = {
+                success: false,
+                error: "Stage not found",
+            };
+            return;
+        }
+        stage.mappool = [];
+
+        const round = matchupWithRelationIDs.round ? await Round
+            .createQueryBuilder("round")
+            .leftJoinAndSelect("round.mapOrder", "mapOrder")
+            .where("round.ID = :ID", { ID: matchupWithRelationIDs.round })
+            .getOne() : null;
+        if (round)
+            round.mappool = [];
+
+        const mappoolQ = Mappool
+            .createQueryBuilder("mappool")
+            .innerJoinAndSelect("mappool.slots", "slots")
+            .innerJoinAndSelect("slots.maps", "maps")
+            .leftJoinAndSelect("maps.beatmap", "map")
+            .where(`mappool.stageID = :ID`, { ID: stage.ID });
+        if (round)
+            mappoolQ.orWhere(`mappool.roundID = :ID`, { ID: round.ID });
+        const mappools = (await mappoolQ
+            .loadAllRelationIds({
+                relations: ["round", "stage"],
+            })
+            .getMany())
+            .map<Mappool>(pool => {
+                pool.stage = stage;
+                pool.round = pool.round && round ? round : undefined;
+                return pool;
+            });
+        mappools.forEach(pool => {
+            if (pool.round)
+                round?.mappool?.push(pool);
+            else
+                stage.mappool?.push(pool);
+        });
+
+        const teamIds = new Set<number>();
+        if (matchupWithRelationIDs.team1) teamIds.add(matchupWithRelationIDs.team1);
+        if (matchupWithRelationIDs.team2) teamIds.add(matchupWithRelationIDs.team2);
+        const teamQuery = teamIds.size === 0 ? [] : await Team
+            .createQueryBuilder("team")
+            .innerJoinAndSelect("team.members", "members")
+            .innerJoinAndSelect("team.captain", "captain")
+            .where("team.ID IN (:...teamIds)", { teamIds: Array.from(teamIds) })
+            .getMany();
+        const team1 = matchupWithRelationIDs.team1 ? teamQuery.find(team => team.ID === matchupWithRelationIDs.team1) : null;
+        const team2 = matchupWithRelationIDs.team2 ? teamQuery.find(team => team.ID === matchupWithRelationIDs.team2) : null;
+
+        baseMatchup.round = round;
+        baseMatchup.stage = stage;
+        baseMatchup.team1 = team1;
+        baseMatchup.team2 = team2;
+
+        matchup = baseMatchup;
     }
 
     if (!ctx.request.body.replace && (matchup.mp ?? matchup.baseURL ?? matchup.winner)) {
