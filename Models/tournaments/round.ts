@@ -25,7 +25,7 @@ export class Round extends BaseEntity {
         stage!: Stage;
 
     @OneToMany(() => Mappool, mappool => mappool.round)
-        mappool!: Mappool[];
+        mappool?: Mappool[];
 
     @OneToMany(() => Matchup, matchup => matchup.round)
         matchups!: Matchup[];

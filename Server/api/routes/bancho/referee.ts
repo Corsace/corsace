@@ -17,6 +17,7 @@ import assignTeamsToNextMatchup from "../../../functions/tournaments/matchups/as
 import { Stage } from "../../../../Models/tournaments/stage";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Team } from "../../../../Models/tournaments/team";
+import { Round } from "../../../../Models/tournaments/round";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
@@ -127,7 +128,7 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .where("matchup.ID = :matchID", { matchID: ctx.params.matchupID })
             .loadAllRelationIds({
-                relations: ["stage", "team1", "team2"],
+                relations: ["round", "stage", "team1", "team2"],
             })
             .getOne() as any;
 
@@ -145,14 +146,40 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
             };
             return;
         }
+        stage.mappool = [];
 
-        const mappools = await Mappool
+        const round = matchupWithRelationIDs.round ? await Round
+            .createQueryBuilder("round")
+            .leftJoinAndSelect("round.mapOrder", "mapOrder")
+            .where("round.ID = :ID", { ID: matchupWithRelationIDs.round })
+            .getOne() : null;
+        if (round)
+            round.mappool = [];
+
+        const mappoolQ = Mappool
             .createQueryBuilder("mappool")
             .innerJoinAndSelect("mappool.slots", "slots")
             .innerJoinAndSelect("slots.maps", "maps")
             .leftJoinAndSelect("maps.beatmap", "map")
-            .where(`mappool.stageID = :ID`, { ID: stage.ID })
-            .getMany();
+            .where(`mappool.stageID = :ID`, { ID: stage.ID });
+        if (round)
+            mappoolQ.orWhere(`mappool.roundID = :ID`, { ID: round.ID });
+        const mappools = (await mappoolQ
+            .loadAllRelationIds({
+                relations: ["round", "stage"],
+            })
+            .getMany())
+            .map<Mappool>(pool => {
+                pool.stage = stage;
+                pool.round = pool.round && round ? round : undefined;
+                return pool;
+            });
+        mappools.forEach(pool => {
+            if (pool.round)
+                round?.mappool?.push(pool);
+            else
+                stage.mappool?.push(pool);
+        });
 
         const teamIds = new Set<number>();
         if (matchupWithRelationIDs.team1) teamIds.add(matchupWithRelationIDs.team1);
@@ -166,7 +193,7 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
         const team1 = matchupWithRelationIDs.team1 ? teamQuery.find(team => team.ID === matchupWithRelationIDs.team1) : null;
         const team2 = matchupWithRelationIDs.team2 ? teamQuery.find(team => team.ID === matchupWithRelationIDs.team2) : null;
 
-        stage.mappool = mappools;
+        baseMatchup.round = round;
         baseMatchup.stage = stage;
         baseMatchup.team1 = team1;
         baseMatchup.team2 = team2;
