@@ -63,10 +63,16 @@
             </div>
             <template #menu>
                 <NuxtLink
+                    v-if="staffInfo?.userRoles.includes(0)"
+                    to="/management"
+                >
+                    <MenuItem>{{ $t("open.navbar.matchupManagement") }}</MenuItem>
+                </NuxtLink>
+                <NuxtLink
                     v-if="staffInfo?.userRoles.includes(0) || staffInfo?.userRoles.includes(6)"
                     to="/referee"
                 >
-                    <MenuItem>{{ $t("open.navbar.referee").toString().toLowerCase() }}</MenuItem>
+                    <MenuItem>{{ $t("open.navbar.referee") }}</MenuItem>
                 </NuxtLink>
                 <NuxtLink
                     to="/teams?s=my"
