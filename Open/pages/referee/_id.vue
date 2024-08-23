@@ -545,6 +545,8 @@ import { UserInfo } from "../../../Interfaces/user";
 import { Mappool, MappoolMap, MappoolSlot } from "../../../Interfaces/mappool";
 import { freemodButFreerRGB, freemodRGB, modsToRGB } from "../../../Interfaces/mods";
 import { Team } from "../../../Interfaces/team";
+import { TournamentRoleType } from "../../../Interfaces/tournament";
+import { OpenStaffInfo } from "../../../Interfaces/staff";
 
 const openModule = namespace("open");
 
@@ -606,6 +608,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     @State loggedInUser!: UserInfo | null;
     @openModule.State tournament!: Tournament | null;
+    @openModule.State staffInfo!: OpenStaffInfo | null;
 
     matchup: Matchup | null = null;
     mappools: Mappool[] = [];
@@ -805,6 +808,11 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     }
 
     async mounted () {
+        if (!this.staffInfo || (!this.staffInfo.userRoles.includes(TournamentRoleType.Organizer) && !this.staffInfo.userRoles.includes(TournamentRoleType.Referees))) {
+            await this.$router.push("/");
+            return;
+        }
+
         const { data: matchupData } = await this.$axios.get<{ matchup: Matchup }>(`/api/referee/matchups/${this.tournament?.ID}/${this.$route.params.id}`);
         if (!matchupData.success) {
             alert(matchupData.error);

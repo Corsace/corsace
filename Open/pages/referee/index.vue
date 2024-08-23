@@ -39,7 +39,8 @@ import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import { MatchupList } from "../../../Interfaces/matchup";
-import { Tournament } from "../../../Interfaces/tournament";
+import { Tournament, TournamentRoleType } from "../../../Interfaces/tournament";
+import { OpenStaffInfo } from "../../../Interfaces/staff";
 
 const openModule = namespace("open");
 
@@ -73,11 +74,17 @@ const openModule = namespace("open");
 export default class Referee extends Vue {
 
     @openModule.State tournament!: Tournament | null;
+    @openModule.State staffInfo!: OpenStaffInfo | null;
 
     matchupList: MatchupList[] = [];
     moreMatchups = true;
 
     async mounted () {
+        if (!this.staffInfo || (!this.staffInfo.userRoles.includes(TournamentRoleType.Organizer) && !this.staffInfo.userRoles.includes(TournamentRoleType.Referees))) {
+            await this.$router.push("/");
+            return;
+        }
+
         const { data: matchupData } = await this.$axios.get<{ matchups: MatchupList[] }>(`/api/referee/matchups/${this.tournament?.ID}`);
         if (!matchupData.success) {
             alert(matchupData.error);
