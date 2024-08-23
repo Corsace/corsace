@@ -4,6 +4,8 @@ import { unallowedToPlay } from "../../../Interfaces/tournament";
 import { Matchup } from "../../../Models/tournaments/matchup";
 import { discordClient } from "../../discord";
 import { BaseTeam } from "../../../Interfaces/team";
+import { Stage } from "../../../Models/tournaments/stage";
+import { Team } from "../../../Models/tournaments/team";
 
 const qualifierRouter  = new CorsaceRouter();
 
@@ -17,16 +19,27 @@ qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) 
         return;
     }
 
-    const qualifier = await Matchup
-        .createQueryBuilder("matchup")
-        .innerJoinAndSelect("matchup.stage", "stage")
+    const stageQ = await Stage
+        .createQueryBuilder("stage")
+        .innerJoin("stage.matchups", "matchup")
         .innerJoinAndSelect("stage.tournament", "tournament")
         .innerJoinAndSelect("tournament.organizer", "organizer")
         .leftJoinAndSelect("tournament.roles", "roles")
-        .leftJoinAndSelect("matchup.referee", "referee")
-        .leftJoinAndSelect("matchup.teams", "team")
+        .where("matchup.ID = :qualifierID", { qualifierID })
+        .getOne();
+
+    const teamsQ = await Team
+        .createQueryBuilder("team")
+        .innerJoin("team.matchupGroup", "matchup")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("team.captain", "captain")
+        .where("matchup.ID = :qualifierID", { qualifierID })
+        .getMany();
+
+    const qualifierQ = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoin("matchup.stage", "stage")
+        .leftJoinAndSelect("matchup.referee", "referee")
         .leftJoinAndSelect("matchup.sets", "set")
         .leftJoinAndSelect("set.maps", "map")
         .leftJoinAndSelect("map.map", "mappoolMap")
@@ -37,6 +50,8 @@ qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) 
         .andWhere("stage.stageType = '0'")
         .getOne();
 
+    const [stage, teams, qualifier] = await Promise.all([stageQ, teamsQ, qualifierQ]);
+
     if (!qualifier) {
         ctx.body = {
             success: false,
@@ -44,6 +59,9 @@ qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) 
         };
         return;
     }
+
+    qualifier.stage = stage;
+    qualifier.teams = teams;
 
     const qualifierData: Qualifier = {
         ID: qualifier.ID,
@@ -67,7 +85,7 @@ qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) 
     if (qualifier.stage!.publicScores)
         getScores = true;
     else if (ctx.state.user && (
-        tournament.organizer.ID === ctx.state.user.ID || 
+        tournament.organizer.ID === ctx.state.user.ID ||
         qualifier.referee?.ID === ctx.state.user.ID ||
         qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user!.ID) || team.captain.ID === ctx.state.user!.ID)
     ))
