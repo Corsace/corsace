@@ -335,7 +335,7 @@ export default class Match extends Vue {
         this.loading = false;
     }
 
-    handleData = (ctx: ExtendedPublicationContext) => {
+    handleData (ctx: ExtendedPublicationContext) {
         console.log("publication", ctx);
 
         if (!ctx.channel.startsWith("matchup:"))
