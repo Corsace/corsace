@@ -454,42 +454,37 @@ tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLog
                 }],
             });
 
-        for (const role of roles) {
+        staff.push(...(await Promise.all(roles.map(async (role) => {
             const discordRole = await server.roles.fetch(role.roleID);
             if (!discordRole)
-                continue;
-            if (discordRole.members.filter(m => !m.user.bot).size === 0) {
-                staff.push({
-                    role: discordRole.name,
-                    roleType: role.roleType,
-                    users: [],
-                });
-                continue;
-            }
+                return;
 
-            const members = discordRole.members.filter(m => !m.user.bot);
-            const dbUsers = await User
-                .createQueryBuilder("user")
-                .where("user.discordUserid IN (:...ids)", { ids: members.map(m => m.id) })
-                .getMany();
             const users: BaseStaffMember[] = [];
-            for (const m of members.values()) {
-                const dbUser = dbUsers.find(u => u.discord.userID === m.id);
-                if (!dbUser)
-                    continue;
-                users.push({
-                    ID: dbUser.ID,
-                    username: dbUser.osu.username,
-                });
-            }
-            users.sort((a, b) => a.username.localeCompare(b.username));
+            if (discordRole.members.filter(m => !m.user.bot).size > 0) {
+                const members = discordRole.members.filter(m => !m.user.bot);
+                const dbUsers = await User
+                    .createQueryBuilder("user")
+                    .where("user.discordUserid IN (:...ids)", { ids: members.map(m => m.id) })
+                    .getMany();
 
-            staff.push({
+                for (const m of members.values()) {
+                    const dbUser = dbUsers.find(u => u.discord.userID === m.id);
+                    if (!dbUser)
+                        continue;
+                    users.push({
+                        ID: dbUser.ID,
+                        username: dbUser.osu.username,
+                    });
+                }
+                users.sort((a, b) => a.username.localeCompare(b.username));
+            }
+
+            return {
                 role: discordRole.name,
                 roleType: role.roleType,
                 users,
-            });
-        }
+            };
+        }))).filter((r) => !!r) as OpenStaffInfoList[]);
 
         ctx.body = {
             success: true,
