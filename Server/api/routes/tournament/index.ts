@@ -426,14 +426,13 @@ tournamentRouter.$get<{ staff: StaffList[] }>("/:tournamentID/staff", validateID
 tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLoggedIn, isLoggedInDiscord, validateTournament, hasRoles(tournamentStaffRoleOrder), async (ctx) => {
     const tournament = ctx.state.tournament!;
 
-    let roles = await TournamentRole
+    const roles = await TournamentRole
         .createQueryBuilder("role")
         .where("role.tournamentID = :ID", { ID: tournament.ID })
+        .andWhere("role.roleType NOT IN (:...playingRoles)", { playingRoles: playingRoles.map(String) })
+        .orderBy("CONVERT(role.roleID, UNSIGNED)", "ASC")
         .getMany();
-    roles = roles.filter(r => !playingRoles.some(p => p === r.roleType));
-    roles
-        .sort((a, b) => parseInt(a.roleID) - parseInt(b.roleID))
-        .sort((a, b) => tournamentStaffRoleOrder.indexOf(a.roleType) - tournamentStaffRoleOrder.indexOf(b.roleType));
+    roles.sort((a, b) => tournamentStaffRoleOrder.indexOf(a.roleType) - tournamentStaffRoleOrder.indexOf(b.roleType));
 
     try {
         const server = await discordClient.guilds.fetch(tournament.server);
