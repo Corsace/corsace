@@ -454,29 +454,31 @@ tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLog
                 }],
             });
 
-        const userDiscordIds = new Set<string>();
+        const roleIdToDiscordMemberIds = new Map<string, string[]>();
+        roles.forEach(role => roleIdToDiscordMemberIds.set(role.roleID, []));
         for (const member of server.members.cache.values()) {
             if (member.user.bot)
                 continue;
-            if (member.roles.cache.some(r => roles.some(role => role.roleID === r.id)))
-                userDiscordIds.add(member.id);
+            for (const role of roles)
+                if (member.roles.cache.has(role.roleID))
+                    roleIdToDiscordMemberIds.get(role.roleID)!.push(member.id);
         }
 
         const dbUsers = await User
             .createQueryBuilder("user")
-            .where("user.discordUserid IN (:...userDiscordIds)", { userDiscordIds: Array.from(userDiscordIds) })
+            .where("user.discordUserid IN (:...ids)", { ids: Array.from(roleIdToDiscordMemberIds.values()).flat() })
             .getMany();
 
         for (const role of roles) {
-            const discordRole = await server.roles.fetch(role.roleID);
+            const discordRole = server.roles.cache.get(role.roleID);
             if (!discordRole)
                 continue;
 
             staff.push({
                 role: discordRole.name,
                 roleType: role.roleType,
-                users: discordRole.members
-                    .map(m => dbUsers.find(u => u.discord.userID === m.id))
+                users: roleIdToDiscordMemberIds.get(role.roleID)!
+                    .map(discordMemberId => dbUsers.find(u => u.discord.userID === discordMemberId))
                     .filter((u): u is User => !!u)
                     .map(u => ({
                         ID: u.ID,
