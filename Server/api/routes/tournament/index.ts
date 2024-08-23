@@ -7,7 +7,7 @@ import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { StaffList, StaffMember, OpenStaffInfo, BaseStaffMember, OpenStaffInfoList } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
 import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder } from "../../../../Interfaces/tournament";
-import { discordClient } from "../../../discord";
+import { discordClient, fetchAllMembers } from "../../../discord";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { User } from "../../../../Models/user";
 import { createHash } from "crypto";
@@ -436,7 +436,7 @@ tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLog
 
     try {
         const server = await discordClient.guilds.fetch(tournament.server);
-        await server.members.fetch();
+        await fetchAllMembers(server.id);
         const staff: OpenStaffInfoList[] = [];
 
         const organizer = await User
