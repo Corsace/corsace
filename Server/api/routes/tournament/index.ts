@@ -455,12 +455,11 @@ tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLog
             });
 
         const userDiscordIds = new Set<string>();
-        for (const role of roles) {
-            const discordRole = await server.roles.fetch(role.roleID);
-            if (!discordRole)
+        for (const member of server.members.cache.values()) {
+            if (member.user.bot)
                 continue;
-
-            discordRole.members.filter(m => !m.user.bot).forEach(m => userDiscordIds.add(m.id));
+            if (member.roles.cache.some(r => roles.some(role => role.roleID === r.id)))
+                userDiscordIds.add(member.id);
         }
 
         const dbUsers = await User
