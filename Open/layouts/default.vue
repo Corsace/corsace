@@ -30,13 +30,6 @@
                     {{ $t("open.navbar.info") }}
                 </NuxtLink>
                 <NuxtLink
-                    v-if="staffInfo?.userRoles.includes(0) || staffInfo?.userRoles.includes(6)"
-                    to="/referee"
-                    class="header__nav-item"
-                >
-                    {{ $t("open.navbar.referee") }}
-                </NuxtLink>
-                <NuxtLink
                     to="/qualifiers" 
                     class="header__nav-item"
                 >
@@ -69,6 +62,12 @@
                 </NuxtLink>
             </div>
             <template #menu>
+                <NuxtLink
+                    v-if="staffInfo?.userRoles.includes(0) || staffInfo?.userRoles.includes(6)"
+                    to="/referee"
+                >
+                    <MenuItem>{{ $t("open.navbar.referee").toString().toLowerCase() }}</MenuItem>
+                </NuxtLink>
                 <NuxtLink
                     to="/teams?s=my"
                 >
