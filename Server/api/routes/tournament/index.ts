@@ -435,8 +435,8 @@ tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLog
     roles.sort((a, b) => tournamentStaffRoleOrder.indexOf(a.roleType) - tournamentStaffRoleOrder.indexOf(b.roleType));
 
     try {
-        const server = await discordClient.guilds.fetch(tournament.server);
-        await fetchAllMembers(server.id);
+        await fetchAllMembers(tournament.server);
+        const server = discordClient.guilds.cache.get(tournament.server)!;
         const staff: OpenStaffInfoList[] = [];
 
         const organizer = await User
