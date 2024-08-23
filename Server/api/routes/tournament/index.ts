@@ -454,37 +454,38 @@ tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLog
                 }],
             });
 
-        staff.push(...(await Promise.all(roles.map(async (role) => {
+        const userDiscordIds = new Set<string>();
+        for (const role of roles) {
             const discordRole = await server.roles.fetch(role.roleID);
             if (!discordRole)
-                return;
+                continue;
 
-            const users: BaseStaffMember[] = [];
-            if (discordRole.members.filter(m => !m.user.bot).size > 0) {
-                const members = discordRole.members.filter(m => !m.user.bot);
-                const dbUsers = await User
-                    .createQueryBuilder("user")
-                    .where("user.discordUserid IN (:...ids)", { ids: members.map(m => m.id) })
-                    .getMany();
+            discordRole.members.filter(m => !m.user.bot).forEach(m => userDiscordIds.add(m.id));
+        }
 
-                for (const m of members.values()) {
-                    const dbUser = dbUsers.find(u => u.discord.userID === m.id);
-                    if (!dbUser)
-                        continue;
-                    users.push({
-                        ID: dbUser.ID,
-                        username: dbUser.osu.username,
-                    });
-                }
-                users.sort((a, b) => a.username.localeCompare(b.username));
-            }
+        const dbUsers = await User
+            .createQueryBuilder("user")
+            .where("user.discordUserid IN (:...userDiscordIds)", { userDiscordIds: Array.from(userDiscordIds) })
+            .getMany();
 
-            return {
+        for (const role of roles) {
+            const discordRole = await server.roles.fetch(role.roleID);
+            if (!discordRole)
+                continue;
+
+            staff.push({
                 role: discordRole.name,
                 roleType: role.roleType,
-                users,
-            };
-        }))).filter((r) => !!r) as OpenStaffInfoList[]);
+                users: discordRole.members
+                    .map(m => dbUsers.find(u => u.discord.userID === m.id))
+                    .filter((u): u is User => !!u)
+                    .map(u => ({
+                        ID: u.ID,
+                        username: u.osu.username,
+                    }))
+                    .sort((a, b) => a.username.localeCompare(b.username)),
+            });
+        }
 
         ctx.body = {
             success: true,
