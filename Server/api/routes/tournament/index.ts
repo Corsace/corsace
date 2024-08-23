@@ -4,7 +4,7 @@ import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier } from "../../../../Interfaces/qualifier";
 import { Next } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
-import { StaffList, StaffMember, OpenStaffInfo, BaseStaffMember, OpenStaffInfoList } from "../../../../Interfaces/staff";
+import { StaffList, StaffMember, OpenStaffInfo, OpenStaffInfoList } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
 import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder } from "../../../../Interfaces/tournament";
 import { discordClient, fetchAllMembers } from "../../../discord";
