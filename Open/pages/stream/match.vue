@@ -312,7 +312,7 @@ export default class Match extends Vue {
             console.log("subscribed", ctx);
         });
 
-        this.matchupChannel.on("publication", this.handleData);
+        this.matchupChannel.on("publication", (ctx) => this.handleUpdate(ctx));
 
         this.matchupChannel.subscribe();
 
@@ -335,7 +335,7 @@ export default class Match extends Vue {
         this.loading = false;
     }
 
-    handleData (ctx: ExtendedPublicationContext) {
+    handleUpdate (ctx: ExtendedPublicationContext) {
         console.log("publication", ctx);
 
         if (!ctx.channel.startsWith("matchup:"))
