@@ -1,5 +1,5 @@
 <template>
-    <div 
+    <div
         v-if="matchup"
         class="matchup"
     >
@@ -11,13 +11,13 @@
             MATCH
         </div>
         <div
-            v-if="matchup.team1" 
+            v-if="matchup.team1"
             class="matchup__team1"
         >
             <div class="matchup__team1_abbreviation">
                 {{ matchup.team1.abbreviation.toUpperCase() }}
             </div>
-            <div 
+            <div
                 class="matchup__team1_avatar"
                 :style="{
                     'background-image': `url(${matchup.team1.avatarURL || require('../../../Assets/img/site/open/team/default.png')})`,
@@ -28,12 +28,12 @@
             </div>
             <div class="matchup__team1_score">
                 WINS
-                <svg 
+                <svg
                     v-for="n in firstTo"
                     :key="n"
-                    width="48" 
-                    height="22" 
-                    viewBox="0 0 48 22" 
+                    width="48"
+                    height="22"
+                    viewBox="0 0 48 22"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     class="matchup__team1_score__star"
@@ -50,7 +50,7 @@
             </div>
         </div>
         <div
-            v-if="latestMap" 
+            v-if="latestMap"
             class="matchup__beatmap"
         >
             <div class="matchup__beatmap__header">
@@ -58,7 +58,7 @@
                     class="matchup__beatmap__name"
                     :style="{color: slotMod}"
                 >
-                    <div 
+                    <div
                         class="matchup__diamond matchup__beatmap__name__diamond"
                         :style="{backgroundColor: slotMod}"
                     />
@@ -104,13 +104,13 @@
             </div>
         </div>
         <div
-            v-if="matchup.team2" 
+            v-if="matchup.team2"
             class="matchup__team2"
         >
             <div class="matchup__team2_abbreviation">
                 {{ matchup.team2.abbreviation.toUpperCase() }}
             </div>
-            <div 
+            <div
                 class="matchup__team2_avatar"
                 :style="{
                     'background-image': `url(${matchup.team2.avatarURL || require('../../../Assets/img/site/open/team/default.png')})`,
@@ -120,12 +120,12 @@
                 {{ matchup.team2.name }}
             </div>
             <div class="matchup__team2_score">
-                <svg 
+                <svg
                     v-for="n in firstTo"
                     :key="n"
-                    width="48" 
-                    height="22" 
-                    viewBox="0 0 48 22" 
+                    width="48"
+                    height="22"
+                    viewBox="0 0 48 22"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     class="matchup__team2_score__star"
@@ -175,9 +175,12 @@ export default class Match extends Vue {
     matchupChannel: Subscription | null = null;
 
     matchup: MatchupInterface | null = null;
-    stageOrRound: Stage | Round | null = null;
     latestMap: MappoolMap | null = null;
     loading = false;
+
+    get stageOrRound (): Round | Stage | null {
+        return this.matchup?.stage ?? this.matchup?.round ?? null;
+    }
 
     get pickedMaps () {
         if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.maps)
@@ -194,7 +197,7 @@ export default class Match extends Vue {
         const pickOrder = this.mapOrder[(this.matchup?.sets?.[this.matchup.sets.length - 1]?.order ?? 1) - 1]?.order?.filter(p => p.status === MapStatus.Picked);
         if (!pickOrder)
             return null;
-    
+
         const currentOrder = this.pickedMaps.length > pickOrder.length ? null : pickOrder[this.pickedMaps.length];
         const first = this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.abbreviation.toUpperCase();
         const second = this.matchup?.team1?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team2?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team1?.abbreviation.toUpperCase() : null;
@@ -225,7 +228,7 @@ export default class Match extends Vue {
         const slot = this.stageOrRound?.mappool
             .flatMap(m => m.slots)
             .find(s => s.maps.some(m => m.ID === this.latestMap?.ID));
-    
+
         if (!slot)
             return this.RGBValuesToRGBCSS(modsToRGB(0));
 
@@ -275,15 +278,13 @@ export default class Match extends Vue {
 
         this.centrifuge = centrifuge;
 
-        const { data } = await this.$axios.get<{ 
+        const { data } = await this.$axios.get<{
             matchup: MatchupInterface;
-            stageOrRound: Stage | Round;
         }>(`/api/matchup/${matchupID}`);
         if (!data.success)
             return;
 
         this.matchup = data.matchup;
-        this.stageOrRound = data.stageOrRound;
 
         this.matchupChannel = this.centrifuge.newSubscription(`matchup:${matchupID}`);
 
@@ -342,7 +343,7 @@ export default class Match extends Vue {
 
         switch (ctx.data.type) {
             case "first":
-                this.$set(this.matchup, "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
+                this.$set(this.matchup, "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work
                 break;
             case "beatmap": {
                 const ID = ctx.data.beatmapID;
@@ -603,7 +604,7 @@ export default class Match extends Vue {
         &_avatar {
             left: 0;
         }
-        
+
         &_name {
             left: 188px;
             color: #F24141;
