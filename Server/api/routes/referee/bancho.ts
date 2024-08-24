@@ -3,9 +3,7 @@ import { CorsaceRouter } from "../../../corsaceRouter";
 import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { isLoggedInDiscord } from "../../../middleware";
-import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
-import { discordClient } from "../../../discord";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { ResponseBody, TournamentAuthenticatedState } from "koa";
 
