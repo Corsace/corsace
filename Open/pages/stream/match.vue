@@ -358,8 +358,8 @@ export default class Match extends Vue {
                 break;
             }
             case "matchFinished":
-                this.matchup.team1Score = ctx.data.team1Score;
-                this.matchup.team2Score = ctx.data.team2Score;
+                this.matchup.team1Score = ctx.data.setTeam1Score;
+                this.matchup.team2Score = ctx.data.setTeam2Score;
                 break;
             case "ipcState":
                 this.freezeTeamScores = ctx.data.ipcState === "Playing";
