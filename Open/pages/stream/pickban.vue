@@ -8,7 +8,7 @@
         </div>
         <div class="pickban__mapName">
             <div class="pickban__diamond pickban__mapName__diamond" />
-            PICKBAN
+            DRAFT
         </div>
         <div class="pickban__header">
             <div
