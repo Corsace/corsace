@@ -271,6 +271,15 @@ On Unix: Run `npm run centrifugo` to start the centrifugo server. It will be ava
 On WSL/Windows OR if the above doesn't work: Install the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project.
 Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If you want to change the port, change the `-p` flag in the repective script in `package.json`, and your config file's api URL.
 
+:::note
+In Linux/WSL while using the binary itself, you may need to run [`chmod +x centrifugo`](https://askubuntu.com/questions/443789/what-does-chmod-x-filename-do-and-how-do-i-use-it) to be able to properly run the binary executable, as otherwise it may give an error similar to this:
+
+```
+sh: 1: ./centrifugo: Permission denied
+```
+
+:::
+
 ## Next Steps
 
 For frontend web development, it's suggested to go through the following documents in order:
