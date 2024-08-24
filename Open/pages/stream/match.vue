@@ -323,6 +323,7 @@ export default class Match extends Vue {
                 beatmapID: number;
                 team1Score: number;
                 team2Score: number;
+                sets: { team1Score: number, team2Score: number }[];
             }>(`/api/matchup/${this.matchup.ID}/bancho/pulseMatch`);
             if (!pulseData.success || !pulseData.pulse)
                 return;
@@ -330,8 +331,9 @@ export default class Match extends Vue {
                 .flatMap(m => m.slots)
                 .flatMap(s => s.maps)
                 .find(m => m.beatmap?.ID === pulseData.beatmapID) ?? null;
-            this.matchup.team1Score = pulseData.team1Score;
-            this.matchup.team2Score = pulseData.team2Score;
+            const lastSet = pulseData.sets.length > 0 ? pulseData.sets[pulseData.sets.length - 1] : null;
+            this.matchup.team1Score = lastSet ? lastSet.team1Score : pulseData.team1Score;
+            this.matchup.team2Score = lastSet ? lastSet.team2Score : pulseData.team2Score;
         }
         this.loading = false;
     }

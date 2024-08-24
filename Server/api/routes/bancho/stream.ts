@@ -15,6 +15,7 @@ type pulseType = { pulse: false } | {
     pulse: true;
     team1Score: number;
     team2Score: number;
+    sets: { team1Score: number, team2Score: number }[];
     beatmapID: number;
 }
 
@@ -67,6 +68,7 @@ banchoRefereeRouter.$get<pulseType>("/:matchupID/pulseMatch", validateMatchup, a
         pulse: true,
         team1Score: state.matchups[ctx.state.matchupID].matchup.team1Score,
         team2Score: state.matchups[ctx.state.matchupID].matchup.team2Score,
+        sets: state.matchups[ctx.state.matchupID].matchup.sets!.map((set) => ({ team1Score: set.team1Score, team2Score: set.team2Score })),
         beatmapID: mpLobby.beatmapId,
     };
 });
