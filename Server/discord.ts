@@ -3,7 +3,7 @@ import { config } from "node-config-ts";
 
 // Add more later as needed
 // TODO: See which intents are required after (most) commands are imported from Maquia
-const discordClient = new Client({
+const discordClient = new Client({ 
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
@@ -44,13 +44,4 @@ async function getMember (ID: string): Promise<GuildMember | undefined> {
     return member;
 }
 
-// All members only need to be fetched once per guild, they are then cached indefinitely
-const cachedAllMembersGuilds = new Set<string>();
-async function fetchAllMembers (guildID: string): Promise<void> {
-    if (cachedAllMembersGuilds.has(guildID))
-        return;
-    await (await discordClient.guilds.fetch(guildID))?.members.fetch();
-    cachedAllMembersGuilds.add(guildID);
-}
-
-export { discordClient, discordGuild, getMember, fetchAllMembers };
+export { discordClient, discordGuild, getMember };
