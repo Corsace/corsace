@@ -270,6 +270,15 @@ Pada WSL/Windows ATAU apabila metode di atas tidak bekerja:
 Instal berkas biner (.exe) dari [daftar rilisan terbaru](https://github.com/centrifugal/centrifugo/releases) dan tambahkan ke folder root proyek ini.
 Setelahnya, jalankan perintah `npm run centrifugo:local` untuk memulai server Centrifugo. Apabila kamu ingin mengubah nomor port yang digunakan, ubah nilai parameter '-p' pada script yang terkait di berkas `package.json` dan URL API config milikmu.
 
+:::note
+In Linux/WSL while using the binary itself, you may need to run [`chmod +x centrifugo`](https://askubuntu.com/questions/443789/what-does-chmod-x-filename-do-and-how-do-i-use-it) to be able to properly run the binary executable, as otherwise it may give an error similar to this:
+
+```
+sh: 1: ./centrifugo: Permission denied
+```
+
+:::
+
 ## Langkah Berikutnya
 
 Apabila kamu ingin mengembangkan frontend web, kamu disarankan untuk mengikuti instruksi pada kedua dokumen berikut secara berurutan:
