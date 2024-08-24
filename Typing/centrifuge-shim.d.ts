@@ -90,6 +90,11 @@ declare module "centrifuge" {
         team: TeamList;
     }
 
+    interface IpcStateData {
+        type: "ipcState";
+        ipcState: string;
+    }
+
     type PublicationData =
         CreatedData |
         MessageData |
@@ -102,7 +107,8 @@ declare module "centrifuge" {
         MatchFinishedData |
         ClosedData |
         InviteData |
-        TeamRegisteredData;
+        TeamRegisteredData |
+        IpcStateData;
 
     interface ExtendedPublicationContext extends PublicationContext {
         data: PublicationData;

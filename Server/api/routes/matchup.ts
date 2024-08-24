@@ -23,6 +23,9 @@ import dbMatchupToInterface from "../../functions/tournaments/matchups/dbMatchup
 import { ResponseBody, TournamentStageState, TournamentState } from "koa";
 import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { Round } from "../../../Models/tournaments/round";
+import { createHash } from "crypto";
+import { Tournament } from "../../../Models/tournaments/tournament";
+import { publish } from "../../functions/centrifugo";
 
 const matchupRouter  = new CorsaceRouter();
 
@@ -294,6 +297,55 @@ matchupRouter.$get<{ matchup: Matchup }>("/:matchupID/teams", async (ctx) => {
     ctx.body = {
         success: true,
         matchup,
+    };
+});
+
+// Advanced Scene Switcher doesn't support PUT
+matchupRouter.$post("/:matchupID/ipcState", async (ctx) => {
+    const ipcState = ctx.request.body?.ipcState;
+    if (!ipcState) {
+        ctx.body = {
+            success: false,
+            error: "No ipcState provided",
+        };
+        return;
+    }
+
+    const key = ctx.query.key as string;
+    if (!key) {
+        ctx.body = {
+            success: false,
+            error: "No key provided",
+        };
+        return;
+    }
+
+    const hash = createHash("sha512");
+    hash.update(key);
+    const hashedKey = hash.digest("hex");
+
+    const isKeyValid = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoin("tournament.stages", "stage")
+        .leftJoin("stage.matchups", "matchup")
+        .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
+        .andWhere("tournament.key = :key", { key: hashedKey })
+        .getExists();
+
+    if (!isKeyValid) {
+        ctx.body = {
+            success: false,
+            error: "Invalid key",
+        };
+        return;
+    }
+
+    await publish(`matchup:${ctx.params.matchupID}`, {
+        type: "ipcState",
+        ipcState,
+    });
+    ctx.body = {
+        success: true,
     };
 });
 

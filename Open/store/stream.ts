@@ -30,7 +30,7 @@ export const getters: GetterTree<StreamState, OpenState> = {
 export const actions: ActionTree<StreamState, OpenState> = {
     async setScores ({ commit }, stageID) {
         const generalState = this.state as any;
-        const { data } = await this.$axios.get<{ scores: MatchupScore[] }>(`/api/${stageID}/scores?key=${generalState.stream.key}`);
+        const { data } = await this.$axios.get<{ scores: MatchupScore[] }>(`/api/stage/${stageID}/scores?key=${generalState.stream.key}`);
 
         if (data.success)
             commit("setScores", data.scores);

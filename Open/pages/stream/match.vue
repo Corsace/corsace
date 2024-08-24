@@ -40,8 +40,8 @@
                 >
                     <path
                         d="M 31 22 H 0 L 16 0 H 48 L 31 22 Z"
-                        :fill="matchup.team1Score >= n ? '#F24141FF' : '#F2414100'"
-                        :stroke="matchup.team1Score >= n ? '#F2414100' : '#F24141FF'"
+                        :fill="displayedTeam1Score >= n ? '#F24141FF' : '#F2414100'"
+                        :stroke="displayedTeam1Score >= n ? '#F2414100' : '#F24141FF'"
                     />
                 </svg>
             </div>
@@ -132,8 +132,8 @@
                 >
                     <path
                         d="M 16 22 H 48 L 31 0 H 0.684986 L 16 22 Z"
-                        :fill="matchup.team2Score >= n ? '#5BBCFAFF' : '#5BBCFA00'"
-                        :stroke="matchup.team2Score >= n ? '#5BBCFA00' : '#5BBCFAFF'"
+                        :fill="displayedTeam2Score >= n ? '#5BBCFAFF' : '#5BBCFA00'"
+                        :stroke="displayedTeam2Score >= n ? '#5BBCFA00' : '#5BBCFAFF'"
                     />
                 </svg>
                 WINS
@@ -147,7 +147,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
 
@@ -177,6 +177,10 @@ export default class Match extends Vue {
     matchup: MatchupInterface | null = null;
     latestMap: MappoolMap | null = null;
     loading = false;
+
+    freezeTeamScores = false;
+    displayedTeam1Score = 0;
+    displayedTeam2Score = 0;
 
     get stageOrRound (): Round | Stage | null {
         return this.matchup?.stage ?? this.matchup?.round ?? null;
@@ -309,7 +313,7 @@ export default class Match extends Vue {
             console.log("subscribed", ctx);
         });
 
-        this.matchupChannel.on("publication", this.handleData);
+        this.matchupChannel.on("publication", (ctx) => this.handleUpdate(ctx));
 
         this.matchupChannel.subscribe();
 
@@ -332,7 +336,7 @@ export default class Match extends Vue {
         this.loading = false;
     }
 
-    handleData = (ctx: ExtendedPublicationContext) => {
+    handleUpdate (ctx: ExtendedPublicationContext) {
         console.log("publication", ctx);
 
         if (!ctx.channel.startsWith("matchup:"))
@@ -357,8 +361,21 @@ export default class Match extends Vue {
                 this.matchup.team1Score = ctx.data.team1Score;
                 this.matchup.team2Score = ctx.data.team2Score;
                 break;
+            case "ipcState":
+                this.freezeTeamScores = ctx.data.ipcState === "Playing";
+                break;
         }
-    };
+    }
+
+    @Watch("matchup.team1Score")
+    @Watch("matchup.team2Score")
+    @Watch("freezeTeamScores")
+    refreshTeamScores () {
+        if (!this.freezeTeamScores) {
+            this.displayedTeam1Score = this.matchup?.team1Score ?? 0;
+            this.displayedTeam2Score = this.matchup?.team2Score ?? 0;
+        }
+    }
 }
 </script>
 
