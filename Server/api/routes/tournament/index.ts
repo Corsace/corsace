@@ -419,7 +419,7 @@ tournamentRouter.$get<{ staff: StaffList[] }>("/:tournamentID/staff", validateID
     }
 });
 
-tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLoggedIn, isLoggedInDiscord, validateID, hasRoles(tournamentStaffRoleOrder), async (ctx) => {
+tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLoggedIn, isLoggedInDiscord, validateID, async (ctx) => {
     const ID = ctx.state.ID;
 
     const tournament = await Tournament
@@ -438,6 +438,12 @@ tournamentRouter.$get<{ info: OpenStaffInfo }>("/:tournamentID/staffInfo", isLog
         };
         return;
     }
+
+    let hasRolesPassed = false;
+    ctx.state.tournament = tournament;
+    await hasRoles(tournamentStaffRoleOrder)(ctx, () => { hasRolesPassed = true; return Promise.resolve(); });
+    if (!hasRolesPassed)
+        return;
 
     const roles = tournament.roles.sort((a, b) => tournamentStaffRoleOrder.indexOf(a.roleType) - tournamentStaffRoleOrder.indexOf(b.roleType));
 
