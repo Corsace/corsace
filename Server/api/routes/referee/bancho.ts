@@ -40,43 +40,11 @@ refereeBanchoRouter.$post<object, TournamentAuthenticatedState>("/:tournamentID/
         return;
     }
 
-    const user = ctx.state.user;
-
-    if (matchup.referee?.ID !== user.ID && matchup.stage!.tournament.organizer.ID !== user.ID) {
-        // If not organizer check if they are referee
-        const roles = await TournamentRole
-            .createQueryBuilder("role")
-            .innerJoin("role.tournament", "tournament")
-            .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
-            .getMany();
-
-        // For organizers to see all matchups
-        let bypass = false;
-        if (roles.length > 0) {
-            try {
-                const organizerRoles = roles.filter(r => r.roleType === TournamentRoleType.Organizer);
-                const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
-                const discordMember = await tournamentServer.members.fetch(user.discord.userID);
-                bypass = organizerRoles.some(r => discordMember.roles.cache.has(r.roleID));
-            } catch (e) {
-                bypass = false;
-            }
-        }
-
-        if (!bypass) {
-            ctx.body = {
-                success: false,
-                error: "You are not the referee of this matchup",
-            };
-            return;
-        }
-    }
-
     try {
         const { data } = await axios.post<ResponseBody<object>>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`, {
             ...ctx.request.body,
             endpoint: undefined,
-            user,
+            user: ctx.state.user,
         }, {
             auth: config.interOpAuth,
         });
