@@ -175,13 +175,16 @@ export default class Match extends Vue {
     matchupChannel: Subscription | null = null;
 
     matchup: MatchupInterface | null = null;
-    stageOrRound: Stage | Round | null = null;
     latestMap: MappoolMap | null = null;
     loading = false;
 
     freezeTeamScores = false;
     displayedTeam1Score = 0;
     displayedTeam2Score = 0;
+
+    get stageOrRound (): Round | Stage | null {
+        return this.matchup?.stage ?? this.matchup?.round ?? null;
+    }
 
     get pickedMaps () {
         if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.maps)
@@ -281,13 +284,11 @@ export default class Match extends Vue {
 
         const { data } = await this.$axios.get<{
             matchup: MatchupInterface;
-            stageOrRound: Stage | Round;
         }>(`/api/matchup/${matchupID}`);
         if (!data.success)
             return;
 
         this.matchup = data.matchup;
-        this.stageOrRound = data.stageOrRound;
 
         this.matchupChannel = this.centrifuge.newSubscription(`matchup:${matchupID}`);
 
