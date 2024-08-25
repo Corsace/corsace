@@ -832,7 +832,7 @@
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
             "forfeit": "FORFEIT",
-            "first": "FIRST",
+            "first": "ROLL WINNER",
             "closeLobby": "FECHAR LOBBY",
             "postResults": "POST RESULTS"
         },
