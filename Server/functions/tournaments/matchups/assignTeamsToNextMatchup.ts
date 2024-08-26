@@ -143,12 +143,25 @@ export default async function assignTeamsToNextMatchup (matchup1ID: number) {
 
         const winner = matchup1.winner.ID === matchup1.team1.ID ? matchup1.team1 : matchup1.team2;
         const loser = matchup1.winner.ID === matchup1.team1.ID ? matchup1.team2 : matchup1.team1;
+        // Sort so that matchups with the match ID in winnerPreviousMatchups are first, matchups with the match ID in loserPreviousMatchups second, and the rest after
+        matchup1NextMatchups.sort((a, b) => {
+            if (a.winnerPreviousMatchups?.some(m => m.ID === matchup1.ID) && !b.winnerPreviousMatchups?.some(m => m.ID === matchup1.ID))
+                return -1;
+            if (!a.winnerPreviousMatchups?.some(m => m.ID === matchup1.ID) && b.winnerPreviousMatchups?.some(m => m.ID === matchup1.ID))
+                return 1;
+
+            if (a.loserPreviousMatchups?.some(m => m.ID === matchup1.ID) && !b.loserPreviousMatchups?.some(m => m.ID === matchup1.ID))
+                return -1;
+            if (!a.loserPreviousMatchups?.some(m => m.ID === matchup1.ID) && b.loserPreviousMatchups?.some(m => m.ID === matchup1.ID))
+                return 1;
+            return 0;
+        });
         try {
             for (const matchup2 of matchup1NextMatchups) { // Match 2s in example above
-                if (matchup2.loserPreviousMatchups?.some(m => m.ID === matchup1.ID))
-                    await assignTeam(manager, loser, matchup2.ID);
                 if (matchup2.winnerPreviousMatchups?.some(m => m.ID === matchup1.ID))
                     await assignTeam(manager, winner, matchup2.ID);
+                if (matchup2.loserPreviousMatchups?.some(m => m.ID === matchup1.ID))
+                    await assignTeam(manager, loser, matchup2.ID);
             }
         } catch (error) {
             await sendDiscordError(`\`assignTeamsToNextMatchup error\`\nFailed to assign teams to their next matchups from matchup ID \`${matchup1ID}\`\n\`\`\`${error}\`\`\``);
