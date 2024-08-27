@@ -122,6 +122,7 @@
                         :class="{
                             'content_button--disabled': !matchup.mp || matchup.stage?.stageType === 0 || !runningLobby,
                         }"
+                        @contextmenu.native.prevent="matchup.mp && runningLobby && matchup.stage?.stageType !== 0 ? toggleRollMenu() : tooltipText = 'Matchup has no lobby'"
                         @click.native="matchup.mp && runningLobby && matchup.stage?.stageType !== 0 ? toggleRollMenu() : tooltipText = 'Matchup has no lobby'"
                     >
                         {{ matchupSet?.first ? $t('open.referee.reroll') : $t('open.referee.roll') }}
@@ -131,6 +132,7 @@
                         :class="{
                             'content_button--disabled': !matchup.mp,
                         }"
+                        @contextmenu.native.prevent="matchup.mp ? toggleFirstMenu() : tooltipText = 'Matchup has no mp'"
                         @click.native="matchup.mp ? toggleFirstMenu() : tooltipText = 'Matchup has no mp'"
                     >
                         {{ $t('open.referee.first') }}
@@ -188,6 +190,7 @@
                         :class="{
                             'content_button--disabled': matchup.winner,
                         }"
+                        @contextmenu.native.prevent="!matchup.winner ? toggleForfeitMenu() : tooltipText = 'Matchup has been finished'"
                         @click.native="!matchup.winner ? toggleForfeitMenu() : tooltipText = 'Matchup has been finished'"
                     >
                         {{ $t('open.referee.forfeit') }}
@@ -522,6 +525,7 @@
                                     :key="map.ID"
                                     class="referee__matchup__content__mappool__slot__map"
                                     :class="{ 'referee__matchup__content__mappool__slot__map--used': matchupSet?.maps?.filter(m => m.status !== 0).some(m => m.map.ID === map.ID) }"
+                                    @contextmenu.prevent="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupSet?.maps?.filter(m => m.status !== 0).find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
                                     @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupSet?.maps?.filter(m => m.status !== 0).find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
                                 >
                                     <div class="referee__matchup__content__mappool__slot__map__name">
