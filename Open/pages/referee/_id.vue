@@ -454,6 +454,15 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Div containing functionality to toggle auto send next map message -->
+                        <div class="referee__matchup__messages__checkboxes_div">
+                            <input 
+                                v-model="autoSendNextMapMessage"
+                                class="referee__matchup__messages__checkboxes__checkbox"
+                                type="checkbox"
+                            >
+                            Auto Send Next Map Message<br>(When roll winner is assigned, map is selected, or map is finished)
+                        </div>
                         <ContentButton
                             class="referee__matchup__header__create_lobby__button content_button--red"
                             :class="{
@@ -656,6 +665,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     showBanchoMessages = true;
     showBanchoSettings = false;
     showCorsaceMessages = true;
+    autoSendNextMapMessage = false;
 
     get filteredMessages (): message[] {
         return this.messages.filter(message => {
@@ -1052,6 +1062,9 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 break;
             case "first":
                 this.$set(this.matchup.sets![this.matchup.sets!.length - 1], "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
+                if (this.autoSendNextMapMessage)
+                    this.sendNextMapMessage()
+                        .catch(console.error);
                 break;
             case "settings": {
                 this.settingsRan = true;
@@ -1093,6 +1106,9 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                     this.matchup.sets[this.matchup.sets.length - 1].maps = [];
                 this.matchup.sets[this.matchup.sets.length - 1].maps!.push(ctx.data.map);
                 this.mapSelected = null;
+                if (this.autoSendNextMapMessage)
+                    this.sendNextMapMessage()
+                        .catch(console.error);
                 break;
             case "matchStarted":
                 this.mapStarted = true;
@@ -1109,6 +1125,9 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 this.matchup.sets![this.matchup.sets!.length - 1].team2Score = ctx.data.setTeam2Score;
                 if (ctx.data.setWinner && this.mapOrder.length === 1)
                     this.matchup.winner = this.matchup.team1?.ID === ctx.data.setWinner ? this.matchup.team1 : this.matchup.team2?.ID === ctx.data.setWinner ? this.matchup.team2 : null;
+                if (this.autoSendNextMapMessage)
+                    this.sendNextMapMessage()
+                        .catch(console.error);
                 break;
             case "closed":
                 this.team1PlayerStates.forEach(player => player.inLobby = player.ready = false);
