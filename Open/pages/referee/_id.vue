@@ -138,19 +138,10 @@
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
-                            'content_button--disabled': !matchup.mp || !runningLobby,
-                        }"
-                        @click.native="matchup.mp && runningLobby ? banchoCall('settings') : tooltipText = 'Matchup has no lobby'"
-                    >
-                        {{ $t('open.referee.settings') }}
-                    </ContentButton>
-                    <ContentButton
-                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
-                        :class="{
                             'content_button--disabled': !matchup.mp || !runningLobby || mapStarted,
                         }"
                         style="font-size: 12px;"
-                        @click.native="matchup.mp && runningLobby && !mapStarted ? banchoCall('timer', { time: parseInt(mapTimer) }) : mapStarted ? tooltipText = 'Matchup is currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby && !mapStarted ? banchoCall('timer', { time: parseInt(mapTimer) }) : tooltipText = mapStarted ? 'Matchup is currently playing a map' : 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.timer') }} <input
                             v-model="mapTimer"
@@ -165,7 +156,7 @@
                             'content_button--disabled': !matchup.mp || !runningLobby || mapStarted,
                         }"
                         style="font-size: 12px;"
-                        @click.native="matchup.mp && runningLobby && !mapStarted ? banchoCall('timer', { time: parseInt(readyTimer) }) : mapStarted ? tooltipText = 'Matchup is currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby && !mapStarted ? banchoCall('timer', { time: parseInt(readyTimer) }) : tooltipText = mapStarted ? 'Matchup is currently playing a map' : 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.timer') }} <input
                             v-model="readyTimer"
@@ -179,7 +170,7 @@
                         :class="{
                             'content_button--disabled': !matchup.mp || !runningLobby || mapStarted,
                         }"
-                        @click.native="matchup.mp && runningLobby && !mapStarted ? banchoCall('startMap') : mapStarted ? tooltipText = 'Matchup is currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby && !mapStarted ? banchoCall('startMap') : tooltipText = mapStarted ? 'Matchup is currently playing a map' : 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.startMap') }}
                     </ContentButton>
@@ -188,7 +179,7 @@
                         :class="{
                             'content_button--disabled': !matchup.mp || !runningLobby || !mapStarted,
                         }"
-                        @click.native="matchup.mp && runningLobby && mapStarted ? banchoCall('abortMap') : !mapStarted ? tooltipText = 'Matchup is not currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby && mapStarted ? banchoCall('abortMap') : tooltipText = !mapStarted ? 'Matchup is not currently playing a map' : 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.abortMap') }}
                     </ContentButton>
@@ -215,7 +206,7 @@
                         :class="{
                             'content_button--disabled': runningLobby || postedResults,
                         }"
-                        @click.native="!postedResults && !runningLobby ? postResults() : postedResults ? tooltipText = 'Result should have already been posted on discord' : tooltipText = 'Lobby is still running'"
+                        @click.native="!postedResults && !runningLobby ? postResults() : tooltipText = postedResults ? 'Result should have already been posted on discord' : 'Lobby is still running'"
                     >
                         {{ $t('open.referee.postResults') }}
                     </ContentButton>
@@ -304,6 +295,25 @@
                 </div>
                 <div class="referee__matchup__content">
                     <div class="referee__matchup__content_div">
+                        <div class="referee__matchup__content__settings">
+                            <div>
+                                time required between !mp settings (seconds)
+                                <input
+                                    v-model="settingsBuffer"
+                                    class="referee__matchup__messages__input"
+                                    style="width: 40px; flex: 0;"
+                                >
+                            </div>
+                            <ContentButton
+                                class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                                :class="{
+                                    'content_button--disabled': !matchup.mp || !runningLobby || settingsRan,
+                                }"
+                                @click.native="!settingsRan && matchup.mp && runningLobby ? banchoCall('settings') : tooltipText = settingsRan ? `!mp settings has been ran within the past ${settingsBuffer} seconds` : 'Matchup has no lobby'"
+                            >
+                                {{ $t('open.referee.settings') }}
+                            </ContentButton>
+                        </div>
                         <div class="referee__matchup__content__staff">
                             <div class="referee__matchup__content__team__name">
                                 Staff
@@ -450,7 +460,7 @@
                                 'content_button--disabled': !matchup.mp || !runningLobby || mapStarted,
                             }"
                             style="max-height: 40px;"
-                            @click.native="matchup.mp && runningLobby && !mapStarted ? sendNextMapMessage() : mapStarted ? tooltipText = 'Matchup is currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                            @click.native="matchup.mp && runningLobby && !mapStarted ? sendNextMapMessage() : tooltipText = mapStarted ? 'Matchup is currently playing a map' : 'Matchup has no lobby'"
                         >
                             {{ nextMapMessage }}
                         </ContentButton>
@@ -625,6 +635,9 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     mapStarted = false;
     runningLobby = false;
     postedResults = false;
+    
+    settingsBuffer = 5;
+    settingsRan = false;
 
     firstMenu = false;
     forfeitMenu = false;
@@ -1041,6 +1054,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 this.$set(this.matchup.sets![this.matchup.sets!.length - 1], "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
                 break;
             case "settings": {
+                this.settingsRan = true;
                 const slots = ctx.data.slots;
                 this.team1PlayerStates = this.team1PlayerStates.map<playerState>(player => {
                     const slotPlayer = slots.find(slot => slot.playerOsuID === parseInt(player.osuID));
@@ -1060,6 +1074,9 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                     player.slot = slotPlayer?.slot ?? 0;
                     return player;
                 });
+                setTimeout(() => {
+                    this.settingsRan = false;
+                }, this.settingsBuffer * 1000);
                 break;
             }
             case "selectMap":
@@ -1515,6 +1532,13 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
+            }
+
+            &__settings {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
             &__team {
