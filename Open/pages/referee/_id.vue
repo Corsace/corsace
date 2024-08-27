@@ -565,7 +565,7 @@ import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import { Tournament } from "../../../Interfaces/tournament";
-import { MapStatus, Matchup, MatchupSet } from "../../../Interfaces/matchup";
+import { MapStatus, Matchup, MatchupSet, MatchupMessageBasic } from "../../../Interfaces/matchup";
 import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
 import { UserInfo } from "../../../Interfaces/user";
 import { Mappool, MappoolMap, MappoolSlot } from "../../../Interfaces/mappool";
@@ -585,19 +585,6 @@ interface playerState {
     mods: string;
     slot: number;
     team?: "Blue" | "Red";
-}
-
-interface message {
-    ID: number;
-    timestamp: Date;
-    content: string;
-    user: {
-        ID: number;
-        osu: {
-            userID: string;
-            username: string;
-        }
-    }
 }
 
 @Component({
@@ -668,13 +655,13 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     inputMessage = "";
     showScrollBottom = false;
-    messages: message[] = [];
+    messages: MatchupMessageBasic[] = [];
     showBanchoMessages = true;
     showBanchoSettings = false;
     showCorsaceMessages = true;
     autoSendNextMapMessage = false;
 
-    get filteredMessages (): message[] {
+    get filteredMessages (): MatchupMessageBasic[] {
         return this.messages.filter(message => {
             if (!message.user?.osu || message.user.osu.userID === "3")
                 message.user = {

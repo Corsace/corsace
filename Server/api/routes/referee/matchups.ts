@@ -1,6 +1,6 @@
 import { CorsaceRouter } from "../../../corsaceRouter";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
-import { MapStatus, MatchupList, Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
+import { MapStatus, MatchupList, Matchup as MatchupInterface, MatchupMessageBasic as MatchupMessageInterface } from "../../../../Interfaces/matchup";
 import { Matchup, MatchupWithRelationIDs } from "../../../../Models/tournaments/matchup";
 import { discordClient } from "../../../discord";
 import { isLoggedInDiscord } from "../../../middleware";
@@ -10,6 +10,7 @@ import dbMatchupToInterface from "../../../functions/tournaments/matchups/dbMatc
 import { TournamentAuthenticatedState } from "koa";
 import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
 import { Team } from "../../../../Models/tournaments/team";
+import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
 
 const refereeMatchupsRouter  = new CorsaceRouter<TournamentAuthenticatedState>();
 
@@ -65,7 +66,6 @@ refereeMatchupsRouter.$get<{ matchups: MatchupList[] }>("/:tournamentID", valida
     };
 });
 
-// TODO: Add x amount of latest messages to the query, and support scrolling pagination on ref page and matchup page
 refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const dbMatchup: MatchupWithRelationIDs = await Matchup
         .createQueryBuilder("matchup")
@@ -91,6 +91,43 @@ refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:match
     };
 });
 
+// TODO: Move this to a general matchup endpoint later
+refereeMatchupsRouter.$get<{ messages: MatchupMessageInterface[] }>("/:tournamentID/:matchupID/messages", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+    const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") || 0;
+    const messages = await MatchupMessage
+        .createQueryBuilder("message")
+        .innerJoin("message.matchup", "matchup")
+        .innerJoinAndSelect("message.user", "user")
+        .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
+        .orderBy("message.timestamp", "DESC")
+        .skip(skip)
+        .take(50)
+        .getMany();
+
+    if (messages.length === 0) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found.",
+        };
+        return;
+    }
+
+    ctx.body = {
+        success: true,
+        messages: messages.map(message => ({
+            ID: message.ID,
+            content: message.content,
+            timestamp: message.timestamp,
+            user: {
+                ID: message.user.ID,
+                osu: {
+                    userID: message.user.osu.userID,
+                    username: message.user.osu.username,
+                },
+            },
+        })) ?? [],
+    };
+});
 
 interface postResultsSet {
     set: number;
