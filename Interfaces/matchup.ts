@@ -1,7 +1,7 @@
 import { Stage } from "./stage";
 import { Round } from "./round";
 import { Team, TeamList } from "./team";
-import { User, UserSummary } from "./user";
+import { User, UserMessage } from "./user";
 import { Mappool, MappoolMap } from "./mappool";
 import { BaseStaffMember } from "./staff";
 
@@ -75,7 +75,7 @@ export interface MatchupMessage {
 }
 
 export interface MatchupMessageBasic extends MatchupMessage {
-    user: UserSummary;
+    user: UserMessage;
 }
 
 export interface MatchupMessageDetailed extends MatchupMessage {

@@ -61,7 +61,7 @@ export interface User {
     influences: Influence[];
 }
 
-export interface UserSummary {
+export interface UserMessage {
     ID: number;
     osu: {
         userID: string;
