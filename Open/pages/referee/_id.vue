@@ -232,20 +232,23 @@
                         <div 
                             id="messageContainer"
                             class="referee__matchup__messages__container"
-                        >
-                            <div
-                                v-for="message in filteredMessages"
-                                :key="message.ID"
-                                class="referee__matchup__messages__message"
-                            >
-                                <div class="referee__matchup__messages__message__timestamp">
-                                    {{ formatTime(message.timestamp) }}
-                                </div>
-                                <div class="referee__matchup__messages__message__user">
-                                    {{ message.user.osu.username }}:
-                                </div>
-                                <div class="referee__matchup__messages__message__content">
-                                    {{ message.content }}
+                            @scroll="checkScrollBottom"
+                        > 
+                            <div>
+                                <div
+                                    v-for="message in filteredMessages"
+                                    :key="message.ID"
+                                    class="referee__matchup__messages__message"
+                                >
+                                    <div class="referee__matchup__messages__message__timestamp">
+                                        {{ formatTime(message.timestamp) }}
+                                    </div>
+                                    <div class="referee__matchup__messages__message__user">
+                                        {{ message.user.osu.username }}:
+                                    </div>
+                                    <div class="referee__matchup__messages__message__content">
+                                        {{ message.content }}
+                                    </div>
                                 </div>
                             </div>
                             <div
@@ -1039,6 +1042,11 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.showScrollBottom = false;
     }
 
+    checkScrollBottom () {
+        const messageContainer = document.getElementById("messageContainer")!;
+        this.showScrollBottom = messageContainer.scrollTop + messageContainer.clientHeight !== messageContainer.scrollHeight;
+    }
+
     handleData (ctx: ExtendedPublicationContext) {
         console.log("publication", ctx.channel, ctx.data);
 
@@ -1422,6 +1430,8 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
             &__container {
                 overflow-y: scroll;
+                overflow-x: hidden;
+                overflow-wrap: anywhere;
                 height: 550px;
                 position: relative;
 
@@ -1450,7 +1460,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 scrollbar-width: thin;
 
                 &__scrollBottom {
-                    position: absolute;
+                    position: sticky;
                     background-color: rgba(0, 0, 0, 0.5);
                     width: 100%;
                     height: 50px;
@@ -1464,19 +1474,18 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
             &__message {
                 display: flex;
+                align-items: baseline;
                 gap: 5px;
 
                 &__timestamp {
                     font-size: $font-sm;
-                    flex: 1;
                 }
                 &__user {
                     font-weight: bold;
                     white-space: nowrap;
-                    flex: 2;
                 }
                 &__content {
-                    flex: 12;
+                    flex: 1;
                 }
             }
 
