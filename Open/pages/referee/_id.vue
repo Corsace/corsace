@@ -1073,58 +1073,65 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     async loadMessages (toBottom: boolean) {
         this.loadingMessages = true;
-        let messageContainer = document.getElementById("messageContainer");
-        let currentScrollHeight = 0;
-        if (messageContainer) // Null in the case of mounted and no mp property
-            currentScrollHeight = messageContainer.scrollHeight;
-        const { data: messagesData } = await this.$axios.get<{ messages: MatchupMessageBasic[] }>(`/api/referee/matchups/${this.tournament?.ID}/${this.matchup?.ID}/messages${this.messages[0]?.ID ? `?before=${this.messages[0]?.ID}` : ""}`);
-        if (!messagesData.success) {
-            alert("Failed to fetch messages. Check console for more information.");
-            console.error(messagesData.error);
-            this.loadMoreMessages = false;
-        } else {
-            const newMessages = messagesData.messages.map(message => ({
-                ...message,
-                timestamp: new Date(message.timestamp),
-            })).reverse();
+        try {
+            let messageContainer = document.getElementById("messageContainer");
+            let currentScrollHeight = 0;
+            if (messageContainer) // Null in the case of mounted and no mp property
+                currentScrollHeight = messageContainer.scrollHeight;
+            const { data: messagesData } = await this.$axios.get<{ messages: MatchupMessageBasic[] }>(`/api/referee/matchups/${this.tournament?.ID}/${this.matchup?.ID}/messages${this.messages[0]?.ID ? `?before=${this.messages[0]?.ID}` : ""}`);
+            if (!messagesData.success) {
+                alert("Failed to fetch messages. Check console for more information.");
+                console.error(messagesData.error);
+                this.loadMoreMessages = false;
+            } else {
+                const newMessages = messagesData.messages.map(message => ({
+                    ...message,
+                    timestamp: new Date(message.timestamp),
+                })).reverse();
 
-            // If messages were obtained from centrifuge history and this is the first time loading messages, there may be duplicates (based on content, and timestamp, see https://github.com/Corsace/corsace/blob/master/BanchoBot/functions/tournaments/matchup/runMatchup.ts#L234) with different IDs, so this removes the duplicates obtained from centrifuge history
-            if (this.messages.length > 0 && newMessages.length > 0 && this.messages[0].ID === 0) {
-                // Centrifuge history messages will have an ID based on the length of the messages array, so this can be used to loop and break, as messages from the DB will have a completely different ID
-                for (let i = 0; i < this.messages.length; i++) {
-                    if (this.messages[i].ID !== i) 
-                        break;
+                // If messages were obtained from centrifuge history and this is the first time loading messages, there may be duplicates (based on content, and timestamp, see https://github.com/Corsace/corsace/blob/master/BanchoBot/functions/tournaments/matchup/runMatchup.ts#L234) with different IDs, so this removes the duplicates obtained from centrifuge history
+                if (this.messages.length > 0 && newMessages.length > 0 && this.messages[0].ID === 0) {
+                    // Centrifuge history messages will have an ID based on the length of the messages array, so this can be used to loop and break, as messages from the DB will have a completely different ID
+                    for (let i = 0; i < this.messages.length; i++) {
+                        if (this.messages[i].ID !== i) 
+                            break;
 
-                    if (this.messages[i].content === newMessages[newMessages.length - 1].content && this.messages[i].timestamp.getTime() === newMessages[newMessages.length - 1].timestamp.getTime())
-                        this.messages.shift();
+                        if (this.messages[i].content === newMessages[newMessages.length - 1].content && this.messages[i].timestamp.getTime() === newMessages[newMessages.length - 1].timestamp.getTime())
+                            this.messages.shift();
+                    }
+                }
+
+                this.messages = [
+                    ...newMessages,
+                    ...this.messages,
+                ];
+
+                this.loadMoreMessages = messagesData.messages.length === 50;
+                
+                await this.$nextTick();
+                messageContainer = document.getElementById("messageContainer"); // In case it was null before and now it's not
+                if (messageContainer && messageContainer.scrollHeight === messageContainer.clientHeight && this.loadMoreMessages) {
+                    await this.loadMessages(toBottom);
+                    return;
+                }
+
+                if (toBottom)
+                    this.scrollToBottom();
+                else if (messageContainer) {
+                    const newScrollHeight = messageContainer.scrollHeight;
+                    messageContainer.scrollTo({
+                        top: messageContainer.scrollTop + newScrollHeight - currentScrollHeight,
+                        behavior: "auto",
+                    });
                 }
             }
-
-            this.messages = [
-                ...newMessages,
-                ...this.messages,
-            ];
-
-            this.loadMoreMessages = messagesData.messages.length === 50;
-            
-            await this.$nextTick();
-            messageContainer = document.getElementById("messageContainer"); // In case it was null before and now it's not
-            if (messageContainer && messageContainer.scrollHeight === messageContainer.clientHeight && this.loadMoreMessages) {
-                await this.loadMessages(toBottom);
-                return;
-            }
-
-            if (toBottom)
-                this.scrollToBottom();
-            else if (messageContainer) {
-                const newScrollHeight = messageContainer.scrollHeight;
-                messageContainer.scrollTo({
-                    top: messageContainer.scrollTop + newScrollHeight - currentScrollHeight,
-                    behavior: "auto",
-                });
-            }
+        } catch (error) {
+            alert("Failed to fetch messages. Check console for more information.");
+            console.error(error);
+            this.loadMoreMessages = false;
+        } finally {
+            this.loadingMessages = false;
         }
-        this.loadingMessages = false;
     }
 
     scrollToBottom () {
