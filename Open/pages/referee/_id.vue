@@ -677,7 +677,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     inputMessage = "";
     keywords = "";
     showScrollBottom = false;
-    loadMoreMessages = false;
+    fetchedAllMessages = false;
     loadingMessages = false;
     messages: MatchupMessageBasic[] = [];
     showBanchoMessages = true;
@@ -1082,7 +1082,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             if (!messagesData.success) {
                 alert("Failed to fetch messages. Check console for more information.");
                 console.error(messagesData.error);
-                this.loadMoreMessages = false;
+                this.fetchedAllMessages = false;
             } else {
                 const newMessages = messagesData.messages.map(message => ({
                     ...message,
@@ -1106,11 +1106,11 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                     ...this.messages,
                 ];
 
-                this.loadMoreMessages = messagesData.messages.length === 50;
+                this.fetchedAllMessages = messagesData.messages.length === 50;
                 
                 await this.$nextTick();
                 messageContainer = document.getElementById("messageContainer"); // In case it was null before and now it's not
-                if (messageContainer && messageContainer.scrollHeight === messageContainer.clientHeight && this.loadMoreMessages) {
+                if (messageContainer && messageContainer.scrollHeight === messageContainer.clientHeight && this.fetchedAllMessages) {
                     await this.loadMessages(toBottom);
                     return;
                 }
@@ -1128,7 +1128,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         } catch (error) {
             alert("Failed to fetch messages. Check console for more information.");
             console.error(error);
-            this.loadMoreMessages = false;
+            this.fetchedAllMessages = false;
         } finally {
             this.loadingMessages = false;
         }
@@ -1152,7 +1152,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             return;
 
         this.showScrollBottom = messageContainer.scrollTop + messageContainer.clientHeight !== messageContainer.scrollHeight;
-        if (messageContainer.scrollTop < 100 && this.loadMoreMessages && !this.loadingMessages)
+        if (messageContainer.scrollTop < 100 && this.fetchedAllMessages && !this.loadingMessages)
             await this.loadMessages(false);
     }
 
