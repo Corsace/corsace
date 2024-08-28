@@ -460,8 +460,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Div containing functionality to toggle auto send next map message -->
-                        <div class="referee__matchup__messages__checkboxes_div">
+                        <div>
                             <input 
                                 v-model="autoSendNextMapMessage"
                                 class="referee__matchup__messages__checkboxes__checkbox"
