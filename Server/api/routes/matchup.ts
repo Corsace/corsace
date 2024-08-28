@@ -682,6 +682,12 @@ matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/assignStaff", valid
                 error: "Only commentators can have multiple staff members",
             };
             return;
+        } else if (staff.length === 0) {
+            ctx.body = {
+                success: false,
+                error: "No staff members provided",
+            };
+            return;
         }
     } else if (isNaN(parseInt(staff))) {
         ctx.body = {
