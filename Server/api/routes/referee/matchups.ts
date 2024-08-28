@@ -91,15 +91,18 @@ refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:match
     };
 });
 
-// TODO: Move this to a general matchup endpoint later
+// TODO: Move this to an endpoint in api/routes/matchups.ts later when the matchup info page is implemented for cross-use
 refereeMatchupsRouter.$get<{ messages: MatchupMessageInterface[] }>("/:tournamentID/:matchupID/messages", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
-    const before = new Date(parseInt(parseQueryParam(ctx.query.before) ?? "") || Date.now());
-    const messages = await MatchupMessage
+    const beforeID = parseInt(parseQueryParam(ctx.query.before) ?? "");
+    const messagesQ = MatchupMessage
         .createQueryBuilder("message")
         .innerJoin("message.matchup", "matchup")
         .innerJoinAndSelect("message.user", "user")
-        .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
-        .andWhere("message.timestamp < :before", { before })
+        .where("matchup.ID = :ID", { ID: ctx.params.matchupID });
+    if (beforeID && !isNaN(beforeID) && beforeID > 0)
+        messagesQ.andWhere("message.ID < :beforeID", { beforeID });
+
+    const messages = await messagesQ
         .orderBy("message.timestamp", "DESC")
         .take(50)
         .getMany();
