@@ -239,7 +239,10 @@
                                     v-for="message in filteredMessages"
                                     :key="message.ID"
                                     class="referee__matchup__messages__message"
-                                    :style="{ color: keywordsArray.some(keyword => message.content.toLowerCase().includes(keyword.toLowerCase())) ? '#EF3255' : 'white' }"
+                                    :style="{
+                                        color: message.user.osu.userID === '3' ? '#e98792' : message.user.osu.userID === '29191632' ? '#ef3255' : 'white',
+                                        backgroundColor: keywordsArray.some(keyword => message.content.toLowerCase().includes(keyword.toLowerCase())) ? '#29a8f955' : 'transparent',
+                                    }"
                                 >
                                     <div class="referee__matchup__messages__message__timestamp">
                                         {{ formatTime(message.timestamp) }}
@@ -1563,6 +1566,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 display: flex;
                 align-items: baseline;
                 gap: 5px;
+                padding-left: 2px;
 
                 &__timestamp {
                     font-size: $font-sm;
