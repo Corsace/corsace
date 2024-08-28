@@ -310,7 +310,7 @@
                             <input
                                 v-model="keywords"
                                 class="referee__matchup__messages__input"
-                                placeholder="Your comma separated keywords to highlight..."
+                                placeholder="Comma separated keywords to highlight..."
                                 @input="saveToLocalStorage('keywords', $event)"
                             >
                         </div>
@@ -1084,7 +1084,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             
             await this.$nextTick();
             messageContainer = document.getElementById("messageContainer"); // In case it was null before and now it's not
-            if (messageContainer && messageContainer.scrollHeight === messageContainer.clientHeight) {
+            if (messageContainer && messageContainer.scrollHeight === messageContainer.clientHeight && this.loadMoreMessages) {
                 await this.loadMessages(toBottom);
                 return;
             }
@@ -1103,7 +1103,10 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     }
 
     scrollToBottom () {
-        const messageContainer = document.getElementById("messageContainer")!;
+        const messageContainer = document.getElementById("messageContainer");
+        if (!messageContainer)
+            return;
+
         messageContainer.scrollTo({
             top: messageContainer?.scrollHeight,
             behavior: "smooth",
@@ -1112,7 +1115,10 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     }
 
     async checkScrollPosition () {
-        const messageContainer = document.getElementById("messageContainer")!;
+        const messageContainer = document.getElementById("messageContainer");
+        if (!messageContainer)
+            return;
+
         this.showScrollBottom = messageContainer.scrollTop + messageContainer.clientHeight !== messageContainer.scrollHeight;
         if (messageContainer.scrollTop < 100 && this.loadMoreMessages && !this.loadingMessages)
             await this.loadMessages(false);
@@ -1150,6 +1156,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                         .catch(console.error);
                 break;
             case "settings": {
+                const settingsCurrentlyRunning = this.settingsRan; // If the bot runs !mp settings by itself during the buffer time
                 this.settingsRan = true;
                 const slots = ctx.data.slots;
                 this.team1PlayerStates = this.team1PlayerStates.map<playerState>(player => {
@@ -1170,9 +1177,10 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                     player.slot = slotPlayer?.slot ?? 0;
                     return player;
                 });
-                setTimeout(() => {
-                    this.settingsRan = false;
-                }, this.settingsBuffer * 1000);
+                if (!settingsCurrentlyRunning)
+                    setTimeout(() => {
+                        this.settingsRan = false;
+                    }, this.settingsBuffer * 1000);
                 break;
             }
             case "selectMap":
