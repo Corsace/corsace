@@ -103,7 +103,7 @@ refereeMatchupsRouter.$get<{ messages: MatchupMessageInterface[] }>("/:tournamen
         messagesQ.andWhere("message.ID < :beforeID", { beforeID });
 
     const messages = await messagesQ
-        .orderBy("message.timestamp", "DESC")
+        .orderBy("message.ID", "DESC")
         .take(50)
         .getMany();
 
