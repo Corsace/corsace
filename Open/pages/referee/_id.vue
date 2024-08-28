@@ -232,7 +232,7 @@
                         <div 
                             id="messageContainer"
                             class="referee__matchup__messages__container"
-                            @scroll="checkScrollBottom"
+                            @scroll="checkScrollPosition"
                         > 
                             <div>
                                 <div
@@ -655,6 +655,8 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     inputMessage = "";
     showScrollBottom = false;
+    loadMoreMessages = false;
+    loadingMessages = false;
     messages: MatchupMessageBasic[] = [];
     showBanchoMessages = true;
     showBanchoSettings = false;
@@ -892,11 +894,6 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.team1PlayerStates = this.team1PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
         this.team2PlayerStates = this.team2PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
 
-        this.messages = this.matchup?.messages?.map((message, i) => ({
-            ...message,
-            ID: i,
-            timestamp: new Date(message.timestamp),
-        })) ?? [];
         this.mapOrder = this.matchup?.round?.mapOrder?.map(o => o.set)
             .filter((v, i, a) => a.indexOf(v) === i)
             .map(s => ({
@@ -919,10 +916,16 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.mapTimer = `${this.tournament?.mapTimer ?? 90}`;
         this.readyTimer = `${this.tournament?.readyTimer ?? 90}`;
 
+        await this.loadMessages(true);
+
         await this.initCentrifuge(`matchup:${this.$route.params.id}`);
 
         if (this.matchup?.mp)
             await this.banchoCall("pulse");
+    }
+
+    updated () {
+        this.checkScrollPosition().catch(console.error);
     }
 
     formatDate (date: Date): string {
@@ -1020,6 +1023,47 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             this.showScrollBottom = true;
     }
 
+    async loadMessages (toBottom: boolean) {
+        this.loadingMessages = true;
+        let messageContainer = document.getElementById("messageContainer");
+        let currentScrollHeight = 0;
+        if (messageContainer) // Null in the case of mounted and no mp property
+            currentScrollHeight = messageContainer.scrollHeight;
+        const { data: messagesData } = await this.$axios.get<{ messages: MatchupMessageBasic[] }>(`/api/referee/matchups/${this.tournament?.ID}/${this.matchup?.ID}/messages?before=${this.messages[0]?.timestamp.getTime() ?? Date.now()}`);
+        if (!messagesData.success) {
+            alert("Failed to fetch messages. Check console for more information.");
+            console.error(messagesData.error);
+            this.loadMoreMessages = false;
+        } else {
+            this.messages = [
+                ...messagesData.messages.map(message => ({
+                    ...message,
+                    timestamp: new Date(message.timestamp),
+                })).reverse(),
+                ...this.messages,
+            ];
+            this.loadMoreMessages = messagesData.messages.length === 50;
+            
+            await this.$nextTick();
+            messageContainer = document.getElementById("messageContainer"); // In case it was null before and now it's not
+            if (messageContainer && messageContainer.scrollHeight === messageContainer.clientHeight) {
+                await this.loadMessages(toBottom);
+                return;
+            }
+
+            if (toBottom)
+                this.scrollToBottom();
+            else if (messageContainer) {
+                const newScrollHeight = messageContainer.scrollHeight;
+                messageContainer.scrollTo({
+                    top: messageContainer.scrollTop + newScrollHeight - currentScrollHeight,
+                    behavior: "auto",
+                });
+            }
+        }
+        this.loadingMessages = false;
+    }
+
     scrollToBottom () {
         const messageContainer = document.getElementById("messageContainer")!;
         messageContainer.scrollTo({
@@ -1029,9 +1073,11 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.showScrollBottom = false;
     }
 
-    checkScrollBottom () {
+    async checkScrollPosition () {
         const messageContainer = document.getElementById("messageContainer")!;
         this.showScrollBottom = messageContainer.scrollTop + messageContainer.clientHeight !== messageContainer.scrollHeight;
+        if (messageContainer.scrollTop < 100 && this.loadMoreMessages && !this.loadingMessages)
+            await this.loadMessages(false);
     }
 
     handleData (ctx: ExtendedPublicationContext) {
