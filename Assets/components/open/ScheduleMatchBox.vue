@@ -67,21 +67,19 @@
                 <div class="schedule_matchbox__staff_box__section__title">
                     COMM:
                 </div>
-                <select
-                    v-model="matchCommentators"
-                    multiple
-                    return-object
+                <div
                     class="schedule_matchbox__staff_box__section__content"
-                    @change="selectStaff('commentator', matchCommentators)"
                 >
-                    <option
+                    <div
                         v-for="staff in commentators"
                         :key="staff.ID"
-                        :value="staff"
+                        class="schedule_matchbox__staff_box__section__content__commentator"
+                        :class="{ 'schedule_matchbox__staff_box__section__content__commentator--selected': matchCommentators.some(c => c.ID === staff.ID) }"
+                        @click="handleCommentatorSelection(staff)"
                     >
                         {{ staff.username }}
-                    </option>
-                </select>
+                    </div>
+                </div>
             </div>
             <div class="triangle schedule_matchbox__staff_box__triangle" />
         </div>
@@ -220,7 +218,7 @@ export default class ScheduleMatchBox extends Vue {
     @Watch("matchupSync", { immediate: true })
     onMatchupSyncChange () {
         this.matchReferee = this.matchupSync?.referee ?? null;
-        this.matchCommentators = this.matchupSync?.commentators ?? [];
+        this.matchCommentators = [...(this.matchupSync?.commentators ?? [])];
         this.matchStreamer = this.matchupSync?.streamer ?? null;
     }
 
@@ -249,6 +247,17 @@ export default class ScheduleMatchBox extends Vue {
         }
 
         this.$emit("update:matchup");
+    }
+
+    async handleCommentatorSelection (staff: BaseStaffMember) {
+        const index = this.matchCommentators.findIndex(c => c.ID === staff.ID);
+
+        if (index > -1)
+            this.matchCommentators.splice(index, 1);
+        else
+            this.matchCommentators.push(staff);
+
+        await this.selectStaff("commentator", this.matchCommentators);
     }
 
     formatDate (date: Date): string {
@@ -329,7 +338,6 @@ export default class ScheduleMatchBox extends Vue {
                     width: 100px;
                     font-size: $font-sm;
                     font-weight: bold;
-                    padding: 0 2px;
                     border: 2px solid $open-dark;
                     background-color: $open-red;
 
@@ -346,6 +354,15 @@ export default class ScheduleMatchBox extends Vue {
 
                         &:disabled {
                             color: $open-dark;
+                        }
+                    }
+
+                    &__commentator {
+                        cursor: pointer;
+                        padding: 2px 5px;
+
+                        &:hover, &--selected {
+                            background-color: #7998ad;
                         }
                     }
                 }
