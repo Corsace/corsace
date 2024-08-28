@@ -239,6 +239,7 @@
                                     v-for="message in filteredMessages"
                                     :key="message.ID"
                                     class="referee__matchup__messages__message"
+                                    :style="{ color: keywordsArray.some(keyword => message.content.toLowerCase().includes(keyword.toLowerCase())) ? '#EF3255' : 'white' }"
                                 >
                                     <div class="referee__matchup__messages__message__timestamp">
                                         {{ formatTime(message.timestamp) }}
@@ -246,18 +247,26 @@
                                     <div class="referee__matchup__messages__message__user">
                                         {{ message.user.osu.username }}:
                                     </div>
-                                    <div class="referee__matchup__messages__message__content">
+                                    <div
+                                        class="referee__matchup__messages__message__content"
+                                    >
                                         {{ message.content }}
                                     </div>
                                 </div>
                             </div>
-                            <div
-                                v-if="showScrollBottom"
-                                class="referee__matchup__messages__container__scrollBottom"
-                                @click="scrollToBottom()"
+                            <transition
+                                @before-enter="scrollButtonTransition"
+                                @enter="scrollButtonTransition"
+                                @leave="scrollButtonTransition"
                             >
-                                Scroll to bottom
-                            </div>
+                                <div
+                                    v-if="showScrollBottom"
+                                    class="referee__matchup__messages__container__scrollBottom"
+                                    @click="scrollToBottom()"
+                                >
+                                    Scroll to bottom
+                                </div>
+                            </transition>
                         </div>
                         <div
                             v-if="loggedInUser && runningLobby"
@@ -709,6 +718,12 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         return this.matchup?.sets?.[this.matchup.sets.length - 1];
     }
 
+    get keywordsArray () {
+        if (!this.keywords)
+            return [];
+        return this.keywords.split(",").map(keyword => keyword.trim());
+    }
+
     get nextMapMessage () {
         // TODO: Support sets
         const score = `${this.matchup?.team1?.name ?? "TBD"} | ${Number.isInteger(this.matchupSet?.team1Score) ? this.matchupSet?.team1Score : this.matchup?.team1Score} - ${Number.isInteger(this.matchupSet?.team2Score) ? this.matchupSet?.team2Score : this.matchup?.team2Score} | ${this.matchup?.team2?.name ?? "TBD"}`;
@@ -939,6 +954,11 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     updated () {
         this.checkScrollPosition().catch(console.error);
+    }
+
+    scrollButtonTransition (e: HTMLElement) {
+        e.style.opacity = this.showScrollBottom ? "1" : "0";
+        e.style.height = this.showScrollBottom ? "50px" : "0";
     }
 
     saveToLocalStorage (type: string, e: InputEvent) {
@@ -1514,7 +1534,6 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                     position: sticky;
                     background-color: rgba(0, 0, 0, 0.5);
                     width: 100%;
-                    height: 50px;
                     bottom: 0;
                     display: flex;
                     align-items: center;
