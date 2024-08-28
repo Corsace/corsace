@@ -15,7 +15,10 @@
     "namespaces": [
         {
             "name": "matchup",
-            "proxy_subscribe": true
+            "proxy_subscribe": true,
+            "history_size": 300,
+            "history_ttl": "20s",
+            "allow_history_for_subscriber": true
         },
         {
             "name": "invitations",

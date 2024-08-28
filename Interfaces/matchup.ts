@@ -1,7 +1,7 @@
 import { Stage } from "./stage";
 import { Round } from "./round";
 import { Team, TeamList } from "./team";
-import { User } from "./user";
+import { User, UserMessage } from "./user";
 import { Mappool, MappoolMap } from "./mappool";
 import { BaseStaffMember } from "./staff";
 
@@ -42,7 +42,7 @@ export interface Matchup extends BaseMatchup {
     referee?:           User | null;
     streamer?:          User | null;
     commentators?:      User[] | null;
-    messages?:          MatchupMessage[] | null;
+    messages?:          MatchupMessageDetailed[] | null;
 }
 
 export enum MapStatus {
@@ -71,8 +71,15 @@ export interface MatchupMap {
 export interface MatchupMessage {
     ID: number;
     timestamp: Date;
-    user: User;
     content: string;
+}
+
+export interface MatchupMessageBasic extends MatchupMessage {
+    user: UserMessage;
+}
+
+export interface MatchupMessageDetailed extends MatchupMessage {
+    user: User;
 }
 
 export interface MatchupScore {

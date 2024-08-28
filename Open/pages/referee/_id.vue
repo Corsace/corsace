@@ -232,13 +232,17 @@
                         <div 
                             id="messageContainer"
                             class="referee__matchup__messages__container"
-                            @scroll="checkScrollBottom"
+                            @scroll="checkScrollPosition"
                         > 
                             <div>
                                 <div
                                     v-for="message in filteredMessages"
                                     :key="message.ID"
                                     class="referee__matchup__messages__message"
+                                    :style="{
+                                        color: message.user.osu.userID === '3' ? '#e98792' : message.user.osu.userID === '29191632' ? '#ef3255' : 'white',
+                                        backgroundColor: keywordsArray.some(keyword => message.content.toLowerCase().includes(keyword.toLowerCase())) ? '#29a8f955' : 'transparent',
+                                    }"
                                 >
                                     <div class="referee__matchup__messages__message__timestamp">
                                         {{ formatTime(message.timestamp) }}
@@ -246,18 +250,26 @@
                                     <div class="referee__matchup__messages__message__user">
                                         {{ message.user.osu.username }}:
                                     </div>
-                                    <div class="referee__matchup__messages__message__content">
+                                    <div
+                                        class="referee__matchup__messages__message__content"
+                                    >
                                         {{ message.content }}
                                     </div>
                                 </div>
                             </div>
-                            <div
-                                v-if="showScrollBottom"
-                                class="referee__matchup__messages__container__scrollBottom"
-                                @click="scrollToBottom()"
+                            <transition
+                                @before-enter="scrollButtonTransition"
+                                @enter="scrollButtonTransition"
+                                @leave="scrollButtonTransition"
                             >
-                                Scroll to bottom
-                            </div>
+                                <div
+                                    v-if="showScrollBottom"
+                                    class="referee__matchup__messages__container__scrollBottom"
+                                    @click="scrollToBottom()"
+                                >
+                                    Scroll to bottom
+                                </div>
+                            </transition>
                         </div>
                         <div
                             v-if="loggedInUser && runningLobby"
@@ -297,6 +309,14 @@
                                 >
                             </div>
                         </div>
+                        <div class="referee__matchup__messages__input_div">
+                            <input
+                                v-model="keywords"
+                                class="referee__matchup__messages__input"
+                                placeholder="Comma separated keywords to highlight..."
+                                @input="saveToLocalStorage('keywords', $event)"
+                            >
+                        </div>
                     </div>
                 </div>
                 <div class="referee__matchup__content">
@@ -308,6 +328,7 @@
                                     v-model="settingsBuffer"
                                     class="referee__matchup__messages__input"
                                     style="width: 40px; flex: 0;"
+                                    @input="saveToLocalStorage('settingsBuffer', $event)"
                                 >
                             </div>
                             <ContentButton
@@ -564,7 +585,7 @@ import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import { Tournament } from "../../../Interfaces/tournament";
-import { MapStatus, Matchup, MatchupSet } from "../../../Interfaces/matchup";
+import { MapStatus, Matchup, MatchupSet, MatchupMessageBasic } from "../../../Interfaces/matchup";
 import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
 import { UserInfo } from "../../../Interfaces/user";
 import { Mappool, MappoolMap, MappoolSlot } from "../../../Interfaces/mappool";
@@ -584,19 +605,6 @@ interface playerState {
     mods: string;
     slot: number;
     team?: "Blue" | "Red";
-}
-
-interface message {
-    ID: number;
-    timestamp: Date;
-    content: string;
-    user: {
-        ID: number;
-        osu: {
-            userID: string;
-            username: string;
-        }
-    }
 }
 
 @Component({
@@ -666,14 +674,17 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     readyTimer = "90";
 
     inputMessage = "";
+    keywords = "";
     showScrollBottom = false;
-    messages: message[] = [];
+    fetchedAllMessages = true;
+    loadingMessages = false;
+    messages: MatchupMessageBasic[] = [];
     showBanchoMessages = true;
     showBanchoSettings = false;
     showCorsaceMessages = true;
     autoSendNextMapMessage = false;
 
-    get filteredMessages (): message[] {
+    get filteredMessages (): MatchupMessageBasic[] {
         return this.messages.filter(message => {
             if (!message.user?.osu || message.user.osu.userID === "3")
                 message.user = {
@@ -707,6 +718,12 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     get matchupSet () {
         return this.matchup?.sets?.[this.matchup.sets.length - 1];
+    }
+
+    get keywordsArray () {
+        if (!this.keywords)
+            return [];
+        return this.keywords.split(",").map(keyword => keyword.trim());
     }
 
     get nextMapMessage () {
@@ -904,11 +921,6 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.team1PlayerStates = this.team1PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
         this.team2PlayerStates = this.team2PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
 
-        this.messages = this.matchup?.messages?.map((message, i) => ({
-            ...message,
-            ID: i,
-            timestamp: new Date(message.timestamp),
-        })) ?? [];
         this.mapOrder = this.matchup?.round?.mapOrder?.map(o => o.set)
             .filter((v, i, a) => a.indexOf(v) === i)
             .map(s => ({
@@ -931,10 +943,36 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.mapTimer = `${this.tournament?.mapTimer ?? 90}`;
         this.readyTimer = `${this.tournament?.readyTimer ?? 90}`;
 
+        this.keywords = localStorage.getItem("keywords") ?? "";
+        this.settingsBuffer = parseInt(localStorage.getItem("settingsBuffer") ?? "5");
+
         await this.initCentrifuge(`matchup:${this.$route.params.id}`);
+        try {
+            const history = await this.subscription?.history({ limit: -1 });
+            console.log("history", `matchup:${this.$route.params.id}`, history);
+            (history?.publications as ExtendedPublicationContext[]).filter(p => p.data.type === "message").forEach(p => this.addMessage(p.data));
+        } catch (error) {
+            console.error(error);
+        }
+
+        await this.loadMessages(true);
 
         if (this.matchup?.mp)
             await this.banchoCall("pulse");
+    }
+
+    updated () {
+        this.checkScrollPosition().catch(console.error);
+    }
+
+    scrollButtonTransition (e: HTMLElement) {
+        e.style.opacity = this.showScrollBottom ? "1" : "0";
+        e.style.height = this.showScrollBottom ? "50px" : "0";
+    }
+
+    saveToLocalStorage (type: string, e: InputEvent) {
+        const target = e.target as HTMLInputElement;
+        localStorage.setItem(type, target.value);
     }
 
     formatDate (date: Date): string {
@@ -1032,8 +1070,74 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             this.showScrollBottom = true;
     }
 
+    async loadMessages (toBottom: boolean) {
+        this.loadingMessages = true;
+        try {
+            let messageContainer = document.getElementById("messageContainer");
+            let currentScrollHeight = 0;
+            if (messageContainer) // Null in the case of mounted and no mp property
+                currentScrollHeight = messageContainer.scrollHeight;
+            const { data: messagesData } = await this.$axios.get<{ messages: MatchupMessageBasic[] }>(`/api/referee/matchups/${this.tournament?.ID}/${this.matchup?.ID}/messages${this.messages[0]?.ID ? `?before=${this.messages[0]?.ID}` : ""}`);
+            if (!messagesData.success) {
+                alert("Failed to fetch messages. Check console for more information.");
+                console.error(messagesData.error);
+                this.fetchedAllMessages = true;
+            } else {
+                const newMessages = messagesData.messages.map(message => ({
+                    ...message,
+                    timestamp: new Date(message.timestamp),
+                })).reverse();
+
+                // If messages were obtained from centrifuge history and this is the first time loading messages, there may be duplicates (based on content, and timestamp, see https://github.com/Corsace/corsace/blob/master/BanchoBot/functions/tournaments/matchup/runMatchup.ts#L234) with different IDs, so this removes the duplicates obtained from centrifuge history
+                if (this.messages.length > 0 && newMessages.length > 0 && this.messages[0].ID === 0) {
+                    // Centrifuge history messages will have an ID based on the length of the messages array, so this can be used to loop and break, as messages from the DB will have a completely different ID
+                    for (let i = 0; i < this.messages.length; i++) {
+                        if (this.messages[i].ID !== i) 
+                            break;
+
+                        if (this.messages[i].content === newMessages[newMessages.length - 1].content && this.messages[i].timestamp.getTime() === newMessages[newMessages.length - 1].timestamp.getTime())
+                            this.messages.shift();
+                    }
+                }
+
+                this.messages = [
+                    ...newMessages,
+                    ...this.messages,
+                ];
+
+                this.fetchedAllMessages = messagesData.messages.length !== 50;
+                
+                await this.$nextTick();
+                messageContainer = document.getElementById("messageContainer"); // In case it was null before and now it's not
+                if (messageContainer && messageContainer.scrollHeight === messageContainer.clientHeight && !this.fetchedAllMessages) {
+                    await this.loadMessages(toBottom);
+                    return;
+                }
+
+                if (toBottom)
+                    this.scrollToBottom();
+                else if (messageContainer) {
+                    const newScrollHeight = messageContainer.scrollHeight;
+                    messageContainer.scrollTo({
+                        top: messageContainer.scrollTop + newScrollHeight - currentScrollHeight,
+                        behavior: "auto",
+                    });
+                }
+            }
+        } catch (error) {
+            alert("Failed to fetch messages. Check console for more information.");
+            console.error(error);
+            this.fetchedAllMessages = true;
+        } finally {
+            this.loadingMessages = false;
+        }
+    }
+
     scrollToBottom () {
-        const messageContainer = document.getElementById("messageContainer")!;
+        const messageContainer = document.getElementById("messageContainer");
+        if (!messageContainer)
+            return;
+
         messageContainer.scrollTo({
             top: messageContainer?.scrollHeight,
             behavior: "smooth",
@@ -1041,9 +1145,14 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.showScrollBottom = false;
     }
 
-    checkScrollBottom () {
-        const messageContainer = document.getElementById("messageContainer")!;
+    async checkScrollPosition () {
+        const messageContainer = document.getElementById("messageContainer");
+        if (!messageContainer)
+            return;
+
         this.showScrollBottom = messageContainer.scrollTop + messageContainer.clientHeight !== messageContainer.scrollHeight;
+        if (messageContainer.scrollTop < 100 && !this.fetchedAllMessages && !this.loadingMessages)
+            await this.loadMessages(false);
     }
 
     handleData (ctx: ExtendedPublicationContext) {
@@ -1078,6 +1187,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                         .catch(console.error);
                 break;
             case "settings": {
+                const settingsCurrentlyRunning = this.settingsRan; // If the bot runs !mp settings by itself during the buffer time
                 this.settingsRan = true;
                 const slots = ctx.data.slots;
                 this.team1PlayerStates = this.team1PlayerStates.map<playerState>(player => {
@@ -1098,9 +1208,10 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                     player.slot = slotPlayer?.slot ?? 0;
                     return player;
                 });
-                setTimeout(() => {
-                    this.settingsRan = false;
-                }, this.settingsBuffer * 1000);
+                if (!settingsCurrentlyRunning)
+                    setTimeout(() => {
+                        this.settingsRan = false;
+                    }, this.settingsBuffer * 1000);
                 break;
             }
             case "selectMap":
@@ -1462,7 +1573,6 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                     position: sticky;
                     background-color: rgba(0, 0, 0, 0.5);
                     width: 100%;
-                    height: 50px;
                     bottom: 0;
                     display: flex;
                     align-items: center;
@@ -1475,6 +1585,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 display: flex;
                 align-items: baseline;
                 gap: 5px;
+                padding-left: 2px;
 
                 &__timestamp {
                     font-size: $font-sm;

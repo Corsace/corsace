@@ -61,6 +61,14 @@ export interface User {
     influences: Influence[];
 }
 
+export interface UserMessage {
+    ID: number;
+    osu: {
+        userID: string;
+        username: string;
+    }
+}
+
 export interface OAuth {
     userID: string;
     username: string;

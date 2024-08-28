@@ -2,6 +2,7 @@ import "centrifuge";
 import { PublicationContext } from "centrifuge";
 import { MatchupMap } from "../Interfaces/matchup";
 import { BaseTeam, TeamList } from "../Interfaces/team";
+import { UserMessage } from "../Interfaces/user";
 
 declare module "centrifuge" {
 
@@ -23,13 +24,7 @@ declare module "centrifuge" {
         type: "message";
         timestamp: Date;
         content: string;
-        user: {
-            ID: number;
-            osu: {
-                userID: string;
-                username: string;
-            };
-        }
+        user: UserMessage;
     }
 
     interface FirstData {
