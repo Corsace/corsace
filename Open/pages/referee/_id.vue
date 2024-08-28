@@ -944,9 +944,18 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.keywords = localStorage.getItem("keywords") ?? "";
         this.settingsBuffer = parseInt(localStorage.getItem("settingsBuffer") ?? "5");
 
-        await this.loadMessages(true);
-
         await this.initCentrifuge(`matchup:${this.$route.params.id}`);
+        try {
+            const history = await this.subscription?.history({
+                limit: -1,
+            });
+            console.log("history", `matchup:${this.$route.params.id}`, history);
+            (history?.publications as ExtendedPublicationContext[]).filter(p => p.data.type === "message").forEach(p => this.addMessage(p.data));
+        } catch (error) {
+            console.error(error);
+        }
+
+        await this.loadMessages(true);
 
         if (this.matchup?.mp)
             await this.banchoCall("pulse");
@@ -1067,7 +1076,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         let currentScrollHeight = 0;
         if (messageContainer) // Null in the case of mounted and no mp property
             currentScrollHeight = messageContainer.scrollHeight;
-        const { data: messagesData } = await this.$axios.get<{ messages: MatchupMessageBasic[] }>(`/api/referee/matchups/${this.tournament?.ID}/${this.matchup?.ID}/messages?before=${this.messages[0]?.timestamp.getTime() ?? Date.now()}`);
+        const { data: messagesData } = await this.$axios.get<{ messages: MatchupMessageBasic[] }>(`/api/referee/matchups/${this.tournament?.ID}/${this.matchup?.ID}/messages${this.messages[0]?.ID ? `?before=${this.messages[0]?.ID}` : ""}`);
         if (!messagesData.success) {
             alert("Failed to fetch messages. Check console for more information.");
             console.error(messagesData.error);
