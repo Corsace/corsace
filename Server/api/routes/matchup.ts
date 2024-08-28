@@ -682,12 +682,6 @@ matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/assignStaff", valid
                 error: "Only commentators can have multiple staff members",
             };
             return;
-        } else if (staff.length === 0) {
-            ctx.body = {
-                success: false,
-                error: "No staff members provided",
-            };
-            return;
         }
     } else if (isNaN(parseInt(staff))) {
         ctx.body = {
@@ -718,6 +712,16 @@ matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/assignStaff", valid
     }
 
     if (Array.isArray(staff)) {
+        if (staff.length === 0) {
+            matchup.commentators = [];
+            await matchup.save();
+            ctx.body = {
+                success: true,
+                matchup,
+            };
+            return;
+        }
+
         const staffMembers = await User
             .createQueryBuilder("user")
             .where("user.ID IN (:...staff)", { staff })
