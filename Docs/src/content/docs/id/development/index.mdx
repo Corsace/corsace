@@ -1,7 +1,7 @@
 ---
 title: Memulai
 description: Dokumentasi untuk memulai pengembangan Corsace.
-lastUpdated: 2024-08-12
+lastUpdated: 2024-08-23
 sidebar:
   order: 1
 ---
@@ -10,12 +10,12 @@ import { Card, LinkCard } from '@astrojs/starlight/components';
 
 Untuk menggandakan repositori:
 
-Apabila kamu ingin membantu untuk menerjemahkan Corsace, kamu dapat meminta akses sebagai penerjemah pada https://translate.corsace.io dan [server Discord Corsace](https://discord.gg/Z6vEMsr)
+Apabila kamu ingin membantu untuk menerjemahkan Corsace, mintalah akses pada situs https://translate.corsace.io dan bergabunglah ke [server Discord Corsace](https://discord.gg/Z6vEMsr)
 
 \*Gunakan hak admin pada konsolmu pada saat menjalankan perintah.
 
 :::caution
-We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project outside of the documentation site.
+Kami SANGAT menyarankan kamu untuk menginstal aplikasi code editor seperti Visual Studio Code](https://code.visualstudio.com/) atau [NotePad++](https://notepad-plus-plus.org/) untuk proyek ini di luar situs dokumentasi.
 :::
 
 Instal node-modules:
@@ -81,7 +81,7 @@ Ke depannya, dokumentasi ini akan merujuk pada nilai `config/user/$USER.json` pe
 
 `config.osu.v1.apiKey`
 
-Kamu dapat memperoleh kunci API V1 key in the "Legacy API" section in the osu! account settings page at https://osu.ppy.sh/home/account/edit.
+Kamu dapat memperoleh kunci API v1 pada bagian "API Lawas" yang terdapat pada halaman pengaturan akun di https://osu.ppy.sh/home/account/edit.
 
 ```
 config.osu.v2.clientId
@@ -103,65 +103,6 @@ config.osu.bancho
 Kamu dapat memperoleh kata sandi IRC password at the bottom of the same osu! accounts settings page at https://osu.ppy.sh/home/account/edit.
 
 Apabila kamu menggunakan akan osu! khusus bot, pastikan kamu mengatur nilai parameter `botAccount` ke true; apabila tidak, atur nilai ini ke false.
-
-### Database
-
-`config.database`
-
-#### Pengaturan
-
-Terdapat dua cara untuk mengatur database, baik melalui Docker atau secara manual.
-
-##### Melalui Docker (Direkomendasikan)
-
-Kami menyediakan berkas `docker-compose.yml` yang akan bertindak selayaknya berkas produksi. Kamu dapat memulai layanan database dengan menggunakan perintah: `docker-compose up -d database` atau `npm run database`.
-
-Database ini akan merespon permitaan pada `127.0.0.1:3306` dengan nama database, nama pengguna, dan kata sandi `corsace`.
-
-##### Pengaturan MariaDB Manual
-
-Apabila kamu tidak ingin menggunakan Docker, kamu akan perlu untuk mengistal [MariaDB](https://mariadb.org/) dan membuat database kosong yang dapat kamu namai sesuka hati. 
-
-Untuk membuat database ini, kamu hanya perlu untuk menjalankan:
-
-```bash
-mysql -u root -p
-MySQL> create database <new_db_name>; 
-```
-
-Pastikan kamu memperbarui `config.database` dengan nama dan informasi kredensial database yang akan kamu gunakan.
-
-#### Menghasilkan Seed Database
-
-Berikan seed kepada seluruh database Corsace melalui perintah: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
-
-### Penyimpanan Objek/S3
-
-Kami menggunakan media penyimpanan objek yang kompatibel dengan S3 untuk menyimpan dan melayani paket beatmap, yang seluruhnya terkonfigurasi dalam `config.s3`.
-
-Walaupun proyek ini diutamakan untuk Cloudflare R2, kamu dapat menggunakan layanan penyimpanan objek S3 lainnya selama layanan tersebut mendukung unggahan multi-bagian dan URL pre-signed.
-
-Kami menggunakan tiga bucket:
-
-- `team-avatars` merupakan bucket publik yang menyimpan avatar tim, yang dapat dilayani oleh CDN tanpa autentikasi
-- `mappacks` merupakan bucket publik yang menyimpan paket map publik, yang dapat dilayani oleh CDN tanpa autentikasi
-- `mappacks-temp` merupakan bucket pribadi yang menyimpan paket beatmap privat yang tidak ditujukan untuk akses publik  
-
-Paket beatmap yang dihasilkan akan terlebih dahulu diunggah ke bucket ini, di mana para pengguna akan kemudian diberikan akses melalui URL yang telah ditandatangani sebelumnya (pre-signed URL).
-
-Paket beatmap yang bersifat privat tidak ditujukan untuk disimpan secara permanen. Kamu dihimbau untuk mengatur agar paket beatmap ini akan dihapus secara otomatis setelah 1 hari.
-
-Paket beatmap yang ke depannya akan dirilis secara publik akan dipindahkan ke bucket `mappacks`.
-
-#### Cloudflare R2
-
-Tuju [halaman dasbor Cloudflare R2](https://dash.cloudflare.com/?to=/:account/r2). Aktifkan paket Cloudflare-mu apabila belum aktif (hati-hati untuk tidak melebihi batas penggunaan pada paket gratis).
-
-Buat bucket `mappacks` dan `team-avatars` dan aktifkan subdomain R2.dev mereka, atau hubungkan domain khusus untuk masing-masing bucket.
-
-Buat bucket `mappacks-temp` dan tambahkan peraturan agar objek otomatis terhapus setelah 7 hari (kosongkan kolom prefix apabila diminta).
-
-Setelahnya, tentukan nama host ke `<cloudflare account id>.r2.cloudflarestorage.com` dan peroleh kredensial S3 dari https://dash.cloudflare.com/?to=/:account/r2/api-tokens. **Pastikan kamu memberikan izin `Edit` kepada token alih-alih izin `Read` yang diatur secara default.**
 
 ### Discord
 
@@ -257,6 +198,65 @@ config.corsace.publicUrl + /api/github
 
 Tentukan tipe konten ke `application/json` beserta dengan secret webhook milik kata sandi yang kamu buat sebelumnya.
 
+### Database
+
+`config.database`
+
+#### Pengaturan
+
+Terdapat dua cara untuk mengatur database, baik melalui Docker atau secara manual.
+
+##### Melalui Docker (Direkomendasikan)
+
+Kami menyediakan berkas `docker-compose.yml` yang akan bertindak selayaknya berkas produksi. Kamu dapat memulai layanan database dengan menggunakan perintah: `docker-compose up -d database` atau `npm run database`.
+
+Database ini akan merespon permitaan pada `127.0.0.1:3306` dengan nama database, nama pengguna, dan kata sandi `corsace`.
+
+##### Pengaturan MariaDB Manual
+
+Apabila kamu tidak ingin menggunakan Docker, kamu akan perlu untuk mengistal [MariaDB](https://mariadb.org/) dan membuat database kosong yang dapat kamu namai sesuka hati. 
+
+Untuk membuat database ini, kamu hanya perlu untuk menjalankan:
+
+```bash
+mysql -u root -p
+MySQL> create database <new_db_name>; 
+```
+
+Pastikan kamu memperbarui `config.database` dengan nama dan informasi kredensial database yang akan kamu gunakan.
+
+#### Menghasilkan Seed Database
+
+Berikan seed kepada seluruh database Corsace melalui perintah: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
+
+### Penyimpanan Objek/S3
+
+Kami menggunakan media penyimpanan objek yang kompatibel dengan S3 untuk menyimpan dan melayani paket beatmap, yang seluruhnya terkonfigurasi dalam `config.s3`.
+
+Walaupun proyek ini diutamakan untuk Cloudflare R2, kamu dapat menggunakan layanan penyimpanan objek S3 lainnya selama layanan tersebut mendukung unggahan multi-bagian dan URL pre-signed.
+
+Kami menggunakan tiga bucket:
+
+- `team-avatars` merupakan bucket publik yang menyimpan avatar tim, yang dapat dilayani oleh CDN tanpa autentikasi
+- `mappacks` merupakan bucket publik yang menyimpan paket map publik, yang dapat dilayani oleh CDN tanpa autentikasi
+- `mappacks-temp` merupakan bucket pribadi yang menyimpan paket beatmap privat yang tidak ditujukan untuk akses publik  
+
+Paket beatmap yang dihasilkan akan terlebih dahulu diunggah ke bucket ini, di mana para pengguna akan kemudian diberikan akses melalui URL yang telah ditandatangani sebelumnya (pre-signed URL).
+
+Paket beatmap yang bersifat privat tidak ditujukan untuk disimpan secara permanen. Kamu dihimbau untuk mengatur agar paket beatmap ini akan dihapus secara otomatis setelah 1 hari.
+
+Paket beatmap yang ke depannya akan dirilis secara publik akan dipindahkan ke bucket `mappacks`.
+
+#### Cloudflare R2
+
+Tuju [halaman dasbor Cloudflare R2](https://dash.cloudflare.com/?to=/:account/r2). Aktifkan paket Cloudflare-mu apabila belum aktif (hati-hati untuk tidak melebihi batas penggunaan pada paket gratis).
+
+Buat bucket `mappacks` dan `team-avatars` dan aktifkan subdomain R2.dev mereka, atau hubungkan domain khusus untuk masing-masing bucket.
+
+Buat bucket `mappacks-temp` dan tambahkan peraturan agar objek otomatis terhapus setelah 7 hari (kosongkan kolom prefix apabila diminta).
+
+Setelahnya, tentukan nama host ke `<cloudflare account id>.r2.cloudflarestorage.com` dan peroleh kredensial S3 dari https://dash.cloudflare.com/?to=/:account/r2/api-tokens. **Pastikan kamu memberikan izin `Edit` kepada token alih-alih izin `Read` yang diatur secara default.**
+
 ### Centrifugo
 
 Kami menggunakan Centrifugo untuk menampilkan notifikasi secara real-time. Kamu dapat menemukan dokumentasi seputar Centrifugo [di sini](https://centrifugal.dev/docs/getting-started/introduction).
@@ -269,6 +269,15 @@ Jalankan perintah `npm run centrifugo` untuk memulai server Centrifugo. Secara d
 Pada WSL/Windows ATAU apabila metode di atas tidak bekerja:
 Instal berkas biner (.exe) dari [daftar rilisan terbaru](https://github.com/centrifugal/centrifugo/releases) dan tambahkan ke folder root proyek ini.
 Setelahnya, jalankan perintah `npm run centrifugo:local` untuk memulai server Centrifugo. Apabila kamu ingin mengubah nomor port yang digunakan, ubah nilai parameter '-p' pada script yang terkait di berkas `package.json` dan URL API config milikmu.
+
+:::note
+In Linux/WSL while using the binary itself, you may need to run [`chmod +x centrifugo`](https://askubuntu.com/questions/443789/what-does-chmod-x-filename-do-and-how-do-i-use-it) to be able to properly run the binary executable, as otherwise it may give an error similar to this:
+
+```
+sh: 1: ./centrifugo: Permission denied
+```
+
+:::
 
 ## Langkah Berikutnya
 

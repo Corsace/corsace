@@ -1,7 +1,7 @@
 ---
 title: 让我们开始吧！
 description: 关于开始在 Corsace 中开发的文档。
-lastUpdated: 2024-08-12
+lastUpdated: 2024-08-23
 sidebar:
   order: 1
 ---
@@ -104,65 +104,6 @@ You can obtain your osu! IRC password at the bottom of the same osu! accounts se
 
 If your account is a bot account, then make sure to have `botAccount` set to true; otherwise, make set it to false.
 
-### Database
-
-`config.database`
-
-#### Setup
-
-There are 2 ways to setup the database, either via Docker or manually.
-
-##### Via Docker (Recommended)
-
-We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database` or `npm run database`.
-
-The database will listen on `127.0.0.1:3306`, with `corsace` being the database name, username and password.
-
-##### Manual MariaDB Setup
-
-If you do not want to use Docker, you will need to install [MariaDB](https://mariadb.org/) and create an empty database, named whatever you like. 
-
-It can be as simple as running:
-
-```bash
-mysql -u root -p
-MySQL> create database <new_db_name>; 
-```
-
-Make sure to update `config.database` to reflect your choice of database name and credentials.
-
-#### Seeding the Database
-
-Seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
-
-### Object Storage/S3
-
-We use S3-compatible object storage for storing and serving mappacks, configured in `config.s3`.
-
-While we target Cloudflare R2, any S3 provider should work as long as they support multipart uploads and pre-signed URLs.
-
-We use three buckets:
-
-- `team-avatars` is a public bucket that stores team avatars, can be served by a CDN without authentication
-- `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
-- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
-
-Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.
-
-Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.
-
-Mappacks that should become public get moved to the `mappacks` bucket.
-
-#### Cloudflare R2
-
-Go to the [Cloudflare R2 dashboard page](https://dash.cloudflare.com/?to=/:account/r2). Enable your plan if you haven't already (good luck exceeding free limits).
-
-Create the `mappacks` and `team-avatars` buckets and enable their R2.dev subdomains, or associate a custom domain for each.
-
-Create the `mappacks-temp` bucket and add an object lifecycle rule to delete objects after 7 days (leave prefix empty).
-
-Set hostname to `<cloudflare account id>.r2.cloudflarestorage.com`, and obtain S3 credentials from https://dash.cloudflare.com/?to=/:account/r2/api-tokens. **Make sure you give the token `Edit` permissions instead of the default `Read` permissions.**
-
 ### Discord
 
 `config.discord`
@@ -257,6 +198,65 @@ config.corsace.publicUrl + /api/github
 
 Set the content type to `application/json`, and the secret to the password you created earlier.
 
+### Database
+
+`config.database`
+
+#### Setup
+
+There are 2 ways to setup the database, either via Docker or manually.
+
+##### Via Docker (Recommended)
+
+We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database` or `npm run database`.
+
+The database will listen on `127.0.0.1:3306`, with `corsace` being the database name, username and password.
+
+##### Manual MariaDB Setup
+
+If you do not want to use Docker, you will need to install [MariaDB](https://mariadb.org/) and create an empty database, named whatever you like. 
+
+It can be as simple as running:
+
+```bash
+mysql -u root -p
+MySQL> create database <new_db_name>; 
+```
+
+Make sure to update `config.database` to reflect your choice of database name and credentials.
+
+#### Seeding the Database
+
+Seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
+
+### Object Storage/S3
+
+We use S3-compatible object storage for storing and serving mappacks, configured in `config.s3`.
+
+While we target Cloudflare R2, any S3 provider should work as long as they support multipart uploads and pre-signed URLs.
+
+We use three buckets:
+
+- `team-avatars` is a public bucket that stores team avatars, can be served by a CDN without authentication
+- `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
+- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
+
+Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.
+
+Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.
+
+Mappacks that should become public get moved to the `mappacks` bucket.
+
+#### Cloudflare R2
+
+Go to the [Cloudflare R2 dashboard page](https://dash.cloudflare.com/?to=/:account/r2). Enable your plan if you haven't already (good luck exceeding free limits).
+
+Create the `mappacks` and `team-avatars` buckets and enable their R2.dev subdomains, or associate a custom domain for each.
+
+Create the `mappacks-temp` bucket and add an object lifecycle rule to delete objects after 7 days (leave prefix empty).
+
+Set hostname to `<cloudflare account id>.r2.cloudflarestorage.com`, and obtain S3 credentials from https://dash.cloudflare.com/?to=/:account/r2/api-tokens. **Make sure you give the token `Edit` permissions instead of the default `Read` permissions.**
+
 ### Centrifugo
 
 We use Centrifugo for real-time notifications. You can find the documentation [here](https://centrifugal.dev/docs/getting-started/introduction).
@@ -269,6 +269,15 @@ Run `npm run centrifugo` to start the centrifugo server. It will be available at
 On WSL/Windows OR if the above doesn't work:
 Download the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project.
 Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If you want to change the port, change the `-p` flag in the respective script in `package.json`, and your config file's api URL.
+
+:::note
+In Linux/WSL while using the binary itself, you may need to run [`chmod +x centrifugo`](https://askubuntu.com/questions/443789/what-does-chmod-x-filename-do-and-how-do-i-use-it) to be able to properly run the binary executable, as otherwise it may give an error similar to this:
+
+```
+sh: 1: ./centrifugo: Permission denied
+```
+
+:::
 
 ## Next Steps
 

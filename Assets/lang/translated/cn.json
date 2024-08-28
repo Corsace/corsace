@@ -832,7 +832,7 @@
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
             "forfeit": "FORFEIT",
-            "first": "FIRST",
+            "first": "ROLL WINNER",
             "closeLobby": "关闭大厅",
             "postResults": "POST RESULTS"
         },
