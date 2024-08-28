@@ -677,7 +677,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     inputMessage = "";
     keywords = "";
     showScrollBottom = false;
-    fetchedAllMessages = false;
+    fetchedAllMessages = true;
     loadingMessages = false;
     messages: MatchupMessageBasic[] = [];
     showBanchoMessages = true;
