@@ -297,6 +297,14 @@
                                 >
                             </div>
                         </div>
+                        <div class="referee__matchup__messages__input_div">
+                            <input
+                                v-model="keywords"
+                                class="referee__matchup__messages__input"
+                                placeholder="Your comma separated keywords to highlight..."
+                                @input="saveToLocalStorage('keywords', $event)"
+                            >
+                        </div>
                     </div>
                 </div>
                 <div class="referee__matchup__content">
@@ -308,6 +316,7 @@
                                     v-model="settingsBuffer"
                                     class="referee__matchup__messages__input"
                                     style="width: 40px; flex: 0;"
+                                    @input="saveToLocalStorage('settingsBuffer', $event)"
                                 >
                             </div>
                             <ContentButton
@@ -654,6 +663,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
     readyTimer = "90";
 
     inputMessage = "";
+    keywords = "";
     showScrollBottom = false;
     loadMoreMessages = false;
     loadingMessages = false;
@@ -916,6 +926,9 @@ export default class Referee extends Mixins(CentrifugeMixin) {
         this.mapTimer = `${this.tournament?.mapTimer ?? 90}`;
         this.readyTimer = `${this.tournament?.readyTimer ?? 90}`;
 
+        this.keywords = localStorage.getItem("keywords") ?? "";
+        this.settingsBuffer = parseInt(localStorage.getItem("settingsBuffer") ?? "5");
+
         await this.loadMessages(true);
 
         await this.initCentrifuge(`matchup:${this.$route.params.id}`);
@@ -926,6 +939,11 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     updated () {
         this.checkScrollPosition().catch(console.error);
+    }
+
+    saveToLocalStorage (type: string, e: InputEvent) {
+        const target = e.target as HTMLInputElement;
+        localStorage.setItem(type, target.value);
     }
 
     formatDate (date: Date): string {
