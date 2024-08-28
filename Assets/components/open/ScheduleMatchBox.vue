@@ -336,6 +336,9 @@ export default class ScheduleMatchBox extends Vue {
 
                 &__content {
                     width: 100px;
+                    max-height: 100px;
+                    overflow-y: scroll;
+                    overflow-x: hidden;
                     font-size: $font-sm;
                     font-weight: bold;
                     border: 2px solid $open-dark;
