@@ -949,9 +949,7 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
         await this.initCentrifuge(`matchup:${this.$route.params.id}`);
         try {
-            const history = await this.subscription?.history({
-                limit: -1,
-            });
+            const history = await this.subscription?.history({ limit: -1 });
             console.log("history", `matchup:${this.$route.params.id}`, history);
             (history?.publications as ExtendedPublicationContext[]).filter(p => p.data.type === "message").forEach(p => this.addMessage(p.data));
         } catch (error) {
@@ -1085,13 +1083,28 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             console.error(messagesData.error);
             this.loadMoreMessages = false;
         } else {
+            const newMessages = messagesData.messages.map(message => ({
+                ...message,
+                timestamp: new Date(message.timestamp),
+            })).reverse();
+
+            // If messages were obtained from centrifuge history and this is the first time loading messages, there may be duplicates (based on content, and timestamp, see https://github.com/Corsace/corsace/blob/master/BanchoBot/functions/tournaments/matchup/runMatchup.ts#L234) with different IDs, so this removes the duplicates obtained from centrifuge history
+            if (this.messages.length > 0 && newMessages.length > 0 && this.messages[0].ID === 0) {
+                // Centrifuge history messages will have an ID based on the length of the messages array, so this can be used to loop and break, as messages from the DB will have a completely different ID
+                for (let i = 0; i < this.messages.length; i++) {
+                    if (this.messages[i].ID !== i) 
+                        break;
+
+                    if (this.messages[i].content === newMessages[newMessages.length - 1].content && this.messages[i].timestamp.getTime() === newMessages[newMessages.length - 1].timestamp.getTime())
+                        this.messages.shift();
+                }
+            }
+
             this.messages = [
-                ...messagesData.messages.map(message => ({
-                    ...message,
-                    timestamp: new Date(message.timestamp),
-                })).reverse(),
+                ...newMessages,
                 ...this.messages,
             ];
+
             this.loadMoreMessages = messagesData.messages.length === 50;
             
             await this.$nextTick();
