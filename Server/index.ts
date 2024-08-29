@@ -18,6 +18,7 @@ import centrifugoRouter from "./api/routes/centrifugo";
 import logoutRouter from "./api/routes/login/logout";
 import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
+import twitchRouter from "./api/routes/login/twitch";
 import userRouter from "./api/routes/user";
 
 import mcaRouter from "./api/routes/mca";
@@ -110,6 +111,7 @@ koa.use(Mount("/api/centrifugo", centrifugoRouter.routes()));
 /// Login
 koa.use(Mount("/api/login/discord", discordRouter.routes()));
 koa.use(Mount("/api/login/osu", osuRouter.routes()));
+koa.use(Mount("/api/login/twitch", twitchRouter.routes()));
 koa.use(Mount("/api/logout", logoutRouter.routes()));
 
 /// User

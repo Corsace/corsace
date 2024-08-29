@@ -80,6 +80,10 @@ declare module "node-config-ts" {
             };
         };
 
+        twitch: {
+            clientId: string;
+        };
+
         bn: {
             username: string;
             secret: string;
