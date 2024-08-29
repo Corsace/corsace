@@ -171,8 +171,8 @@
                 "description": "El mejor set con más de 5 minutos de duración de drenaje."
             },
             "marathonMan": {
-                "name": "Best Marathon",
-                "description": "The best beatmap with 4+ minute drain time."
+                "name": "Mejor Maratón",
+                "description": "El mejor beatmap con más de 4 minutos de tiempo de drenaje."
             },
             "hitsounding": {
                 "name": "Hitsounding",
@@ -263,19 +263,19 @@
                 "description": "El mejor set con un intenso uso de notas largas."
             },
             "longNotes4K": {
-                "name": "Best 4K Long Notes",
-                "description": "The best 4K beatmap with an intense usage of LNs."
+                "name": "Mejores Notas Largas de 4K",
+                "description": "El mejor beatmap de 4K con un uso intenso de LNs."
             },
             "longNotes7K": {
-                "name": "Best 7K Long Notes",
-                "description": "The best 7K beatmap with an intense usage of LNs."
+                "name": "Mejores Notas Largas de 7K",
+                "description": "El mejor beatmap de 7K con un uso intenso de Notas Largas."
             },
             "rice": {
-                "name": "Best Rice",
-                "description": "The best beatmap with an intense usage of rice."
+                "name": "Mejor Rice",
+                "description": "El mejor beatmap con un uso intenso de rice."
             },
             "rice4K": {
-                "name": "Best 4K Rice",
+                "name": "Mejor Rice de 4K",
                 "description": "The best 4K beatmap with an intense usage of rice."
             },
             "rice7K": {
