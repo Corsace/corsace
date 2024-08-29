@@ -276,11 +276,11 @@
             },
             "rice4K": {
                 "name": "Mejor Rice de 4K",
-                "description": "The best 4K beatmap with an intense usage of rice."
+                "description": "El mejor beatmap de 4K con un uso intenso de rice."
             },
             "rice7K": {
-                "name": "Best 7K Rice",
-                "description": "The best 7K beatmap with an intense usage of rice."
+                "name": "Mejor Rice de 7K",
+                "description": "El mejor beatmap de 7K con un uso intenso de rice."
             },
             "antiMeta": {
                 "name": "Anti Meta",
@@ -307,8 +307,8 @@
                 "description": "El mejor Storyboard en contar una gran historia."
             },
             "technicalTaiko": {
-                "name": "Best Technical",
-                "description": "The best beatmap rich in complex patterning and snap combinations."
+                "name": "Mejor Técnico",
+                "description": "El mejor beatmap rico en patrones complejos y combinaciones de snap."
             },
             "fastTaiko": {
                 "name": "Best Fast",
