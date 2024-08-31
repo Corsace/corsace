@@ -136,10 +136,19 @@ export class CategoryGenerator {
     /**
      * Creates a regular award.
      */
-    public createOrUpdate = function(categoryInfo: Category, filter: CategoryFilter, category?: Category): Category {
-        if (!category) {
+    public createOrUpdate = function(
+        categoryInfo: {
+            name: string,
+            maxNominations: number,
+            type: CategoryType,
+            mode: ModeDivision,
+            mca: MCA,
+        },
+        filter: CategoryFilter,
+        category?: Category
+    ): Category {
+        if (!category)
             category = new Category();
-        }
         
         category.name = categoryInfo.name;
         category.maxNominations = categoryInfo.maxNominations || 3;
