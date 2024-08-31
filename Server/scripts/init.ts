@@ -156,7 +156,7 @@ readFile(configPath, "utf-8", async (err, data) => {
             });
 
         // Set up an initial MCA via npm run init:mca
-        await getInfo(`Do you want to set up an initial MCA? ${redBackground}(Recommended)${resetCode} (y/n) Default: y `, (initMCA: string) => {
+        await getInfo(`Do you want to set up an initial MCA 2021 to work with? ${redBackground}(Recommended)${resetCode} (y/n) Default: y `, (initMCA: string) => {
             if (initMCA.toLowerCase() !== "n")
                 exec("npm run init:mca");
         });
@@ -184,7 +184,7 @@ readFile(configPath, "utf-8", async (err, data) => {
             }, `Cloudflare R2 team avatars bucket URL is not set.\nCreate a bucket called ${greenBoldBackground}tournament-team-avatars${resetCode} if you haven't already from the ${greenBoldBackground}R2 Overview${resetCode} page\nGo to the bucket settings and click "Allow Access" in the ${greenBoldBackground}R2.dev subdomain${resetCode} section\nCopy the URL and paste it here.\n${yellowBoldBackground}Do not share this information with anyone.${resetCode}`);
 
         // Set up an initial tournament via npm run init:tournament
-        await getInfo(`Do you want to set up an initial tournament? ${redBackground}(Recommended)${resetCode} (y/n) Default: y `, (initTournament: string) => {
+        await getInfo(`Do you want to set up an initial test tournament to work with? ${redBackground}(Recommended)${resetCode} (y/n) Default: y `, (initTournament: string) => {
             if (initTournament.toLowerCase() !== "n")
                 exec("npm run init:tournament");
         });
