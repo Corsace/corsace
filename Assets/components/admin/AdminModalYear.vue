@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, PropSync, Watch } from "vue-property-decorator";
 
 import BaseModal from "../../../Assets/components/BaseModal.vue";
 import AdminInputs, { InputField } from "./AdminInputs.vue";
@@ -38,7 +38,7 @@ import { MCAInfo } from "../../../Interfaces/mca";
 })
 export default class AdminModalYear extends Vue {
 
-    @Prop({ type: Object, default: () => null }) readonly info!: MCAInfo | null;
+    @PropSync("info", { type: Object, default: () => null }) readonly infoSync!: MCAInfo | null;
         
     @Watch("info", { immediate: true })
     onInfoChanged (info: MCAInfo | null) {
@@ -67,11 +67,10 @@ export default class AdminModalYear extends Vue {
     async save () {
         let request;
 
-        if (this.info) {
-            request = this.$axios.put(`/api/admin/years/${this.info.name}`, this.mcaInfo);
-        } else {
+        if (this.infoSync) {
+            request = this.$axios.put(`/api/admin/years/${this.infoSync.name}`, this.mcaInfo);
+        } else
             request = this.$axios.post("/api/admin/years", this.mcaInfo);
-        }
 
         const { data } = await request;
 

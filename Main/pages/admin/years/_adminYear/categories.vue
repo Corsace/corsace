@@ -92,6 +92,7 @@
         <admin-modal-category
             v-if="showModal"
             :info="selectedCategory"
+            :mode="selectedMode"
             @cancel="showModal = false"
             @updateCategory="updateCategory"
         />

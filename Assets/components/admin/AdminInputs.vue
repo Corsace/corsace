@@ -1,7 +1,7 @@
 <template>
     <div>
         <div
-            v-for="field in fields"
+            v-for="field in fieldsSync"
             :key="field.key"
             class="admin-popout__section"
         >
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, PropSync, Watch } from "vue-property-decorator";
 
 import BaseModal from "../../../Assets/components/BaseModal.vue";
 
@@ -62,8 +62,8 @@ export interface InputField {
 })
 export default class AdminInputs extends Vue {
 
-    @Prop({ type: Array, required: true }) readonly fields!: InputField[];
-    @Prop({ type: Object, default: () => ({}) }) readonly value!: Record<string, any>;
+    @PropSync("fields", { type: Array, required: true }) readonly fieldsSync!: InputField[];
+    @PropSync("value", { type: Object, default: () => ({}) }) readonly valueSync!: Record<string, any>;
 
     @Watch("updatedInput", { deep: true })
     onUpdatedInputChanged (updatedInput: Record<string, any>) {
@@ -73,7 +73,7 @@ export default class AdminInputs extends Vue {
     updatedInput: Record<string, string | number> = {};
 
     mounted () {
-        this.updatedInput = JSON.parse(JSON.stringify(this.value));
+        this.updatedInput = JSON.parse(JSON.stringify(this.valueSync));
     }
 
 }

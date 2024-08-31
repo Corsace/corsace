@@ -65,8 +65,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { Vue, Component, PropSync, Watch } from "vue-property-decorator";
 
 import BaseModal from "../../../Assets/components/BaseModal.vue";
 import AdminInputs from "./AdminInputs.vue";
@@ -82,7 +81,8 @@ import { InputField } from "./AdminInputs.vue";
 })
 export default class AdminModalCategory extends Vue {
 
-    @Prop({ type: Object, default: () => null }) readonly info!: CategoryInfo | null;
+    @PropSync("info", { type: Object, default: () => null }) readonly infoSync!: CategoryInfo | null;
+    @PropSync("mode", { type: String, default: "" }) readonly modeSync!: string;
 
     @Watch("info", { immediate: true })
     onInfoChanged (info: CategoryInfo | null) {
@@ -105,8 +105,6 @@ export default class AdminModalCategory extends Vue {
             topOnly: info?.filter?.topOnly,
         };
     }
-
-    @State selectedMode!: string;
     
     category: Partial<Category> & { isFiltered: boolean } | null = null;
     filterParams: CategoryFilter | null = null;
@@ -141,11 +139,11 @@ export default class AdminModalCategory extends Vue {
         const postData = {
             category: this.category,
             filter: this.filterParams,
-            mode: this.selectedMode,
+            mode: this.modeSync,
         };
 
-        if (this.info)
-            request = this.$axios.put(`/api/admin/years/${this.$route.params.adminYear}/categories/${this.info.id}`, postData);
+        if (this.infoSync)
+            request = this.$axios.put(`/api/admin/years/${this.$route.params.adminYear}/categories/${this.infoSync.id}`, postData);
         else
             request = this.$axios.post(`/api/admin/years/${this.$route.params.adminYear}/categories`, postData);
 
