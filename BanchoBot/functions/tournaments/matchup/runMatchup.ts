@@ -234,6 +234,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (!state.matchups[matchup.ID])
             return;
 
+        log(matchup, `${message.user.ircUsername} says: ${message.content}`);
+
         const user = await getUserInMatchup(users, message);
         const matchupMessage = new MatchupMessage();
         matchupMessage.timestamp = new Date();
