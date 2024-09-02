@@ -54,6 +54,8 @@
    },
    "devDependencies": {
       "@astrojs/starlight": "^0.10.0",
+      "@inquirer/checkbox": "^2.4.7",
+      "@inquirer/select": "^2.4.7",
       "@nuxt/types": "^2.16.3",
       "@nuxt/typescript-build": "^2.0.3",
       "@types/archiver": "^5.3.2",
