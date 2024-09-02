@@ -24,14 +24,20 @@ const banchoClient = new BanchoClient({
     botAccount: config.osu.bancho.botAccount,
     apiKey: config.osu.v1.apiKey,
 });
-banchoClient.connect().catch(err => {
-    if (err) throw err;
+banchoClient.connect()
+    .then(() => {
+        console.log(`Logged into Bancho as ${banchoClient.getSelf().ircUsername}`);
+        banchoClient.on("state", (connectState) => {
+            console.log(`Bancho state: ${connectState}`);
+        });
+    })
+    .catch(err => {
+        console.error("Failed to connect to Bancho.", err);
+        process.exit(1);
+    });
+banchoClient.on("PM", (msg) => {
+    console.log(`[PM] ${msg.user.ircUsername} says to ${msg.recipient.ircUsername}: ${msg.content}`);
 });
-
-banchoClient.on("connected", () => {
-    console.log(`Logged into Bancho as ${banchoClient.getSelf().ircUsername}`);
-});
-
 banchoClient.on("PM", messageHandler);
 
 banchoClient.on("CM", messageHandler);

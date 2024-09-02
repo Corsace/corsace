@@ -632,6 +632,12 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
+            // Check if guild is a community server
+            if (!m.guild!.features.includes("COMMUNITY") && (channelTypeMenu === "Announcements" || channelTypeMenu === "Streamannouncements" || channelTypeMenu === "Jobboard" || channelTypeMenu === "Mappoolqa")) {
+                await i.reply("This server is not a community server, so you can't create announcement, stream announcement, job board, or mappool QA channels.\nIf you want to create these channels, turn this server into a community server from the server settings.");
+                setTimeout(async () => (await i.deleteReply()), 5000);
+                return;
+            }
 
             let channelType = ChannelType.GuildText;
             if (channelTypeMenu === "Announcements" || channelTypeMenu === "Streamannouncements")

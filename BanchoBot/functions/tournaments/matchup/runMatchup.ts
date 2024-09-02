@@ -145,18 +145,23 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     const users = await allAllowedUsersForMatchup(matchup);
 
     // Periodically save messages every 15 seconds
-    const messageSaver = setInterval(async () => {
-        const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);
-        if (messagesToSave.length > 0) {
-            await MatchupMessage
-                .createQueryBuilder()
-                .insert()
-                .values(messagesToSave)
-                .execute();
+    const saveMessages = async () => {
+        try {
+            const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);
+            if (messagesToSave.length > 0) {
+                await MatchupMessage
+                    .createQueryBuilder()
+                    .insert()
+                    .values(messagesToSave)
+                    .execute();
 
-            lastMessageSaved = messagesToSave[messagesToSave.length - 1].timestamp.getTime();
+                lastMessageSaved = messagesToSave[messagesToSave.length - 1].timestamp.getTime();
+            }
+        } catch(err) {
+            log(matchup, `Error saving messages: ${err}`);
         }
-    }, 15 * 1000);
+    };
+    const saveMessagesInterval = setInterval(saveMessages, 15 * 1000);
 
     // Close lobby 15 minutes after matchup time if not all captains had joined
     setTimeout(async () => {
@@ -228,6 +233,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpChannel.on("message", async (message) => {
         if (!state.matchups[matchup.ID])
             return;
+
+        log(matchup, `${message.user.ircUsername} says: ${message.content}`);
 
         const user = await getUserInMatchup(users, message);
         const matchupMessage = new MatchupMessage();
@@ -786,12 +793,44 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         }, matchup.streamer ? 30 * 1000 : leniencyTime);
     });
 
-    mpLobby.channel.on("PART", async (member) => {
-        if (member.user.isClient()) {
-            // Lobby is closed
-            invCollector?.stop();
-            refCollector?.stop();
+    const connectionListener = async () => {
+        log(matchup, `Trying to re-join channel ${mpLobby.id}`);
+        try {
+            await mpChannel.join();
+            log(matchup, `Re-joined channel, informing users and triggering panic`);
+            mpChannel.sendMessage("Encountered an IRC connection issue, match will resume upon human review.")
+                .catch((err) => log(matchup, `Error while notifying users of connection issue: ${err}`));
+            panic("Bancho client disconnected")
+                .catch((err) => log(matchup, `Error while panicking: ${err}`));
+        } catch(err) {
+            // Most likely Bancho actually rebooted, so we should terminate the lobby
+            log(matchup, `Failed to re-join lobby ${mpLobby.id}, terminating: ${err}`);
+            await terminateLobby();
+        }
+    };
+    banchoClient.on("connected", connectionListener);
 
+    mpChannel.on("PART", (member) => {
+        if (!member.user.isClient())
+            return;
+
+        // In case of a disconnection, bancho.js is firing PART events before updating `connectState`, so we must wait a tick before checking.
+        // If we're disconncted, trying to rejoin the channel before terminating.
+        process.nextTick(() => {
+            if (!banchoClient.isConnected())
+                return;
+            void terminateLobby();
+        });
+    });
+
+    async function terminateLobby () {
+        // Lobby is closed
+        invCollector?.stop();
+        refCollector?.stop();
+        banchoClient.removeListener("connected", connectionListener);
+        clearInterval(saveMessagesInterval);
+
+        try {
             // If forfeit, save from the state because forfeit is assigned from the ref endpoint, not the bot (and the below functionality would remove it otherwise)
             if (state.matchups[matchup.ID] && state.matchups[matchup.ID].matchup.forfeit)
                 matchup = state.matchups[matchup.ID].matchup;
@@ -805,20 +844,19 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await matchup.save();
 
                 await assignTeamsToNextMatchup(matchup.ID);
-            } else 
+            } else
                 await matchup.save();
-
-            await publish(centrifugoChannel, { type: "closed" });
-
-            // Let messageSaver run one more time before clearing
-            await sleep(15 * 1000);
-            clearInterval(messageSaver);
+        } catch(err) {
+            log(matchup, `Error while terminating lobby: ${err}`);
+        } finally {
+            await saveMessages();
+            await publish(centrifugoChannel, { type: "closed" }).catch((err) => log(matchup, `Error while publishing closed event: ${err}`));
 
             state.runningMatchups--;
             delete state.matchups[matchup.ID];
             await maybeShutdown();
         }
-    });
+    }
 }
 
 export default async function runMatchup (matchup: Matchup, replace = false, auto = false, runBy?: string) {
