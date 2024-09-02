@@ -99,11 +99,11 @@ readFile(configPath, "utf-8", async (err, data) => {
     if (!configData.database.host || !configData.database.port || !configData.database.database || !configData.database.username || !configData.database.password) {
         await getInfo("Database is not set, use default settings? (y/n) Default: y ", async (useDefault: string) => {
             if (useDefault.toLowerCase() === "n") {
-                await getInfo("Database host: ", (host: string) => configData.database.host = host);
-                await getInfo("Database port: ", (port: string) => configData.database.port = parseInt(port));
-                await getInfo("Database name: ", (database: string) => configData.database.database = database);
-                await getInfo("Database username: ", (username: string) => configData.database.username = username);
-                await getInfo("Database password: ", (password: string) => configData.database.password = password);
+                await getInfo("Database host (Example: localhost): ", (host: string) => configData.database.host = host);
+                await getInfo("Database port (Example: 3306): ", (port: string) => configData.database.port = parseInt(port));
+                await getInfo("Database name (Example: corsace): ", (database: string) => configData.database.database = database);
+                await getInfo("Database username (Example: corsace): ", (username: string) => configData.database.username = username);
+                await getInfo("Database password (Example: corsace): ", (password: string) => configData.database.password = password);
                 return;
             }
 
@@ -118,7 +118,7 @@ readFile(configPath, "utf-8", async (err, data) => {
     }
 
     // Migration stuff
-    await getInfo(`Start the database service from docker? ${redBackground}(Recommended)${resetCode} (y/n) Default: y `, (isDocker: string) => {
+    await getInfo(`Start the database service from docker/Do you have docker installed? ${redBackground}(Recommended)${resetCode} (y/n) Default: y `, (isDocker: string) => {
         if (isDocker.toLowerCase() !== "n")
             exec("npm run database");
     });
@@ -188,5 +188,11 @@ readFile(configPath, "utf-8", async (err, data) => {
             if (initTournament.toLowerCase() !== "n")
                 exec("npm run init:tournament");
         });
+    });
+
+    // Backup
+    await getInfo(`Do you want to backup the database? ${redBackground}(Recommended)${resetCode} (y/n) Default: y `, (backup: string) => {
+        if (backup.toLowerCase() !== "n")
+            exec("NODE_ENV=development npm run backup");
     });
 });

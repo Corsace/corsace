@@ -95,6 +95,9 @@
       "init:tournament": "ts-node --files --project Server/tsconfig.json ./Server/scripts/initTournament.ts",
       "init:mca": "ts-node --files --project Server/tsconfig.json ./Server/scripts/initMCA.ts",
 
+      "backup": "ts-node --files --project Server/tsconfig.json ./Server/scripts/backupDB.ts",
+      "restore": "ts-node --files --project Server/tsconfig.json ./Server/scripts/restoreDB.ts",
+
       "build:ayim": "cd ./AYIM && nuxt build",
       "build:mca": "cd ./MCA && nuxt build",
       "build:main": "cd ./Main && nuxt build",
