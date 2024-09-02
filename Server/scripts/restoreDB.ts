@@ -1,6 +1,6 @@
 import { createInterface } from "readline";
 import ormConfig from "../../ormconfig";
-import { stdin, stdout } from "process";
+import { exit, stdin, stdout } from "process";
 import { execSync } from "child_process";
 
 if (process.env.NODE_ENV !== "development") {
@@ -9,9 +9,10 @@ if (process.env.NODE_ENV !== "development") {
 
 ormConfig.initialize().then(async (dataSource) => {
     // Delete and recreate database
-    await dataSource.dropDatabase();
+    const queryRunner = dataSource.createQueryRunner();
+    await queryRunner.dropDatabase("corsace", true);
     console.log("Database dropped");
-    await dataSource.createQueryRunner().createDatabase("corsace");
+    await queryRunner.createDatabase("corsace", true);
     console.log("Database recreated");
 
     createInterface(stdin, stdout).question("Enter backup name: ", backupName => {
@@ -20,9 +21,10 @@ ormConfig.initialize().then(async (dataSource) => {
         try {
             execSync(dockerExecCommand, { stdio: "inherit" });
             console.log(`Database restored from ${backupName.replace(".sql", "").trim()}.sql`);
+            exit(0);
         } catch (error) {
             console.error(`Error executing command: ${dockerExecCommand}`, error);
+            exit(1);
         }
     });
-
 }).catch(console.error);
