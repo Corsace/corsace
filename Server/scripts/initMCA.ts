@@ -4,6 +4,7 @@ import { ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
 import { CategoryFilter, CategoryGenerator } from "../../Models/MCA_AYIM/category";
 import { CategoryType } from "../../Interfaces/category";
 import { exit } from "process";
+import { sleep } from "../utils/sleep";
 
 const mca2021Categories: {
     name: string,
@@ -886,6 +887,9 @@ ormConfig.initialize().then(async () => {
         console.log("\x1b[41;1mMCA 2021 already exists!\x1b[0m");
         exit(0);
     }
+
+    console.log("\x1b[43;1mWARNING: This script is for development purposes only.\x1b[0m\nThis will create a new MCA 2021 with all of the categories used in the official MCA 2021.\nScript will start in 5 seconds.");
+    await sleep(5000);
 
     mca = await MCA.fillAndSave({
         year: 2021,

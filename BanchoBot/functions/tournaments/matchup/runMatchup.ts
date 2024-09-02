@@ -34,6 +34,7 @@ import { publishSettings } from "./centrifugo";
 import assignTeamsToNextMatchup from "../../../../Server/functions/tournaments/matchups/assignTeamsToNextMatchup";
 import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
 import { MapStatus } from "../../../../Interfaces/matchup";
+import { sleep } from "../../../../Server/utils/sleep";
 import { publish } from "../../../../Server/functions/centrifugo";
 
 const winConditions = {
@@ -142,7 +143,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     }
 
     const users = await allAllowedUsersForMatchup(matchup);
-    const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     // Periodically save messages every 15 seconds
     const messageSaver = setInterval(async () => {
@@ -411,7 +411,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             started = true;
             await mpChannel.sendMessage("matchup's now starting (captains dont need to stay in lobby)");
 
-            await pause(leniencyTime);
+            await sleep(leniencyTime);
             try {
                 log(matchup, "Picking map");
                 await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, false);
@@ -491,7 +491,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await mpChannel.sendMessage("all captains now exist");
             await mpChannel.sendMessage("to get the first map up earlier, have a captain type \"!start\"");
             await mpChannel.sendMessage(`otherwise, the matchup is scheduled to start at ${matchup.date.toLocaleString("en-US", { timeZone: "UTC" })}`);
-            await pause(matchup.date.getTime() - Date.now());
+            await sleep(matchup.date.getTime() - Date.now());
             if (started)
                 return;
         }
@@ -500,7 +500,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         await mpChannel.sendMessage(`matchup has started (only ${matchup.stage!.tournament.matchupSize} players per map)`);
         await mpChannel.sendMessage("captains don't need to stay if they're not playing");
 
-        await pause(leniencyTime);
+        await sleep(leniencyTime);
         try {
             log(matchup, "Picking map");
             await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, false);
@@ -771,7 +771,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 const end = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, true);
                 if (end) {
                     await mpChannel.sendMessage(`no more maps to play, closing lobby in ${leniencyTime / 1000} seconds`);
-                    await pause(leniencyTime);
+                    await sleep(leniencyTime);
                     if (!state.matchups[matchup.ID].autoRunning)
                         return;
                     await mpLobby.closeLobby();
@@ -811,7 +811,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await publish(centrifugoChannel, { type: "closed" });
 
             // Let messageSaver run one more time before clearing
-            await pause(15 * 1000);
+            await sleep(15 * 1000);
             clearInterval(messageSaver);
 
             state.runningMatchups--;
