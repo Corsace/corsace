@@ -86,7 +86,7 @@ ormConfig.initialize().then(async () => {
 
     // Base tournament
     const tournament = new Tournament();
-    tournament.name = "Test Tournament";
+    tournament.name = "Test";
     tournament.abbreviation = "TT";
     tournament.description = "This is a test tournament";
     tournament.server = config.discord.guild;
@@ -148,6 +148,7 @@ ormConfig.initialize().then(async () => {
     qualifierStage.initialSize = -1;
     qualifierStage.finalSize = 32;
     qualifierStage.scoringMethod = ScoringMethod.ScoreV2;
+    qualifierStage.rounds = [];
     tournament.stages.push(qualifierStage);
 
     // Single Elim Stage
@@ -281,7 +282,7 @@ ormConfig.initialize().then(async () => {
 
     for (const role of rolesToMake) {
         const discordRole = await discordServer.roles.create({
-            name: `${tournament.name} ${role.toString()}`,
+            name: `${tournament.name} ${TournamentRoleType[role]}`,
             reason: `Created by ${user.discord.username} for the tournament ${tournament.name}`,
             mentionable: true,
         });
@@ -301,9 +302,9 @@ ormConfig.initialize().then(async () => {
 
         const channelObject: GuildChannelCreateOptions = {
             type: channelType,
-            name: `${tournament.abbreviation}-${channel.toString()}`,
-            topic: `Tournament ${tournament.name} channel for ${channel.toString()}`,
-            reason: `${tournament.name} channel created by ${user.discord.username} for ${channel.toString()} purposes.`,
+            name: `${tournament.abbreviation}-${TournamentChannelType[channel]}`,
+            topic: `Tournament ${tournament.name} channel for ${TournamentChannelType[channel]}`,
+            reason: `${tournament.name} channel created by ${user.discord.username} for ${TournamentChannelType[channel]} purposes.`,
             defaultAutoArchiveDuration: 10080,
         };
         const allowedRoleTypes = getTournamentChannelTypeRoles()[channel];
@@ -377,7 +378,7 @@ ormConfig.initialize().then(async () => {
         .addFields(
             tournament.roles.map(r => {
                 return {
-                    name: r.roleType.toString(),
+                    name: TournamentRoleType[r.roleType],
                     value: `<@&${r.roleID}>`,
                 };
             }));
@@ -387,7 +388,7 @@ ormConfig.initialize().then(async () => {
         .addFields(
             tournament.channels.map(c => {
                 return {
-                    name: c.channelType.toString(),
+                    name: TournamentChannelType[c.channelType],
                     value: `<#${c.channelID}>`,
                 };
             }));
@@ -528,8 +529,7 @@ ormConfig.initialize().then(async () => {
     const discordUser = await discordServer.members.fetch(user.discord.userID);
     await discordUser.roles.add([...participantRoles.map(r => r.roleID), ...captainRoles.map(r => r.roleID)]);
 
-    tournament.teams.push(team1);
-    tournament.teams.push(team2);
+    tournament.teams = [team1, team2];
     await tournament.save();
 
     if (res === "teams") {

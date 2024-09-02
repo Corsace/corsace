@@ -11,7 +11,7 @@ const yellowBackground = "\x1b[43m";
 const yellowBoldBackground = "\x1b[43;1m";
 const greenBackground = "\x1b[42m";
 const greenBoldBackground = "\x1b[42;1m";
-const linkHighlight = "\x1b[44;4m;1m";
+const linkHighlight = "\x1b[44;1m";
 const resetCode = "\x1b[0m";
 
 const configPath = `./config/user/${process.env.USER}.json`;
@@ -20,19 +20,19 @@ const exec = (command: string) => execSync(command, { stdio: "inherit" });
 
 readFile(configPath, "utf-8", async (err, data) => {
     if (err) {
-        console.error(`${redBoldBackground}Error reading config file:${resetCode}\n`,err,`\nPlease create and copy the default config file shown in ./config/default.json to ${configPath} and try again.`);
+        console.error(`${redBoldBackground}Error reading config file:${resetCode}\n`,err,`\n${redBoldBackground}Please create and copy the default config file shown in ./config/default.json to ${configPath} and try again.${resetCode}`);
         return;
     }
 
     const configData = JSON.parse(data) as IConfig;
 
-    const getInfo = async (question: string, cb: (result: string) => void, initialText?: string) => {
+    const getInfo = async (question: string, cb: ((result: string) => Promise<void>) | ((result: string) => void), initialText?: string) => {
         return new Promise<void>((resolve, reject) => {
             if (initialText)
                 console.log(`\x1b[2J\x1b[H\n${initialText}`);
             const rl = createInterface(stdin, stdout);
-            rl.question(question, (result: string) => {
-                cb(result);
+            rl.question(question, async (result: string) => {
+                await cb(result);
                 writeFile(configPath, JSON.stringify(configData, null, 4), e => {
                     if (e) {
                         console.error(`${redBoldBackground}Error writing to config file:${resetCode}\n`,e);
