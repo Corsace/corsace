@@ -439,7 +439,7 @@ export class User extends BaseEntity {
     public async getOsuAPIV2Data (modeID: ModeDivisionType = 1): Promise<osuV2Me | osuV2User> {
         try {
             const accessToken = this.osu.accessToken ?? await this.getAccessToken("osu");
-            return osuV2Client.getMe(accessToken);
+            return osuV2Client.getMe(accessToken, modeIDToMode()[modeID]);
         } catch (e) {
             // Invalid access token or it's not found
             if (Axios.isAxiosError(e) && e.code === "401" || e instanceof Error)
