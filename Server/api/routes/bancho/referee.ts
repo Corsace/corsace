@@ -390,10 +390,11 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
     const matchup = state.matchups[ctx.state.matchupID]?.matchup ?? await Matchup
         .createQueryBuilder("matchup")
         .innerJoinAndSelect("matchup.sets", "sets")
+        .innerJoinAndSelect("sets.maps", "setMaps")
         .innerJoinAndSelect("matchup.stage", "stage")
         .innerJoinAndSelect("stage.mappool", "mappool")
         .innerJoinAndSelect("mappool.slots", "slots")
-        .innerJoinAndSelect("slots.maps", "maps")
+        .innerJoinAndSelect("slots.maps", "slotMaps")
         .where("matchup.ID = :id", { id: ctx.state.matchupID })
         .getOne();
     if (!matchup) {
