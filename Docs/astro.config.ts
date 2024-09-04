@@ -85,7 +85,7 @@ export default defineConfig({
                 },
                 {
                     label: "Design",
-                    autogenerate: { directory: "design", collapsed: true },
+                    link: "https://figma.com/design/7TIFgrC3xanb14A3GTDllb",
                 },
             ],
         }),
