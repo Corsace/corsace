@@ -19,7 +19,7 @@
             </thead>
             <tbody>
                 <tr
-                    v-for="(item, i) in items"
+                    v-for="(item, i) in itemsSync"
                     :key="'item-' + i"
                 >
                     <td
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 export enum Format {
@@ -69,12 +69,12 @@ export default class DataTable extends Vue {
 
     @State viewTheme!: "light" | "dark";
     
-    @Prop({ type: Array, default: () => [] }) readonly fields!: (Field | string)[];
-    @Prop({ type: Array, required: true }) readonly items!: any[];
+    @PropSync("fields",{ type: Array, default: () => [] }) readonly fieldsSync!: (Field | string)[];
+    @PropSync("items", { type: Array, required: true }) readonly itemsSync!: any[];
 
     get formattedHeaders (): Field[] {
-        if (this.fields.length) {
-            return this.fields.map(f => {
+        if (this.fieldsSync.length) {
+            return this.fieldsSync.map(f => {
                 if (typeof f === "string") {
                     return {
                         key: f,
@@ -100,8 +100,8 @@ export default class DataTable extends Vue {
             });
         }
 
-        if (this.items.length) {
-            return Object.keys(this.items[0]).map(k => ({
+        if (this.itemsSync.length) {
+            return Object.keys(this.itemsSync[0]).map(k => ({
                 key: k,
                 label: k,
             }));

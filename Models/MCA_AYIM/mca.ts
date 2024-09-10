@@ -21,22 +21,31 @@ export class MCA extends BaseEntity {
     @OneToMany(() => Category, category => category.mca)
         categories!: Category[];
 
-    // TODO: What teh fucvk is the type for this
-    static fillAndSave (data: any, mca?: MCA): Promise<MCA> {
+    static fillAndSave (
+        data: {
+            year: number,
+            nominationStart: Date | string,
+            nominationEnd: Date | string,
+            votingStart: Date | string,
+            votingEnd: Date | string,
+            results: Date | string,
+        },
+        mca?: MCA
+    ): Promise<MCA> {
         if (!mca) {
             mca = new MCA();
             mca.year = data.year;
         }
 
         mca.nomination = {
-            start: data.nominationStart,
-            end: data.nominationEnd,
+            start: typeof data.nominationStart === "string" ? new Date(data.nominationStart) : data.nominationStart,
+            end: typeof data.nominationEnd === "string" ? new Date(data.nominationEnd) : data.nominationEnd,
         };
         mca.voting = {
-            start: data.votingStart,
-            end: data.votingEnd,
+            start: typeof data.votingStart === "string" ? new Date(data.votingStart) : data.votingStart,
+            end: typeof data.votingEnd === "string" ? new Date(data.votingEnd) : data.votingEnd,
         };
-        mca.results = data.results;
+        mca.results = typeof data.results === "string" ? new Date(data.results) : data.results;
 
         return mca.save();
     }

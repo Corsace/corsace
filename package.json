@@ -54,6 +54,8 @@
    },
    "devDependencies": {
       "@astrojs/starlight": "^0.10.0",
+      "@inquirer/checkbox": "^2.4.7",
+      "@inquirer/select": "^2.4.7",
       "@nuxt/types": "^2.16.3",
       "@nuxt/typescript-build": "^2.0.3",
       "@types/archiver": "^5.3.2",
@@ -89,6 +91,13 @@
       "ts-node-dev": "^2.0.0"
    },
    "scripts": {
+      "init": "ts-node --files --project Server/tsconfig.json ./Server/scripts/init.ts",
+      "init:tournament": "ts-node --files --project Server/tsconfig.json ./Server/scripts/initTournament.ts",
+      "init:mca": "ts-node --files --project Server/tsconfig.json ./Server/scripts/initMCA.ts",
+
+      "backup": "ts-node --files --project Server/tsconfig.json ./Server/scripts/backupDB.ts",
+      "restore": "ts-node --files --project Server/tsconfig.json ./Server/scripts/restoreDB.ts",
+
       "build:ayim": "cd ./AYIM && nuxt build",
       "build:mca": "cd ./MCA && nuxt build",
       "build:main": "cd ./Main && nuxt build",
@@ -126,7 +135,6 @@
 
       "concatNoms": "ts-node --files --project Server/tsconfig.json ./Server/scripts/concatNoms.ts",
       "dupeCmds": "ts-node --files --project Server/tsconfig.json ./Server/scripts/duplicateCommands.ts",
-
       "dupeLangProps": "ts-node --files --project Server/tsconfig.json ./Server/scripts/duplicateLanguageProperties.ts",
       "fetchMaps": "ts-node --files --project Server/tsconfig.json ./Server/scripts/fetchYearMaps.ts",
 

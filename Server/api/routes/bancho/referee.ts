@@ -18,6 +18,7 @@ import { Stage } from "../../../../Models/tournaments/stage";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Team } from "../../../../Models/tournaments/team";
 import { Round } from "../../../../Models/tournaments/round";
+import { sleep } from "../../../utils/sleep";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
@@ -255,7 +256,6 @@ banchoRefereeRouter.$post("/:matchupID/roll", async (ctx) => {
         return;
     }
 
-    const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     const mpChannel = state.matchups[ctx.state.matchupID].lobby.channel;
     if (allowed === "captains")
         await mpChannel.sendMessage("OK we're gonna roll now, I want the captains to do !roll, higher roll will be considered Team 1");
@@ -263,9 +263,9 @@ banchoRefereeRouter.$post("/:matchupID/roll", async (ctx) => {
         await mpChannel.sendMessage("OK we're gonna roll now, I want the stand-in captains to do !roll, higher roll will be considered Team 1");
     else if (allowed === "bot") {
         await mpChannel.sendMessage("OK we're gonna roll now, I'm gonna run !roll 2");
-        await pause(100);
+        await sleep(100);
         await mpChannel.sendMessage(`${state.matchups[ctx.state.matchupID].matchup.team1?.name} will be 1 and ${state.matchups[ctx.state.matchupID].matchup.team2?.name} will be 2`);
-        await pause(100);
+        await sleep(100);
         await mpChannel.sendMessage("!roll 2");
     }
 

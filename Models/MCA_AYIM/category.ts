@@ -7,35 +7,35 @@ import { CategoryCondensedInfo, CategoryInfo, CategoryType } from "../../Interfa
 
 export class CategoryFilter {
 
-    @Column({ nullable: true })
-        minLength?: number;
+    @Column({ type: "int", nullable: true })
+        minLength?: number | null;
 
-    @Column({ nullable: true })
-        maxLength?: number;
+    @Column({ type: "int", nullable: true })
+        maxLength?: number | null;
 
-    @Column({ nullable: true })
-        minBPM?: number;
+    @Column({ type: "int", nullable: true })
+        minBPM?: number | null;
 
-    @Column({ nullable: true })
-        maxBPM?: number;
+    @Column({ type: "int", nullable: true })
+        maxBPM?: number | null;
 
-    @Column({ nullable: true })
-        minSR?: number;
+    @Column({ type: "int", nullable: true })
+        minSR?: number | null;
 
-    @Column({ nullable: true })
-        maxSR?: number;
+    @Column({ type: "int", nullable: true })
+        maxSR?: number | null;
 
-    @Column({ nullable: true })
-        minCS?: number;
+    @Column({ type: "int", nullable: true })
+        minCS?: number | null;
 
-    @Column({ nullable: true })
-        maxCS?: number;
+    @Column({ type: "int", nullable: true })
+        maxCS?: number | null;
 
-    @Column({ default: false })
+    @Column({ type: "bool", default: false })
         topOnly?: boolean;
 
-    @Column({ nullable: true })
-        rookie?: boolean;
+    @Column({ type: "bool", nullable: true })
+        rookie?: boolean | null;
 
 }
 
@@ -136,10 +136,19 @@ export class CategoryGenerator {
     /**
      * Creates a regular award.
      */
-    public createOrUpdate = function(categoryInfo: Category, filter: CategoryFilter, category?: Category): Category {
-        if (!category) {
+    public createOrUpdate = function(
+        categoryInfo: {
+            name: string,
+            maxNominations: number,
+            type: CategoryType,
+            mode: ModeDivision,
+            mca: MCA,
+        },
+        filter: CategoryFilter,
+        category?: Category
+    ): Category {
+        if (!category)
             category = new Category();
-        }
         
         category.name = categoryInfo.name;
         category.maxNominations = categoryInfo.maxNominations || 3;

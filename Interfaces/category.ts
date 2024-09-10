@@ -1,16 +1,16 @@
 import { ModeDivision } from "./modes";
 
 export interface CategoryFilter {
-    minLength?: number;
-    maxLength?: number;
-    minBPM?: number;
-    maxBPM?: number;
-    minSR?: number;
-    maxSR?: number;
-    minCS?: number;
-    maxCS?: number;
+    minLength?: number | null;
+    maxLength?: number | null;
+    minBPM?: number | null;
+    maxBPM?: number | null;
+    minSR?: number | null;
+    maxSR?: number | null;
+    minCS?: number | null;
+    maxCS?: number | null;
     topOnly?: boolean;
-    rookie?: boolean;
+    rookie?: boolean | null;
 }
 
 export interface CategoryCondensedInfo {
