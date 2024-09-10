@@ -67,7 +67,7 @@ readFile(configPath, "utf-8", async (err, data) => {
 
     // Check discord server and channels
     if (!configData.discord.guild || configData.discord.guild === "guild ID")
-        await getInfo("Discord server ID: ", (guild: string) => configData.discord.guild = guild, `Discord server ID is not set.\nCreate a testing discord server if you haven't already\nGet the ID by right-clicking the server icon and selecting "Copy Server ID".\n${yellowBoldBackground}If you haven't turned on Developer Mode in Discord, do so by going to User Settings -> Advanced -> Developer Mode.${resetCode}`);
+        await getInfo("Discord server ID: ", (guild: string) => configData.discord.guild = guild, `Discord server ID is not set.\nCreate a new discord server for testing if you haven't already\nGet the ID by right-clicking the server icon and selecting "Copy Server ID".\n${yellowBoldBackground}If you haven't turned on Developer Mode in Discord, do so by going to User Settings -> Advanced -> Developer Mode.${resetCode}`);
     if (!configData.discord.logChannel || configData.discord.logChannel === "channel ID")
         await getInfo("Discord log channel ID: ", (logChannel: string) => configData.discord.logChannel = logChannel, `Discord log channel ID is not set.\nCreate one if you haven't already\nGet the ID by right-clicking the channel and selecting "Copy Channel ID".`);
     if (!configData.discord.coreChannel || configData.discord.coreChannel === "channel ID")
