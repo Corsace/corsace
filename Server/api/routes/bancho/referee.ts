@@ -27,6 +27,14 @@ banchoRefereeRouter.$use(koaBasicAuth({
     pass: config.interOpAuth.password,
 }));
 
+const allowedEndpointsWithoutRunningLobby = [
+    "createLobby",
+    "forfeit",
+    "first",
+    "selectMap",
+    "deleteMap",
+];
+
 banchoRefereeRouter.$use<{ pulse: boolean }>("/:matchupID", async (ctx, next) => {
     const id = ctx.params.matchupID;
     if (!id || isNaN(parseInt(id))) {
@@ -63,13 +71,13 @@ banchoRefereeRouter.$use<{ pulse: boolean }>("/:matchupID", async (ctx, next) =>
                 success: true,
                 pulse: false,
             };
-        else if (endpoint !== "createLobby" && endpoint !== "forfeit")
+        else if (!allowedEndpointsWithoutRunningLobby.includes(endpoint))
             ctx.body = {
                 success: false,
                 error: "Matchup not found",
             };
 
-        if (endpoint !== "createLobby" && endpoint !== "forfeit")
+        if (!allowedEndpointsWithoutRunningLobby.includes(endpoint))
             return;
     }
 
@@ -86,7 +94,6 @@ banchoRefereeRouter.$post<{ pulse: boolean }>("/:matchupID/pulse", async (ctx) =
         return;
     }
 
-    // TODO: Remove ! after reactive koa typing is functional
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
@@ -372,7 +379,25 @@ banchoRefereeRouter.$post("/:matchupID/addRef", async (ctx) => {
 
 banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
     const mapID = ctx.request.body.mapID;
-    if (!state.matchups[ctx.state.matchupID] || !mapID || typeof mapID !== "number" || isNaN(mapID)) {
+    if (!mapID || typeof mapID !== "number" || isNaN(mapID)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid map ID",
+        };
+        return;
+    }
+
+    const matchup = state.matchups[ctx.state.matchupID]?.matchup ?? await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoinAndSelect("matchup.sets", "sets")
+        .innerJoinAndSelect("sets.maps", "setMaps")
+        .innerJoinAndSelect("matchup.stage", "stage")
+        .innerJoinAndSelect("stage.mappool", "mappool")
+        .innerJoinAndSelect("mappool.slots", "slots")
+        .innerJoinAndSelect("slots.maps", "slotMaps")
+        .where("matchup.ID = :id", { id: ctx.state.matchupID })
+        .getOne();
+    if (!matchup) {
         ctx.body = {
             success: false,
             error: "Matchup not found",
@@ -398,8 +423,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
         return;
     }
 
-    // TODO: Remove ! after reactive koa typing is functional
-    const slot = state.matchups[ctx.state.matchupID].matchup.stage!.mappool!.flatMap(pool => pool.slots).find(poolSlot => poolSlot.maps.some(map => map.ID === mapID));
+    const slot = matchup.stage!.mappool!.flatMap(pool => pool.slots).find(poolSlot => poolSlot.maps.some(map => map.ID === mapID));
     if (!slot) {
         ctx.body = {
             success: false,
@@ -417,7 +441,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
         return;
     }
 
-    if (!state.matchups[ctx.state.matchupID].matchup.sets?.[set]) {
+    if (!matchup.sets?.[set]) {
         ctx.body = {
             success: false,
             error: "Set not found",
@@ -427,17 +451,17 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
 
     if (status !== 2) {
         // Add map to matchup.maps
-        if (!state.matchups[ctx.state.matchupID].matchup.sets![set].maps)
-            state.matchups[ctx.state.matchupID].matchup.sets![set].maps = [];
+        if (!matchup.sets[set].maps)
+            matchup.sets[set].maps = [];
         const matchupMap = new MatchupMap();
         matchupMap.map = map;
-        matchupMap.set = state.matchups[ctx.state.matchupID].matchup.sets![set];
+        matchupMap.set = matchup.sets[set];
         matchupMap.status = status;
-        matchupMap.order = state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.length + 1;
+        matchupMap.order = matchup.sets[set].maps!.length + 1;
         await matchupMap.save();
-        state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.push(matchupMap);
+        matchup.sets[set].maps!.push(matchupMap);
 
-        await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
+        await publish(`matchup:${matchup.ID}`, {
             type: "selectMap",
             map: {
                 ID: matchupMap.ID,
@@ -447,7 +471,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
                 scores: [],
             },
         });
-    } else {
+    } else if (state.matchups[ctx.state.matchupID]?.lobby) {
         const mpLobby = state.matchups[ctx.state.matchupID].lobby;
         await Promise.all([
             mpLobby.setMap(map.beatmap!.ID),
@@ -463,7 +487,24 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
 
 banchoRefereeRouter.$post<{ mapID: number }>("/:matchupID/deleteMap", async (ctx) => {
     const mapID = ctx.request.body.mapID;
-    if (!state.matchups[ctx.state.matchupID] || !mapID || typeof mapID !== "number" || isNaN(mapID)) {
+    if (!mapID || typeof mapID !== "number" || isNaN(mapID)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid map ID",
+        };
+        return;
+    }
+
+    const matchup = state.matchups[ctx.state.matchupID]?.matchup ?? await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoinAndSelect("matchup.sets", "sets")
+        .innerJoinAndSelect("matchup.stage", "stage")
+        .innerJoinAndSelect("stage.mappool", "mappool")
+        .innerJoinAndSelect("mappool.slots", "slots")
+        .innerJoinAndSelect("slots.maps", "maps")
+        .where("matchup.ID = :id", { id: ctx.state.matchupID })
+        .getOne();
+    if (!matchup) {
         ctx.body = {
             success: false,
             error: "Matchup not found",
@@ -480,7 +521,7 @@ banchoRefereeRouter.$post<{ mapID: number }>("/:matchupID/deleteMap", async (ctx
         return;
     }
 
-    if (!state.matchups[ctx.state.matchupID].matchup.sets?.[set]) {
+    if (!matchup.sets?.[set]) {
         ctx.body = {
             success: false,
             error: "Set not found",
@@ -488,7 +529,7 @@ banchoRefereeRouter.$post<{ mapID: number }>("/:matchupID/deleteMap", async (ctx
         return;
     }
 
-    const matchupMap = state.matchups[ctx.state.matchupID].matchup.sets![set].maps?.find(map => map.ID === mapID);
+    const matchupMap = matchup.sets[set].maps?.find(map => map.ID === mapID);
     if (!matchupMap) {
         ctx.body = {
             success: false,
@@ -499,13 +540,14 @@ banchoRefereeRouter.$post<{ mapID: number }>("/:matchupID/deleteMap", async (ctx
 
     try {
         await ormConfig.transaction(async manager => {
-            state.matchups[ctx.state.matchupID].matchup.sets![set].maps = state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.filter(map => map.ID !== mapID);
-            state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.forEach((map, i) => map.order = i + 1);
+            matchup.sets![set].maps = matchup.sets![set].maps!.filter(map => map.ID !== mapID);
+            matchup.sets![set].maps!.forEach((map, i) => map.order = i + 1);
 
             await manager.remove(matchupMap);
-            await Promise.all(state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.map(map => manager.save(map)));
+            await Promise.all(matchup.sets![set].maps!.map(map => manager.save(map)));
 
-            await state.matchups[ctx.state.matchupID].lobby.channel.sendMessage(`Ref has deleted a map from matchup ${matchupMap.map.beatmap?.ID}`);
+            if (state.matchups[ctx.state.matchupID]?.lobby)
+                await state.matchups[ctx.state.matchupID].lobby.channel.sendMessage(`Ref has deleted a map from matchup ${matchupMap.map.beatmap?.ID}`);
         });
 
         ctx.body = {
