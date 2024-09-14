@@ -84,6 +84,7 @@
       "eslint": "^8.49.0",
       "eslint-plugin-vue": "^9.17.0",
       "execa": "^8.0.1",
+      "mongodb": "^5.9.2",
       "postcss": "^8.4.23",
       "sass": "^1.32.2",
       "sass-loader": "^10.1.0",

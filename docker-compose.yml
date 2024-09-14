@@ -22,6 +22,14 @@ services:
       - MARIADB_PASSWORD=corsace
       - MARIADB_ROOT_PASSWORD=changeme
       # - BITNAMI_DEBUG=true
+  mongo:
+    image: mongo:5-focal
+    ports:
+      - 127.0.0.1:27017:27017
+    command:
+      - --nojournal
+      - --setParameter
+      - diagnosticDataCollectionEnabled=false
   phpmyadmin:
     image: phpmyadmin
     ports:
