@@ -867,7 +867,7 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
         lobbyName = `${matchup.stage!.tournament.abbreviation}: (${convertDateToDDDHH(matchup.date)} QL) vs (${matchup.teams?.map(team => team.abbreviation).join(", ")})`;
 
     log(matchup, `Creating lobby with name ${lobbyName}`);
-    const mpChannel = await banchoClient.createLobby(lobbyName, matchup.stage!.stageType === StageType.Qualifiers);
+    const mpChannel = await banchoClient.createLobby(lobbyName);
     const mpLobby = mpChannel.lobby;
     log(matchup, `Created lobby with name ${lobbyName} and ID ${mpLobby.id}`);
 
