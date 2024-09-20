@@ -1006,7 +1006,7 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
             invCollector.on("end", async () => {
                 if (!invMessage.deletable)
                     return;
-                await invMessage.delete();
+                await invMessage.delete().catch((err) => log(matchup, `Error while deleting invite message: ${err}`));
             });
             log(matchup, `Created invite message for ${IDs.length} players`);
         }
