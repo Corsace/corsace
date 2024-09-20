@@ -28,7 +28,7 @@ banchoClient.connect()
     .then(() => {
         console.log(`Logged into Bancho as ${banchoClient.getSelf().ircUsername}`);
         banchoClient.on("state", (connectState) => {
-            console.log(`Bancho state: ${connectState}`);
+            console.log(`Bancho state: ${connectState.toString()}`);
         });
     })
     .catch(err => {
