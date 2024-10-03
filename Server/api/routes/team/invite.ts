@@ -140,7 +140,7 @@ inviteRouter.$post<{ invite: TeamInvite }, TeamAuthenticatedState>("/:teamID", v
     try {
         const invite = await invitePlayer(team, user);
         if (typeof invite === "string") {
-            ctx.body = { 
+            ctx.body = {
                 success: false,
                 error: invite,
             };
@@ -149,8 +149,8 @@ inviteRouter.$post<{ invite: TeamInvite }, TeamAuthenticatedState>("/:teamID", v
 
         await invite.save();
 
-        
-        await publish(`invitations:${user.ID}`, { type: "invite", team: {
+
+        publish(`invitations:${user.ID}`, { type: "invite", team: {
             ID: team.ID,
             name: team.name,
             abbreviation: team.abbreviation,
@@ -198,11 +198,11 @@ inviteRouter.$post("/:teamID/accept", async (ctx) => {
         };
         return;
     }
-    
+
     try {
         const check = await inviteAcceptChecks(invite);
         if (check !== true) {
-            ctx.body = { 
+            ctx.body = {
                 success: false,
                 error: check,
             };

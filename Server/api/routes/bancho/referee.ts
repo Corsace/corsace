@@ -97,7 +97,7 @@ banchoRefereeRouter.$post<{ pulse: boolean }>("/:matchupID/pulse", async (ctx) =
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
-    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
+    publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
         type: "settings",
         slots: mpLobby.slots.map((slot, i) => ({
             playerOsuID: slot?.user.id,
@@ -317,7 +317,7 @@ banchoRefereeRouter.$post("/:matchupID/first", async (ctx) => {
     matchup.sets[matchup.sets.length - 1].first = teamNumber === 1 ? matchup.team1 : matchup.team2;
     await matchup.sets[matchup.sets.length - 1].save();
 
-    await publish(`matchup:${matchup.ID}`, {
+    publish(`matchup:${matchup.ID}`, {
         type: "first",
         first: matchup.sets[matchup.sets.length - 1].first?.ID,
     });
@@ -461,7 +461,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
         await matchupMap.save();
         matchup.sets[set].maps!.push(matchupMap);
 
-        await publish(`matchup:${matchup.ID}`, {
+        publish(`matchup:${matchup.ID}`, {
             type: "selectMap",
             map: {
                 ID: matchupMap.ID,
@@ -630,7 +630,7 @@ banchoRefereeRouter.$post("/:matchupID/settings", async (ctx) => {
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
-    await publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
+    publish(`matchup:${state.matchups[ctx.state.matchupID].matchup.ID}`, {
         type: "settings",
         slots: mpLobby.slots.map((slot, i) => ({
             playerOsuID: slot?.user.id,

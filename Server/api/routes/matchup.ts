@@ -340,7 +340,7 @@ matchupRouter.$post("/:matchupID/ipcState", async (ctx) => {
         return;
     }
 
-    await publish(`matchup:${ctx.params.matchupID}`, {
+    publish(`matchup:${ctx.params.matchupID}`, {
         type: "ipcState",
         ipcState,
     });
