@@ -9,7 +9,7 @@ export default function doAllPlayersHaveCorrectMods (mpLobby: BanchoLobby, slotM
     const allowedMods = getMappoolSlotMods(slotMod.allowedMods);
     if (
         mpLobby.slots.some(slot => 
-            slot.mods.some(mod => 
+            slot !== null && slot.mods.some(mod => 
                 !allowedMods.some(allowedMod => allowedMod.enumValue === mod.enumValue)
             )
         )
