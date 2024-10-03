@@ -3,12 +3,14 @@ import { PublicationData } from "centrifuge";
 import { config } from "node-config-ts";
 
 export function publish (channel: string, data: PublicationData) {
-    return Axios.post(`${config.centrifugo.apiUrl}/publish`, {
+    Axios.post(`${config.centrifugo.apiUrl}/publish`, {
         channel,
         data,
     }, {
         headers: {
             "X-API-Key": config.centrifugo.apiKey,
         },
+    }).catch(err => {
+        console.error(`Failed to publish message to Centrifugo, channel: ${channel}`, err);
     });
 }

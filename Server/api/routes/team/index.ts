@@ -138,7 +138,7 @@ teamRouter.$post<{
     if (typeof timezoneOffset !== "number") {
         timezoneOffset = parseInt(timezoneOffset);
         if (isNaN(timezoneOffset) || timezoneOffset < -12 || timezoneOffset > 14) {
-            ctx.body = { 
+            ctx.body = {
                 success: false,
                 error: "Invalid timezone",
             };
@@ -172,7 +172,7 @@ teamRouter.$post<{
         await team.save();
     } catch (e) {
         if (e instanceof QueryFailedError && e.driverError.sqlState === "45000")
-            ctx.body = { 
+            ctx.body = {
                 success: false,
                 error: "Team already exists, you may have double clicked",
             };
@@ -184,13 +184,13 @@ teamRouter.$post<{
         return;
     }
     if (!noErr)
-        ctx.body = { 
+        ctx.body = {
             success: true,
             team: await team.teamInterface(false, false),
             error: "Team created, but there was an error calculating stats. Please contact VINXIS",
         };
     else
-        ctx.body = { 
+        ctx.body = {
             success: true,
             team: await team.teamInterface(true, true),
         };
@@ -202,19 +202,19 @@ teamRouter.$post<{ avatar: string }>("/:teamID/avatar", isLoggedInDiscord, valid
     // Get the file from the request
     const files = ctx.request.files?.avatar;
     if (!files) {
-        ctx.body = { 
+        ctx.body = {
             success: false,
             error: "Missing avatar",
         };
         return;
     }
 
-    // if files is an array, get the first 
+    // if files is an array, get the first
     const file = Array.isArray(files) ? files[0] : files;
 
     // Check if the file is an image and not a gif
     if (!file.mimetype?.startsWith("image/") || file.mimetype === "image/gif") {
-        ctx.body = { 
+        ctx.body = {
             success: false,
             error: "Invalid file type",
         };
@@ -229,12 +229,12 @@ teamRouter.$post<{ avatar: string }>("/:teamID/avatar", isLoggedInDiscord, valid
         team.avatarURL = avatarPath;
         await team.save();
 
-        ctx.body = { 
+        ctx.body = {
             success: true,
             avatar: avatarPath,
         };
     } catch (e) {
-        ctx.body = { 
+        ctx.body = {
             success: false,
             error: `Error saving avatar\n${e}`,
         };
@@ -456,7 +456,7 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
             await team.calculateStats();
             await team.save();
 
-            await publish(`teams:${tournamentID}`, { type: "teamRegistered", team: teamList });
+            publish(`teams:${tournamentID}`, { type: "teamRegistered", team: teamList });
             ctx.body = {
                 success: false,
                 error: `Successfully registered team, but failed to schedule a timer to run qualifier matchup. Please contact VINXIS or ThePooN\n${e}`,
@@ -471,7 +471,7 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
     await team.calculateStats();
     await team.save();
 
-    await publish(`teams:${tournamentID}`, { type: "teamRegistered", team: teamList });
+    publish(`teams:${tournamentID}`, { type: "teamRegistered", team: teamList });
     ctx.body = { success: true };
 });
 
@@ -538,7 +538,7 @@ teamRouter.$post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), a
             };
             return;
         }
-        
+
         if (qualifier.mp) {
             ctx.body = {
                 success: false,
@@ -667,7 +667,7 @@ teamRouter.$post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), as
     }
 
     qualifier.date = qualifierDate;
-    await qualifier.save(); 
+    await qualifier.save();
 
     await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
 
@@ -871,7 +871,7 @@ teamRouter.$post("/:teamID/captain/:userID", isLoggedInDiscord, validateTeam(tru
         team.members.push(ctx.state.user!);
         team.members = team.members.filter(m => m.ID !== userID);
     }
-    
+
     await team.save();
 
     ctx.body = { success: true };
