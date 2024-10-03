@@ -478,12 +478,12 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (
             (
                 matchup.stage!.stageType === StageType.Qualifiers &&
-                matchup.teams!.some(team => !mpLobby.slots.some(m => m !== null && m.user.id.toString() === team.captain.osu.userID))
+                matchup.teams!.some(team => !mpLobby.slots.some(m => m?.user.id.toString() === team.captain.osu.userID))
             ) ||
             (
                 matchup.stage!.stageType !== StageType.Qualifiers &&
-                !mpLobby.slots.some(m => m !== null && m.user.id.toString() === matchup.team1!.captain.osu.userID) &&
-                !mpLobby.slots.some(m => m !== null && m.user.id.toString() === matchup.team2!.captain.osu.userID)
+                !mpLobby.slots.some(m => m?.user.id.toString() === matchup.team1!.captain.osu.userID) &&
+                !mpLobby.slots.some(m => m?.user.id.toString() === matchup.team2!.captain.osu.userID)
             )
         ) {
             await mpChannel.sendMessage(`${newPlayer.user.username} waiting for all ${matchup.stage!.tournament.matchupSize === 1 ? "players" : "captains"} to be here before matchup starts`);
