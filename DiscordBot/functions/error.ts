@@ -29,7 +29,7 @@ export default async function errorHandler (err: unknown, m?: Message | ChatInpu
     console.error(err);
     const channel = discordClient.channels.cache.get(config.discord.coreChannel);
     if (channel instanceof TextChannel)
-        await channel.send(`${new Date().toISOString()}\nAn error occurred while executing a command\nMessage/Interaction: \`${m instanceof Message ? m.content : m.commandName}\`\n\`\`\`${err}\`\`\``);
+        await channel.send(`${new Date().toISOString()}\nAn error unrelated to discord occurred while executing a discord command\nMessage/Interaction: \`${m instanceof Message ? m.content : m.commandName}\`\n\`\`\`${err}\`\`\``);
     await respond(m, "The command was unable to be fulfilled.\nAn error unrelated to discord occurred while executing this command. Contact VINXIS");
     return true;
 }
