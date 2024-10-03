@@ -305,9 +305,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         matchup.date = date;
         matchup.mp = null;
         await MatchupMessage
-            .createQueryBuilder("matchupMessage")
+            .createQueryBuilder()
             .delete()
-            .where("matchupMessage.matchupID = :ID", { ID: matchup.ID })
+            .where("matchupID = :ID", { ID: matchup.ID })
             .execute();
         matchup.messages = null;
 
