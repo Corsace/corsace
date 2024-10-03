@@ -1,9 +1,11 @@
-import {  Message, ChatInputCommandInteraction, DiscordAPIError } from "discord.js";
+import {  Message, ChatInputCommandInteraction, DiscordAPIError, TextChannel } from "discord.js";
 import commandUser from "./commandUser";
 import respond from "./respond";
+import { discordClient } from "../../Server/discord";
+import { config } from "node-config-ts";
 
 export default async function errorHandler (err: unknown, m?: Message | ChatInputCommandInteraction): Promise<boolean> {
-    if (!err)
+    if (!err || !(err instanceof Error))
         return false;
 
     if (!m) {
@@ -25,6 +27,9 @@ export default async function errorHandler (err: unknown, m?: Message | ChatInpu
     }
 
     console.error(err);
+    const channel = discordClient.channels.cache.get(config.discord.coreChannel);
+    if (channel instanceof TextChannel)
+        await channel.send(`An error occurred while executing a command\n\`\`\`${err}\`\`\``);
     await respond(m, "The command was unable to be fulfilled.\nAn error unrelated to discord occurred while executing this command. Contact VINXIS");
     return true;
 }
