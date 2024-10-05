@@ -152,7 +152,7 @@ async function addSlot (m: Message | ChatInputCommandInteraction, params: parame
     slot.maps = [];
     for (let i = 0; i < amount; i++) {
         const map = new MappoolMap();
-        map.createdBy = mappool.createdBy;
+        map.createdBy = user;
         map.order = i + 1;
         slot.maps.push(map);
     }
