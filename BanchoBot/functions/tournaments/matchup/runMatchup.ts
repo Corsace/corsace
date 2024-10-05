@@ -422,7 +422,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             try {
                 log(matchup, "Picking map");
                 await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, false);
-                log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(mod => mod.shortMod).join(", ")}`);
+                log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods?.map(mod => mod.shortMod).join(", ") || "freemod"}`);
                 autoStart = true;
             } catch (ex) {
                 await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
@@ -512,7 +512,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         try {
             log(matchup, "Picking map");
             await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, false);
-            log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(mod => mod.shortMod).join(", ")}`);
+            log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods?.map(mod => mod.shortMod).join(", ") || "freemod"}`);
             autoStart = true;
         } catch (ex) {
             await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
@@ -786,7 +786,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     await mpLobby.closeLobby();
                     return;
                 }
-                log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(m => m.shortMod).join(", ")}`);
+                log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods?.map(m => m.shortMod).join(", ") || "freemod"}`);
                 autoStart = true;
             } catch (ex) {
                 await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
