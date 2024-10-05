@@ -585,7 +585,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
         }
         if (!doAllPlayersHaveCorrectMods(mpLobby, slotMod)) {
-            await mpChannel.sendMessage(`someone has the wrong mods on for this slot (Allowed mods are ${getMappoolSlotMods(slotMod.allowedMods).map(m => `${m.longMod} (${m.shortMod})`).join(", ")})`);
+            await mpChannel.sendMessage(`someone has the wrong mods on for this slot (Allowed mods are ${typeof slotMod.allowedMods === "number" ? getMappoolSlotMods(slotMod.allowedMods ?? 1).map(m => `${m.longMod.toUpperCase()} (${m.shortMod})`).join(", ") : "NF (NoFail) with any desired mods"})`);
             return;
         }
 

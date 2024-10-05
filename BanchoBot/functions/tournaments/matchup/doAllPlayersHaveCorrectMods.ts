@@ -1,4 +1,4 @@
-import { BanchoLobby, BanchoMods } from "bancho.js";
+import { BanchoLobby } from "bancho.js";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import getMappoolSlotMods from "./getMappoolSlotMods";
 
@@ -7,20 +7,19 @@ export default function doAllPlayersHaveCorrectMods (mpLobby: BanchoLobby, slotM
         return true;
 
     const allowedMods = getMappoolSlotMods(slotMod.allowedMods);
-    if (
-        ( // If any mods were defined
-            allowedMods.length > 0 &&
-            mpLobby.slots.some(slot => 
-                slot?.mods.some(mod => 
-                    !allowedMods.some(allowedMod => allowedMod.enumValue === mod.enumValue)
-                )
-            )
-        ) || // If no mods were defined for the slot, then check if anyone is missing NoFail
-        mpLobby.slots.some(slot => 
-            slot?.mods.some(mod => (mod.enumValue & BanchoMods.NoFail.enumValue) === 0)
-        )
-    )
-        return false;
+    if (allowedMods.length === 0)
+        // Any slot that exists and doesn't have NoFail is invalid
+        return !mpLobby.slots.some(slot => 
+            slot &&
+            !slot.mods.some(mod => mod.enumValue === 1)
+        );
 
-    return true;
+    return !mpLobby.slots.some(slot => 
+        slot &&
+        (
+            !slot.mods.some(mod => mod.enumValue === 1) ||
+            slot.mods.some(mod => !allowedMods.some(allowedMod => allowedMod.enumValue === mod.enumValue)) ||
+            allowedMods.filter(mod => mod.enumValue !== 1).every(allowedMod => !slot.mods.some(mod => mod.enumValue === allowedMod.enumValue))
+        )
+    );
 }
