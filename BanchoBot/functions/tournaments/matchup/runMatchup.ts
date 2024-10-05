@@ -427,6 +427,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             } catch (ex) {
                 await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
                 log(matchup, `Error loading beatmap: ${ex}`);
+                console.log(ex);
             }
         } else if (
             (
@@ -516,6 +517,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         } catch (ex) {
             await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
             log(matchup, `Error loading beatmap: ${ex}`);
+            console.log(ex);
         }
     });
 
@@ -789,6 +791,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             } catch (ex) {
                 await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
                 log(matchup, `Error loading beatmap: ${ex}`);
+                console.log(ex);
             }
         }, matchup.streamer ? 30 * 1000 : leniencyTime);
     });
