@@ -29,28 +29,46 @@ export default async function errorHandler (err: unknown, m?: Message | ChatInpu
     }
 
     console.error(err);
-    const channel = discordClient.channels.cache.get(config.discord.coreChannel);
-    if (channel instanceof TextChannel) {
-        const stackID = randomUUID();
-        const message = await channel.send({
-            content: `${new Date().toISOString()}\nAn error unrelated to discord occurred while executing a discord command\nMessage/Interaction: \`${m instanceof Message ? m.content : m.commandName}\`\n\`\`\`${err}\`\`\``,
-            components: [new ActionRowBuilder<ButtonBuilder>().addComponents(
-                new ButtonBuilder()
-                    .setCustomId(stackID)
-                    .setLabel("See Stack Trace")
-                    .setStyle(ButtonStyle.Primary)
-            )],
-        });
+    try {
+        const channel = discordClient.channels.cache.get(config.discord.coreChannel);
+        if (channel instanceof TextChannel) {
+            const stackID = randomUUID();
+            const deleteID = randomUUID();
+            const message = await channel.send({
+                content: `${new Date().toISOString()}\nAn error unrelated to discord occurred while executing a discord command\nMessage/Interaction: \`${m instanceof Message ? m.content : m.commandName}\`\n\`\`\`${err}\`\`\``,
+                components: [new ActionRowBuilder<ButtonBuilder>().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(stackID)
+                        .setLabel("See Stack Trace")
+                        .setStyle(ButtonStyle.Primary),
+                    new ButtonBuilder()
+                        .setCustomId(deleteID)
+                        .setLabel("Delete")
+                        .setStyle(ButtonStyle.Danger)
+                )],
+            });
 
-        const collector = message.createMessageComponentCollector({ filter, time: 6000000 });
-        collector.on("collect", async (i: MessageComponentInteraction) => {	
-            if (i.customId === stackID)
-                await i.update({
-                    content: `${new Date().toISOString()}\nAn error unrelated to discord occurred while executing a discord command\nMessage/Interaction: \`${m instanceof Message ? m.content : m.commandName}\`\n\`\`\`${err.stack}\`\`\``,
-                    components: [],
-                });
-        });
+            const collector = message.createMessageComponentCollector({ filter, time: 6000000 });
+            collector.on("collect", async (i: MessageComponentInteraction) => {	
+                if (i.customId === stackID)
+                    await i.update({
+                        content: `${new Date().toISOString()}\nAn error unrelated to discord occurred while executing a discord command\nMessage/Interaction: \`${m instanceof Message ? m.content : m.commandName}\`\n\`\`\`${err.stack}\`\`\``,
+                        components: [
+                            new ActionRowBuilder<ButtonBuilder>().addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(deleteID)
+                                    .setLabel("Delete")
+                                    .setStyle(ButtonStyle.Danger)
+                            ),
+                        ],
+                    });
+                if (i.customId === deleteID)
+                    await message.delete();
+            });
+        }
+        await respond(m, "The command was unable to be fulfilled.\nAn error unrelated to discord occurred while executing this command. Contact VINXIS");
+    } catch (e) {
+        console.error("An error occurred while handling non-discord errors", e);
     }
-    await respond(m, "The command was unable to be fulfilled.\nAn error unrelated to discord occurred while executing this command. Contact VINXIS");
     return true;
 }
