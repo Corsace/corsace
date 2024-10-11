@@ -1,5 +1,4 @@
 import ormConfig from "../../../ormconfig";
-import axios from "axios";
 import { CorsaceRouter } from "../../corsaceRouter";
 import { Multi } from "nodesu";
 import { Brackets } from "typeorm";
@@ -20,12 +19,13 @@ import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
 import { MatchupSet } from "../../../Models/tournaments/matchupSet";
 import dbMatchupToInterface from "../../functions/tournaments/matchups/dbMatchupToInterface";
-import { ResponseBody, TournamentStageState, TournamentState } from "koa";
+import { TournamentStageState, TournamentState } from "koa";
 import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { Round } from "../../../Models/tournaments/round";
 import { createHash } from "crypto";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import { publish } from "../../functions/centrifugo";
+import { HTTPError } from "../../../Interfaces/error";
 
 const matchupRouter  = new CorsaceRouter();
 
@@ -247,20 +247,38 @@ matchupRouter.$get("/:matchupID/bancho/:endpoint", async (ctx) => {
         return;
     }
 
+    // Assuming config.interOpAuth is an object with username and password
+    const { username, password } = config.interOpAuth;
+    const basicAuth = `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
+
     try {
-        const { data } = await axios.get<ResponseBody<unknown>>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
-            auth: config.interOpAuth,
+        const response = await fetch(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
+            method: "GET",
+            headers: {
+                "Authorization": basicAuth,
+            },
         });
 
+        if (!response.ok) {
+            // Try to parse error response
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch {
+                errorData = {
+                    success: false,
+                    error: `HTTP error! status: ${response.status}`,
+                };
+            }
+            ctx.body = errorData;
+            ctx.status = response.status;
+            return;
+        }
+
+        const data = await response.json();
         ctx.body = data;
     } catch (e) {
-        if (axios.isAxiosError(e)) {
-            ctx.body = e.response?.data ?? {
-                success: false,
-                error: e.message,
-            };
-            ctx.status = e.response?.status ?? 500;
-        } else if (e instanceof Error) {
+        if (e instanceof HTTPError) {
             ctx.body = {
                 success: false,
                 error: e.message,

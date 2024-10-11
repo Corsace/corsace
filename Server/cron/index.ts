@@ -1,4 +1,3 @@
-import Axios from "axios";
 import { config } from "node-config-ts";
 import { CronJob } from "cron";
 import cronFunctions from "./cronFunctions";

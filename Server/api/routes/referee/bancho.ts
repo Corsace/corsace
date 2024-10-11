@@ -1,4 +1,3 @@
-import axios from "axios";
 import { CorsaceRouter } from "../../../corsaceRouter";
 import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
@@ -7,7 +6,7 @@ import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { ResponseBody, TournamentAuthenticatedState } from "koa";
 
-const refereeBanchoRouter  = new CorsaceRouter();
+const refereeBanchoRouter = new CorsaceRouter();
 
 refereeBanchoRouter.$post<object, TournamentAuthenticatedState>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     if (!ctx.request.body.endpoint) {
@@ -39,23 +38,38 @@ refereeBanchoRouter.$post<object, TournamentAuthenticatedState>("/:tournamentID/
     }
 
     try {
-        const { data } = await axios.post<ResponseBody<object>>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`, {
-            ...ctx.request.body,
-            endpoint: undefined,
-            user: ctx.state.user,
-        }, {
-            auth: config.interOpAuth,
+        const url = `${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`;
+
+        const { username, password } = config.interOpAuth;
+        const authHeader =
+            `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": authHeader,
+            },
+            body: JSON.stringify({
+                ...ctx.request.body,
+                endpoint: undefined,
+                user: ctx.state.user,
+            }),
         });
 
-        ctx.body = data;
-
-    } catch (e) {
-        if (axios.isAxiosError(e)) {
-            ctx.body = e.response?.data ?? {
+        if (response.ok) {
+            const data = (await response.json()) as ResponseBody<object>;
+            ctx.body = data;
+        } else {
+            const errorData = await response.json().catch(() => null);
+            ctx.body = errorData ?? ({
                 success: false,
-                error: e.response?.status ? `Status code: ${e.response.status}\n${e.message}` : e.message,
-            };
-        } else if (e instanceof Error) {
+                error: response.statusText || `Status code: ${response.status}`,
+            } as ResponseBody<object>);
+            ctx.status = response.status;
+        }
+    } catch (e) {
+        if (e instanceof Error) {
             ctx.body = {
                 success: false,
                 error: e.message,
