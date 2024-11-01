@@ -7,6 +7,7 @@ import { extractParameter } from "../../../functions/parameterFunctions";
 import respond from "../../../functions/respond";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { post } from "../../../../Server/utils/fetch";
+import { basicAuth } from "../../../../Server/utils/auth";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -32,15 +33,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     const baseUrl = matchup.baseURL;
-
-    const { username, password } = config.interOpAuth;
-    const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
-    
     const data = await post(`${baseUrl}/api/bancho/stopAutoLobby`, {
         matchupID: ID,
     }, {
         headers: {
-            Authentication: authHeader,
+            Authentication: basicAuth(config.interOpAuth),
         },
     });
 

@@ -26,6 +26,7 @@ import { createHash } from "crypto";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import { publish } from "../../functions/centrifugo";
 import { get } from "../../utils/fetch";
+import { basicAuth } from "../../utils/auth";
 
 const matchupRouter  = new CorsaceRouter();
 
@@ -247,14 +248,10 @@ matchupRouter.$get("/:matchupID/bancho/:endpoint", async (ctx) => {
         return;
     }
 
-    // Assuming config.interOpAuth is an object with username and password
-    const { username, password } = config.interOpAuth;
-    const basicAuth = `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
-
     try {
         const response = await get(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
             headers: {
-                "Authorization": basicAuth,
+                "Authorization": basicAuth(config.interOpAuth),
             },
         });
 

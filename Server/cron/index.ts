@@ -3,6 +3,7 @@ import { CronJob } from "cron";
 import cronFunctions from "./cronFunctions";
 import { CronJobData, CronJobType } from "../../Interfaces/cron";
 import { post } from "../utils/fetch";
+import { basicAuth } from "../utils/auth";
 
 class Cron {
 
@@ -28,7 +29,7 @@ class Cron {
             },
             {
                 headers: {
-                    Authorization: "Basic " + Buffer.from(`${config.interOpAuth.username}:${config.interOpAuth.password}`).toString("base64"),
+                    Authorization: basicAuth(config.interOpAuth),
                 },
             });
             if (!data.success)
@@ -52,7 +53,7 @@ class Cron {
             },
             {
                 headers: {
-                    Authorization: "Basic " + Buffer.from(`${config.interOpAuth.username}:${config.interOpAuth.password}`).toString("base64"),
+                    Authorization: basicAuth(config.interOpAuth),
                 },
             });
             if (!data.success)

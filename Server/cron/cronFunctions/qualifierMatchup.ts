@@ -2,6 +2,7 @@ import { CronJobData, CronJobType } from "../../../Interfaces/cron";
 import { Matchup, preInviteTime } from "../../../Models/tournaments/matchup";
 import { config } from "node-config-ts";
 import { post } from "../../utils/fetch";
+import { basicAuth } from "../../utils/auth";
 
 async function initialize (): Promise<CronJobData[]> {
     // Get all tournament registration ends
@@ -38,7 +39,7 @@ async function execute (job: CronJobData) {
     },
     {
         headers: {
-            Authorization: "Basic " + Buffer.from(`${config.interOpAuth.username}:${config.interOpAuth.password}`).toString("base64"),
+            Authorization: basicAuth(config.interOpAuth),
         },
     });
     if (data.success)

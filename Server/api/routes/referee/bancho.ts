@@ -6,6 +6,7 @@ import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { TournamentAuthenticatedState } from "koa";
 import { post } from "../../../utils/fetch";
+import { basicAuth } from "../../../utils/auth";
 
 const refereeBanchoRouter = new CorsaceRouter();
 
@@ -40,10 +41,6 @@ refereeBanchoRouter.$post<object, TournamentAuthenticatedState>("/:tournamentID/
 
     try {
         const url = `${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`;
-
-        const { username, password } = config.interOpAuth;
-        const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
-
         const response = await post(url, {
             ...ctx.request.body,
             endpoint: undefined,
@@ -52,7 +49,7 @@ refereeBanchoRouter.$post<object, TournamentAuthenticatedState>("/:tournamentID/
         {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": authHeader,
+                "Authorization": basicAuth(config.interOpAuth),
             },
         });
 
