@@ -25,7 +25,7 @@ import { Round } from "../../../Models/tournaments/round";
 import { createHash } from "crypto";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import { publish } from "../../functions/centrifugo";
-import { HTTPError } from "../../../Interfaces/error";
+import { get } from "../../utils/fetch";
 
 const matchupRouter  = new CorsaceRouter();
 
@@ -252,43 +252,26 @@ matchupRouter.$get("/:matchupID/bancho/:endpoint", async (ctx) => {
     const basicAuth = `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
 
     try {
-        const response = await fetch(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
-            method: "GET",
+        const response = await get(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
             headers: {
                 "Authorization": basicAuth,
             },
         });
 
-        if (!response.ok) {
-            // Try to parse error response
-            let errorData;
-            try {
-                errorData = await response.json();
-            } catch {
-                errorData = {
-                    success: false,
-                    error: `HTTP error! status: ${response.status}`,
-                };
-            }
-            ctx.body = errorData;
-            ctx.status = response.status;
+        if (!response.success) {
+            ctx.body = {
+                success: false,
+                error: `Unknown error: ${typeof response.error === "string" ? response.error : response.error.message}`,
+            };
+            ctx.status = 500;
             return;
         }
-
-        const data = await response.json();
-        ctx.body = data;
+        ctx.body = response;
     } catch (e) {
-        if (e instanceof HTTPError) {
-            ctx.body = {
-                success: false,
-                error: e.message,
-            };
-        } else {
-            ctx.body = {
-                success: false,
-                error: `Unknown error: ${e}`,
-            };
-        }
+        ctx.body = {
+            success: false,
+            error: e instanceof Error ? e.message : `Unknown error: ${e}`,
+        };
     }
 });
 

@@ -1,5 +1,3 @@
-
-import axios from "axios";
 import { Entry, Parse } from "unzipper";
 import { ChatInputCommandInteraction, ForumChannel, Message } from "discord.js";
 import { CustomBeatmap } from "../../Models/tournaments/mappools/customBeatmap";
@@ -24,15 +22,17 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
     let beatmapAttributes: ParserBeatmapAttributes | undefined = undefined;
     let beatmapStrains: ParserStrains | undefined = undefined;
     let background: string | undefined = undefined;
-    let axiosData: any = null;
+    let fetchData: any = null;
     try {
-        const { data } = await axios.get(link, { responseType: "stream" });
-        axiosData = data;
+        const res = await fetch(link);
+        if (!res.ok)
+            throw new Error(`Status code: ${res.status}`);
+        fetchData = res.body!;
     } catch (e) {
         await respond(m, "Can't download the map. Make sure the link is valid");
         return;
     }
-    const zip = axiosData.pipe(Parse({ forceStream: true }));
+    const zip = fetchData.pipe(Parse({ forceStream: true }));
     let foundBeatmap = false;
     for await (const _entry of zip) {
         const entry = _entry as Entry;

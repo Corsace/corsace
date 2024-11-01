@@ -1,7 +1,7 @@
 import { CorsaceRouter } from "../../corsaceRouter";
 import { createHmac, timingSafeEqual } from "crypto";
 import { config } from "node-config-ts";
-import { HTTPError } from "../../../Interfaces/error";
+import { post } from "../../utils/fetch";
 
 // List of allowed events as per https://discord.com/developers/docs/resources/webhook#execute-githubcompatible-webhook
 const ALLOWED_EVENTS = ["commit_comment", "create", "delete", "fork", "issue_comment", "issues", "member", "public", "pull_request", "pull_request_review", "pull_request_review_comment", "push", "release", "watch", "check_run", "check_suite", "discussion", "discussion_comment"];
@@ -46,8 +46,7 @@ githubRouter.$post<any>("/", async (ctx) => {
     }
 
     try {
-        const res = await fetch(`${config.github.webhookUrl}/github`, {
-            method: "POST",
+        const res = await post<any>(`${config.github.webhookUrl}/github`, ctx.request.body, {
             headers: {
                 "Content-Type": "application/json",
                 "User-Agent": ctx.get("User-Agent"),
@@ -57,13 +56,12 @@ githubRouter.$post<any>("/", async (ctx) => {
                 "X-GitHub-Hook-Installation-Target-ID": ctx.get("X-GitHub-Hook-Installation-Target-ID"),
                 "X-GitHub-Hook-Installation-Target-Type": ctx.get("X-GitHub-Hook-Installation-Target-Type"),
             },
-            body: JSON.stringify(ctx.request.body),
-        });
-        if (!res.ok)
-            throw new HTTPError(res.status, `HTTP error! status: ${res.status} ${res.statusText}`);
+        }, true);
+        if (!res.success)
+            throw typeof res.error === "string" ? new Error(res.error) : res.error;
 
-        ctx.status = res.status;
-        ctx.body = await res.json();
+        ctx.status = 200;
+        ctx.body = res;
     } catch (e) {
         ctx.status = 500;
         ctx.body = {

@@ -1,7 +1,7 @@
 import { RateLimiter } from "limiter";
 import { osuV2Token, osuAPIV2Options, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend, osuV2Me, osuV2WikiPage } from "../../Interfaces/osuAPIV2";
 import { User } from "../../Models/user";
-import { HTTPError } from "../../Interfaces/error";
+import { get, post } from "../utils/fetch";
 
 // For any properties missing in the typings, go to Interfaces/osuAPIV2.ts and add only the properties you need there.
 export class osuAPIV2 {
@@ -100,24 +100,24 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
 
-        const response = await fetch(`${this.baseURL}/oauth/token`, {
-            method: "POST",
+        const response = await post<osuV2Token>(`${this.baseURL}/oauth/token`, {
+            grant_type,
+            client_id: this.clientID,
+            client_secret: this.clientSecret,
+            scope,
+            refresh_token,
+        },
+        {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                grant_type,
-                client_id: this.clientID,
-                client_secret: this.clientSecret,
-                scope,
-                refresh_token,
-            }),
-        });
+        },
+        true);
 
-        if (!response.ok)
-            throw new HTTPError(response.status, `HTTP error! status: ${response.status} ${response.statusText}`);
+        if (!response.success)
+            throw typeof response.error === "string" ? new Error(response.error) : response.error;
 
-        return response.json() as Promise<osuV2Token>;
+        return response;
     }
 
     // Post and get functions
@@ -125,35 +125,33 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
-        const response = await fetch(this.apiV2URL + endpoint, {
-            method: "POST",
+        const response = await post<T>(this.apiV2URL + endpoint, payload, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(payload),
-        });
+        },
+        true);
 
-        if (!response.ok)
-            throw new HTTPError(response.status, `HTTP error! status: ${response.status} ${response.statusText}`);
-
-        return response.json() as Promise<T>;
+        if (!response.success)
+            throw typeof response.error === "string" ? new Error(response.error) : response.error;
+        return response;
     }
 
     private async get<T> (endpoint: string, accessToken: string): Promise<T> {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
-        const response = await fetch(this.apiV2URL + endpoint, {
-            method: "GET",
+        const response = await get<T>(this.apiV2URL + endpoint, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
             },
-        });
+        },
+        true);
 
-        if (!response.ok)
-            throw new HTTPError(response.status, `HTTP error! status: ${response.status} ${response.statusText}`);
+        if (!response.success)
+            throw typeof response.error === "string" ? new Error(response.error) : response.error;
 
-        return response.json() as Promise<T>;
+        return response;
     }
 }

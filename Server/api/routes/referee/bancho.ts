@@ -4,7 +4,8 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { isLoggedInDiscord } from "../../../middleware";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
-import { ResponseBody, TournamentAuthenticatedState } from "koa";
+import { TournamentAuthenticatedState } from "koa";
+import { post } from "../../../utils/fetch";
 
 const refereeBanchoRouter = new CorsaceRouter();
 
@@ -41,45 +42,31 @@ refereeBanchoRouter.$post<object, TournamentAuthenticatedState>("/:tournamentID/
         const url = `${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`;
 
         const { username, password } = config.interOpAuth;
-        const authHeader =
-            `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
+        const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
 
-        const response = await fetch(url, {
-            method: "POST",
+        const response = await post(url, {
+            ...ctx.request.body,
+            endpoint: undefined,
+            user: ctx.state.user,
+        },
+        {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": authHeader,
             },
-            body: JSON.stringify({
-                ...ctx.request.body,
-                endpoint: undefined,
-                user: ctx.state.user,
-            }),
         });
 
-        if (response.ok) {
-            const data = (await response.json()) as ResponseBody<object>;
-            ctx.body = data;
-        } else {
-            const errorData = await response.json().catch(() => null);
-            ctx.body = errorData ?? ({
-                success: false,
-                error: response.statusText || `Status code: ${response.status}`,
-            } as ResponseBody<object>);
-            ctx.status = response.status;
+        if (!response.success) {
+            ctx.body = { success: false, error: typeof response.error === "string" ? response.error : response.error.message };
+            ctx.status = 500;
+            return;
         }
+        ctx.body = response;
     } catch (e) {
-        if (e instanceof Error) {
-            ctx.body = {
-                success: false,
-                error: e.message,
-            };
-        } else {
-            ctx.body = {
-                success: false,
-                error: `Unknown error: ${e}`,
-            };
-        }
+        ctx.body = {
+            success: false,
+            error: e instanceof Error ? e.message : `Unknown error: ${e}`,
+        };
     }
 });
 

@@ -9,6 +9,7 @@ import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { RequestStatus } from "../../../Interfaces/guestRequests";
 import { MCAAuthenticatedState } from "koa";
 import { ModeDivisionType } from "../../../Interfaces/modes";
+import { get } from "../../utils/fetch";
 
 interface BodyData {
     mode: string;
@@ -72,11 +73,11 @@ async function validateBody (
     // Get beatmap information
     let beatmap: any;
     try {
-        const response = await fetch(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`);
-        if (!response.ok)
-            return { error: "Error in obtaining beatmap info!" };
+        const response = await get<any[]>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`);
+        if (!response.success)
+            return { error: typeof response.error === "string" ? response.error : response.error.message };
 
-        const beatmaps = (await response.json()) as any[];
+        const beatmaps = response;
         if (beatmaps.length !== 1)
             return { error: "Error in obtaining beatmap info!" };
 
