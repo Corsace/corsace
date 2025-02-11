@@ -1,5 +1,5 @@
 import * as compose from "koa-compose";
-import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
+import { isLoggedInDiscord, isHeadStaff } from "../../../../Server/middleware";
 import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
@@ -11,7 +11,7 @@ const adminCategoriesRouter  = new CorsaceRouter();
 const categoryGenerator = new CategoryGenerator();
 
 adminCategoriesRouter.$use(isLoggedInDiscord);
-adminCategoriesRouter.$use(isCorsace);
+adminCategoriesRouter.$use(isHeadStaff);
 
 const validate: compose.Middleware<CorsaceContext<{ category: CategoryInfo }>> = async (ctx, next) => {
     const categoryInfo = ctx.request.body.category;
@@ -78,7 +78,7 @@ adminCategoriesRouter.$get<{ categories: CategoryInfo[] }>("/:year/categories", 
             success: false,
             error: "Invalid year given!",
         };
-    
+
     const year = parseInt(yearString);
 
     const categories = await Category.find({
@@ -143,7 +143,7 @@ adminCategoriesRouter.$put<{ category: CategoryInfo }>("/:year/categories/:id", 
 adminCategoriesRouter.$delete<{ category: CategoryInfo }>("/:year/categories/:id", async (ctx) => {
     const categoryIDString = ctx.params.id;
     if (!categoryIDString || !/\d+/.test(categoryIDString))
-        return ctx.body = { 
+        return ctx.body = {
             success: false,
             error: "Invalid category ID given!",
         };
@@ -152,7 +152,7 @@ adminCategoriesRouter.$delete<{ category: CategoryInfo }>("/:year/categories/:id
 
     const category = await Category.findOne({ where: { ID: categoryID }});
     if (!category)
-        return ctx.body = { 
+        return ctx.body = {
             success: false,
             error: "No category with this ID exists!",
         };
@@ -164,8 +164,8 @@ adminCategoriesRouter.$delete<{ category: CategoryInfo }>("/:year/categories/:id
             },
         },
     })).map(nom => nom.remove()));
-    const categoryRes = await category.remove(); 
-    ctx.body = { 
+    const categoryRes = await category.remove();
+    ctx.body = {
         success: true,
         category: categoryRes.getInfo(),
     };
