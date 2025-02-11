@@ -1,4 +1,4 @@
-import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
+import { isLoggedInDiscord, isHeadStaff } from "../../../../Server/middleware";
 import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
@@ -12,7 +12,7 @@ const adminYearsRouter = new CorsaceRouter();
 const categoryGenerator = new CategoryGenerator();
 
 adminYearsRouter.$use(isLoggedInDiscord);
-adminYearsRouter.$use(isCorsace);
+adminYearsRouter.$use(isHeadStaff);
 
 const validate: CorsaceMiddleware<{ mca: MCAInfo }> = async (ctx, next) => {
     const data = ctx.request.body;
