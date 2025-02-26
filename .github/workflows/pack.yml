@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
     outputs:
-      tags: ${{ steps.meta.save_tags.tags }}
+      tags: ${{ steps.save_tags.outputs.tags }}
     steps:
       -
         name: Checkout
