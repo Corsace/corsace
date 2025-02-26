@@ -1,5 +1,5 @@
 apiVersion: v2
-name: corsace-chart
+name: corsace
 description: A Helm chart for Corsace
 
 # A chart can be either an 'application' or a 'library' chart.
