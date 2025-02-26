@@ -92,6 +92,8 @@ jobs:
     strategy:
       matrix:
         tag: ${{ fromJSON(needs.push_to_registry.outputs.tags) }}
+        exclude:
+          - tag: latest
     steps:
       -
         name: Checkout
@@ -102,14 +104,15 @@ jobs:
         # Extract suffix (after :) from matrix.tag
         run: echo "extracted_tag=$(echo '${{ matrix.tag }}' | cut -d ':' -f 2-)" >> $GITHUB_OUTPUT
       -
-        name: Push Helm Chart
-        uses: appany/helm-oci-chart-releaser@v0.4.2
-        with:
-          name: charts/corsace
-          repository: Corsace
-          path: charts/corsace
-          tag: 0.0.0-${{ steps.extract_tag.outputs.extracted_tag }}
-          app_version: ${{ steps.extract_tag.outputs.extracted_tag }}
-          registry: ghcr.io
-          registry_username: ${{ github.actor }}
-          registry_password: ${{ secrets.GITHUB_TOKEN }}
+        name: "Helm: Package Chart"
+        run: helm package charts/corsace --version "0.0.0-${{ steps.extract_tag.outputs.extracted_tag }}" --app-version "${{ steps.extract_tag.outputs.extracted_tag }}"
+      -
+        name: "Helm: Login to Registry"
+        run: echo '${{ secrets.GITHUB_TOKEN }}' | helm registry login -u '${{ github.actor }}' --password-stdin ghcr.io
+      -
+        name: "Helm: Push Chart"
+        run: helm push corsace-0.0.0-${{ steps.extract_tag.outputs.extracted_tag }}.tgz oci://ghcr.io/corsace/charts
+      -
+        name: "Helm: Logout"
+        run: helm registry logout ghcr.io
+
