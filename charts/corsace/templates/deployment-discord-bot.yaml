@@ -20,6 +20,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
+        webServiceName: discordBot
         {{- include "corsace.selectorLabels" $ | nindent 8 }}
     spec:
       {{- with $.Values.imagePullSecrets }}
