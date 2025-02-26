@@ -4,6 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "corsace.fullname" $ }}-discord-bot
   labels:
+    webServiceName: discordBot
     {{- include "corsace.labels" $ | nindent 4 }}
 spec:
   replicas: 1
