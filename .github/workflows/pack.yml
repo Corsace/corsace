@@ -87,7 +87,7 @@ jobs:
     needs: push_to_registry
     strategy:
       matrix:
-        tag: ${{ steps.meta.outputs.tags }}
+        tag: ${{ needs.push_to_registry.outputs.tags }}
     steps:
       -
         name: Checkout
