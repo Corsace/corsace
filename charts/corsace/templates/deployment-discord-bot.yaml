@@ -12,6 +12,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
+      webServiceName: discordBot
       {{- include "corsace.selectorLabels" $ | nindent 6 }}
   template:
     metadata:
