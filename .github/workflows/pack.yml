@@ -108,7 +108,7 @@ jobs:
           name: charts/corsace
           repository: Corsace
           path: charts/corsace
-          tag: ${{ steps.extract_tag.outputs.extracted_tag }}
+          tag: 0.0.0-${{ steps.extract_tag.outputs.extracted_tag }}
           app_version: ${{ steps.extract_tag.outputs.extracted_tag }}
           registry: ghcr.io
           registry_username: ${{ github.actor }}
