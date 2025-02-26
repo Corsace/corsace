@@ -2,15 +2,15 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "corsace-chart.fullname" . }}
+  name: {{ include "corsace.fullname" . }}
   labels:
-    {{- include "corsace-chart.labels" . | nindent 4 }}
+    {{- include "corsace.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     labels:
-      {{ include "corsace-chart.selectorLabels" . | nindent 6 }}
+      {{ include "corsace.selectorLabels" . | nindent 6 }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

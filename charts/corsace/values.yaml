@@ -1,4 +1,4 @@
-# Default values for corsace-chart.
+# Default values for corsace.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,7 +6,7 @@ image:
   repository: corsace/corsace
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "master"
+  #tag: "master"
 
 imagePullSecrets: []
 nameOverride: ""

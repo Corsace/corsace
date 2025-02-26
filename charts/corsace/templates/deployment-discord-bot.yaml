@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "corsace-chart.fullname" $ }}-discord-bot
+  name: {{ include "corsace.fullname" $ }}-discord-bot
   labels:
-    {{- include "corsace-chart.labels" $ | nindent 4 }}
+    {{- include "corsace.labels" $ | nindent 4 }}
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "corsace-chart.selectorLabels" $ | nindent 6 }}
+      {{- include "corsace.selectorLabels" $ | nindent 6 }}
   template:
     metadata:
       {{- with $.Values.podAnnotations }}
@@ -19,13 +19,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "corsace-chart.selectorLabels" $ | nindent 8 }}
+        {{- include "corsace.selectorLabels" $ | nindent 8 }}
     spec:
       {{- with $.Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "corsace-chart.serviceAccountName" $ }}
+      serviceAccountName: {{ include "corsace.serviceAccountName" $ }}
       securityContext:
         {{- toYaml $.Values.podSecurityContext | nindent 8 }}
       containers:
@@ -42,7 +42,7 @@ spec:
           resources:
             {{- toYaml $.Values.resources | nindent 12 }}
           env:
-            {{- include "corsace-chart.env" $ | nindent 12 }}
+            {{- include "corsace.env" $ | nindent 12 }}
 
       {{- with $.Values.nodeSelector }}
       nodeSelector:
