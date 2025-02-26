@@ -59,6 +59,7 @@ secrets:
 webServices:
   corsace:
     replicaCount: 1
+    enableTopologySpreadConstraints: true
     command:
       - npx
       - nuxt
@@ -77,6 +78,7 @@ webServices:
             - path: /
   mca:
     replicaCount: 1
+    enableTopologySpreadConstraints: true
     command:
       - npx
       - nuxt
@@ -92,6 +94,7 @@ webServices:
             - path: /
   ayim:
     replicaCount: 1
+    enableTopologySpreadConstraints: true
     command:
       - npx
       - nuxt
@@ -107,6 +110,7 @@ webServices:
             - path: /
   open:
     replicaCount: 1
+    enableTopologySpreadConstraints: true
     command:
       - npx
       - nuxt
@@ -122,6 +126,7 @@ webServices:
             - path: /
   api:
     replicaCount: 1
+    enableTopologySpreadConstraints: true
     command:
       - node
       - --enable-source-maps

@@ -64,6 +64,18 @@ spec:
       {{- with $webService.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ . }}
       {{- end }}
+      {{- if $webService.enableTopologySpreadConstraints }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              webServiceName: {{ $webServiceName }}
+              {{- include "corsace.labels" $ | nindent 14 }}
+          matchLabelKeys:
+            - pod-template-hash
+      {{- end }}
       {{- with $.Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
