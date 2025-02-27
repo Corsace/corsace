@@ -1,5 +1,4 @@
 import ormConfig from "../../../ormconfig";
-import axios from "axios";
 import { CorsaceRouter } from "../../corsaceRouter";
 import { Multi } from "nodesu";
 import { Brackets } from "typeorm";
@@ -20,12 +19,14 @@ import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
 import { MatchupSet } from "../../../Models/tournaments/matchupSet";
 import dbMatchupToInterface from "../../functions/tournaments/matchups/dbMatchupToInterface";
-import { ResponseBody, TournamentStageState, TournamentState } from "koa";
+import { TournamentStageState, TournamentState } from "koa";
 import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { Round } from "../../../Models/tournaments/round";
 import { createHash } from "crypto";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import { publish } from "../../functions/centrifugo";
+import { get } from "../../utils/fetch";
+import { basicAuth } from "../../utils/auth";
 
 const matchupRouter  = new CorsaceRouter();
 
@@ -248,29 +249,26 @@ matchupRouter.$get("/:matchupID/bancho/:endpoint", async (ctx) => {
     }
 
     try {
-        const { data } = await axios.get<ResponseBody<unknown>>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
-            auth: config.interOpAuth,
+        const response = await get(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
+            headers: {
+                "Authorization": basicAuth(config.interOpAuth),
+            },
         });
 
-        ctx.body = data;
-    } catch (e) {
-        if (axios.isAxiosError(e)) {
-            ctx.body = e.response?.data ?? {
-                success: false,
-                error: e.message,
-            };
-            ctx.status = e.response?.status ?? 500;
-        } else if (e instanceof Error) {
+        if (!response.success) {
             ctx.body = {
                 success: false,
-                error: e.message,
+                error: `Unknown error: ${typeof response.error === "string" ? response.error : response.error.message}`,
             };
-        } else {
-            ctx.body = {
-                success: false,
-                error: `Unknown error: ${e}`,
-            };
+            ctx.status = 500;
+            return;
         }
+        ctx.body = response;
+    } catch (e) {
+        ctx.body = {
+            success: false,
+            error: e instanceof Error ? e.message : `Unknown error: ${e}`,
+        };
     }
 });
 

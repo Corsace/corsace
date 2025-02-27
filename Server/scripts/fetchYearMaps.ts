@@ -2,7 +2,7 @@ import { queue } from "async";
 import memoizee from "memoizee";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { config } from "node-config-ts";
-import axios from "axios";
+import { get } from "../utils/fetch";
 import { LessThan } from "typeorm";
 import { Beatmap } from "../../Models/beatmap";
 import { Beatmapset } from "../../Models/beatmapset";
@@ -53,12 +53,12 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
 
 // API call to fetch a user's country.
 async function getMissingOsuUserProperties (userID: number): Promise<{ country: string | null; username: string | null; }> {
-    const { data: userApi } = await axios.get<any[]>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`);
-    if (userApi.length === 0)
+    const data = await get<any[]>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`);
+    if (!data.success || data.length === 0)
         return { country: null, username: null };
     return {
-        country: userApi[0].country,
-        username: userApi[0].username,
+        country: data[0].country,
+        username: data[0].username,
     };
 }
 
@@ -202,12 +202,14 @@ const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | 
     if (config.bn.username && config.bn.secret) {
         try {
             await bnFetchingLimiter.removeTokens(1);
-            const { data } = await axios.get<BNEvent[]>(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
+            const data = await get<BNEvent[]>(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
                 headers: {
                     username: config.bn.username,
                     secret: config.bn.secret,
                 },
             });
+            if (!data.success)
+                throw typeof data.error === "string" ? new Error(data.error) : data.error;
             return data;
         } catch (err: any) {
             console.error("An error occured while fetching BNs for beatmap set " + beatmapSetID);
@@ -307,8 +309,12 @@ async function script () {
     printStatus();
     const queuedBeatmapIds: number[] = [];
     while (since.getTime() < until.getTime()) {
-        const { data: newBeatmapsApi } = await axios.get<any[]>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`);
-        for(const newBeatmapApi of newBeatmapsApi) {
+        const newBeatmapsApi = await get<any[]>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`);
+        if (!newBeatmapsApi.success) {
+            console.error("Failed to fetch beatmaps from osu! API", newBeatmapsApi.error);
+            process.exit(1);
+        }
+        for (const newBeatmapApi of newBeatmapsApi) {
             const newBeatmap = new APIBeatmap(newBeatmapApi);
             if(queuedBeatmapIds.includes(newBeatmap.id))
                 continue;
@@ -323,9 +329,7 @@ async function script () {
             }
 
             queuedBeatmapIds.push(newBeatmap.id);
-            processingQueue.push(newBeatmap).catch((err) => {
-                console.error("An error occured while processing beatmap " + newBeatmap.id, err);
-            });
+            processingQueue.push(newBeatmap).catch((err) => console.error("An error occured while processing beatmap " + newBeatmap.id, err));
             bmQueued++;
         }
     }
