@@ -1,37 +1,64 @@
 {
-    "token_hmac_secret_key": "corsace",
-    "api_key": "corsace",
-    "admin_password": "corsace",
-    "admin_secret": "secret",
-    "admin": true,
-    "allowed_origins": ["http://localhost:7000"],
-    "proxy_http_headers": [
-        "Origin",
-        "User-Agent",
-        "Cookie",
-        "Authorization",
-        "X-Request-Id"
-    ],
-    "namespaces": [
-        {
-            "name": "matchup",
-            "proxy_subscribe": true,
-            "history_size": 300,
-            "history_ttl": "20s",
-            "allow_history_for_subscriber": true
+    "client": {
+        "token": {
+            "hmac_secret_key": "corsace"
         },
-        {
-            "name": "invitations",
-            "proxy_subscribe": true
-        },
-        {
-            "name": "teams",
-            "proxy_subscribe": true
+        "allowed_origins": [
+            "http://localhost:7000"
+        ],
+        "proxy": {
+            "connect": {
+                "endpoint": "http://127.0.0.1:8080/api/centrifugo/connect",
+                "timeout": "5s",
+                "enabled": true,
+                "http_headers": [
+                    "Origin",
+                    "User-Agent",
+                    "Cookie",
+                    "Authorization",
+                    "X-Request-Id"
+                ]
+            }
         }
-    ],
-    "proxy_connect_endpoint": "http://127.0.0.1:8080/api/centrifugo/connect",
-    "proxy_connect_timeout": "5s",
-    "proxy_subscribe_endpoint": "http://127.0.0.1:8080/api/centrifugo/subscribe",
-    "proxy_subscribe_timeout": "5s",
-    "proxy_subscribe": true
+    },
+    "admin": {
+        "enabled": true,
+        "password": "corsace",
+        "secret": "secret"
+    },
+    "http_api": {
+        "key": "corsace"
+    },
+    "channel": {
+        "proxy": {
+            "subscribe": {
+                "endpoint": "http://127.0.0.1:8080/api/centrifugo/subscribe",
+                "timeout": "5s",
+                "http_headers": [
+                    "Origin",
+                    "User-Agent",
+                    "Cookie",
+                    "Authorization",
+                    "X-Request-Id"
+                ]
+            }
+        },
+        "namespaces": [
+            {
+                "name": "matchup",
+                "history_size": 300,
+                "history_ttl": "20s",
+                "allow_history_for_subscriber": true,
+                "subscribe_proxy_enabled": true
+            },
+            {
+                "name": "invitations",
+                "subscribe_proxy_enabled": true
+            },
+            {
+                "name": "teams",
+                "subscribe_proxy_enabled": true
+            }
+        ]
+    }
 }
