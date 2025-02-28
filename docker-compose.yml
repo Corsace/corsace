@@ -31,7 +31,7 @@ services:
       - PMA_USER=corsace
       - PMA_PASSWORD=corsace
   centrifugo:
-    image: centrifugo/centrifugo:v5.0.2
+    image: centrifugo/centrifugo:v6.0.3
     network_mode: host
     volumes:
       - ./centrifugo-config.json:/centrifugo/config.json

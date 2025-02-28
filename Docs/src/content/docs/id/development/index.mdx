@@ -70,7 +70,7 @@ Ke depannya, dokumentasi ini akan merujuk pada nilai `config/user/$USER.json` pe
 
 :::note
 
-<LinkCard 
+<LinkCard
     title="BERHENTI DI SINI UNTUK PENGATURAN DOKUMENTASI"
     description="Apabila kamu ingin mengerjakan dokumentasi, kamu dapat berhenti di sini dan lanjut ke bagian panduan klien."
     href="client/guide/docs-running-environment"
@@ -110,12 +110,12 @@ Apabila kamu menggunakan akan osu! khusus bot, pastikan kamu mengatur nilai para
 
 #### Pengaturan
 
-Langkah ini merupakan langkah pengaturan yang paling memakan waktu. 
+Langkah ini merupakan langkah pengaturan yang paling memakan waktu.
 Kamu akan memerlukan:
 
 ##### Developer Mode yang Aktif
 
-Centang opsi yang terdapat pada 
+Centang opsi yang terdapat pada
 
 ```
 User Settings > Appearance > Advanced > Developer Mode
@@ -130,7 +130,7 @@ Buat role "staff" dan berikan role ini kepada dirimu sendiri.
 
 Klik kanan nama servermu dan pilih "Copy ID". Salin ID ini ke `config.discord.guild`.
 
-Klik kanan nama servermu dan pilih "Copy ID". Kamu dapat membuat role untuk berbagai kebutuhan pada config, ATAU 
+Klik kanan nama servermu dan pilih "Copy ID". Kamu dapat membuat role untuk berbagai kebutuhan pada config, ATAU
 kamu juga dapat menyalin ID role ini pada baris config berikut untuk memberikanmu kuasa penuh akan segala sesuatunya.
 
 ```
@@ -178,7 +178,7 @@ Ikuti tautan ini untuk menambahkan bot milikmu ke dalam server.
 
 ###### Bot
 
-Tuju bagian Bot dan salin token bot milikmu. 
+Tuju bagian Bot dan salin token bot milikmu.
 Sisipkan token ini pada `config.discord.token`.
 
 Pastikan kamu telah mencentang `Server Members` dan `Message Content` pada daftar pilihan yang tersedia pada menu **Privileged Gateway Intents** sebelum memulai bot. Apabila tidak, bot kamu tidak akan berjalan dan kamu akan dihadapkan dengan pesan error `[DISALLOWED INTENTS]`.
@@ -214,13 +214,13 @@ Database ini akan merespon permitaan pada `127.0.0.1:3306` dengan nama database,
 
 ##### Pengaturan MariaDB Manual
 
-Apabila kamu tidak ingin menggunakan Docker, kamu akan perlu untuk mengistal [MariaDB](https://mariadb.org/) dan membuat database kosong yang dapat kamu namai sesuka hati. 
+Apabila kamu tidak ingin menggunakan Docker, kamu akan perlu untuk mengistal [MariaDB](https://mariadb.org/) dan membuat database kosong yang dapat kamu namai sesuka hati.
 
 Untuk membuat database ini, kamu hanya perlu untuk menjalankan:
 
 ```bash
 mysql -u root -p
-MySQL> create database <new_db_name>; 
+MySQL> create database <new_db_name>;
 ```
 
 Pastikan kamu memperbarui `config.database` dengan nama dan informasi kredensial database yang akan kamu gunakan.
@@ -239,7 +239,7 @@ Kami menggunakan tiga bucket:
 
 - `team-avatars` merupakan bucket publik yang menyimpan avatar tim, yang dapat dilayani oleh CDN tanpa autentikasi
 - `mappacks` merupakan bucket publik yang menyimpan paket map publik, yang dapat dilayani oleh CDN tanpa autentikasi
-- `mappacks-temp` merupakan bucket pribadi yang menyimpan paket beatmap privat yang tidak ditujukan untuk akses publik  
+- `mappacks-temp` merupakan bucket pribadi yang menyimpan paket beatmap privat yang tidak ditujukan untuk akses publik
 
 Paket beatmap yang dihasilkan akan terlebih dahulu diunggah ke bucket ini, di mana para pengguna akan kemudian diberikan akses melalui URL yang telah ditandatangani sebelumnya (pre-signed URL).
 
@@ -267,7 +267,7 @@ Pada Unix:
 Jalankan perintah `npm run centrifugo` untuk memulai server Centrifugo. Secara default, server ini akan tersedia pada `http://localhost:8001` selama kamu tidak mengubah nilai port pada berkas konfigurasi.
 
 Pada WSL/Windows ATAU apabila metode di atas tidak bekerja:
-Instal berkas biner (.exe) dari [daftar rilisan terbaru](https://github.com/centrifugal/centrifugo/releases) dan tambahkan ke folder root proyek ini.
+Unduh biner v6.x.x dari [daftar rilisan terbaru](https://github.com/centrifugal/centrifugo/releases) dan tambahkan ke folder root proyek ini.
 Setelahnya, jalankan perintah `npm run centrifugo:local` untuk memulai server Centrifugo. Apabila kamu ingin mengubah nomor port yang digunakan, ubah nilai parameter '-p' pada script yang terkait di berkas `package.json` dan URL API config milikmu.
 
 :::note

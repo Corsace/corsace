@@ -21,22 +21,41 @@ The majority of the setup should already be done based on the parent Getting Sta
 
 In the main directory, there is a `centrifugo-config.json`.
 
-Ensure that in `allowed_origins` that the value in `config.open.publicUrl` is the array value.\
-Ensure that in `proxy_connect_endpoint` and `proxy_subscribe_endpoint` that the value in `config.api.publicUrl` is there. It should consist of api endpoints `/api/centrifugo/connect` and `/api/centrifugo/subscribe` in there respectively.\
-The value for `proxy_subscribe` should also be `true`.
+Ensure that in `client.allowed_origins` that the value in `config.open.publicUrl` is the array value.\
+Ensure that in `client.proxy.connect.endpoint` and `channel.proxy.subscribe.endpoint` that the value in `config.api.publicUrl` is there. It should consist of api endpoints `/api/centrifugo/connect` and `/api/centrifugo/subscribe` in there respectively.\
+The value for `channel.namespaces[...].subscribe_proxy_enabled` should also be `true`.
 
 For example, if my `config.open.publicUrl` was `http://localhost:7000`, and my `config.api.publicUrl` was `http://localhost:8080`, then my `centrifugo-config.json` would look like this:
-
 ```json
 {
     ...,
-    "allowed_origins": [..., "http://localhost:7000", ...],
+    "client": {
+        ...,
+        "allowed_origins": [..., "http://localhost:7000", ...],
+        "proxy": {
+            "connect": {
+                "endpoint": "http://127.0.0.1:8080/api/centrifugo/connect",
+                ...
+            }
+        }
+    },
     ...,
-    "proxy_connect_endpoint": "http://127.0.0.1:8080/api/centrifugo/connect",
-    ...,
-    "proxy_subscribe_endpoint": "http://127.0.0.1:8080/api/centrifugo/subscribe",
-    ...,
-    "proxy_subscribe": true
+    "channel": {
+        "proxy": {
+            "subscribe": {
+                "endpoint": "http://127.0.0.1:8080/api/centrifugo/subscribe",
+                ...
+            }
+        },
+        "namespaces": [
+            {
+                "name": "matchup",
+                "subscribe_proxy_enabled": true,
+                ...
+            },
+            ...
+        ],
+    ...
 }
 ```
 
@@ -54,7 +73,7 @@ In the console, there should be no errors when running.
 
 This is only for if the above doesn't work, which can happen in Windows/WSL.
 
-Download the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and place it in the parent directory.\
+Download a v6.x.x binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and place it in the parent directory.\
 Afterwards, go to `scripts.centrifugo:local` in `package.json` located in the parent directory, and ensure it has the same port listed in `config.centrifugo.publicUrl` and `config.centrifugo.apiUrl`.
 Once done, it should run using the following command
 
