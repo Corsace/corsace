@@ -415,6 +415,14 @@
             "bestBreakout": {
                 "name": "Best Breakout",
                 "description": "The best new mappers that ranked their first map in Catch The Beat"
+            },
+            "longNotesAndHybrid4K": {
+                "name": "Best 4K Long Notes and Hybrid",
+                "description": "The best 4K beatmap with an intense usage of LNs and rice."
+            },
+            "longNotesAndHybrid7K": {
+                "name": "Best 7K Long Notes and Hybrid",
+                "description": "The best 7K beatmap with an intense usage of LNs and rice."
             }
         },
         "nom_vote": {
