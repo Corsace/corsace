@@ -411,6 +411,10 @@
             "outContSB": {
                 "name": "Outstanding Contributor (Storyboard)",
                 "description": "The one who positively contributed to the health of the storyboarding scene the most."
+            },
+            "bestBreakout": {
+                "name": "Best Breakout",
+                "description": "The best new mappers that ranked their first map in Catch The Beat"
             }
         },
         "nom_vote": {
