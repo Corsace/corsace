@@ -6,8 +6,8 @@
                 :fields="fields"
             />
 
-            <div 
-                v-if="isBeatmapsetType" 
+            <div
+                v-if="isBeatmapsetType"
                 class="admin-popout__section"
             >
                 auto filters
@@ -17,7 +17,7 @@
                     class="admin-popout__input"
                 >
             </div>
-            <div 
+            <div
                 v-else-if="isUsersType"
                 class="admin-popout__section"
             >
@@ -35,7 +35,7 @@
                     :fields="filterFields"
                 />
 
-                <div 
+                <div
                     class="admin-popout__section"
                 >
                     top diff Only
@@ -46,7 +46,7 @@
                     >
                 </div>
             </div>
-            
+
             <button
                 class="button"
                 @click="save"
@@ -102,11 +102,12 @@ export default class AdminModalCategory extends Vue {
             minCS: info?.filter?.minCS,
             maxCS: info?.filter?.maxCS,
             topOnly: info?.filter?.topOnly,
+            rookie: info?.filter?.rookie,
         };
     }
 
     @State selectedMode!: string;
-    
+
     category: Partial<Category> & { isFiltered: boolean } | null = null;
     filterParams: CategoryFilter | null = null;
 
@@ -158,6 +159,6 @@ export default class AdminModalCategory extends Vue {
 
         this.$emit("updateCategory");
     }
-        
+
 }
 </script>
