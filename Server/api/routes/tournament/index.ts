@@ -32,28 +32,7 @@ async function validateID (ctx: CorsaceContext<object>, next: Next) {
 
 const tournamentRouter  = new CorsaceRouter();
 
-tournamentRouter.$get<{ tournament: Tournament }>("/open/:year", async (ctx) => {
-    if (await ctx.cashed())
-        return;
-
-    const year = parseInt(ctx.params.year);
-    if (isNaN(year)) {
-        ctx.body = {
-            success: false,
-            error: "Invalid year",
-        };
-        return;
-    }
-
-    const tournament = await Tournament
-        .createQueryBuilder("tournament")
-        .innerJoinAndSelect("tournament.organizer", "organizer")
-        .where("tournament.year <= :year", { year })
-        .andWhere("tournament.isOpen = true")
-        .andWhere("tournament.status != '0'")
-        .orderBy("tournament.year", "DESC")
-        .getOne();
-
+async function getTournamentEndpoint (ctx: CorsaceContext<{ tournament: Tournament }>, tournament: Tournament | null) {
     if (!tournament) {
         ctx.body = {
             success: false,
@@ -105,6 +84,42 @@ tournamentRouter.$get<{ tournament: Tournament }>("/open/:year", async (ctx) => 
         success: true,
         tournament,
     };
+}
+
+tournamentRouter.$get<{ tournament: Tournament }>("/:tournamentID", validateID, async (ctx) => {
+    const ID = ctx.state.ID;
+
+    const tournament = await Tournament
+        .createQueryBuilder("tournament")
+        .innerJoinAndSelect("tournament.organizer", "organizer")
+        .where("tournament.ID = :ID", { ID })
+        .andWhere("tournament.isOpen = true")
+        .andWhere("tournament.status != '0'")
+        .getOne();
+
+    await getTournamentEndpoint(ctx, tournament);
+});
+
+tournamentRouter.$get<{ tournament: Tournament }>("/open/:year", async (ctx) => {
+    const year = parseInt(ctx.params.year);
+    if (isNaN(year)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid year",
+        };
+        return;
+    }
+
+    const tournament = await Tournament
+        .createQueryBuilder("tournament")
+        .innerJoinAndSelect("tournament.organizer", "organizer")
+        .where("tournament.year <= :year", { year })
+        .andWhere("tournament.isOpen = true")
+        .andWhere("tournament.status != '0'")
+        .orderBy("tournament.year", "DESC")
+        .getOne();
+
+    await getTournamentEndpoint(ctx, tournament);
 });
 
 tournamentRouter.$get<{ tournamentID?: number }>("/validateKey", async (ctx) => {
