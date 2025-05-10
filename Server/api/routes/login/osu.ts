@@ -2,9 +2,8 @@ import { CorsaceRouter } from "../../../corsaceRouter";
 import passport from "koa-passport";
 import { UserAuthenticatedState } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
-import { config } from "node-config-ts";
+import { config, IRemoteServiceConfig } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
-import { redirectToMainDomain } from "../../../middleware/login";
 import { osuClient, osuV2Client } from "../../../osu";
 import { isPossessive } from "../../../../Models/MCA_AYIM/guestRequest";
 import { scopes } from "../../../../Interfaces/osuAPIV2";
@@ -12,6 +11,7 @@ import { parseQueryParam } from "../../../utils/query";
 import { UserStatistics } from "../../../../Models/userStatistics";
 import { Beatmap, Mode } from "nodesu";
 import { ModeDivisionType } from "../../../../Interfaces/modes";
+import { getStrategy } from "../../../passportFunctions";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -23,51 +23,58 @@ const modes = [
     "mania",
 ];
 
-osuRouter.$get("/", redirectToMainDomain, async (ctx, next) => {
+osuRouter.$get("/", async (ctx, next) => {
     const site = parseQueryParam(ctx.query.site);
     if (!site) {
-        ctx.body = "No site specified";
+        ctx.body = {
+            success: false,
+            error: "No site specified",
+        };
         return;
     }
     if (!(site in config)) {
-        ctx.body = "Invalid site";
+        ctx.body = {
+            success: false,
+            error: "Invalid site",
+        };
         return;
     }
     const configInfo = config[site as keyof typeof config];
-    if (typeof configInfo === "object" && !("publicUrl" in configInfo)) {
-        ctx.body = "Invalid config";
+    if (typeof configInfo !== "object" || !("publicUrl" in configInfo)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid config",
+        };
         return;
     }
 
-    const baseURL = ctx.query.site ? (typeof configInfo === "object" ? configInfo.publicUrl : config.corsace.publicUrl) : "";
-    const params = parseQueryParam(ctx.query.redirect) ?? "";
-    const redirectURL = (baseURL + params) ?? "back";
-    ctx.cookies.set("redirect", redirectURL, { overwrite: true });
-    await next();
-}, passport.authenticate("oauth2", { scope: scopes }));
+    const redirect = parseQueryParam(ctx.query.redirect) ?? "";
+    ctx.cookies.set("login-redirect", JSON.stringify({ site, redirect }), { overwrite: true });
+
+    const { name: strategyName } = getStrategy("osu", site);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return await passport.authenticate(strategyName, { scope: scopes })(ctx, next);
+});
 
 osuRouter.$get<object, UserAuthenticatedState>("/callback", async (ctx, next) => {
+    const loginRedirectCookie = ctx.cookies.get("login-redirect");
+    const loginRedirect = loginRedirectCookie ? JSON.parse(loginRedirectCookie) as { site: keyof typeof config; redirect: string } : { site: "corsace" as const, redirect: "" };
+    const { name: strategyName } = getStrategy("osu", loginRedirect.site);
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {
+    return await passport.authenticate(strategyName, { scope: scopes, failureRedirect: "/" }, async (err, user) => {
         if (user) {
             await user.save();
             ctx.login(user);
             await next();
         } else {
-            const redirect = ctx.cookies.get("redirect");
-            ctx.cookies.set("redirect", "");
-            ctx.redirect(redirect ?? "back");
+            ctx.cookies.set("login-redirect", "");
+            const sitePublicUrl = (config[loginRedirect.site] as IRemoteServiceConfig).publicUrl;
+            ctx.redirect(`${sitePublicUrl}${loginRedirect.redirect}`);
             return;
         }
     })(ctx, next);
 }, async (ctx, next) => {
-    if (!ctx.state.user) {
-        const redirect = ctx.cookies.get("redirect");
-        ctx.cookies.set("redirect", "");
-        ctx.redirect(redirect ?? "back");
-        return;
-    }
-
     try {
         // api v2 data
         const data = await osuV2Client.getMe(ctx.state.user.osu.accessToken!);
@@ -171,13 +178,6 @@ osuRouter.$get<object, UserAuthenticatedState>("/callback", async (ctx, next) =>
         }
     }
 }, async ctx => {
-    if (!ctx.state.user) {
-        const redirect = ctx.cookies.get("redirect");
-        ctx.cookies.set("redirect", "");
-        ctx.redirect(redirect ?? "back");
-        return;
-    }
-
     try {
         // MCA data
         ctx.state.user.mcaEligibility = ctx.state.user.mcaEligibility || [];
@@ -210,9 +210,12 @@ osuRouter.$get<object, UserAuthenticatedState>("/callback", async (ctx, next) =>
                 }
             }
         }
-        const redirect = ctx.cookies.get("redirect");
-        ctx.cookies.set("redirect", "");
-        ctx.redirect(redirect ?? "back");
+
+        const loginRedirectCookie = ctx.cookies.get("login-redirect");
+        const loginRedirect = loginRedirectCookie ? JSON.parse(loginRedirectCookie) as { site: keyof typeof config; redirect: string } : { site: "corsace" as const, redirect: "" };
+        ctx.cookies.set("login-redirect", "");
+        const sitePublicUrl = (config[loginRedirect.site] as IRemoteServiceConfig).publicUrl;
+        ctx.redirect(`${sitePublicUrl}${loginRedirect.redirect}`);
     } catch (e) {
         if (e) {
             ctx.status = 500;

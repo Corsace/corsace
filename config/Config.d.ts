@@ -1,8 +1,10 @@
 declare module "node-config-ts" {
-    interface IWebServiceConfig {
+    export interface IRemoteServiceConfig {
+        publicUrl: string;
+    }
+    interface IWebServiceConfig extends IRemoteServiceConfig {
         host: string;
         port: number;
-        publicUrl: string;
     }
     export interface ISubSiteConfig extends IWebServiceConfig {
         ssr: boolean;
