@@ -1,16 +1,16 @@
 import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import passport from "koa-passport";
 import { discordGuild } from "../../../discord";
-import { config } from "node-config-ts";
-import { redirectToMainDomain } from "../../../middleware/login";
+import { config, IRemoteServiceConfig } from "node-config-ts";
 import { parseQueryParam } from "../../../utils/query";
 import { DiscordAPIError } from "discord.js";
+import { getStrategy } from "../../../passportFunctions";
 
 // If you are looking for discord passport info then go to Server > passportFunctions.ts
 
 const discordRouter  = new CorsaceRouter();
 
-discordRouter.$get("/", redirectToMainDomain, async (ctx: CorsaceContext<object>, next) => {
+discordRouter.$get("/", async (ctx: CorsaceContext<object>, next) => {
     const site = parseQueryParam(ctx.query.site);
     if (!site) {
         ctx.body = {
@@ -27,7 +27,7 @@ discordRouter.$get("/", redirectToMainDomain, async (ctx: CorsaceContext<object>
         return;
     }
     const configInfo = config[site as keyof typeof config];
-    if (typeof configInfo === "object" && !("publicUrl" in configInfo)) {
+    if (typeof configInfo !== "object" || !("publicUrl" in configInfo)) {
         ctx.body = {
             success: false,
             error: "Invalid config",
@@ -35,16 +35,26 @@ discordRouter.$get("/", redirectToMainDomain, async (ctx: CorsaceContext<object>
         return;
     }
 
-    const baseURL = ctx.query.site ? (typeof configInfo === "object" ? configInfo.publicUrl : config.corsace.publicUrl) : "";
-    const params = parseQueryParam(ctx.query.redirect) ?? "";
-    const redirectURL = (baseURL + params) ?? "back";
-    ctx.cookies.set("redirect", redirectURL, { overwrite: true });
-    await next();
-}, passport.authenticate("discord", { scope: ["identify", "guilds.join"] }));
+    const baseURL = configInfo.publicUrl;
+    const redirect = parseQueryParam(ctx.query.redirect) ?? "";
+    ctx.cookies.set("login-redirect", JSON.stringify({ site, redirect }), { overwrite: true });
+
+    const callbackURL = `${baseURL}/api/login/discord/callback`;
+    const { name: strategyName } = getStrategy("discord", callbackURL);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return await passport.authenticate(strategyName, { scope: ["identify", "guilds.join"] })(ctx, next);
+});
 
 discordRouter.$get("/callback", async (ctx: CorsaceContext<object>, next) => {
+    const loginRedirectCookie = ctx.cookies.get("login-redirect");
+    const loginRedirect = loginRedirectCookie ? JSON.parse(loginRedirectCookie) as { site: keyof typeof config; redirect: string } : { site: "corsace" as const, redirect: "" };
+    const sitePublicUrl = (config[loginRedirect.site] as IRemoteServiceConfig).publicUrl;
+    const callbackURL = `${sitePublicUrl}/api/login/discord/callback`;
+    const { name: strategyName } = getStrategy("discord", callbackURL);
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return await passport.authenticate("discord", { scope: ["identify", "guilds.join"], failureRedirect: "/" }, async (err, user) => {
+    return await passport.authenticate(strategyName, { scope: ["identify", "guilds.join"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
             if (ctx.state.user) {
                 ctx.state.user.discord = user.discord;
@@ -82,15 +92,9 @@ discordRouter.$get("/callback", async (ctx: CorsaceContext<object>, next) => {
             }
 
             ctx.login(user);
-            const redirect = ctx.cookies.get("redirect");
-            ctx.cookies.set("redirect", "");
-            ctx.redirect(redirect ?? "back");
-        } else {
-            const redirect = ctx.cookies.get("redirect");
-            ctx.cookies.set("redirect", "");
-            ctx.redirect(redirect ?? "back");
-            return;
         }
+        ctx.cookies.set("login-redirect", "");
+        ctx.redirect(`${sitePublicUrl}${loginRedirect.redirect}`);
     })(ctx, next);
 });
 

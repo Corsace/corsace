@@ -13,7 +13,9 @@ export default class CentrifugeMixin extends Vue {
             return;
         }
 
-        this.centrifuge = new Centrifuge(`${urlData.url}/connection/websocket`, {});
+        const centrifugeUrl = new URL(`${urlData.url}/connection/websocket`, window.location.href);
+        centrifugeUrl.protocol = centrifugeUrl.protocol.replace("http", "ws");
+        this.centrifuge = new Centrifuge(centrifugeUrl.href, {});
 
         this.centrifuge.on("connecting", (ctx) => {
             console.log("connecting", ctx);

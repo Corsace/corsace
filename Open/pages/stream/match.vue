@@ -262,9 +262,9 @@ export default class Match extends Vue {
             return;
         }
 
-        const centrifuge = new Centrifuge(`${centrifugoURLData.url}/connection/websocket`, {
-
-        });
+        const centrifugeUrl = new URL(`${centrifugoURLData.url}/connection/websocket`, window.location.href);
+        centrifugeUrl.protocol = centrifugeUrl.protocol.replace("http", "ws");
+        const centrifuge = new Centrifuge(centrifugeUrl.href, {});
 
         centrifuge.on("connecting", (ctx) => {
             console.log("connecting", ctx);
