@@ -93,7 +93,6 @@ tournamentRouter.$get<{ tournament: Tournament }>("/:tournamentID", validateID, 
         .createQueryBuilder("tournament")
         .innerJoinAndSelect("tournament.organizer", "organizer")
         .where("tournament.ID = :ID", { ID })
-        .andWhere("tournament.isOpen = true")
         .andWhere("tournament.status != '0'")
         .getOne();
 
