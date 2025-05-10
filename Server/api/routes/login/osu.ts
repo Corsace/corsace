@@ -40,7 +40,7 @@ osuRouter.$get("/", async (ctx, next) => {
         return;
     }
     const configInfo = config[site as keyof typeof config];
-    if (typeof configInfo !== "object" || !("publicUrl" in configInfo)) {
+    if (typeof configInfo !== "object" || !("publicUrl" in configInfo) || !configInfo.publicUrl) {
         ctx.body = {
             success: false,
             error: "Invalid config",

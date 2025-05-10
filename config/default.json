@@ -57,6 +57,9 @@
         ""
     ],
     "cookiesDomain": "localhost",
+    "rescup": {
+        "publicUrl": ""
+    },
     "ayim": {
         "host": "localhost",
         "port": 3000,
