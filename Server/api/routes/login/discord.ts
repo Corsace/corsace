@@ -35,13 +35,10 @@ discordRouter.$get("/", async (ctx: CorsaceContext<object>, next) => {
         return;
     }
 
-    const baseURL = configInfo.publicUrl;
     const redirect = parseQueryParam(ctx.query.redirect) ?? "";
     ctx.cookies.set("login-redirect", JSON.stringify({ site, redirect }), { overwrite: true });
 
-    const callbackURL = `${baseURL}/api/login/discord/callback`;
-    const { name: strategyName } = getStrategy("discord", callbackURL);
-
+    const { name: strategyName } = getStrategy("discord", site);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await passport.authenticate(strategyName, { scope: ["identify", "guilds.join"] })(ctx, next);
 });
@@ -49,9 +46,7 @@ discordRouter.$get("/", async (ctx: CorsaceContext<object>, next) => {
 discordRouter.$get("/callback", async (ctx: CorsaceContext<object>, next) => {
     const loginRedirectCookie = ctx.cookies.get("login-redirect");
     const loginRedirect = loginRedirectCookie ? JSON.parse(loginRedirectCookie) as { site: keyof typeof config; redirect: string } : { site: "corsace" as const, redirect: "" };
-    const sitePublicUrl = (config[loginRedirect.site] as IRemoteServiceConfig).publicUrl;
-    const callbackURL = `${sitePublicUrl}/api/login/discord/callback`;
-    const { name: strategyName } = getStrategy("discord", callbackURL);
+    const { name: strategyName } = getStrategy("discord", loginRedirect.site);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await passport.authenticate(strategyName, { scope: ["identify", "guilds.join"], failureRedirect: "/" }, async (err, user) => {
@@ -94,6 +89,7 @@ discordRouter.$get("/callback", async (ctx: CorsaceContext<object>, next) => {
             ctx.login(user);
         }
         ctx.cookies.set("login-redirect", "");
+        const sitePublicUrl = (config[loginRedirect.site] as IRemoteServiceConfig).publicUrl;
         ctx.redirect(`${sitePublicUrl}${loginRedirect.redirect}`);
     })(ctx, next);
 });
