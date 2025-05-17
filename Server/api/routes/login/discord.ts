@@ -1,7 +1,7 @@
 import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import passport from "koa-passport";
 import { discordGuild } from "../../../discord";
-import { config, IRemoteServiceConfig } from "node-config-ts";
+import { config, IRemoteServiceConfig, IWebServiceConfig } from "node-config-ts";
 import { parseQueryParam } from "../../../utils/query";
 import { DiscordAPIError } from "discord.js";
 import { getStrategy } from "../../../passportFunctions";
@@ -75,11 +75,13 @@ discordRouter.$get("/callback", async (ctx: CorsaceContext<object>, next) => {
                         discordUser.roles.add(config.discord.roles.corsace.verified),
                     ]);
                 } catch (e) {
-                    await guild.members.add(user.discord.userID, {
-                        accessToken: user.discord.accessToken,
-                        nick: user.osu.username,
-                        roles: [config.discord.roles.corsace.verified, config.discord.roles.corsace.streamAnnouncements],
-                    });
+                    if ((config[loginRedirect.site] as IWebServiceConfig).host) {
+                        await guild.members.add(user.discord.userID, {
+                            accessToken: user.discord.accessToken,
+                            nick: user.osu.username,
+                            roles: [config.discord.roles.corsace.verified, config.discord.roles.corsace.streamAnnouncements],
+                        });
+                    }
                 }
             } catch (e) {
                 if (!(e instanceof DiscordAPIError) || e.code !== 50007)
