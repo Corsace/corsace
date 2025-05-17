@@ -5,7 +5,7 @@ import { Beatmap, Converts, Mode } from "nodesu";
 import { MatchupList, MatchupScore } from "../../../../Interfaces/matchup";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { StageType } from "../../../../Interfaces/stage";
-import { unallowedToPlay } from "../../../../Interfaces/tournament";
+import { canViewPrivateMappools, unallowedToPlay } from "../../../../Interfaces/tournament";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
@@ -253,7 +253,7 @@ stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
     else if (ctx.state.user?.discord.userID) {
         // Checking if they have privileged roles or not
         try {
-            const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+            const privilegedRoles = tournament.roles.filter(r => canViewPrivateMappools.some(u => u === r.roleType));
             const tournamentServer = await discordClient.guilds.fetch(tournament.server);
             const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
             if (privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))

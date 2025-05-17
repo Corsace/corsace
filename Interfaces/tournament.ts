@@ -56,6 +56,13 @@ export const unallowedToPlay = [
     TournamentRoleType.Referees,
 ];
 
+export const canViewPrivateMappools = [
+    TournamentRoleType.Organizer,
+    TournamentRoleType.Mappoolers,
+    TournamentRoleType.Mappers,
+    TournamentRoleType.Testplayers,
+];
+
 export const playingRoles = [
     TournamentRoleType.Participants,
     TournamentRoleType.Captains,
