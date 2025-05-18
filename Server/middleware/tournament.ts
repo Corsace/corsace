@@ -126,7 +126,7 @@ export function hasRoles (roles: TournamentRoleType[]) {
             return;
         }
 
-        const member = await getMember(ctx.state.user.discord.userID);
+        const member = await getMember(ctx.state.user.discord.userID, ctx.state.tournament.server);
         if (!member) {
             ctx.body = {
                 success: false,

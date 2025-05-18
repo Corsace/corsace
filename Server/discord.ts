@@ -29,12 +29,12 @@ discordClient.on("error", err => {
     console.error(err);
 });
 
-const discordGuild = (): Promise<Guild> => discordClient.guilds.fetch(config.discord.guild);
+const discordGuild = (guildID?: string): Promise<Guild> => discordClient.guilds.fetch(guildID ?? config.discord.guild);
 
-async function getMember (ID: string): Promise<GuildMember | undefined> {
+async function getMember (ID: string, guildID?: string): Promise<GuildMember | undefined> {
     let member: GuildMember | undefined;
     try {
-        member = await (await discordGuild()).members.fetch(ID);
+        member = await (await discordGuild(guildID)).members.fetch(ID);
     } catch (e: any) {
         if (e.code && (e.code === 10007 || e.code === 404))
             member = undefined;
