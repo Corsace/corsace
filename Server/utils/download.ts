@@ -1,10 +1,17 @@
-import * as https from "https";
+import axios from "axios";
 import { PassThrough, Readable } from "stream";
+import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
+
+const rateLimiter = new RateLimiterQueue(new RateLimiterMemory({ points: 1, duration: 1.5 }));
 
 export function download (url: string): Readable {
     const passThrough = new PassThrough();
-    https.get(url, (res) => {
-        res.pipe(passThrough);
-    }).on("error", (err) => passThrough.emit("error", err));
+    rateLimiter.removeTokens(1, new URL(url).hostname)
+        .then(() => axios.get(url,{
+            responseType: "stream",
+        }
+        ))
+        .then((res) => (res.data as Readable).pipe(passThrough))
+        .catch((err) => passThrough.emit("error", err));
     return passThrough;
 }
