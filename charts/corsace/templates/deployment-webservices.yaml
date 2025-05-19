@@ -72,7 +72,7 @@ spec:
           labelSelector:
             matchLabels:
               webServiceName: {{ $webServiceName }}
-              {{- include "corsace.labels" $ | nindent 14 }}
+              {{- include "corsace.selectorLabels" $ | nindent 14 }}
           matchLabelKeys:
             - pod-template-hash
       {{- end }}
