@@ -325,11 +325,7 @@ export default class Schedule extends Vue {
         }
         
         this.loading = true;
-        const ID = this.selectedStage.ID;
         this.$store.commit("open/setMatchups", []);
-
-        await this.pause(250);
-        if (ID !== this.selectedStage.ID) return;
 
         await this.$store.dispatch("open/setMatchups", this.selectedStage?.ID);
         const matchupIDSet = new Set<string>();
@@ -342,10 +338,6 @@ export default class Schedule extends Vue {
         if (this.visibleMatchIDs.length)
             this.currGroup = this.visibleMatchIDs[0];
         this.loading = false;
-    }
-
-    async pause (ms: number) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     changePage (page: "schedule" | "brackets") {

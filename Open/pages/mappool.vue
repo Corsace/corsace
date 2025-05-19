@@ -198,12 +198,8 @@ export default class Mappool extends Vue {
             return;
         }
         
-        const ID = this.selectedStage.ID;
         this.$store.commit("open/setMappools", []);
         this.$store.commit("open/setScores", []);
-
-        await this.pause(500);
-        if (ID !== this.selectedStage.ID) return;
 
         await this.$store.dispatch("open/setMappools", this.selectedStage?.ID);
         if (this.page === "scores")
@@ -219,10 +215,6 @@ export default class Mappool extends Vue {
         if (page === "scores" && (!this.scores || this.scores.length === 0))
             await this.$store.dispatch("open/setScores", this.selectedStage?.ID);
         this.page = page;
-    }
-
-    async pause (ms: number) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     mounted () {
