@@ -42,7 +42,7 @@ export async function validateStageOrRound<S extends DefaultState = DefaultState
     const stageID = ctx.request.body?.stageID || ctx.params?.stageID || ctx.query.stageID || ctx.request.body?.stage || ctx.params?.stage || ctx.query.stage;
     const roundID = ctx.request.body?.roundID || ctx.params?.roundID || ctx.query.roundID || ctx.request.body?.round || ctx.params?.round || ctx.query.round;
 
-    if (stageID === undefined || isNaN(parseInt(stageID)) || parseInt(stageID) < 1) {
+    if (roundID === undefined && (stageID === undefined || isNaN(parseInt(stageID)) || parseInt(stageID) < 1)) {
         ctx.body = {
             success: false,
             error: "Missing stage ID",
@@ -76,8 +76,7 @@ export async function validateStageOrRound<S extends DefaultState = DefaultState
                 .andWhere("stage.ID = :stageID", { stageID: parseInt(stageID) });
     } else if (roundID)
         stageQ
-            .where("stage.ID = :stageID", { stageID: parseInt(stageID) })
-            .orWhere("rounds.ID = :roundID", { roundID: parseInt(roundID) });
+            .where("rounds.ID = :roundID", { roundID: parseInt(roundID) });
     else
         stageQ.where("stage.ID = :stageID", { stageID: parseInt(stageID) });
 
