@@ -19,13 +19,8 @@ export const mutations: MutationTree<BaseState> = {
     setLoggedInUser (baseState, user) {
         baseState.loggedInUser = user;
     },
-    setViewTheme (baseState, defaultTheme: "light" | "dark") {
-        const localTheme = localStorage.getItem("theme");
-
-        if (localTheme && themeRegex.test(localTheme))
-            baseState.viewTheme = localTheme as "light" | "dark";
-        else
-            baseState.viewTheme = defaultTheme;
+    setViewTheme (baseState) {
+        baseState.viewTheme = "light";
     },
     updateViewTheme (baseState, theme) {
         if (themeRegex.test(theme)) {

@@ -1,5 +1,4 @@
 import { NuxtConfig } from "@nuxt/types";
-import * as fs from "fs";
 import { ISubSiteConfig, config } from "node-config-ts";
 import path from "path";
 
@@ -12,14 +11,6 @@ const locales: {
         file: "en.json",
     },
 ];
-
-fs.readdirSync("../Assets/lang/translated").forEach(file => {
-    if (file !== "index.js")
-        locales.push({
-            code: file.split(".")[0],
-            file: `translated/${file}`,
-        });
-});
 
 export default (subSite: string): Partial<NuxtConfig> => {
     if (!(subSite in config))
