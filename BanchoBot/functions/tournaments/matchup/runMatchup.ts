@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { banchoClient, baseURL, maybeShutdown } from "../../..";
+import { banchoClient, baseURL } from "../../..";
 import state from "../../../state";
 import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
@@ -65,12 +65,11 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
 async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, invCollector?: InteractionCollector<any>, refCollector?: InteractionCollector<any>, auto = false) {
     const centrifugoChannel = `matchup:${matchup.ID}`;
     // Save and store match instance
-    state.runningMatchups++;
-    state.matchups[matchup.ID] = {
+    state.addMatchup(matchup.ID, {
         matchup,
         lobby: mpLobby,
         autoRunning: auto,
-    };
+    });
     matchup.mp = mpLobby.id;
     matchup.baseURL = baseURL;
     matchup.winner = null;
@@ -854,12 +853,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         } catch(err) {
             log(matchup, `Error while terminating lobby: ${err}`);
         } finally {
-            await saveMessages();
+            try {
+                await saveMessages();
+            } catch(err) {
+                log(matchup, `Error while saving messages during lobby termination: ${err}`);
+            }
             publish(centrifugoChannel, { type: "closed" });
 
-            state.runningMatchups--;
-            delete state.matchups[matchup.ID];
-            await maybeShutdown();
+            state.removeMatchup(matchup.ID);
         }
     }
 }

@@ -74,7 +74,10 @@ const maybeShutdown = async () => {
 
     if (state.runningMatchups > 0) {
         console.log(`Waiting for ${state.runningMatchups} matchups to finish...`);
-    } else {
+        return;
+    }
+
+    try {
         console.log("No running matchup.");
         await httpShutdown?.();
         console.log("Done handling all API requests, closed HTTP server.");
@@ -82,9 +85,11 @@ const maybeShutdown = async () => {
         discordClient.destroy();
         banchoClient.disconnect();
         console.log("Disconnected from every service, shutting down now.");
-
-        process.exit();
+    } catch (error) {
+        console.error("An error occurred during shutdown:", error);
     }
+
+    process.exit();
 };
 
 const onTerminationSignal = (signal: NodeJS.Signals) => {
@@ -102,9 +107,9 @@ const onTerminationSignal = (signal: NodeJS.Signals) => {
     // Delaying shutdown as a safety net while Kubernetes sets up routing new requests to the new instance.
     console.log(`Received shutdown signal (${signal}), initiating shutdown sequence in 10 seconds.`);
 
-    setTimeout(async () => {
+    setTimeout(() => {
         state.shuttingDown = true;
-        await maybeShutdown();
+        void maybeShutdown();
     }, 10000);
 };
 
