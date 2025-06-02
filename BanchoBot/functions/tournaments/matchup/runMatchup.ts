@@ -351,6 +351,23 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             });
         }
 
+        if (
+            (
+                message.message === "!auto" ||
+                message.message === "!mp auto"
+            ) &&
+            (
+                message.user.id === undefined ||
+                message.user.id === 29191632 ||
+                !users.some(u => u.osu.userID === message.user.id.toString())
+            ) &&
+            !state.matchups[matchup.ID].autoRunning
+        ) {
+            state.matchups[matchup.ID].autoRunning = true;
+            await mpChannel.sendMessage("auto-lobby has resumed");
+            log(matchup, "Auto-lobby started again");
+        }
+
         if (message.self || !state.matchups[matchup.ID].autoRunning)
             return;
 
@@ -391,13 +408,10 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         )
             await abortMap(message.user);
         else if (
-            (
-                message.message === "!panic" ||
-                message.message === "!alert" ||
-                message.message === "!mp panic" ||
-                message.message === "!mp alert"
-            ) &&
-            state.matchups[matchup.ID].autoRunning
+            message.message === "!panic" ||
+            message.message === "!alert" ||
+            message.message === "!mp panic" ||
+            message.message === "!mp alert"
         ) {
             await panic(`${message.user.username} ran !panic`);
         } else if (
@@ -430,21 +444,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 log(matchup, `Error loading beatmap: ${ex}`);
                 console.log(ex);
             }
-        } else if (
-            (
-                message.message === "!auto" ||
-                message.message === "!mp auto"
-            ) &&
-            (
-                message.user.id === undefined ||
-                message.user.id === 29191632 ||
-                !users.some(u => u.osu.userID === message.user.id.toString())
-            ) &&
-            !state.matchups[matchup.ID].autoRunning
-        ) {
-            state.matchups[matchup.ID].autoRunning = true;
-            await mpChannel.sendMessage("auto-lobby has resumed");
-            log(matchup, "Auto-lobby started again");
         }
     });
 
