@@ -186,7 +186,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
         }
 
-        if(Date.now() - matchStart.getTime() < (matchup.stage!.tournament.abortThreshold ?? 30) * 1000) {
+        if(Date.now() - matchStart.getTime() > (matchup.stage!.tournament.abortThreshold ?? 30) * 1000) {
             await mpChannel.sendMessage(`it is too late to abort, match has started for more than ${matchup.stage!.tournament.abortThreshold ?? 30} seconds`);
             return;
         }
