@@ -25,6 +25,9 @@ import { discordClient } from "../../../Server/discord";
 import { MatchupMessage } from "../../../Models/tournaments/matchupMessage";
 import { TournamentRoleType, unallowedToPlay } from "../../../Interfaces/tournament";
 import { MatchupSet } from "../../../Models/tournaments/matchupSet";
+import { config } from "node-config-ts";
+import axios from "axios";
+import { ResponseBody } from "koa";
 
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {
@@ -300,6 +303,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 await respond(m, "Ok Lol . stopped qualifier reschedule");
                 return;
             }
+
+            // Close ongoing lobby if it exists
+            const { data } = await axios.post<ResponseBody<void>>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/closeLobby`, { user }, { auth: config.interOpAuth });
+            if(!data.success && data.error !== "Matchup not found")
+                throw new Error(`Failed to close lobby for matchup ${matchup.ID} with error: ${data.error}`);
         }
 
         matchup.date = date;

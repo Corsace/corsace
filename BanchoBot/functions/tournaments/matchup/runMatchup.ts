@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { banchoClient, baseURL, maybeShutdown } from "../../..";
+import { banchoClient, baseURL } from "../../..";
 import state from "../../../state";
 import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
@@ -65,12 +65,11 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
 async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, invCollector?: InteractionCollector<any>, refCollector?: InteractionCollector<any>, auto = false) {
     const centrifugoChannel = `matchup:${matchup.ID}`;
     // Save and store match instance
-    state.runningMatchups++;
-    state.matchups[matchup.ID] = {
+    state.addMatchup(matchup.ID, {
         matchup,
         lobby: mpLobby,
         autoRunning: auto,
-    };
+    });
     matchup.mp = mpLobby.id;
     matchup.baseURL = baseURL;
     matchup.winner = null;
@@ -174,35 +173,37 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     // Functionality to abort the map
     const abortMap = async (player: BanchoLobbyPlayer | BanchoUser) => {
+        if(!matchStart) {
+            await mpChannel.sendMessage("match has not started yet, cannot abort");
+            return;
+        }
+
         const id = player instanceof BanchoLobbyPlayer ? player.user.id.toString() : player.id.toString();
         const username = player instanceof BanchoLobbyPlayer ? player.user.username : player.username;
         const team = matchup.teams!.find(t => t.members.some(m => m.osu.userID === id));
-        if (
-            (team &&
-                (
-                    aborts.get(team.ID) === undefined ||
-                    typeof matchup.stage!.tournament.teamAbortLimit !== "number" ||
-                    aborts.get(team.ID)! < matchup.stage!.tournament.teamAbortLimit
-                )
-            ) && (
-                matchStart &&
-                Date.now() - matchStart.getTime() < (matchup.stage!.tournament.abortThreshold ?? 30) * 1000
-            )
-        ) {
-            const abortCount = (aborts.get(team.ID) ?? 0) + 1;
-            await mpLobby.abortMatch();
-            await mpChannel.sendMessage(`${username} has triggered an abort${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? `, they now have ${matchup.stage!.tournament.teamAbortLimit - abortCount} aborts left` : ""}`);
-            await mpChannel.sendMessage(`reminder: !panic exists if something is going absurdly wrong`);
-            aborts.set(team.ID, abortCount);
-        } else if (
-            team &&
-            typeof matchup.stage!.tournament.teamAbortLimit === "number" &&
-            aborts.get(team.ID) &&
-            aborts.get(team.ID)! >= matchup.stage!.tournament.teamAbortLimit
-        ) {
-            await mpChannel.sendMessage(`${username} has triggered an abort but the team has reached their abort limit`);
-            await mpChannel.sendMessage(`reminder: !panic exists if something is going absurdly wrong`);
+        if(!team) {
+            await mpChannel.sendMessage("only team members can trigger an abort");
+            return;
         }
+
+        if(Date.now() - matchStart.getTime() > (matchup.stage!.tournament.abortThreshold ?? 30) * 1000) {
+            await mpChannel.sendMessage(`it is too late to abort, match has started for more than ${matchup.stage!.tournament.abortThreshold ?? 30} seconds`);
+            return;
+        }
+
+        let abortsCount = aborts.get(team.ID) ?? 0;
+        const abortsLimit = matchup.stage!.tournament.teamAbortLimit ?? Number.MAX_VALUE;
+        if(abortsCount >= abortsLimit) {
+            await mpChannel.sendMessage(`${username} has triggered an abort but the team has reached their abort limit`);
+            await mpChannel.sendMessage("reminder: please use !panic if something is going absurdly wrong");
+            return;
+        }
+
+        abortsCount++;
+        await mpLobby.abortMatch();
+        await mpChannel.sendMessage(`${username} has triggered an abort${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? `, they now have ${matchup.stage!.tournament.teamAbortLimit - abortsCount} aborts left` : ""}`);
+        await mpChannel.sendMessage("reminder: please use !panic if something is going absurdly wrong");
+        aborts.set(team.ID, abortsCount);
     };
 
     // Functionality to panic
@@ -350,6 +351,23 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             });
         }
 
+        if (
+            (
+                message.message === "!auto" ||
+                message.message === "!mp auto"
+            ) &&
+            (
+                message.user.id === undefined ||
+                message.user.id === 29191632 ||
+                !users.some(u => u.osu.userID === message.user.id.toString())
+            ) &&
+            !state.matchups[matchup.ID].autoRunning
+        ) {
+            state.matchups[matchup.ID].autoRunning = true;
+            await mpChannel.sendMessage("auto-lobby has resumed");
+            log(matchup, "Auto-lobby started again");
+        }
+
         if (message.self || !state.matchups[matchup.ID].autoRunning)
             return;
 
@@ -390,13 +408,10 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         )
             await abortMap(message.user);
         else if (
-            (
-                message.message === "!panic" ||
-                message.message === "!alert" ||
-                message.message === "!mp panic" ||
-                message.message === "!mp alert"
-            ) &&
-            state.matchups[matchup.ID].autoRunning
+            message.message === "!panic" ||
+            message.message === "!alert" ||
+            message.message === "!mp panic" ||
+            message.message === "!mp alert"
         ) {
             await panic(`${message.user.username} ran !panic`);
         } else if (
@@ -429,21 +444,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 log(matchup, `Error loading beatmap: ${ex}`);
                 console.log(ex);
             }
-        } else if (
-            (
-                message.message === "!auto" ||
-                message.message === "!mp auto"
-            ) &&
-            (
-                message.user.id === undefined ||
-                message.user.id === 29191632 ||
-                !users.some(u => u.osu.userID === message.user.id.toString())
-            ) &&
-            !state.matchups[matchup.ID].autoRunning
-        ) {
-            state.matchups[matchup.ID].autoRunning = true;
-            await mpChannel.sendMessage("auto-lobby has resumed");
-            log(matchup, "Auto-lobby started again");
         }
     });
 
@@ -852,12 +852,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         } catch(err) {
             log(matchup, `Error while terminating lobby: ${err}`);
         } finally {
-            await saveMessages();
+            try {
+                await saveMessages();
+            } catch(err) {
+                log(matchup, `Error while saving messages during lobby termination: ${err}`);
+            }
             publish(centrifugoChannel, { type: "closed" });
 
-            state.runningMatchups--;
-            delete state.matchups[matchup.ID];
-            await maybeShutdown();
+            state.removeMatchup(matchup.ID);
         }
     }
 }

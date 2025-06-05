@@ -763,7 +763,7 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.$post("/:matchupID/closeLobby", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/closeLobby", (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,
@@ -773,11 +773,31 @@ banchoRefereeRouter.$post("/:matchupID/closeLobby", async (ctx) => {
     }
 
     const mpLobby = state.matchups[ctx.state.matchupID].lobby;
-    await mpLobby.closeLobby();
 
-    ctx.body = {
-        success: true,
-    };
+    return new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+            state.events.off("matchupRemoved", listener);
+            reject(new Error("Timeout while closing lobby"));
+        }, 15_000);
+
+        const listener = (matchupID: number) => {
+            if (matchupID === ctx.state.matchupID) {
+                state.events.off("matchupRemoved", listener);
+
+                ctx.body = {
+                    success: true,
+                };
+                clearTimeout(timeout);
+                resolve();
+            }
+        };
+        state.events.on("matchupRemoved", listener);
+        mpLobby.closeLobby().catch((err) => {
+            clearTimeout(timeout);
+            state.events.off("matchupRemoved", listener);
+            reject(err);
+        });
+    });
 });
 
 export default banchoRefereeRouter;
