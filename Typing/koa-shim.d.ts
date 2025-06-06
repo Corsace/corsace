@@ -9,6 +9,7 @@ import { Stage } from "../Models/tournaments/stage";
 import { Team } from "../Models/tournaments/team";
 import { Tournament } from "../Models/tournaments/tournament";
 import { User } from "../Models/user";
+import { HTTPError } from "../Interfaces/error";
 
 declare module "koa" {
     interface DefaultState {
@@ -90,7 +91,7 @@ declare module "koa" {
 
     interface ErrorResponseBody {
         success: false;
-        error: string;
+        error: HTTPError | string;
     }
 
     type SuccessResponseBody<BodyT> = {
