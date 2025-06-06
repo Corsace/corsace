@@ -93,7 +93,7 @@ export class Matchup extends BaseEntity {
     @OneToMany(() => Matchup, matchup => matchup.winnerNextMatchup)
         winnerPreviousMatchups?: Matchup[] | null;
 
-    @OneToMany(() => MatchupMessage, message => message.matchup)
+    @OneToMany(() => MatchupMessage, message => message.matchup, { persistence: false })
         messages?: MatchupMessage[] | null;
 
     @Column({ type: "varchar", length: `http://255.255.255.255:65565`.length, nullable: true })
