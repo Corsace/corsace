@@ -5,6 +5,8 @@ import { BaseQualifier } from "../../Interfaces/qualifier";
 import { OpenStaffInfo, StaffList } from "../../Interfaces/staff";
 import { MatchupList, MatchupScore } from "../../Interfaces/matchup";
 import { Mappool } from "../../Interfaces/mappool";
+import { Round } from "../../Interfaces/round";
+import { Stage } from "../../Interfaces/stage";
 
 export interface OpenState {
     title: string;
@@ -38,7 +40,7 @@ export const state = (): OpenState => ({
 
 export const mutations: MutationTree<OpenState> = {
     setTitle (openState, year: number | undefined) {
-        openState.title = `Corsace Open - ${year}` || "";
+        openState.title = `Resurrection Cup ${year}` || "";
     },
     setTournament (openState, tournament: Tournament | undefined) {
         if (tournament) {
@@ -86,6 +88,51 @@ export const mutations: MutationTree<OpenState> = {
             };
 
             openState.tournament.stages.sort((a, b) => a.order - b.order);
+
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            openState.tournament.schedule = [
+                {
+                    event: "Registrations & Qualifiers",
+                    start: "2025-07-27T09:00:00.000Z",
+                    end: "2025-08-17T16:00:00.000Z",
+                },
+                {
+                    event: "Screening Intermission",
+                    start: "2025-08-18T00:00:00.000Z",
+                    end: "2025-08-31T00:00:00.000Z",
+                },
+                {
+                    event: "Swiss Stage 1 + 2",
+                    start: "2025-09-05T00:00:00.000Z",
+                    end: "2025-09-14T00:00:00.000Z",
+                },
+                {
+                    event: "Swiss Stage 3 + 4",
+                    start: "2025-09-19T00:00:00.000Z",
+                    end: "2025-09-28T00:00:00.000Z",
+                },
+                {
+                    event: "Swiss Stage 5",
+                    start: "2025-10-03T00:00:00.000Z",
+                    end: "2025-10-05T00:00:00.000Z",
+                },
+                {
+                    event: "Knockout 1",
+                    start: "2025-10-10T00:00:00.000Z",
+                    end: "2025-10-12T00:00:00.000Z",
+                },
+                {
+                    event: "Knockout 2",
+                    start: "2025-10-17T00:00:00.000Z",
+                    end: "2025-10-19T00:00:00.000Z",
+                },
+                {
+                    event: "Knockout 3",
+                    start: "2025-10-24T00:00:00.000Z",
+                    end: "2025-10-26T00:00:00.000Z",
+                },
+            ];
         }
     },
     setTeamList (openState, teams: TeamList[] | undefined) {
@@ -154,12 +201,11 @@ export const mutations: MutationTree<OpenState> = {
     },
 };
 
-export const getters: GetterTree<OpenState, OpenState> = {
-};
+export const getters: GetterTree<OpenState, OpenState> = {};
 
 export const actions: ActionTree<OpenState, OpenState> = {
-    async setTournament ({ commit, dispatch }, year) {
-        const { data } = await this.$axios.get<{ tournament: Tournament }>(`/api/tournament/open/${year}`);
+    async setTournament ({ commit, dispatch }) {
+        const { data } = await this.$axios.get<{ tournament: Tournament }>(`/api/tournament/10`);
 
         if (data.success) {
             commit("setTournament", data.tournament);
@@ -194,34 +240,42 @@ export const actions: ActionTree<OpenState, OpenState> = {
             commit("setInvites", data.invites);
     },
     async setQualifierList ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get<{ qualifiers: BaseQualifier[] }>(`/api/tournament/${tournamentID}/qualifiers`);
+        const { data } = await this.$axios.get<{
+            qualifiers: BaseQualifier[]
+        }>(`/api/tournament/${tournamentID}/qualifiers`);
 
         if (data.success)
             commit("setQualifierList", data.qualifiers);
     },
-    async setMatchups ({ commit }, stageID) {
-        if (!stageID || isNaN(parseInt(stageID)))
+    async setMatchups ({ commit }, roundOrStage: Stage | Round) {
+        if (!roundOrStage)
             return;
 
-        const { data } = await this.$axios.get<{ matchups: MatchupList[] }>(`/api/stage/${stageID}/matchups`);
+        const parentType = "stageType" in roundOrStage ? "stage" : "round";
+
+        const { data } = await this.$axios.get<{ matchups: MatchupList[] }>(`/api/${parentType}/${roundOrStage.ID}/matchups`);
 
         if (data.success)
             commit("setMatchups", data.matchups);
     },
-    async setMappools ({ commit }, stageID) {
-        if (!stageID || isNaN(parseInt(stageID)))
+    async setMappools ({ commit }, roundOrStage: Stage | Round) {
+        if (!roundOrStage)
             return;
 
-        const { data } = await this.$axios.get<{ mappools: Mappool[] }>(`/api/stage/${stageID}/mappools`);
+        const parentType = "stageType" in roundOrStage ? "stage" : "round";
+
+        const { data } = await this.$axios.get<{ mappools: Mappool[] }>(`/api/${parentType}/${roundOrStage.ID}/mappools`);
 
         if (data.success)
             commit("setMappools", data.mappools);
     },
-    async setScores ({ commit }, stageID) {
-        if (!stageID || isNaN(parseInt(stageID)))
+    async setScores ({ commit }, roundOrStage: Stage | Round) {
+        if (!roundOrStage)
             return;
 
-        const { data } = await this.$axios.get<{ scores: MatchupScore[] }>(`/api/stage/${stageID}/scores`);
+        const parentType = "stageType" in roundOrStage ? "stage" : "round";
+
+        const { data } = await this.$axios.get<{ scores: MatchupScore[] }>(`/api/${parentType}/${roundOrStage.ID}/scores`);
 
         if (data.success)
             commit("setScores", data.scores);
@@ -232,11 +286,17 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (data.success)
             commit("setStaffInfo", data.info);
     },
-    async setStaffList ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get<{ staff: StaffList[] }>(`/api/tournament/${tournamentID}/staff`);
+    async setStaffList ({ commit }) {
+        // const { data } = await this.$axios.get<{ staff: StaffList[] }>(`/api/tournament/${tournamentID}/staff`);
+        const response = await fetch("https://static.rescup.xyz/staff.json");
 
-        if (data.success)
-            commit("setStaffList", data.staff);
+        if (!response.ok) {
+            return;
+        }
+        const staff = await response.json();
+
+        if (staff)
+            commit("setStaffList", staff);
     },
     async setInitialData ({ dispatch }, year) {
         await Promise.all([
