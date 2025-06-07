@@ -67,11 +67,6 @@
                         class="info_desc__list"
                         v-html="$t('open.info.qualifiersProceduresText')"
                     />
-                    <h2>{{ $t('open.info.seeding') }}</h2>
-                    <ul
-                        class="info_desc__list"
-                        v-html="$t('open.info.seedingText')"
-                    />
                 </div>
                 <OpenTitle
                     class="info_section_header"
