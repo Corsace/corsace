@@ -1,6 +1,5 @@
 
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, Index, ManyToMany } from "typeorm";
-import Axios from "axios";
 import { bwsFilter, osuV2Me, osuV2User, osuV2UserBadge, osuV2UserStatistics } from "../Interfaces/osuAPIV2";
 import { DemeritReport } from "./demerits";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
@@ -38,6 +37,7 @@ import { MatchupMessage } from "./tournaments/matchupMessage";
 import { UserStatistics } from "./userStatistics";
 import { ModeDivisionType, modeIDToMode } from "../Interfaces/modes";
 import { MappoolReplay } from "./tournaments/mappools/mappoolReplay";
+import { HTTPError } from "../Interfaces/error";
 
 export class OAuth {
 
@@ -442,7 +442,7 @@ export class User extends BaseEntity {
             return osuV2Client.getMe(accessToken, modeIDToMode()[modeID]);
         } catch (e) {
             // Invalid access token or it's not found
-            if (Axios.isAxiosError(e) && e.code === "401" || e instanceof Error)
+            if (e instanceof HTTPError && e.statusCode === 401 || e instanceof Error)
                 return osuV2Client.getUser(this.osu.userID, modeIDToMode()[modeID]);
             throw e;
         }

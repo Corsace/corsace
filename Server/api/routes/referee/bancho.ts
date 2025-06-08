@@ -1,13 +1,14 @@
-import axios from "axios";
 import { CorsaceRouter } from "../../../corsaceRouter";
 import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { isLoggedInDiscord } from "../../../middleware";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
-import { ResponseBody, TournamentAuthenticatedState } from "koa";
+import { TournamentAuthenticatedState } from "koa";
+import { post } from "../../../utils/fetch";
+import { basicAuth } from "../../../utils/auth";
 
-const refereeBanchoRouter  = new CorsaceRouter();
+const refereeBanchoRouter = new CorsaceRouter();
 
 refereeBanchoRouter.$post<object, TournamentAuthenticatedState>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     if (!ctx.request.body.endpoint) {
@@ -39,33 +40,30 @@ refereeBanchoRouter.$post<object, TournamentAuthenticatedState>("/:tournamentID/
     }
 
     try {
-        const { data } = await axios.post<ResponseBody<object>>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`, {
+        const url = `${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`;
+        const response = await post(url, {
             ...ctx.request.body,
             endpoint: undefined,
             user: ctx.state.user,
-        }, {
-            auth: config.interOpAuth,
+        },
+        {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": basicAuth(config.interOpAuth),
+            },
         });
 
-        ctx.body = data;
-
-    } catch (e) {
-        if (axios.isAxiosError(e)) {
-            ctx.body = e.response?.data ?? {
-                success: false,
-                error: e.response?.status ? `Status code: ${e.response.status}\n${e.message}` : e.message,
-            };
-        } else if (e instanceof Error) {
-            ctx.body = {
-                success: false,
-                error: e.message,
-            };
-        } else {
-            ctx.body = {
-                success: false,
-                error: `Unknown error: ${e}`,
-            };
+        if (!response.success) {
+            ctx.body = { success: false, error: typeof response.error === "string" ? response.error : response.error.message };
+            ctx.status = 500;
+            return;
         }
+        ctx.body = response;
+    } catch (e) {
+        ctx.body = {
+            success: false,
+            error: e instanceof Error ? e.message : `Unknown error: ${e}`,
+        };
     }
 });
 

@@ -1,8 +1,9 @@
-import Axios from "axios";
 import { config } from "node-config-ts";
 import { CronJob } from "cron";
 import cronFunctions from "./cronFunctions";
 import { CronJobData, CronJobType } from "../../Interfaces/cron";
+import { post } from "../utils/fetch";
+import { basicAuth } from "../utils/auth";
 
 class Cron {
 
@@ -22,14 +23,17 @@ class Cron {
 
     public async add (type: CronJobType, date: Date) {
         if (!this.initialized) {
-            const { data } = await Axios.post(`${config.cronRunner.publicUrl}/api/cron/add`, {
+            const data = await post(`${config.cronRunner.publicUrl}/api/cron/remove`, {
                 type,
                 date: date.getTime(),
-            }, {
-                auth: config.interOpAuth,
+            },
+            {
+                headers: {
+                    Authorization: basicAuth(config.interOpAuth),
+                },
             });
             if (!data.success)
-                throw new Error(data.error);
+                throw typeof data.error === "string" ? new Error(data.error) : data.error;
             return;
         }
 
@@ -43,14 +47,17 @@ class Cron {
 
     public async remove (type: CronJobType, date: Date) {
         if (!this.initialized) {
-            const { data } = await Axios.post(`${config.cronRunner.publicUrl}/api/cron/remove`, {
+            const data = await post(`${config.cronRunner.publicUrl}/api/cron/remove`, {
                 type,
                 date: date.getTime(),
-            }, {
-                auth: config.interOpAuth,
+            },
+            {
+                headers: {
+                    Authorization: basicAuth(config.interOpAuth),
+                },
             });
             if (!data.success)
-                throw new Error(data.error);
+                throw typeof data.error === "string" ? new Error(data.error) : data.error;
             return;
         }
 

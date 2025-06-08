@@ -1,7 +1,8 @@
 import { CronJobData, CronJobType } from "../../../Interfaces/cron";
 import { Matchup, preInviteTime } from "../../../Models/tournaments/matchup";
 import { config } from "node-config-ts";
-import Axios from "axios";
+import { post } from "../../utils/fetch";
+import { basicAuth } from "../../utils/auth";
 
 async function initialize (): Promise<CronJobData[]> {
     // Get all tournament registration ends
@@ -33,10 +34,13 @@ async function initialize (): Promise<CronJobData[]> {
 }
 
 async function execute (job: CronJobData) {
-    const { data } = await Axios.post(`${config.banchoBot.publicUrl}/api/bancho/runQualifiers`, {
+    const data = await post(`${config.banchoBot.publicUrl}/api/bancho/runQualifiers`, {
         time: job.date.getTime(),
-    }, {
-        auth: config.interOpAuth,
+    },
+    {
+        headers: {
+            Authorization: basicAuth(config.interOpAuth),
+        },
     });
     if (data.success)
         return;

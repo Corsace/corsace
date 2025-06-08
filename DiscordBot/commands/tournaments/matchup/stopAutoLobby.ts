@@ -1,4 +1,3 @@
-import Axios from "axios";
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { config } from "node-config-ts";
 import { Command } from "../..";
@@ -7,6 +6,8 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { extractParameter } from "../../../functions/parameterFunctions";
 import respond from "../../../functions/respond";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
+import { post } from "../../../../Server/utils/fetch";
+import { basicAuth } from "../../../../Server/utils/auth";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -32,15 +33,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     const baseUrl = matchup.baseURL;
-    
-    const { data } = await Axios.post(`${baseUrl}/api/bancho/stopAutoLobby`, {
+    const data = await post(`${baseUrl}/api/bancho/stopAutoLobby`, {
         matchupID: ID,
     }, {
-        auth: config.interOpAuth,
+        headers: {
+            Authentication: basicAuth(config.interOpAuth),
+        },
     });
 
     if (!data.success) {
-        await respond(m, data.error);
+        await respond(m, typeof data.error === "string" ? data.error : data.error.message);
         return;
     }
 

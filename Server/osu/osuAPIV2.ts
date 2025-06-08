@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from "axios";
 import { RateLimiter } from "limiter";
 import { osuV2Token, osuAPIV2Options, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend, osuV2Me, osuV2WikiPage } from "../../Interfaces/osuAPIV2";
 import { User } from "../../Models/user";
+import { get, post } from "../utils/fetch";
 
 // For any properties missing in the typings, go to Interfaces/osuAPIV2.ts and add only the properties you need there.
 export class osuAPIV2 {
@@ -53,7 +53,7 @@ export class osuAPIV2 {
     }
 
     public getMe (accessToken: string, mode?: "osu" | "taiko" | "fruits" | "mania"): Promise<osuV2Me> {
-        return this.get<osuV2User>(`/me${mode ? `/${mode}` : ""}`, accessToken);
+        return this.get<osuV2Me>(`/me${mode ? `/${mode}` : ""}`, accessToken);
     }
 
     public getUserFriends (accessToken: string): Promise<osuV2Friend[]> {
@@ -100,14 +100,24 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
 
-        const { data } = await axios.post<any, AxiosResponse<osuV2Token>>(`${this.baseURL}/oauth/token`, {
+        const response = await post<osuV2Token>(`${this.baseURL}/oauth/token`, {
             grant_type,
             client_id: this.clientID,
             client_secret: this.clientSecret,
             scope,
             refresh_token,
-        });
-        return data;
+        },
+        {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        },
+        true);
+
+        if (!response.success)
+            throw typeof response.error === "string" ? new Error(response.error) : response.error;
+
+        return response;
     }
 
     // Post and get functions
@@ -115,23 +125,33 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
-        const { data } = await axios.post<any, AxiosResponse<T>>(this.apiV2URL + endpoint, payload, {
+        const response = await post<T>(this.apiV2URL + endpoint, payload, {
             headers: {
-                Authorization: `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
             },
-        });
-        return data;
+        },
+        true);
+
+        if (!response.success)
+            throw typeof response.error === "string" ? new Error(response.error) : response.error;
+        return response;
     }
 
     private async get<T> (endpoint: string, accessToken: string): Promise<T> {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
-        const { data } = await axios.get<T>(this.apiV2URL + endpoint, {
+        const response = await get<T>(this.apiV2URL + endpoint, {
             headers: {
-                Authorization: `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${accessToken}`,
             },
-        });
-        return data;
+        },
+        true);
+
+        if (!response.success)
+            throw typeof response.error === "string" ? new Error(response.error) : response.error;
+
+        return response;
     }
 }
