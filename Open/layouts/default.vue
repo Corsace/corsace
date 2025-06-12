@@ -310,17 +310,17 @@ export default class Default extends Mixins(CentrifugeMixin) {
     }
 
     &__logo {
-        padding-left: 6px;
+        padding-left: 130px;
         margin-top: 27.5px;
-        @include breakpoint(tablet) {
-            padding-left: 7px;
-        }
-        @include breakpoint(laptop) {
-            padding-left: 9px;
-        }
-        @include breakpoint(desktop) {
-            padding-left: 130px;
-        }
+        // @include breakpoint(tablet) {
+        //     padding-left: 7px;
+        // }
+        // @include breakpoint(laptop) {
+        //     padding-left: 9px;
+        // }
+        // @include breakpoint(desktop) {
+        //     padding-left: 130px;
+        // }
     }
 
     &__nav {
@@ -328,6 +328,7 @@ export default class Default extends Mixins(CentrifugeMixin) {
         left: calc(30vw - 265px);
         align-self: center;
         display: flex;
+        gap: 12px;
         width: 40vw;
         justify-content: space-between;
         align-items: center;
