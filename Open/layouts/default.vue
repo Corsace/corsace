@@ -294,6 +294,11 @@ export default class Default extends Mixins(CentrifugeMixin) {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
+.layout--open {
+    height: unset;
+    min-height: 100%;
+}
+
 .header {
     border-bottom: 1px solid $open-red;
     background-image: url("../../Assets/img/site/open/checkers.svg"), linear-gradient(0deg, white, white);
