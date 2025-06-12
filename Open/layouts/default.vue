@@ -322,7 +322,7 @@ export default class Default extends Mixins(CentrifugeMixin) {
 
     &__logo {
         padding-left: 10px;
-        margin-top: 12px;
+        margin-top: 16px;
         
         @include breakpoint(mobile) {
             scale: 50%;
