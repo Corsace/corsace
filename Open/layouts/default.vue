@@ -214,10 +214,6 @@
                     {{ $t("open.footer.sheet") }}
                 </Tooltip>
             </div>
-            <div 
-                name="temp"
-                style="width: 79%;"
-            />
         </the-footer>
     </div>
 </template>

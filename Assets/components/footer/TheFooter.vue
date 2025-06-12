@@ -73,5 +73,6 @@ export default class TheFooter extends Vue {
     width: 100%;
     height: 50px;
     display: flex;
+    justify-content: space-between;
 }
 </style>
