@@ -301,11 +301,17 @@ export default class Default extends Mixins(CentrifugeMixin) {
 
 .header {
     border-bottom: 1px solid $open-red;
-    background-image: url("../../Assets/img/site/open/checkers.svg"), linear-gradient(0deg, white, white);
-    background-repeat: no-repeat;
-    background-position: left center;
+    background: white;
+    display: flex;
+    align-items: center;
     width: 100vw;
     position: relative;
+    
+    @include breakpoint(desktop) {
+        background-image: url("../../Assets/img/site/open/checkers.svg");
+        background-repeat: no-repeat;
+        background-position: left center;
+    }
 
     &__notification {
         width: 8px;
@@ -315,17 +321,16 @@ export default class Default extends Mixins(CentrifugeMixin) {
     }
 
     &__logo {
-        padding-left: 130px;
-        margin-top: 27.5px;
-        // @include breakpoint(tablet) {
-        //     padding-left: 7px;
-        // }
-        // @include breakpoint(laptop) {
-        //     padding-left: 9px;
-        // }
-        // @include breakpoint(desktop) {
-        //     padding-left: 130px;
-        // }
+        padding-left: 10px;
+        margin-top: 12px;
+        
+        @include breakpoint(mobile) {
+            scale: 50%;
+        }
+
+        @include breakpoint(desktop) {
+            padding-left: 130px;
+        }
     }
 
     &__nav {
