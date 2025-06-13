@@ -220,7 +220,7 @@ export default class Default extends Vue {
                 justify-content: center;
                 flex-flow: row wrap;
                 gap: 24px;
-                padding: 25px 50px;
+                padding: 25px;
             }
 
             & img {
