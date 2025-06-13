@@ -190,7 +190,6 @@ export default class Default extends Vue {
         align-items: center;
         justify-content: center;
         overflow-y: auto;
-        padding: 50px;
         gap: 150px;
         width: 100%;
         flex: 1;

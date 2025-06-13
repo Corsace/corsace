@@ -297,6 +297,7 @@ export default class Default extends Mixins(CentrifugeMixin) {
 .layout--open {
     height: unset;
     min-height: 100%;
+    overflow: hidden;
 }
 
 .header {
@@ -307,7 +308,8 @@ export default class Default extends Mixins(CentrifugeMixin) {
     align-items: center;
     gap: 24px;
     width: 100vw;
-    position: relative;
+    position: fixed;
+    z-index: 2;
     
     @include breakpoint(desktop) {
         background-image: url("../../Assets/img/site/open/checkers.svg");
@@ -372,6 +374,11 @@ export default class Default extends Mixins(CentrifugeMixin) {
     }
 }
 
+.footer {
+    position: fixed;
+    z-index: 2;
+}
+
 .socials {
     height: 100%;
     display: flex;
@@ -411,5 +418,10 @@ export default class Default extends Mixins(CentrifugeMixin) {
 .main {
     background-size: cover;
     overflow-x: hidden;
+    padding: 90px 0px 50px;
+
+    @include breakpoint(mobile) {
+        padding: 55px 0px 50px; // hardcoded for header breakpoint (sorry)
+    }
 }
 </style>
