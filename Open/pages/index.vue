@@ -163,6 +163,7 @@ export default class Default extends Vue {
 </script>
 
 <style lang="scss">
+@import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
 .index {
@@ -197,6 +198,11 @@ export default class Default extends Vue {
 
     &__banner {
         display: flex;
+        scale: 60%;
+
+        @include breakpoint(desktop) {
+            scale: 100%;
+        }
     }
 
     &_portal {
