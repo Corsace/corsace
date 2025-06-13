@@ -341,6 +341,8 @@ export default class Default extends Mixins(CentrifugeMixin) {
         align-self: center;
         display: flex;
         gap: 12px;
+        flex: 1;
+        max-width: 1000px;
         justify-content: space-between;
         align-items: center;
 
