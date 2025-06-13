@@ -175,12 +175,11 @@ export default class TheHeader extends Vue {
 }
 
 .header-login {
-    position: relative;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
-    margin-left: auto;
     
     @include breakpoint(mobile) {
         margin-right: 10px;

@@ -303,7 +303,9 @@ export default class Default extends Mixins(CentrifugeMixin) {
     border-bottom: 1px solid $open-red;
     background: white;
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: 24px;
     width: 100vw;
     position: relative;
     
@@ -334,12 +336,9 @@ export default class Default extends Mixins(CentrifugeMixin) {
     }
 
     &__nav {
-        position: relative;
-        left: calc(30vw - 265px);
         align-self: center;
         display: flex;
         gap: 12px;
-        width: 40vw;
         justify-content: space-between;
         align-items: center;
 
