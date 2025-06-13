@@ -171,14 +171,9 @@ export default class Default extends Vue {
     position: relative;
     overflow: hidden;
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     &__video {
         position: absolute;
-        top: 0;
-        left: 0;
         object-fit: cover;
         width: 100%;
         mask-image: linear-gradient(180deg, rgba(19,19,19,1) 0%, rgba(19,19,19,0.75) 5%, rgba(19,19,19,0.5) 10%, rgba(19,19,19,0.25) 20%, rgba(19,19,19,0) 55%);
