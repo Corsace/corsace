@@ -113,8 +113,8 @@ export default class OpenFrontPageButton extends Vue {
         height: 110px;
         background-color: $open-red;
 
-        &:hover {
-            text-decoration: none;
+        &:not(&--disabled):hover {
+            text-decoration: underline;
         }
 
         &--disabled {
