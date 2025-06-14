@@ -8,12 +8,12 @@
             class="header"
             :notif="teamInvites && teamInvites.length > 0"
         >
-            <a href="/">          
-                <img
-                    src="../../Assets/img/site/open/logo.png"
-                    class="header__logo"
-                    :class="`header__logo--${viewTheme}`"
-                >
+            <a 
+                href="/"
+                class="header__logo"
+                :class="`header__logo--${viewTheme}`"
+            >          
+                <img src="../../Assets/img/site/open/logo.png">
             </a>
 
             <div class="header__nav">
@@ -305,7 +305,7 @@ export default class Default extends Mixins(CentrifugeMixin) {
     background: white;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     gap: 24px;
     width: 100vw;
     position: fixed;
@@ -325,15 +325,27 @@ export default class Default extends Mixins(CentrifugeMixin) {
     }
 
     &__logo {
+        display: flex;
+        align-items: center;
+
         padding-left: 10px;
-        margin-top: 16px;
-        
+
         @include breakpoint(mobile) {
-            scale: 50%;
+            padding-left: 0px;
         }
 
         @include breakpoint(desktop) {
             padding-left: 130px;
+        }
+
+        & > img {
+            margin-top: 8px;
+
+            @include breakpoint(mobile) {
+                scale: 50%;
+                margin: -24px;
+                margin-top: -16px;
+            }
         }
     }
 
@@ -342,31 +354,27 @@ export default class Default extends Mixins(CentrifugeMixin) {
         display: flex;
         gap: 12px;
         flex: 1;
-        max-width: 1000px;
+        height: 100%;
+        max-width: 800px;
         justify-content: space-between;
-        align-items: center;
 
         &-item {
             font-weight: 600;
             text-decoration: none;
             color: $open-red;
+            display: flex;
+            align-items: center;
+            position: relative;
 
             &:hover {
-                color: $open-red;
-                text-decoration: none;
-            }
-
-            &.nuxt-link-exact-active {
-                color: $open-red;
-                position: relative;
-                display: inline-block;
+                text-decoration: underline;
             }
 
             &.nuxt-link-exact-active::after {
                 content: "";
                 position: absolute;
                 left: calc(50% - 4.5px/2);
-                bottom: -7px; 
+                bottom: calc(50% - 1em - 2px);
                 width: 4.5px;
                 height: 4.5px;
                 transform: rotate(-45deg);

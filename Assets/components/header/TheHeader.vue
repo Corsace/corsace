@@ -191,6 +191,8 @@ export default class TheHeader extends Vue {
     
     &--open {
         color: $open-red;
+        flex-flow: row;
+        align-items: stretch;
     }
 
     &__welcome-container {
