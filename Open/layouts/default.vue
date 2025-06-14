@@ -8,12 +8,12 @@
             class="header"
             :notif="teamInvites && teamInvites.length > 0"
         >
-            <a href="/">          
-                <img
-                    src="../../Assets/img/site/open/logo.png"
-                    class="header__logo"
-                    :class="`header__logo--${viewTheme}`"
-                >
+            <a 
+                href="/"
+                class="header__logo"
+                :class="`header__logo--${viewTheme}`"
+            >          
+                <img src="../../Assets/img/site/open/logo.png">
             </a>
 
             <div class="header__nav">
@@ -214,10 +214,6 @@
                     {{ $t("open.footer.sheet") }}
                 </Tooltip>
             </div>
-            <div 
-                name="temp"
-                style="width: 79%;"
-            />
         </the-footer>
     </div>
 </template>
@@ -298,13 +294,28 @@ export default class Default extends Mixins(CentrifugeMixin) {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
+.layout--open {
+    height: unset;
+    min-height: 100%;
+    overflow: hidden;
+}
+
 .header {
     border-bottom: 1px solid $open-red;
-    background-image: url("../../Assets/img/site/open/checkers.svg"), linear-gradient(0deg, white, white);
-    background-repeat: no-repeat;
-    background-position: left center;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 24px;
     width: 100vw;
-    position: relative;
+    position: fixed;
+    z-index: 2;
+    
+    @include breakpoint(desktop) {
+        background-image: url("../../Assets/img/site/open/checkers.svg");
+        background-repeat: no-repeat;
+        background-position: left center;
+    }
 
     &__notification {
         width: 8px;
@@ -314,49 +325,56 @@ export default class Default extends Mixins(CentrifugeMixin) {
     }
 
     &__logo {
-        padding-left: 6px;
-        margin-top: 27.5px;
-        @include breakpoint(tablet) {
-            padding-left: 7px;
+        display: flex;
+        align-items: center;
+
+        padding-left: 10px;
+
+        @include breakpoint(mobile) {
+            padding-left: 0px;
         }
-        @include breakpoint(laptop) {
-            padding-left: 9px;
-        }
+
         @include breakpoint(desktop) {
             padding-left: 130px;
+        }
+
+        & > img {
+            margin-top: 8px;
+
+            @include breakpoint(mobile) {
+                scale: 50%;
+                margin: -24px;
+                margin-top: -16px;
+            }
         }
     }
 
     &__nav {
-        position: relative;
-        left: calc(30vw - 265px);
         align-self: center;
         display: flex;
-        width: 40vw;
+        gap: 12px;
+        flex: 1;
+        height: 100%;
+        max-width: 800px;
         justify-content: space-between;
-        align-items: center;
 
         &-item {
             font-weight: 600;
             text-decoration: none;
             color: $open-red;
+            display: flex;
+            align-items: center;
+            position: relative;
 
             &:hover {
-                color: $open-red;
-                text-decoration: none;
-            }
-
-            &.nuxt-link-exact-active {
-                color: $open-red;
-                position: relative;
-                display: inline-block;
+                text-decoration: underline;
             }
 
             &.nuxt-link-exact-active::after {
                 content: "";
                 position: absolute;
                 left: calc(50% - 4.5px/2);
-                bottom: -7px; 
+                bottom: calc(50% - 1em - 2px);
                 width: 4.5px;
                 height: 4.5px;
                 transform: rotate(-45deg);
@@ -364,6 +382,11 @@ export default class Default extends Mixins(CentrifugeMixin) {
             }
         }
     }
+}
+
+.footer {
+    position: fixed;
+    z-index: 2;
 }
 
 .socials {
@@ -405,5 +428,10 @@ export default class Default extends Mixins(CentrifugeMixin) {
 .main {
     background-size: cover;
     overflow-x: hidden;
+    padding: 90px 0px 50px;
+
+    @include breakpoint(mobile) {
+        padding: 55px 0px 50px; // hardcoded for header breakpoint (sorry)
+    }
 }
 </style>
