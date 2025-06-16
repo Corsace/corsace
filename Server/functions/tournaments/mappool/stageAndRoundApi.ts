@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import { Beatmap, Converts, Mode } from "nodesu";
+import { Beatmap, Converts, Mode, Mods } from "nodesu";
 import { MatchupList, MatchupScore } from "../../../../Interfaces/matchup";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { StageType } from "../../../../Interfaces/stage";
@@ -280,18 +280,20 @@ export async function getMappools (ctx: CorsaceContext<{ mappools: Mappool[] }, 
         if (!slot.allowedMods || !map.beatmap)
             return;
 
-        const cacheKey = `mappool-beatmap;${map.beatmap.ID};${Mode.all};${Converts.exclude};${slot.allowedMods}`;
+        const allowedMods = filterAllowedMods(slot.allowedMods);
+
+        const cacheKey = `mappool-beatmap;${map.beatmap.ID};${Mode.all};${Converts.exclude};${allowedMods}`;
         const cachedBeatmap = cache.get(cacheKey) as string | undefined;
         if (cachedBeatmap) {
             map.beatmap = JSON.parse(cachedBeatmap);
             return;
         }
 
-        const set = await osuClient.beatmaps.getByBeatmapId(map.beatmap.ID, Mode.all, undefined, Converts.exclude, slot.allowedMods) as Beatmap[];
+        const set = await osuClient.beatmaps.getByBeatmapId(map.beatmap.ID, Mode.all, undefined, Converts.exclude, allowedMods) as Beatmap[];
         if (set.length === 0)
             return;
 
-        const beatmap = applyMods(set[0], modsToAcronym(slot.allowedMods));
+        const beatmap = applyMods(set[0], modsToAcronym(allowedMods));
         map.beatmap.totalLength = beatmap.totalLength;
         map.beatmap.totalSR = beatmap.difficultyRating;
         map.beatmap.circleSize = beatmap.circleSize;
@@ -460,4 +462,13 @@ export async function getScores (ctx: CorsaceContext<{ scores: MatchupScore[] },
         success: true,
         scores,
     };
+}
+
+export function filterAllowedMods (sourceAllowedMods: number): number {
+    let allowedMods = sourceAllowedMods ?? 0;
+    if(allowedMods & Mods.Easy && allowedMods & Mods.HardRock || allowedMods & Mods.HalfTime && allowedMods & Mods.DoubleTime)
+        allowedMods = 0;
+    else if(allowedMods & Mods.Nightcore)
+        allowedMods ^= Mods.Nightcore;
+    return allowedMods;
 }
