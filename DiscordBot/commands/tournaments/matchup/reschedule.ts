@@ -255,7 +255,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.captain.discord.userID}> U wanna reschedule ur match \`${matchup.matchID ?? matchup.ID}\`${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""}\nFrom ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)}\nTo ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.captain.discord.userID, dayBeforeStart - Date.now())) {
+    if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.captain.discord.userID}> U wanna reschedule ur match \`${matchup.matchID ?? matchup.ID}\`${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""}\nFrom ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)}\nTo ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.captain.discord.userID, timeLimit.getTime() - Date.now())) {
         await message.edit(`Ok Lol . <@${matchup.team1.captain.discord.userID}> stopped reschedule or the message timed out`);
         return;
     }
