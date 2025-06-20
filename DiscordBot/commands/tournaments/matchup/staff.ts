@@ -98,8 +98,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("matchup.referee", "referee")
         .leftJoinAndSelect("matchup.commentators", "commentators")
         .leftJoinAndSelect("matchup.streamer", "streamer")
-        .where("matchup.ID = :ID", { ID: matchupID })
-        .orWhere("matchup.matchID = :ID", { ID: matchupID })
+        .where("(matchup.ID = :matchupID OR matchup.matchID = :matchupID)", { matchupID })
+        .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
         .getOne();
 
     if (!matchup) {
