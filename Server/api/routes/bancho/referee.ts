@@ -185,8 +185,7 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
         mappools.forEach(pool => {
             if (pool.round)
                 round?.mappool?.push(pool);
-            else
-                stage.mappool?.push(pool);
+            stage.mappool?.push(pool);
         });
 
         const teamIds = new Set<number>();
