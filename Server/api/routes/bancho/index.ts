@@ -183,6 +183,9 @@ banchoRouter.$post("/staff", async (ctx) => {
     state.matchups[ctx.request.body.matchupID]!.matchup[action](role, user);
     await state.matchups[ctx.request.body.matchupID].matchup.save();
 
+    if(action === "assignStaff" && ["referee", "streamer"].includes(role))
+        await state.matchups[ctx.request.body.matchupID]?.lobby.addRef(`#${user.osu.userID}`);
+
     ctx.body = {
         success: true,
     };
