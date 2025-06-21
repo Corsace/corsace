@@ -122,6 +122,7 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
             .createQueryBuilder("matchup")
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
+            .leftJoinAndSelect("matchup.commentators", "commentators")
             .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
             .getOne();
         if (!baseMatchup) {

@@ -14,6 +14,9 @@ import respond from "../../../functions/respond";
 import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
+import { User } from "../../../../Models/user";
+import Axios from "axios";
+import { config } from "node-config-ts";
 
 const refValues = ["referee", "ref", "r", "referees", "refs", "rs"] as const;
 const commentValues = ["commentator", "comment", "c", "commentators", "comments", "cs"] as const;
@@ -63,7 +66,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         { name: "matchup", paramType: "string" },
         { name: "staff_type", paramType: "string", optional: true },
         { name: "user", paramType: "string", customHandler: extractTargetText, optional: true },
-    ]); 
+    ]);
     if (!params)
         return;
 
@@ -107,22 +110,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    if (matchup.mp) {
-        await respond(m, "This matchup has already been played");
-        return;
-    }
-
     // Ref or streamer (those are 1 person roles)
     if (staffProperty === "referee" || staffProperty === "streamer") {
         if (matchup[staffProperty]?.ID === user.ID) {
-            matchup[staffProperty] = null;
-            await matchup.save();
+            await runStaffSetter(matchup, "unassignStaff", staffProperty, user);
             await respond(m, `Ok \`${user.osu.username}\` isnt staffing as \`${staffProperty}\` for matchup \`${matchup.ID}\` anymore`);
             return;
         }
 
         if (
-            matchup[staffProperty] && 
+            matchup[staffProperty] &&
             matchup[staffProperty]!.ID !== user.ID
         ) {
             const memberRoles = m.member?.roles;
@@ -148,39 +145,52 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return;
             }
         }
-    
-        matchup[staffProperty] = user;
-        await matchup.save();
+
+        await runStaffSetter(matchup, "assignStaff", staffProperty, user);
         await respond(m, `\`${user.osu.username}\` is now the \`${staffProperty}\` for matchup \`${matchup.ID}\``);
         return;
     }
 
     // Commentator (3 person role)
     if (matchup.commentators?.some(c => c.ID === user!.ID)) {
-        matchup.commentators = matchup.commentators.filter(c => c.ID !== user!.ID);
-        await matchup.save();
+        await runStaffSetter(matchup, "unassignStaff", "commentators", user);
         await respond(m, `Ok \`${user.osu.username}\` isnt staffing as a commentator for matchup \`${matchup.ID}\` anymore`);
         return;
-    }  
+    }
 
     if (matchup.commentators && matchup.commentators.length === 3) {
         await respond(m, "This matchup already has 3 commentators any more would be 2 much :/");
         return;
     }
 
-    if (matchup.commentators)
-        matchup.commentators.push(user);
-    else
-        matchup.commentators = [user];
-    await matchup.save();
+    await runStaffSetter(matchup, "assignStaff", "commentators", user);
     await respond(m, `${user.osu.username} is now a commentator for matchup \`${matchup.ID}\``);
+}
+
+async function runStaffSetter (matchup: Matchup, action: "assignStaff" | "unassignStaff", role: "referee" | "streamer" | "commentators", user: User) {
+    if(!matchup.baseURL) {
+        matchup[action](role, user);
+        await matchup.save();
+        return;
+    }
+
+    const { data, status } = await Axios.post(`${matchup.baseURL}/api/bancho/staff`, {
+        matchupID: matchup.ID,
+        userID: user.ID,
+        action,
+        role,
+    }, {
+        auth: config.interOpAuth,
+    });
+    if (!data?.success)
+        throw new Error(data?.error || `HTTP status: ${status}`);
 }
 
 const data = new SlashCommandBuilder()
     .setName("matchup_staff")
     .setDescription("Assign or remove yourself (or someone else if organizer) as staff for a matchup")
     .addStringOption(option =>
-        option.setName("matchup")   
+        option.setName("matchup")
             .setDescription("The ID of the matchup to assign/remove yourself as a staff")
             .setRequired(true))
     .addStringOption(option =>
