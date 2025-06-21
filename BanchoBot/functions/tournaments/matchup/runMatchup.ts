@@ -930,20 +930,11 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
             refCollector.on("collect", async (i: MessageComponentInteraction) => {
                 if (i.customId !== refID)
                     return;
-                if (!i.member) {
+                if (!i.member || !(i.member.roles instanceof GuildMemberRoleManager)) {
                     await i.reply({ content: "couldnt receive ur member info", ephemeral: true });
                     return;
                 }
-                if (
-                    (
-                        i.member.roles instanceof GuildMemberRoleManager &&
-                        !i.member.roles.cache.some(role => refRoles.some(refRole => refRole.roleID === role.id))
-                    ) ||
-                    (
-                        !(i.member.roles instanceof GuildMemberRoleManager) &&
-                        !i.member.roles.some(role => refRoles.some(refRole => refRole.roleID === role))
-                    )
-                ) {
+                if (!i.member.roles.cache.some(role => refRoles.some(refRole => refRole.roleID === role.id))) {
                     await i.reply({ content: "ur not allowed to ref .", ephemeral: true });
                     return;
                 }
