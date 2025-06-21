@@ -1256,6 +1256,11 @@ export default class Referee extends Mixins(CentrifugeMixin) {
                 this.team2PlayerStates.forEach(player => player.inLobby = player.ready = false);
                 this.runningLobby = false;
                 break;
+            case "updateMatchup":
+                if (["referee", "streamer", "commentators"].includes(ctx.data.key))
+                    // @ts-expect-error unsure how to make this right
+                    this.matchup[ctx.data.key] = ctx.data.value;
+                break;
         }
     }
 

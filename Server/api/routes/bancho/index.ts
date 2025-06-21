@@ -11,6 +11,7 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Team } from "../../../../Models/tournaments/team";
 import { queue } from "async";
 import { User } from "../../../../Models/user";
+import { publish } from "../../../functions/centrifugo";
 
 async function validateData (ctx: CorsaceContext<object>, next: Next) {
     const body = ctx.request.body;
@@ -185,6 +186,12 @@ banchoRouter.$post("/staff", async (ctx) => {
 
     if(action === "assignStaff" && ["referee", "streamer"].includes(role))
         await state.matchups[ctx.request.body.matchupID]?.lobby.addRef(`#${user.osu.userID}`);
+
+    publish(`matchup:${matchupID}`, {
+        type: "updateMatchup",
+        key: role,
+        value: state.matchups[ctx.request.body.matchupID]?.matchup[role],
+    });
 
     ctx.body = {
         success: true,

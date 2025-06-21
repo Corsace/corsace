@@ -17,6 +17,7 @@ import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { User } from "../../../../Models/user";
 import Axios from "axios";
 import { config } from "node-config-ts";
+import { publish } from "../../../../Server/functions/centrifugo";
 
 const refValues = ["referee", "ref", "r", "referees", "refs", "rs"] as const;
 const commentValues = ["commentator", "comment", "c", "commentators", "comments", "cs"] as const;
@@ -171,6 +172,11 @@ async function runStaffSetter (matchup: Matchup, action: "assignStaff" | "unassi
     if(!matchup.baseURL) {
         matchup[action](role, user);
         await matchup.save();
+        publish(`matchup:${matchup.ID}`, {
+            type: "updateMatchup",
+            key: role,
+            value: matchup[role],
+        });
         return;
     }
 
