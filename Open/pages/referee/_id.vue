@@ -1344,7 +1344,8 @@ export default class Referee extends Mixins(CentrifugeMixin) {
             (
                 endpoint === "createLobby" || 
                 endpoint === "roll" ||
-                endpoint === "deleteMap"
+                endpoint === "deleteMap" ||
+                endpoint === "closeLobby"
             ) &&
             !confirm(`Are you sure you want to ${endpoint}?`)
         )
