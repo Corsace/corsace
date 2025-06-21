@@ -120,6 +120,8 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
     if (!matchup) {
         const baseMatchup = await Matchup
             .createQueryBuilder("matchup")
+            .leftJoinAndSelect("matchup.referee", "referee")
+            .leftJoinAndSelect("matchup.streamer", "streamer")
             .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
             .getOne();
         if (!baseMatchup) {
@@ -132,8 +134,6 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
 
         const matchupWithRelationIDs: MatchupWithRelationIDs = await Matchup
             .createQueryBuilder("matchup")
-            .leftJoinAndSelect("matchup.referee", "referee")
-            .leftJoinAndSelect("matchup.streamer", "streamer")
             .where("matchup.ID = :matchID", { matchID: ctx.params.matchupID })
             .loadAllRelationIds({
                 relations: ["round", "stage", "team1", "team2"],
