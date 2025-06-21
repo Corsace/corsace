@@ -508,7 +508,7 @@
                         >
                             <div
                                 class="referee__matchup__content__map_delete"
-                                @click="banchoCall('deleteMap', { mapID: map.ID })"
+                                @click="banchoCall('deleteMap', { mapID: map.ID, set: (matchupSet?.order || 1) - 1 })"
                             >
                                 X
                             </div>
