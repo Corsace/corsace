@@ -115,7 +115,7 @@ banchoRefereeRouter.$post<{ pulse: boolean }>("/:matchupID/pulse", async (ctx) =
     };
 });
 
-banchoRefereeRouter.$post("/:matchupID/createLobby", queueRequests(1), async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/createLobby", queueRequests<BanchoMatchupState>(1), async (ctx) => {
     const matchupList: MatchupList | undefined | null = state.matchups[ctx.state.matchupID];
     let matchup: Matchup | undefined | null = matchupList?.matchup;
     if (!matchup) {

@@ -1,9 +1,10 @@
 import { queue } from "async";
-import { Next } from "koa";
+import { DefaultState, Next } from "koa";
+import { CorsaceContext } from "../corsaceRouter";
 
-export function queueRequests (concurrency: number) {
+export function queueRequests<S extends DefaultState = DefaultState> (concurrency: number) {
     const q = queue((next: Next, cb) => {
         next().then(() => cb(), cb);
     }, concurrency);
-    return (ctx: unknown, next: Next) => q.push(next);
+    return (ctx: CorsaceContext<object, S>, next: Next) => q.push(next);
 }
