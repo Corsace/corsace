@@ -11,6 +11,7 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Team } from "../../../../Models/tournaments/team";
 import { User } from "../../../../Models/user";
 import { publish } from "../../../functions/centrifugo";
+import { queueRequests } from "../../../middleware/queue";
 
 async function validateData (ctx: CorsaceContext<object>, next: Next) {
     const body = ctx.request.body;
@@ -46,7 +47,7 @@ banchoRouter.$use(koaBasicAuth({
     pass: config.interOpAuth.password,
 }));
 
-banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
+banchoRouter.$post("/runQualifiers", validateData, queueRequests(1), async (ctx) => {
     ctx.body = {
         success: true,
     };
