@@ -178,11 +178,11 @@ Shared environment by deployments
       name: {{ include "corsace.fullname" $ }}
       key: centrifugoApiKey
 - name: API_PUBLICURL
-  value: {{ default (lower (printf "%s%s%s%s" "http://" (include "corsace.fullname" $) "-api"  (ternary "" (printf ".%s.svc.%s" $.Release.Namespace $.Values.clusterDomain) (not $.Values.clusterDomain)))) $.Values.webServices.api.publicUrl }}
+  value: {{ default (lower (printf "%s%s%s%s" "http://" (include "corsace.fullname" $) "-api"  (ternary "" (printf ".%s.svc.%s." $.Release.Namespace $.Values.clusterDomain) (not $.Values.clusterDomain)))) $.Values.webServices.api.publicUrl }}
 - name: CRONRUNNER_PUBLICURL
-  value: {{ default (lower (printf "%s%s%s%s" "http://" (include "corsace.fullname" $) "-cronRunner" (ternary "" (printf ".%s.svc.%s" $.Release.Namespace $.Values.clusterDomain) (not $.Values.clusterDomain)))) $.Values.webServices.cronRunner.publicUrl }}
+  value: {{ default (lower (printf "%s%s%s%s" "http://" (include "corsace.fullname" $) "-cronRunner" (ternary "" (printf ".%s.svc.%s." $.Release.Namespace $.Values.clusterDomain) (not $.Values.clusterDomain)))) $.Values.webServices.cronRunner.publicUrl }}
 - name: BANCHOBOT_PUBLICURL
-  value: {{ default (lower (printf "%s%s%s%s" "http://" (include "corsace.fullname" $) "-banchoBot" (ternary "" (printf ".%s.svc.%s" $.Release.Namespace $.Values.clusterDomain) (not $.Values.clusterDomain)))) $.Values.webServices.banchoBot.publicUrl }}
+  value: {{ default (lower (printf "%s%s%s%s" "http://" (include "corsace.fullname" $) "-banchoBot" (ternary "" (printf ".%s.svc.%s." $.Release.Namespace $.Values.clusterDomain) (not $.Values.clusterDomain)))) $.Values.webServices.banchoBot.publicUrl }}
 {{- range $webServiceName, $webService := $.Values.webServices }}
 {{- if and (ne $webServiceName "api") (ne $webServiceName "cronRunner") (ne $webServiceName "banchoBot") }}
 - name: {{ $webServiceName | upper }}_PUBLICURL
