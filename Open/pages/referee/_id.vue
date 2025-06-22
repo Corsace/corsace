@@ -1284,7 +1284,8 @@ export default class Referee extends Mixins(CentrifugeMixin) {
 
     async sendNextMapMessage () {
         await this.banchoCall("message", { message: this.nextMapMessage, username: this.loggedInUser?.osu.username });
-        await this.banchoCall("timer", { time: parseInt(this.mapTimer) });
+        if (!this.matchup?.winner)
+            await this.banchoCall("timer", { time: parseInt(this.mapTimer) });
     }
 
     mapStatusToString (num: MapStatus): string {
