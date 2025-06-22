@@ -457,7 +457,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         const newPlayer = joinInfo.player;
         const newPlayerID = newPlayer.user.id.toString();
-        if (!isPlayerInMatchup(matchup, newPlayerID, true)) {
+        if (!isPlayerInMatchup(matchup, newPlayerID, true) && matchup.referee?.osu.userID !== newPlayerID && matchup.stage?.tournament.organizer.osu.userID !== newPlayerID) {
             await Promise.all([
                 mpLobby.banPlayer(newPlayer.user.ircUsername),
                 (await banchoClient.getUserById(newPlayer.user.id)).sendMessage("Bruh u aint part of this matchup"),
