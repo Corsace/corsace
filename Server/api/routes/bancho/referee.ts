@@ -19,6 +19,7 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Team } from "../../../../Models/tournaments/team";
 import { Round } from "../../../../Models/tournaments/round";
 import { sleep } from "../../../utils/sleep";
+import { queueRequests } from "../../../middleware/queue";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
@@ -114,7 +115,7 @@ banchoRefereeRouter.$post<{ pulse: boolean }>("/:matchupID/pulse", async (ctx) =
     };
 });
 
-banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/createLobby", queueRequests(1), async (ctx) => {
     const matchupList: MatchupList | undefined | null = state.matchups[ctx.state.matchupID];
     let matchup: Matchup | undefined | null = matchupList?.matchup;
     if (!matchup) {
@@ -217,10 +218,6 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
         return;
     }
 
-    ctx.body = {
-        success: true,
-    };
-
     try {
         await runMatchup(matchup, ctx.request.body.replace, ctx.request.body.auto, `${ctx.request.body.user.osu.username} (${ctx.request.body.user.osu.userID})`);
     } catch (error) {
@@ -234,7 +231,12 @@ banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
                 success: false,
                 error: `Unknown error, ${error}`,
             };
+        return;
     }
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.$post("/:matchupID/roll", async (ctx) => {
