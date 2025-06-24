@@ -75,11 +75,11 @@
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <span v-html="$t('open.info.tournamentStructureText.initialText')" />
-                    <h2>{{ $t('open.info.tournamentStructureText.sw1Header') }}</h2>
+                    <h2>{{ $t('open.info.tournamentStructureText.swHeader')}}</h2>
                     <div class="info_desc__list_wrapper">
                         <ul
                             class="info_desc__list"
-                            v-html="$t('open.info.tournamentStructureText.sw1')"
+                            v-html="$t('open.info.tournamentStructureText.sw')"
                         />
                         <img
                             class="info_desc__list_wrapper__image info_desc__list_wrapper__image--small"
@@ -87,86 +87,15 @@
                         >
                     </div>
                     <hr class="line--red line--bottom-space">
-                    <h2>{{ $t('open.info.tournamentStructureText.sw2Header') }}</h2>
+                    <h2>{{ $t('open.info.tournamentStructureText.koHeader') }}</h2>
                     <div class="info_desc__list_wrapper">
                         <ul
                             class="info_desc__list"
-                            v-html="$t('open.info.tournamentStructureText.sw2')"
+                            v-html="$t('open.info.tournamentStructureText.ko')"
                         />
                         <img 
                             class="info_desc__list_wrapper__image"
                             src="../../Assets/img/site/open/info/w2.png"
-                        >
-                    </div>
-                    <hr class="line--red line--bottom-space">
-                    <h2>{{ $t('open.info.tournamentStructureText.sw3Header') }}</h2>
-                    <div class="info_desc__list_wrapper">
-                        <ul
-                            class="info_desc__list"
-                            v-html="$t('open.info.tournamentStructureText.sw3')"
-                        />
-                        <img 
-                            class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
-                            src="../../Assets/img/site/open/info/w3.png"
-                        >
-                    </div>
-                    <hr class="line--red line--bottom-space">
-                    <h2>{{ $t('open.info.tournamentStructureText.sw4Header') }}</h2>
-                    <div class="info_desc__list_wrapper">     
-                        <ul
-                            class="info_desc__list"
-                            v-html="$t('open.info.tournamentStructureText.sw4')"
-                        />
-                        <img 
-                            class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
-                            src="../../Assets/img/site/open/info/w4.png"
-                        >
-                    </div>
-                    <hr class="line--red line--bottom-space">
-                    <h2>{{ $t('open.info.tournamentStructureText.sw5Header') }}</h2>
-                    <div class="info_desc__list_wrapper">
-                        <ul
-                            class="info_desc__list"
-                            v-html="$t('open.info.tournamentStructureText.sw5')"
-                        />
-                        <img
-                            class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
-                            src="../../Assets/img/site/open/info/w4.png"
-                        >
-                    </div>
-                    <hr class="line--red line--bottom-space">
-                    <h2>{{ $t('open.info.tournamentStructureText.ko1Header') }}</h2>
-                    <div class="info_desc__list_wrapper">
-                        <ul
-                            class="info_desc__list"
-                            v-html="$t('open.info.tournamentStructureText.ko1')"
-                        />
-                        <img
-                            class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
-                            src="../../Assets/img/site/open/info/w4.png"
-                        >
-                    </div>
-                    <hr class="line--red line--bottom-space">
-                    <h2>{{ $t('open.info.tournamentStructureText.ko2Header') }}</h2>
-                    <div class="info_desc__list_wrapper">
-                        <ul
-                            class="info_desc__list"
-                            v-html="$t('open.info.tournamentStructureText.ko2')"
-                        />
-                        <img
-                            class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
-                            src="../../Assets/img/site/open/info/w4.png"
-                        >
-                    </div><hr class="line--red line--bottom-space">
-                    <h2>{{ $t('open.info.tournamentStructureText.ko3Header') }}</h2>
-                    <div class="info_desc__list_wrapper">
-                        <ul
-                            class="info_desc__list"
-                            v-html="$t('open.info.tournamentStructureText.ko3')"
-                        />
-                        <img
-                            class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
-                            src="../../Assets/img/site/open/info/w4.png"
                         >
                     </div>
                 </div>
@@ -179,11 +108,6 @@
                     <ul
                         class="info_desc__list"
                         v-html="$t('open.info.matchProceduresText')"
-                    />
-                    <h2>{{ $t('open.info.freemodRules') }}</h2>
-                    <ul
-                        class="info_desc__list"
-                        v-html="$t('open.info.freemodRulesText')"
                     />
                     <h2>{{ $t('open.info.disconnections') }}</h2>
                     <ul
