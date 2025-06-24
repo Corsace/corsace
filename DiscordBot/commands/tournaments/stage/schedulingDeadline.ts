@@ -1,9 +1,6 @@
 import { randomUUID } from "crypto";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../..";
-import { MapOrderTeam } from "../../../../Interfaces/stage";
-import { MapStatus } from "../../../../Interfaces/matchup";
-import { MapOrder } from "../../../../Models/tournaments/mapOrder";
 import { Round } from "../../../../Models/tournaments/round";
 import { filter, timedOut } from "../../../functions/messageInteractionFunctions";
 import { loginResponse } from "../../../functions/loginResponse";
@@ -14,9 +11,8 @@ import getRound from "../../../functions/tournamentFunctions/getRound";
 import getStage from "../../../functions/tournamentFunctions/getStage";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import getUser from "../../../../Server/functions/get/getUser";
-import ormConfig from "../../../../ormconfig";
 import respond from "../../../functions/respond";
-import {discordStringTimestamp} from "../../../../Server/utils/dateParse";
+import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
