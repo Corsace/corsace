@@ -1,6 +1,7 @@
 import { DefaultState, Next } from "koa";
 import { CorsaceContext } from "../corsaceRouter";
 import getTeams from "../functions/get/getTeams";
+import { checkUserRoles } from "./index";
 
 export function validateTeam (isCaptain?: boolean, invites?: boolean) {
     return async function<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next) {
@@ -32,7 +33,7 @@ export function validateTeam (isCaptain?: boolean, invites?: boolean) {
             };
             return;
         }
-            
+
         const team = teams[0];
 
         if (!team) {
@@ -43,19 +44,21 @@ export function validateTeam (isCaptain?: boolean, invites?: boolean) {
             return;
         }
 
-        if (isCaptain && team.captain.ID !== user.ID) {
-            ctx.body = {
-                success: false,
-                error: "You are not the captain of this team",
-            };
-            return;
-        }
-        if (!isCaptain && team.captain.ID !== user.ID && !team.members.find(member => member.ID === user.ID)) {
-            ctx.body = {
-                success: false,
-                error: "You are not a member of this team",
-            };
-            return;
+        const isCorsace = await checkUserRoles(ctx, [{ section: "corsace", role: "corsace" }]);
+        if(!isCorsace) {
+            if (isCaptain && team.captain.ID !== user.ID) {
+                ctx.body = {
+                    success: false,
+                    error: "You are not the captain of this team",
+                };
+                return;
+            } else if (!isCaptain && team.captain.ID !== user.ID && !team.members.find(member => member.ID === user.ID)) {
+                ctx.body = {
+                    success: false,
+                    error: "You are not a member of this team",
+                };
+                return;
+            }
         }
 
         ctx.state.team = team;

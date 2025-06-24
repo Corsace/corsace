@@ -145,7 +145,7 @@ function normalMatchText (team1Name: string, team2Name: string, maps: postResult
     let textBuilder = "";
 
     const protects = maps.filter(m => m.status === MapStatus.Protected);
-    if (protects) {
+    if (protects.length > 0) {
         textBuilder += "\n\n__**Protects**__";
         textBuilder += `\n**${team1Name}**\n`;
         textBuilder += protects.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => `\`${b.name}\``).join("\n");
@@ -155,7 +155,7 @@ function normalMatchText (team1Name: string, team2Name: string, maps: postResult
     }
 
     const bans = maps.filter(m => m.status === MapStatus.Banned);
-    if (bans) {
+    if (bans.length > 0) {
         textBuilder += "\n\n__**Bans**__";
         textBuilder += `\n**${team1Name}**\n`;
         textBuilder += bans.filter((b: postResultsMap) => b.team === team1Name).map((b: postResultsMap) => `\`${b.name}\``).join("\n");

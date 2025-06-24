@@ -9,6 +9,9 @@ import { discordClient } from "../../../discord";
 import state from "../../../../BanchoBot/state";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Team } from "../../../../Models/tournaments/team";
+import { User } from "../../../../Models/user";
+import { publish } from "../../../functions/centrifugo";
+import { queueRequests } from "../../../middleware/queue";
 
 async function validateData (ctx: CorsaceContext<object>, next: Next) {
     const body = ctx.request.body;
@@ -20,7 +23,7 @@ async function validateData (ctx: CorsaceContext<object>, next: Next) {
         };
         return;
     }
-        
+
     const time: number = body.time;
 
     const targetTime = new Date(time + preInviteTime);
@@ -44,7 +47,7 @@ banchoRouter.$use(koaBasicAuth({
     pass: config.interOpAuth.password,
 }));
 
-banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
+banchoRouter.$post("/runQualifiers", validateData, queueRequests(1), async (ctx) => {
     ctx.body = {
         success: true,
     };
@@ -54,6 +57,7 @@ banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.referee", "referee")
         .leftJoinAndSelect("matchup.streamer", "streamer")
+        .leftJoinAndSelect("matchup.commentators", "commentators")
         .innerJoinAndSelect("matchup.stage", "stage")
         .innerJoinAndSelect("stage.tournament", "tournament")
         .innerJoinAndSelect("tournament.organizer", "organizer")
@@ -74,6 +78,7 @@ banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
         const matchupQ = matchupsQ.find(m => m.ID === baseMatchup.ID)!;
         baseMatchup.referee = matchupQ.referee;
         baseMatchup.streamer = matchupQ.streamer;
+        baseMatchup.commentators = matchupQ.commentators;
         baseMatchup.stage = matchupQ.stage;
 
         const mappools = await Mappool
@@ -125,6 +130,54 @@ banchoRouter.$post("/stopAutoLobby", (ctx) => {
     }
 
     state.matchups[matchupID].autoRunning = false;
+
+    ctx.body = {
+        success: true,
+    };
+});
+
+/**
+ * Allow assigning staff members through the Discord Bot while a matchup is running.
+ */
+banchoRouter.$post("/staff", async (ctx) => {
+    const { matchupID, action, role, userID } = ctx.request.body as { matchupID: number; action: "assignStaff" | "unassignStaff", role: "referee" | "streamer" | "commentators", userID: number };
+
+    if (!state.matchups[matchupID]) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    if (!["assignStaff", "unassignStaff"].includes(action) || !["referee", "streamer", "commentators"].includes(role) || typeof userID !== "number") {
+        ctx.body = {
+            success: false,
+            error: "Missing or invalid action, role or target user",
+        };
+        return;
+    }
+
+    const user = await User.findOneBy({ ID: userID });
+    if (!user) {
+        ctx.body = {
+            success: false,
+            error: "User not found",
+        };
+        return;
+    }
+
+    state.matchups[ctx.request.body.matchupID]!.matchup[action](role, user);
+    await state.matchups[ctx.request.body.matchupID].matchup.save();
+
+    if(action === "assignStaff" && ["referee", "streamer"].includes(role))
+        await state.matchups[ctx.request.body.matchupID]?.lobby.addRef(`#${user.osu.userID}`);
+
+    publish(`matchup:${matchupID}`, {
+        type: "updateMatchup",
+        key: role,
+        value: state.matchups[ctx.request.body.matchupID]?.matchup[role],
+    });
 
     ctx.body = {
         success: true,

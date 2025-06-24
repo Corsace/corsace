@@ -5,6 +5,7 @@ import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { osuClient } from "../../../osu";
+import { filterAllowedMods } from "../../../functions/tournaments/mappool/stageAndRoundApi";
 
 const mappoolMapRouter  = new CorsaceRouter();
 
@@ -105,11 +106,12 @@ mappoolMapRouter.$get<{ mappoolMap: MappoolMap }>("/:mapName", async (ctx) => {
     }
 
     if (mappoolMap.slot.allowedMods && mappoolMap.beatmap) {
-        const set = await osuClient.beatmaps.getByBeatmapId(mappoolMap.beatmap.ID, Mode.all, undefined, undefined, mappoolMap.slot.allowedMods) as Beatmap[];
+        const allowedMods = filterAllowedMods(mappoolMap.slot.allowedMods);
+        const set = await osuClient.beatmaps.getByBeatmapId(mappoolMap.beatmap.ID, Mode.all, undefined, undefined, allowedMods) as Beatmap[];
         if (set.length === 0)
             return;
 
-        const beatmap = applyMods(set[0], modsToAcronym(mappoolMap.slot.allowedMods));
+        const beatmap = applyMods(set[0], modsToAcronym(allowedMods));
         mappoolMap.beatmap.totalLength = beatmap.totalLength;
         mappoolMap.beatmap.totalSR = beatmap.difficultyRating;
         mappoolMap.beatmap.circleSize = beatmap.circleSize;

@@ -61,8 +61,6 @@ import teamRouter from "./api/routes/team";
 import inviteRouter from "./api/routes/team/invite";
 
 import ormConfig from "../ormconfig";
-import serve from "koa-static";
-import path from "path";
 
 const koa = baseServer;
 
@@ -73,7 +71,7 @@ koa.use(Session({
     renew: true,
     maxAge: 60 * 24 * 60 * 60 * 1000, // 2 months
 }, koa));
-koa.use(koaBody({ 
+koa.use(koaBody({
     patchKoa: true,
     multipart: true,
     formidable: {
@@ -97,9 +95,6 @@ koa.use(koaCash({
         return Promise.resolve();
     },
 }));
-
-// Public
-koa.use(Mount("/public", serve(path.join(__dirname, "../public"))));
 
 // General
 koa.use(Mount("/api/github", githubRouter.routes()));

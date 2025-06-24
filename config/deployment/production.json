@@ -125,8 +125,8 @@
         "ignoredBranches": ["crowdin"]
     },
     "centrifugo": {
-        "apiUrl": "http://centrifugo:9000/api",
-        "publicUrl": "/centrifugo",
+        "apiUrl": "@@CENTRIFUGO_API_URL",
+        "publicUrl": "@@CENTRIFUGO_PUBLIC_URL",
         "apiKey": "@@CENTRIFUGO_API_KEY",
         "ipWhitelist": ["10.*.*.*"]
     }

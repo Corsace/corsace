@@ -86,17 +86,29 @@ async function getTournamentEndpoint (ctx: CorsaceContext<{ tournament: Tourname
     };
 }
 
-tournamentRouter.$get<{ tournament: Tournament }>("/:tournamentID", validateID, async (ctx) => {
-    const ID = ctx.state.ID;
+tournamentRouter.$get<{ tournamentID?: number }>("/validateKey", async (ctx) => {
+    const key = ctx.query.key as string;
+    if (!key) {
+        ctx.body = {
+            success: false,
+            error: "No key provided",
+        };
+        return;
+    }
 
-    const tournament = await Tournament
+    const hash = createHash("sha512");
+    hash.update(key);
+    const hashedKey = hash.digest("hex");
+
+    const keyCheck = await Tournament
         .createQueryBuilder("tournament")
-        .innerJoinAndSelect("tournament.organizer", "organizer")
-        .where("tournament.ID = :ID", { ID })
-        .andWhere("tournament.status != '0'")
+        .where("tournament.key = :key", { key: hashedKey })
         .getOne();
 
-    await getTournamentEndpoint(ctx, tournament);
+    ctx.body = {
+        success: true,
+        tournamentID: keyCheck?.ID,
+    };
 });
 
 tournamentRouter.$get<{ tournament: Tournament }>("/open/:year", async (ctx) => {
@@ -121,29 +133,17 @@ tournamentRouter.$get<{ tournament: Tournament }>("/open/:year", async (ctx) => 
     await getTournamentEndpoint(ctx, tournament);
 });
 
-tournamentRouter.$get<{ tournamentID?: number }>("/validateKey", async (ctx) => {
-    const key = ctx.query.key as string;
-    if (!key) {
-        ctx.body = {
-            success: false,
-            error: "No key provided",
-        };
-        return;
-    }
+tournamentRouter.$get<{ tournament: Tournament }>("/:tournamentID", validateID, async (ctx) => {
+    const ID = ctx.state.ID;
 
-    const hash = createHash("sha512");
-    hash.update(key);
-    const hashedKey = hash.digest("hex");
-
-    const keyCheck = await Tournament
+    const tournament = await Tournament
         .createQueryBuilder("tournament")
-        .where("tournament.key = :key", { key: hashedKey })
+        .innerJoinAndSelect("tournament.organizer", "organizer")
+        .where("tournament.ID = :ID", { ID })
+        .andWhere("tournament.status != '0'")
         .getOne();
 
-    ctx.body = {
-        success: true,
-        tournamentID: keyCheck?.ID,
-    };
+    await getTournamentEndpoint(ctx, tournament);
 });
 
 tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID, async (ctx) => {

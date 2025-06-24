@@ -1,6 +1,6 @@
 import "centrifuge";
 import { PublicationContext } from "centrifuge";
-import { MatchupMap } from "../Interfaces/matchup";
+import { Matchup, MatchupMap } from "../Interfaces/matchup";
 import { BaseTeam, TeamList } from "../Interfaces/team";
 import { UserMessage } from "../Interfaces/user";
 
@@ -90,6 +90,12 @@ declare module "centrifuge" {
         ipcState: string;
     }
 
+    interface UpdateMatchupData<K extends keyof Matchup = keyof Matchup> {
+        type: "updateMatchup";
+        key: K;
+        value: Matchup[K];
+    }
+
     type PublicationData =
         CreatedData |
         MessageData |
@@ -103,7 +109,8 @@ declare module "centrifuge" {
         ClosedData |
         InviteData |
         TeamRegisteredData |
-        IpcStateData;
+        IpcStateData |
+        UpdateMatchupData;
 
     interface ExtendedPublicationContext extends PublicationContext {
         data: PublicationData;
