@@ -15,7 +15,7 @@ export class Stage extends BaseEntity {
 
     @PrimaryGeneratedColumn()
         ID!: number;
-    
+
     @CreateDateColumn()
         createdAt!: Date;
 
@@ -77,4 +77,6 @@ export class Stage extends BaseEntity {
     @OneToMany(() => MapOrder, mapOrder => mapOrder.stage)
         mapOrder?: MapOrder[] | null;
 
+    @Column("datetime", { nullable: true })
+        schedulingDeadline: Date | null = null;
 }
