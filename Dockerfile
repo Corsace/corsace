@@ -1,4 +1,4 @@
-FROM node:18-slim AS base
+FROM node:20-alpine AS base
 
 WORKDIR /src
 

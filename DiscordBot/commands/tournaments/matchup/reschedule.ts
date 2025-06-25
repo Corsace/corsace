@@ -119,6 +119,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         // For everyone else, only allow them to reschedule matchups they are in
         const matchups = await Matchup
             .createQueryBuilder("matchup")
+            .innerJoinAndSelect("matchup.round", "round")
             .innerJoinAndSelect("matchup.stage", "stage")
             .innerJoinAndSelect("stage.tournament", "tournament")
             .leftJoinAndSelect("matchup.team1", "team1")
@@ -198,6 +199,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
             await message.edit(`U cant reschedule a matchup to a time that is AFTER 1 hour before a matchup that is dependant on this one\nSee POTENTIAL matchup ID \`${potentialsBeforeDate.matchID ?? potentialsBeforeDate.ID}\` (${potentialsBeforeDate.date.toUTCString()} ${discordStringTimestamp(potentialsBeforeDate.date)})`);
             return;
         }
+    }
+
+    const schedulingDeadline = (matchup.round ?? matchup.stage)?.schedulingDeadline;
+    if (schedulingDeadline && Date.now() > schedulingDeadline.getTime()) {
+        await message.edit(`U cant reschedule a matchup after the scheduling deadline of ${discordStringTimestamp(schedulingDeadline)} has passed`);
+        return;
     }
 
     const prevDate = matchup.date;

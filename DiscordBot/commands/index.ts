@@ -40,6 +40,7 @@ import stageDelete from "./tournaments/stage/delete";
 import stageEdit from "./tournaments/stage/edit";
 import stageInfo from "./tournaments/stage/info";
 import stageOrder from "./tournaments/stage/order";
+import stageSchedulingDeadline from "./tournaments/stage/schedulingDeadline";
 import stageScores from "./tournaments/stage/scores";
 
 import teamAvatar from "./tournaments/team/avatar";
@@ -134,6 +135,7 @@ commands.push(stageDelete);
 commands.push(stageEdit);
 commands.push(stageInfo);
 commands.push(stageOrder);
+commands.push(stageSchedulingDeadline);
 commands.push(stageScores);
 
 // team commands

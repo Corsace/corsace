@@ -18,7 +18,7 @@ export class Round extends BaseEntity {
 
     @Column("boolean", { nullable: true })
         isDraft?: boolean | null;
-    
+
     @ManyToOne(() => Stage, stage => stage.rounds, {
         nullable: false,
     })
@@ -33,4 +33,6 @@ export class Round extends BaseEntity {
     @OneToMany(() => MapOrder, mapOrder => mapOrder.round)
         mapOrder?: MapOrder[] | null;
 
+    @Column("datetime", { nullable: true })
+        schedulingDeadline: Date | null = null;
 }

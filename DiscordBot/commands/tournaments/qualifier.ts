@@ -90,6 +90,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     const stage = stages[0];
 
+    if (stage.schedulingDeadline && Date.now() > stage.schedulingDeadline.getTime()) {
+        await respond(m, `U cant schedule a qualifier after the scheduling deadline of ${discordStringTimestamp(stage.schedulingDeadline)} has passed`);
+        return;
+    }
+
     if (stage.timespan.start.getTime() > date.getTime() || stage.timespan.end.getTime() < date.getTime()) {
         await respond(m, `The qualifier date must be between ${discordStringTimestamp(stage.timespan.start)} and ${discordStringTimestamp(stage.timespan.end)}`);
         return;
