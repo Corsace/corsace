@@ -7,6 +7,8 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { extractParameter } from "../../../functions/parameterFunctions";
 import respond from "../../../functions/respond";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
+import getTournament from "../../../functions/tournamentFunctions/getTournament";
+import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -15,24 +17,25 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees, TournamentRoleType.Streamers]))
         return;
 
-    const ID = extractParameter(m, { name: "id", paramType: "number" }, 1);
-    if (!ID || typeof ID !== "number") {
-        await respond(m, "Provide an actual matchup ID");
+    const tournament = await getTournament(m, channelID(m), "channel", undefined, true);
+    if (!tournament)
         return;
-    }
+
+    const ID = extractParameter(m, { name: "matchup", paramType: "string" }, 1);
 
     const matchup = await Matchup
         .createQueryBuilder("matchup")
-        .where("matchup.ID = :ID", { ID })
+        .where("(matchup.ID = :ID OR matchup.matchID = :ID)", { ID })
+        .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
         .getOne();
 
     if (!matchup?.baseURL) {
-        await respond(m, "Invalid matchup ID OR the matchup isnt even running OR the matchup doesnt ahve a bancho web service associated with it either way it wont work");
+        await respond(m, "Invalid matchup ID OR the matchup isnt even running");
         return;
     }
 
     const baseUrl = matchup.baseURL;
-    
+
     const { data } = await Axios.post(`${baseUrl}/api/bancho/stopAutoLobby`, {
         matchupID: ID,
     }, {
@@ -51,7 +54,7 @@ const data = new SlashCommandBuilder()
     .setName("stop_auto_lobby")
     .setDescription("Stop the Corsace bancho bot from auto-running a lobby for a matchup.")
     .addIntegerOption((option) =>
-        option.setName("id")
+        option.setName("matchup")
             .setDescription("The ID of the matchup.")
             .setRequired(true))
     .setDMPermission(false);
@@ -63,5 +66,5 @@ const stopAutoLobby: Command = {
     subCategory: "matchups",
     run,
 };
-    
+
 export default stopAutoLobby;

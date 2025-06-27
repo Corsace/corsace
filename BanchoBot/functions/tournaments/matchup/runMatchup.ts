@@ -457,14 +457,12 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         const newPlayer = joinInfo.player;
         const newPlayerID = newPlayer.user.id.toString();
-        if (!isPlayerInMatchup(matchup, newPlayerID, true)) {
+        if (!isPlayerInMatchup(matchup, newPlayerID, true) && matchup.referee?.osu.userID !== newPlayerID && matchup.stage?.tournament.organizer.osu.userID !== newPlayerID) {
             await Promise.all([
                 mpLobby.banPlayer(newPlayer.user.ircUsername),
-                mpLobby.setPassword(randomUUID()),
                 (await banchoClient.getUserById(newPlayer.user.id)).sendMessage("Bruh u aint part of this matchup"),
             ]);
-            await invitePlayersToLobby(matchup, mpLobby),
-            await mpChannel.sendMessage(`${newPlayer.user.ircUsername} joined when they shouldnt have, changed password and resent invites`);
+            await mpChannel.sendMessage(`${newPlayer.user.ircUsername} joined when they shouldnt have!`);
             return;
         }
 
@@ -884,9 +882,8 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
     if (matchup.stage!.scoringMethod in winConditions)
         scoringMode = winConditions[matchup.stage!.scoringMethod as keyof typeof winConditions];
 
-    log(matchup, `Setting lobby settings, password and adding refs`);
+    log(matchup, `Setting lobby settings and adding refs`);
     await Promise.all([
-        mpLobby.setPassword(randomUUID()),
         mpLobby.setSettings(
             matchup.stage!.stageType === StageType.Qualifiers ? BanchoLobbyTeamModes.HeadToHead : BanchoLobbyTeamModes.TeamVs,
             scoringMode,
@@ -894,7 +891,7 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
         ),
         mpLobby.addRef([`#${matchup.stage!.tournament.organizer.osu.userID}`, `#${matchup.referee?.osu.userID ?? ""}`, `#${matchup.streamer?.osu.userID ?? ""}`]),
     ]);
-    log(matchup, `Set lobby settings, password and added refs`);
+    log(matchup, `Set lobby settings and added refs`);
     const refChannel = await TournamentChannel
         .createQueryBuilder("channel")
         .innerJoinAndSelect("channel.tournament", "tournament")
@@ -930,20 +927,11 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
             refCollector.on("collect", async (i: MessageComponentInteraction) => {
                 if (i.customId !== refID)
                     return;
-                if (!i.member) {
+                if (!i.member || !(i.member.roles instanceof GuildMemberRoleManager)) {
                     await i.reply({ content: "couldnt receive ur member info", ephemeral: true });
                     return;
                 }
-                if (
-                    (
-                        i.member.roles instanceof GuildMemberRoleManager &&
-                        !i.member.roles.cache.some(role => refRoles.some(refRole => refRole.roleID === role.id))
-                    ) ||
-                    (
-                        !(i.member.roles instanceof GuildMemberRoleManager) &&
-                        !i.member.roles.some(role => refRoles.some(refRole => refRole.roleID === role))
-                    )
-                ) {
+                if (!i.member.roles.cache.some(role => refRoles.some(refRole => refRole.roleID === role.id))) {
                     await i.reply({ content: "ur not allowed to ref .", ephemeral: true });
                     return;
                 }

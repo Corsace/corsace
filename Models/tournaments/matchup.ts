@@ -33,7 +33,7 @@ export class Matchup extends BaseEntity {
 
     @ManyToMany(() => Team, team => team.matchupGroup)
     @JoinTable()
-        teams?: Team[] | null;
+        teams?: Team[];
 
     @ManyToOne(() => Team, team => team.matchupsAsTeam1)
         team1?: Team | null;
@@ -51,13 +51,13 @@ export class Matchup extends BaseEntity {
         winner?: Team | null;
 
     @OneToMany(() => MatchupSet, set => set.matchup)
-        sets?: MatchupSet[] | null;
+        sets?: MatchupSet[];
 
     @ManyToOne(() => Matchup, matchup => matchup.potentials)
         potentialFor?: Matchup | null;
 
     @OneToMany(() => Matchup, matchup => matchup.potentialFor)
-        potentials?: Matchup[] | null;
+        potentials?: Matchup[];
 
     @Column({ type: "boolean", default: false })
         invalid!: boolean;
@@ -76,26 +76,56 @@ export class Matchup extends BaseEntity {
 
     @ManyToMany(() => User, user => user.matchupsCommentated)
     @JoinTable()
-        commentators?: User[] | null;
+        commentators?: User[];
 
     @ManyToOne(() => User, user => user.matchupsStreamed)
         streamer?: User | null;
-        
+
     @ManyToOne(() => Matchup, matchup => matchup.loserPreviousMatchups)
         loserNextMatchup?: Matchup | null;
 
     @OneToMany(() => Matchup, matchup => matchup.loserNextMatchup)
-        loserPreviousMatchups?: Matchup[] | null;
+        loserPreviousMatchups?: Matchup[];
 
     @ManyToOne(() => Matchup, matchup => matchup.winnerPreviousMatchups)
         winnerNextMatchup?: Matchup | null;
 
     @OneToMany(() => Matchup, matchup => matchup.winnerNextMatchup)
-        winnerPreviousMatchups?: Matchup[] | null;
+        winnerPreviousMatchups?: Matchup[];
 
     @OneToMany(() => MatchupMessage, message => message.matchup, { persistence: false })
-        messages?: MatchupMessage[] | null;
+        messages?: MatchupMessage[];
 
     @Column({ type: "varchar", length: `http://255.255.255.255:65565`.length, nullable: true })
         baseURL?: string | null;
+
+    assignStaff (role: "referee" | "streamer" | "commentators", user: User): void {
+        if (this[role] === undefined)
+            throw new Error(`Uninitialized relation: ${role}`);
+
+        if (role === "referee" || role === "streamer")
+            this[role] = user;
+        else if (role === "commentators") {
+            if (!this.commentators!.some(u => u.ID === user.ID))
+                this.commentators!.push(user);
+        } else
+            throw new Error(`Invalid type: ${role}`);
+    }
+
+    unassignStaff (role: "referee" | "streamer" | "commentators", user: User): void {
+        if (this[role] === undefined)
+            throw new Error(`Uninitialized relation: ${role}`);
+
+        if (role === "referee" || role === "streamer") {
+            if (this[role] !== null && this[role]!.ID !== user.ID)
+                throw new Error(`User is not currently assigned as ${role}`);
+            this[role] = null;
+        } else if (role === "commentators") {
+            const index = this.commentators!.findIndex((u) => u.ID === user.ID);
+            if (index === -1)
+                throw new Error(`User is not currently assigned as ${role}`);
+            this.commentators!.splice(index, 1);
+        } else
+            throw new Error(`Invalid type: ${role}`);
+    }
 }

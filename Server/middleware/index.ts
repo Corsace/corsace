@@ -31,13 +31,14 @@ function memberHasRole<T extends discordRoleSection> (member: GuildMember, secti
         : member.roles.cache.has(configRole);
 }
 
-async function checkUserRoles<T extends discordRoleSection, S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, roles: discordRoleInfo<T>[]): Promise<boolean> {
+async function checkUserRoles<T extends discordRoleSection, S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, roles: discordRoleInfo<T>[], ignoreMissingMember = false): Promise<boolean> {
     const member = await getMember(ctx.state.user?.discord?.userID ?? "");
     if (!member) {
-        ctx.body = {
-            success: false,
-            error: "Could not obtain any discord user!",
-        };
+        if(!ignoreMissingMember)
+            ctx.body = {
+                success: false,
+                error: "Could not obtain any discord user!",
+            };
         return false;
     }
 
@@ -141,4 +142,4 @@ function hasRoles<T extends discordRoleSection> (roles: discordRoleInfo<T>[]) {
 const isHeadStaff = hasRole({ section: "corsace", role: "headStaff" });
 const isCorsace = hasRole({ section: "corsace", role: "corsace" });
 
-export { isLoggedIn, isLoggedInDiscord, isStaff, isHeadStaff, isCorsace, hasRole, hasRoles };
+export { checkUserRoles, isLoggedIn, isLoggedInDiscord, isStaff, isHeadStaff, isCorsace, hasRole, hasRoles };

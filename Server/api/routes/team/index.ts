@@ -402,6 +402,14 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
         .andWhere("stage.stageType = '0'")
         .getOne();
     if (qualifierStage) {
+        if (qualifierStage.schedulingDeadline && Date.now() > qualifierStage.schedulingDeadline.getTime()) {
+            ctx.body = {
+                success: false,
+                error: "Qualifier stage scheduling deadline has passed",
+            };
+            return;
+        }
+
         const qualifierAt = ctx.request.body?.qualifierAt;
         if (!qualifierAt) {
             ctx.body = {
