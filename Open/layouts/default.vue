@@ -385,9 +385,7 @@ export default class Default extends Mixins(CentrifugeMixin) {
     height: 100%;
     display: flex;
     align-items: center;
-    @include breakpoint(mobile) {
-        margin-right: auto;
-    }
+    
     @include breakpoint(laptop) {
         margin-left: 20px;
     }
