@@ -294,12 +294,6 @@ export default class Default extends Mixins(CentrifugeMixin) {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
-.layout--open {
-    height: unset;
-    min-height: 100%;
-    overflow: hidden;
-}
-
 .header {
     border-bottom: 1px solid $open-red;
     background: white;
@@ -308,7 +302,6 @@ export default class Default extends Mixins(CentrifugeMixin) {
     align-items: stretch;
     gap: 24px;
     width: 100vw;
-    position: fixed;
     z-index: 2;
     
     @include breakpoint(desktop) {
@@ -385,7 +378,6 @@ export default class Default extends Mixins(CentrifugeMixin) {
 }
 
 .footer {
-    position: fixed;
     z-index: 2;
 }
 
@@ -428,10 +420,5 @@ export default class Default extends Mixins(CentrifugeMixin) {
 .main {
     background-size: cover;
     overflow-x: hidden;
-    padding: 90px 0px 50px;
-
-    @include breakpoint(mobile) {
-        padding: 55px 0px 50px; // hardcoded for header breakpoint (sorry)
-    }
 }
 </style>
