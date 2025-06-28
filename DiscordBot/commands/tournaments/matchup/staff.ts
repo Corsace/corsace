@@ -165,7 +165,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     await runStaffSetter(matchup, "assignStaff", "commentators", user);
-    await respond(m, `${user.osu.username} is now a commentator for matchup \`${matchup.ID}\``);
+    await respond(m, `\`${user.osu.username}\` is now a commentator for matchup \`${matchup.ID}\``);
 }
 
 async function runStaffSetter (matchup: Matchup, action: "assignStaff" | "unassignStaff", role: "referee" | "streamer" | "commentators", user: User) {
