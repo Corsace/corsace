@@ -71,7 +71,6 @@ export default class OpenFrontPageButton extends Vue {
 @import '@s-sass/_variables';
 
 .open_front_page_button {
-    margin: 50px 0px;
     height: 112px;
     color: $white;
 
@@ -114,8 +113,8 @@ export default class OpenFrontPageButton extends Vue {
         height: 110px;
         background-color: $open-red;
 
-        &:hover {
-            text-decoration: none;
+        &:not(&--disabled):hover {
+            text-decoration: underline;
         }
 
         &--disabled {

@@ -76,10 +76,7 @@ $selector-orange: #ff890a;
 .locale {
     display: flex;
     position: relative;
-    width: 40px;
-    @include breakpoint(laptop) {
-        width: 45px;
-    }
+    padding: 0px 8px;
 
     &__current {
         display: flex;

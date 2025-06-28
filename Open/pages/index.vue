@@ -163,6 +163,7 @@ export default class Default extends Vue {
 </script>
 
 <style lang="scss">
+@import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
 .index {
@@ -170,17 +171,10 @@ export default class Default extends Vue {
     position: relative;
     overflow: hidden;
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
 
     &__video {
         position: absolute;
-        top: 0;
-        left: 0;
         object-fit: cover;
-        height: 100%;
         width: 100%;
         mask-image: linear-gradient(180deg, rgba(19,19,19,1) 0%, rgba(19,19,19,0.75) 5%, rgba(19,19,19,0.5) 10%, rgba(19,19,19,0.25) 20%, rgba(19,19,19,0) 55%);
     }
@@ -189,32 +183,44 @@ export default class Default extends Vue {
         position: relative;
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+        gap: 150px;
+        width: 100%;
+        flex: 1;
     }
 
     &__banner {
         display: flex;
-        align-self: center;
-        flex-direction: column;
-        margin-top: 50px;
-        gap: 50px;
+        scale: 60%;
+
+        @include breakpoint(desktop) {
+            scale: 100%;
+        }
     }
 
     &_portal {
-        margin-top: 100px;
         width: 80vw;
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+        flex-flow: row wrap;
+        gap: 50px;
+        justify-content: center;
 
         &__section {
-            width: 25vw;
+            display: flex;
+            flex-flow: column;
+            gap: 50px;
+            flex: 1;
         }
 
         &__image {
             &--row {
                 display: flex;
-                justify-content: space-between;
-                padding: 25px 50px;
+                justify-content: center;
+                flex-flow: row wrap;
+                gap: 24px;
+                padding: 25px;
             }
 
             & img {
@@ -225,7 +231,6 @@ export default class Default extends Vue {
     }
 
     &_schedule {
-        margin: 30px 0px;
         text-align: start;
         width: 75%;
 
