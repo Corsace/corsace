@@ -832,10 +832,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         clearInterval(saveMessagesInterval);
 
         try {
-            // If forfeit, save from the state because forfeit is assigned from the ref endpoint, not the bot (and the below functionality would remove it otherwise)
-            if (state.matchups[matchup.ID] && state.matchups[matchup.ID].matchup.forfeit)
-                matchup = state.matchups[matchup.ID].matchup;
-
             matchup.baseURL = null;
             if (matchup.stage!.stageType !== StageType.Qualifiers) {
                 if (!matchup.forfeit && matchup.team1Score > matchup.team2Score)

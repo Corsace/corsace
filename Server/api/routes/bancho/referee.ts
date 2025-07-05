@@ -692,7 +692,7 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
         return;
     }
 
-    const matchup = await Matchup
+    const matchup = state.matchups[ctx.state.matchupID]?.matchup ?? await Matchup
         .createQueryBuilder("matchup")
         .innerJoinAndSelect("matchup.team1", "team1")
         .innerJoinAndSelect("matchup.team2", "team2")
@@ -755,7 +755,6 @@ banchoRefereeRouter.$post("/:matchupID/forfeit", async (ctx) => {
 
     // assignTeamsToNextMatchup is run in bancho's runMatchup if there is a lobby running, so it's only run here if there's no lobby at all
     if (state.matchups[ctx.state.matchupID]) {
-        state.matchups[ctx.state.matchupID].matchup = matchup;
         await state.matchups[ctx.state.matchupID].lobby.closeLobby();
     } else
         await assignTeamsToNextMatchup(matchup.ID);
