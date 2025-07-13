@@ -888,12 +888,20 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
         mpLobby.addRef([`#${matchup.stage!.tournament.organizer.osu.userID}`, `#${matchup.referee?.osu.userID ?? ""}`, `#${matchup.streamer?.osu.userID ?? ""}`]),
     ]);
     log(matchup, `Set lobby settings and added refs`);
-    const refChannel = await TournamentChannel
+    let refChannel = await TournamentChannel
         .createQueryBuilder("channel")
         .innerJoinAndSelect("channel.tournament", "tournament")
         .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
         .andWhere("channel.channelType = '9'")
         .getOne();
+    if (!refChannel) { // Try assigning an admin channel instead if no ref channel exists
+        refChannel = await TournamentChannel
+            .createQueryBuilder("channel")
+            .innerJoinAndSelect("channel.tournament", "tournament")
+            .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
+            .andWhere("channel.channelType = '4'")
+            .getOne();
+    }
     let refCollector: InteractionCollector<any> | undefined = undefined;
     if (refChannel) {
         const refID = randomUUID();
