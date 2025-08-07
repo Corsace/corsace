@@ -161,7 +161,7 @@ function validatePOSTMatchups (matchups: Partial<postMatchup>[]): asserts matchu
         if (typeof matchup.stageID !== "number" || isNaN(matchup.stageID) || matchup.stageID < 1)
             throw new Error(`Invalid matchup stageID provided: ${matchup.stageID}`);
 
-        if (matchup.roundID !== undefined && typeof matchup.roundID !== "number" || isNaN(matchup.roundID) || matchup.roundID < 1)
+        if (matchup.roundID !== undefined && (typeof matchup.roundID !== "number" || isNaN(matchup.roundID) || matchup.roundID < 1))
             throw new Error(`Invalid matchup roundID provided: ${matchup.roundID}`);
 
         if (matchup.isLowerBracket !== undefined && typeof matchup.isLowerBracket !== "boolean")
