@@ -353,7 +353,7 @@ matchupRouter.$post("/:matchupID/ipcState", async (ctx) => {
     };
 });
 
-matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", validateTournament, async (ctx) => {
+matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const matchups: Partial<postMatchup>[] | postMatchup[] = ctx.request.body?.matchups;
     if (!matchups) {
         ctx.body = {
