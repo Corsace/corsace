@@ -138,6 +138,7 @@ interface postMatchup {
     matchID: string;
     date: string;
     stageID: number;
+    roundID?: number;
     isLowerBracket?: boolean;
     createPotentials?: boolean;
     team1?: number;
@@ -159,6 +160,9 @@ function validatePOSTMatchups (matchups: Partial<postMatchup>[]): asserts matchu
 
         if (typeof matchup.stageID !== "number" || isNaN(matchup.stageID) || matchup.stageID < 1)
             throw new Error(`Invalid matchup stageID provided: ${matchup.stageID}`);
+
+        if (matchup.roundID !== undefined && typeof matchup.roundID !== "number" || isNaN(matchup.roundID) || matchup.roundID < 1)
+            throw new Error(`Invalid matchup roundID provided: ${matchup.roundID}`);
 
         if (matchup.isLowerBracket !== undefined && typeof matchup.isLowerBracket !== "boolean")
             throw new Error(`Invalid matchup isLowerBracket provided: ${matchup.isLowerBracket}`);
@@ -363,6 +367,7 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
 
     const idToMatchup = new Map<number, Matchup>();
     const idToStages = new Map<number, Stage>();
+    const idToRounds = new Map<number, Round>();
 
     try {
         await ormConfig.transaction(async transactionManager => {
@@ -384,6 +389,19 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
                 }
                 idToStages.set(stage.ID, stage);
                 dbMatchup.stage = stage;
+
+                if (matchup.roundID) {
+                    const round = idToRounds.get(matchup.roundID) ?? await transactionManager.findOne(Round, { where: { ID: matchup.roundID, stage: { ID: matchup.stageID } }});
+                    if (!round) {
+                        ctx.body = {
+                            success: false,
+                            error: `Round with ID ${matchup.roundID} not found within stage ${matchup.stageID}`,
+                        };
+                        return;
+                    }
+                    idToRounds.set(round.ID, round);
+                    dbMatchup.round = round;
+                }
 
                 if (matchup.team1) {
                     const team1 = await transactionManager.findOne(Team, { where: { ID: matchup.team1 }});
