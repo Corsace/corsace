@@ -484,7 +484,9 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
                             const potential = new Matchup();
                             potential.matchID = `${dbMatchup.matchID}${String.fromCharCode("A".charCodeAt(0) + dbMatchup.potentials.length)}`;
                             potential.date = dbMatchup.date;
+                            potential.isLowerBracket = dbMatchup.isLowerBracket;
                             potential.stage = dbMatchup.stage;
+                            potential.round = dbMatchup.round;
                             dbMatchup.potentials.push(potential);
                         }
                     else
@@ -499,6 +501,7 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
                                         potential.team2 = team2;
                                         potential.isLowerBracket = dbMatchup.isLowerBracket;
                                         potential.stage = dbMatchup.stage;
+                                        potential.round = dbMatchup.round;
                                         dbMatchup.potentials.push(potential);
                                     }
                                 }
