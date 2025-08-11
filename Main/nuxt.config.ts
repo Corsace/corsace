@@ -8,6 +8,7 @@ export default {
         link: [
             { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" },
             { rel: "stylesheet", href: "https://fonts.googleapis.com/css?family=Lexend+Peta&display=swap" },
+            { rel: "stylesheet", href: "https://use.typekit.net/kxr8hhp.css" }, // DIN 2014 font
             { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
         ],
         meta: [
