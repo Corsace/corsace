@@ -14,7 +14,7 @@ export default async function getUserInMatchup (users: User[], message: BanchoMe
             return botUser;
 
         if (message.user?.ircUsername) {
-            const user = await User.findOne({ where: { osu: { username: message.user?.ircUsername } } });
+            const user = await User.findOne({ where: { osu: { ircUsername: message.user?.ircUsername } } });
             if (user)
                 return user;
         }
