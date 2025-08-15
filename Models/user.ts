@@ -69,6 +69,10 @@ export class DiscordOAuth extends OAuth {
 export class OsuOAuth extends OAuth {
     @Column({ nullable: false })
         userID!: string;
+
+    @Index()
+    @Column({ asExpression: "REPLACE(osuUsername, ' ', '_')", generatedType: "VIRTUAL" })
+        ircUsername!: string;
 }
 
 @Entity()
