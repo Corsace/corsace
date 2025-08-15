@@ -865,6 +865,9 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
     if (matchup.stage!.stageType === StageType.Qualifiers)
         lobbyName = `${matchup.stage!.tournament.abbreviation}: (${convertDateToDDDHH(matchup.date)} QL) vs (${matchup.teams?.map(team => team.abbreviation).join(", ")})`;
 
+    // Fix broken in-game invites for opponents with brackets in their names
+    lobbyName = lobbyName.replace(/\[]/g, "");
+
     log(matchup, `Creating lobby with name ${lobbyName}`);
     const mpChannel = await banchoClient.createLobby(lobbyName);
     const mpLobby = mpChannel.lobby;
