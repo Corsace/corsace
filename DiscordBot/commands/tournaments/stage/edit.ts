@@ -162,6 +162,9 @@ async function stageTimespan (m: Message, stage: Stage, userID: string, property
             }
             let order = 1;
             for (const s of stage.tournament.stages) {
+                if(stage.ID === s.ID)
+                    continue;
+
                 if (
                     (start.getTime() > s.timespan.start.getTime() && start.getTime() < s.timespan.end.getTime()) ||
                     (end.getTime() > s.timespan.start.getTime() && end.getTime() < s.timespan.end.getTime()) ||
