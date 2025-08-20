@@ -129,7 +129,7 @@ export default defineConfig({
                         ru: "Участие в турнирах",
                         vn: "Tham gia Giải đấu",
                     },
-                    autogenerate: { directory: "tournament_play", collapsed: true, },
+                    autogenerate: { directory: "tournament_play", collapsed: true },
                 },
                 {
                     label: "Running Tournaments (English Only)",
