@@ -70,18 +70,20 @@ export default defineConfig({
                 "./src/fonts/font-face.scss",
             ],
             lastUpdated: true,
+            // Only tournament_play content is localized
+            // All other documentation is English-only
             sidebar: [
-                {
-                    label: "Running Tournaments",
-                    autogenerate: { directory: "tournament_org", collapsed: true },
-                },
                 {
                     label: "Playing Tournaments",
                     autogenerate: { directory: "tournament_play", collapsed: true },
                 },
                 {
-                    label: "Development",
-                    autogenerate: { directory: "development", collapsed: true },
+                    label: "Running Tournaments (English)",
+                    link: "/en/tournament_org/",
+                },
+                {
+                    label: "Development (English)",
+                    link: "/en/development/",
                 },
                 {
                     label: "Design",
