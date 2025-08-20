@@ -1,8 +1,6 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import { config } from "node-config-ts";
-import { readdirSync, readFileSync } from "fs";
-import { basename, extname, join } from "path";
 
 const locales: Record<string, {
         label: string;
@@ -10,64 +8,64 @@ const locales: Record<string, {
     }> = {
         en: {
             label: "English",
-            lang: "en"
+            lang: "en",
         },
         br: {
             label: "Português (Brasil)",
-            lang: "pt-BR"
+            lang: "pt-BR",
         },
         cn: {
             label: "简体中文",
-            lang: "zh-CN"
+            lang: "zh-CN",
         },
         de: {
             label: "Deutsch",
-            lang: "de"
+            lang: "de",
         },
         es: {
             label: "Español",
-            lang: "es"
+            lang: "es",
         },
         fr: {
             label: "Français",
-            lang: "fr"
+            lang: "fr",
         },
         gr: {
             label: "Ελληνικά",
-            lang: "el"
+            lang: "el",
         },
         id: {
             label: "Bahasa Indonesia",
-            lang: "id"
+            lang: "id",
         },
         it: {
             label: "Italiano",
-            lang: "it"
+            lang: "it",
         },
         jp: {
             label: "日本語",
-            lang: "ja"
+            lang: "ja",
         },
         kr: {
             label: "한국어",
-            lang: "ko"
+            lang: "ko",
         },
         nl: {
             label: "Nederlands",
-            lang: "nl"
+            lang: "nl",
         },
         pl: {
             label: "Polski",
-            lang: "pl"
+            lang: "pl",
         },
         ru: {
             label: "Русский",
-            lang: "ru"
+            lang: "ru",
         },
         vn: {
             label: "Tiếng Việt",
-            lang: "vi"
-        }
+            lang: "vi",
+        },
     };
 
 // https://astro.build/config
@@ -129,30 +127,30 @@ export default defineConfig({
                         nl: "Deelnemen aan Toernooien",
                         pl: "Uczestnictwo w Turniejach",
                         ru: "Участие в турнирах",
-                        vn: "Tham gia Giải đấu"
+                        vn: "Tham gia Giải đấu",
                     },
-                    autogenerate: { directory: "tournament_play", collapsed: true },
+                    autogenerate: { directory: "tournament_play", collapsed: true, },
                 },
                 {
                     label: "Running Tournaments (English Only)",
                     link: "/tournament_org/",
                     translations: {
                         en: "Running Tournaments",
-                        "*": "Running Tournaments (English Only)"
-                    }
+                        "*": "Running Tournaments (English Only)",
+                    },
                 },
                 {
                     label: "Development (English Only)",
                     link: "/development/",
                     translations: {
                         en: "Development",
-                        "*": "Development (English Only)"
-                    }
+                        "*": "Development (English Only)",
+                    },
                 },
                 {
                     label: "Design",
-                    link: "https://figma.com/design/7TIFgrC3xanb14A3GTDllb"
-                }
+                    link: "https://figma.com/design/7TIFgrC3xanb14A3GTDllb",
+                },
             ],
         }),
     ],
