@@ -134,7 +134,7 @@ export default defineConfig({
                     autogenerate: { directory: "tournament_play", collapsed: true },
                 },
                 {
-                    label: "Running Tournaments",
+                    label: "Running Tournaments (English Only)",
                     link: "/tournament_org/",
                     translations: {
                         en: "Running Tournaments",
@@ -142,7 +142,7 @@ export default defineConfig({
                     }
                 },
                 {
-                    label: "Development",
+                    label: "Development (English Only)",
                     link: "/development/",
                     translations: {
                         en: "Development",
