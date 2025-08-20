@@ -135,7 +135,7 @@ export default defineConfig({
                 },
                 {
                     label: "Running Tournaments",
-                    link: "/en/tournament_org/",
+                    link: "/tournament_org/",
                     translations: {
                         en: "Running Tournaments",
                         "*": "Running Tournaments (English Only)"
@@ -143,7 +143,7 @@ export default defineConfig({
                 },
                 {
                     label: "Development",
-                    link: "/en/development/",
+                    link: "/development/",
                     translations: {
                         en: "Development",
                         "*": "Development (English Only)"
