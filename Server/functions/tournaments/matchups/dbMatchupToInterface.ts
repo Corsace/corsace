@@ -64,7 +64,7 @@ export default async function dbMatchupToInterface (dbMatchup: MatchupWithRelati
             .createQueryBuilder("round")
             .leftJoinAndSelect("round.mapOrder", "mapOrder")
             .leftJoinAndSelect("round.stage", "stage")
-            .leftJoinAndSelect("round.stage.mapOrder", "stage.mapOrder")
+            .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
             .where("round.ID = :ID", { ID: dbMatchup.round })
             .getOne() :
         dbMatchup.stage ?
