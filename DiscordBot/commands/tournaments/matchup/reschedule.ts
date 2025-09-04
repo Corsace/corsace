@@ -97,8 +97,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         if (
             matchup.team1?.captain.discord.userID !== commandUser(m).id && 
-            matchup.team2?.captain.discord.userID !== commandUser(m).id && 
-            matchup.referee?.discord.userID !== commandUser(m).id
+            matchup.team2?.captain.discord.userID !== commandUser(m).id
         ) {
             if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees]))
                 return;
