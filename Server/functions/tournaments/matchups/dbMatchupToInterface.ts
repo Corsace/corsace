@@ -59,10 +59,12 @@ export default async function dbMatchupToInterface (dbMatchup: MatchupWithRelati
         set.maps = matchupMaps;
     }
 
-    const roundOrStage: Round | Stage | null = dbMatchup.round ? 
+    const roundOrStage: Round | Stage | null = dbMatchup.round ?
         await Round
             .createQueryBuilder("round")
             .leftJoinAndSelect("round.mapOrder", "mapOrder")
+            .leftJoinAndSelect("round.stage", "stage")
+            .leftJoinAndSelect("round.stage.mapOrder", "stage.mapOrder")
             .where("round.ID = :ID", { ID: dbMatchup.round })
             .getOne() :
         dbMatchup.stage ?
@@ -71,16 +73,26 @@ export default async function dbMatchupToInterface (dbMatchup: MatchupWithRelati
                 .leftJoinAndSelect("stage.mapOrder", "mapOrder")
                 .where("stage.ID = :ID", { ID: dbMatchup.stage })
                 .getOne() : null;
-    
-    const mappools = await Mappool
+    if(roundOrStage === null)
+        throw new Error("Matchup has no round or stage");
+
+    let mappoolsQ = Mappool
         .createQueryBuilder("mappool")
         .innerJoinAndSelect("mappool.slots", "slots")
         .innerJoinAndSelect("slots.maps", "maps")
         .leftJoinAndSelect("maps.beatmap", "map")
         .leftJoinAndSelect("map.beatmapset", "beatmapset")
-        .where(`mappool.${roundOrStage instanceof Round ? "round" : "stage"}ID = :ID`, { ID: roundOrStage?.ID })
-        .getMany();
-    
+        .leftJoinAndSelect("mappool.stage", "stage")
+        .leftJoinAndSelect("mappool.round", "round")
+        .where(`mappool.stageID = :stageID`, { stageID: roundOrStage instanceof Round ? roundOrStage.stage.ID : roundOrStage.ID });
+    if(roundOrStage instanceof Round)
+        mappoolsQ = mappoolsQ.orWhere(`mappool.roundID = :roundID`, { roundID: roundOrStage.ID });
+
+    // Keep only the most specific mappools
+    let mappools = await mappoolsQ.getMany();
+    if(mappools.some((m) => !!m.round))
+        mappools = mappools.filter((m) => !!m.round);
+
     const team1 = dbMatchup.team1 && teams.find(t => t.ID === dbMatchup.team1) ? await teams.find(t => t.ID === dbMatchup.team1)!.teamInterface(false, false, true) : undefined;
     const team2 = dbMatchup.team2 && teams.find(t => t.ID === dbMatchup.team2) ? await teams.find(t => t.ID === dbMatchup.team2)!.teamInterface(false, false, true) : undefined;
     const winner = dbMatchup.winner && teams.find(t => t.ID === dbMatchup.winner) ? await teams.find(t => t.ID === dbMatchup.winner)!.teamInterface(false, false, true) : undefined;
@@ -103,7 +115,7 @@ export default async function dbMatchupToInterface (dbMatchup: MatchupWithRelati
             abbreviation: roundOrStage.abbreviation,
             mappool: mappools.map(mappool => dbMappoolToInterface(mappool)) ?? [],
             isDraft: roundOrStage.isDraft,
-            mapOrder: roundOrStage.mapOrder,
+            mapOrder: roundOrStage.mapOrder!.length > 0 ? roundOrStage.mapOrder : roundOrStage.stage.mapOrder,
         } : undefined,
         stage: roundOrStage instanceof Stage ? {
             ID: roundOrStage.ID,
