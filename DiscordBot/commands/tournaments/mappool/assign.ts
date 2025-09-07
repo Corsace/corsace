@@ -43,7 +43,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         { name: "target", paramType: "string", customHandler: extractTargetText },
         { name: "testing", shortName: "t", paramType: "boolean", optional: true },
         { name: "replace", shortName: "r", paramType: "boolean", optional: true },
-    ]); 
+    ]);
     if (!params)
         return;
 
@@ -85,7 +85,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await handleBeatmapLink(m, target, slotMod.allowedMods, tournament, mappool, mappoolSlot, mappoolMap, slot, assigner, jobPost);
         return;
     }
-    
+
     await handleUser(m, target, testing, replace, tournament, mappool, mappoolSlot, mappoolMap, assigner, jobPost);
 }
 
@@ -97,7 +97,7 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
         return;
     }
     const beatmapID = parseInt(link[3]);
-    
+
     const set = await osuClient.beatmaps.getBySetId(parseInt(link[1])) as APIBeatmap[];
     let apiMap = set.find(setMap => setMap.beatmapId === beatmapID);
     if (!apiMap) {
@@ -117,19 +117,6 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
     });
     if (!beatmap)
         beatmap = await insertBeatmap(apiMap);
-    else if (await MappoolMap
-        .createQueryBuilder("mappoolMap")
-        .leftJoin("mappoolMap.beatmap", "beatmap")
-        .leftJoin("mappoolMap.slot", "slot")
-        .leftJoin("slot.mappool", "mappool")
-        .leftJoin("mappool.stage", "stage")
-        .leftJoin("stage.tournament", "tournament")
-        .where("beatmap.ID = :id", { id: beatmap.ID })
-        .andWhere("tournament.ID = :tournament", { tournament: tournament.ID })
-        .getExists()) {
-        await respond(m, `The beatmap ur trying to add is already in **${tournament.name}**`);
-        return;
-    }
 
     if (mappoolMap.beatmap && mappoolMap.beatmap.ID === beatmap.ID) {
         await respond(m, `**${mappoolSlot}** is already set to this beatmap`);
@@ -180,9 +167,9 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
 async function handleUser (m: Message | ChatInputCommandInteraction, target: string, testing: boolean | null, replace: boolean | null, tournament: Tournament, mappool: Mappool, mappoolSlot: string, mappoolMap: MappoolMap, assigner: User, jobPost?: JobPost | null) {
     // Check if user has any mapper/tester roles
     const user = await getStaff(m, tournament, target, [testing ? TournamentRoleType.Testplayers : TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]);
-    if (!user) 
+    if (!user)
         return;
-    
+
     if (testing) {
         if (mappoolMap.testplayers.find(u => u.ID === user.ID)) {
             await respond(m, `**${user.osu.username}** is already assigned as a testplayer to **${mappoolSlot}**`);
