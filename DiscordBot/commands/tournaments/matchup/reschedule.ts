@@ -45,6 +45,7 @@ async function rescheduleLog (matchup: Matchup, prevDate: Date) {
             pings.push(matchup.commentators.map((commentator) => `<@${commentator.discord.userID}>`).join(" "));
         await rescheduleChannelMessage.send(`${pings.join(" ")}\n\nMatchup ID \`${matchup.matchID ?? matchup.ID}\` in stage \`${matchup.stage?.name ?? "N/A"}\` between \`${matchup.team1?.name ?? "N/A"}\` and \`${matchup.team2?.name ?? "N/A"}\` has been rescheduled\nFrom ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)}\nTo ${matchup.date.toUTCString()} ${discordStringTimestamp(matchup.date)}\n\nAny relevant staff members should confirm that they are available at this time, or remove themselves from the matchup otherwise.`);
     } catch (e) {
+        // Ignore unknown channel errors
         if (!(e instanceof DiscordAPIError) || e.code !== 10003) 
             throw e;
     }
@@ -77,6 +78,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (matchupID) {
         matchup = await Matchup
             .createQueryBuilder("matchup")
+            .innerJoinAndSelect("matchup.round", "round")
             .innerJoinAndSelect("matchup.stage", "stage")
             .innerJoinAndSelect("stage.tournament", "tournament")
             .leftJoinAndSelect("matchup.team1", "team1")
@@ -200,7 +202,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
     }
 
-    const schedulingDeadline = (matchup.round ?? matchup.stage)?.schedulingDeadline;
+    const schedulingDeadline = matchup.round?.schedulingDeadline ?? matchup.stage?.schedulingDeadline;
     if (schedulingDeadline && Date.now() > schedulingDeadline.getTime()) {
         await message.edit(`U cant reschedule a matchup after the scheduling deadline of ${discordStringTimestamp(schedulingDeadline)} has passed`);
         return;
