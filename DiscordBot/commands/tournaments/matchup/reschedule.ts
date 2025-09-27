@@ -257,7 +257,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     //     return;
     // }
 
-    const timeLimit = new Date(Math.min(date.getTime(), matchup.date.getTime()) - 24 * 60 * 60 * 1000); // 24 hours before the current matchup date or proposed date, whichever is earlier
+    const timeLimit = new Date(Math.min((schedulingDeadline?.getTime() ?? Number.MAX_VALUE), date.getTime(), matchup.date.getTime()) - 24 * 60 * 60 * 1000); // 24 hours before the current matchup date or proposed date, or before the scheduling deadline, whichever is earlier
     if (timeLimit.getTime() < Date.now()) {
         await message.edit(`U cant reschedule a matchup within 24 hours of its current schedule or proposed schedule, contact an organizer`);
         return;
