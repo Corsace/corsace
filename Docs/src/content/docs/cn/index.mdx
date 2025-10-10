@@ -1,26 +1,21 @@
 ---
-title: Corsace 文档
-description: 关于 Corsace 特性和服务的文档。
+title: Corsace Documentation
 template: splash
 hero:
-  tagline: 关于 Corsace 各种服务的信息
-  image:
-    file: ../../../../../Assets/img/corsace-docs.svg
+  tagline: Welcome to the Corsace Documentation
   actions:
-    - text: Running a tournament
-      link: /cn/tournament_org/
+    - text: Playing Tournaments
+      link: ./tournament_play/
       icon: right-arrow
       variant: primary
-    - text: Playing for a tournament
-      link: /cn/tournament_play/
-      icon: right-arrow
-      variant: primary
-    - text: 开发/贡献
-      link: /cn/development/
-      icon: right-arrow
-      variant: secondary
-    - text: 设计指引
-      link: https://figma.com/design/7TIFgrC3xanb14A3GTDllb
-      icon: right-arrow
-      variant: secondary
 ---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What would you like to learn about?
+
+<CardGrid stagger>
+  <Card title="Playing in Tournaments" icon="rocket">
+    Learn how to participate in tournaments hosted on Corsace.
+  </Card>
+</CardGrid>
