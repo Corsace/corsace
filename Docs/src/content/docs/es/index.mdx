@@ -1,26 +1,21 @@
 ---
 title: Corsace Documentation
-description: Documentation on Corsace features and services.
 template: splash
 hero:
-  tagline: Information on various Corsace services.
-  image:
-    file: ../../../../../Assets/img/corsace-docs.svg
+  tagline: Welcome to the Corsace Documentation
   actions:
-    - text: Running a tournament
-      link: /es/tournament_org/
+    - text: Playing Tournaments
+      link: ./tournament_play/
       icon: right-arrow
       variant: primary
-    - text: Playing for a tournament
-      link: /es/tournament_play/
-      icon: right-arrow
-      variant: primary
-    - text: Development/Contributing
-      link: /es/development/
-      icon: right-arrow
-      variant: secondary
-    - text: Design Guidelines
-      link: https://figma.com/design/7TIFgrC3xanb14A3GTDllb
-      icon: right-arrow
-      variant: secondary
 ---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What would you like to learn about?
+
+<CardGrid stagger>
+  <Card title="Playing in Tournaments" icon="rocket">
+    Learn how to participate in tournaments hosted on Corsace.
+  </Card>
+</CardGrid>

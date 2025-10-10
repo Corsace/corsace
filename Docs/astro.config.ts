@@ -1,35 +1,72 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import { config } from "node-config-ts";
-import { readdirSync, readFileSync } from "fs";
-import { basename, extname, join } from "path";
 
 const locales: Record<string, {
         label: string;
-        lang?: string;
+        lang: string;
     }> = {
         en: {
             label: "English",
+            lang: "en",
+        },
+        br: {
+            label: "Português (Brasil)",
+            lang: "pt-BR",
+        },
+        cn: {
+            label: "简体中文",
+            lang: "zh-CN",
+        },
+        de: {
+            label: "Deutsch",
+            lang: "de",
+        },
+        es: {
+            label: "Español",
+            lang: "es",
+        },
+        fr: {
+            label: "Français",
+            lang: "fr",
+        },
+        gr: {
+            label: "Ελληνικά",
+            lang: "el",
+        },
+        id: {
+            label: "Bahasa Indonesia",
+            lang: "id",
+        },
+        it: {
+            label: "Italiano",
+            lang: "it",
+        },
+        jp: {
+            label: "日本語",
+            lang: "ja",
+        },
+        kr: {
+            label: "한국어",
+            lang: "ko",
+        },
+        nl: {
+            label: "Nederlands",
+            lang: "nl",
+        },
+        pl: {
+            label: "Polski",
+            lang: "pl",
+        },
+        ru: {
+            label: "Русский",
+            lang: "ru",
+        },
+        vn: {
+            label: "Tiếng Việt",
+            lang: "vi",
         },
     };
-
-const dir = "../Assets/lang/translated";
-const files = readdirSync(dir);
-files.forEach(file => {
-    if (extname(file) !== ".json")
-        return;
-
-    const filePath = join(dir, file);
-    const content = readFileSync(filePath, "utf8");
-
-    const json = JSON.parse(content);
-
-    const fileNameWithoutExtension = basename(file, ".json");
-
-    locales[fileNameWithoutExtension] = {
-        label: json.language,
-    };
-});
 
 // https://astro.build/config
 export default defineConfig({
@@ -70,18 +107,45 @@ export default defineConfig({
                 "./src/fonts/font-face.scss",
             ],
             lastUpdated: true,
+            // Only tournament_play content is localized
+            // All other documentation is English-only
             sidebar: [
                 {
-                    label: "Running Tournaments",
-                    autogenerate: { directory: "tournament_org", collapsed: true },
-                },
-                {
                     label: "Playing Tournaments",
+                    translations: {
+                        en: "Playing Tournaments",
+                        br: "Participando de Torneios",
+                        cn: "参加比赛",
+                        de: "Teilnahme an Turnieren",
+                        es: "Participando en Torneos",
+                        fr: "Participer aux Tournois",
+                        gr: "Συμμετοχή σε Τουρνουά",
+                        id: "Bermain di Turnamen",
+                        it: "Partecipare ai Tornei",
+                        jp: "トーナメントに参加する",
+                        kr: "토너먼트 참가하기",
+                        nl: "Deelnemen aan Toernooien",
+                        pl: "Uczestnictwo w Turniejach",
+                        ru: "Участие в турнирах",
+                        vn: "Tham gia Giải đấu",
+                    },
                     autogenerate: { directory: "tournament_play", collapsed: true },
                 },
                 {
-                    label: "Development",
-                    autogenerate: { directory: "development", collapsed: true },
+                    label: "Running Tournaments (English Only)",
+                    link: "/tournament_org/",
+                    translations: {
+                        en: "Running Tournaments",
+                        "*": "Running Tournaments (English Only)",
+                    },
+                },
+                {
+                    label: "Development (English Only)",
+                    link: "/development/",
+                    translations: {
+                        en: "Development",
+                        "*": "Development (English Only)",
+                    },
                 },
                 {
                     label: "Design",
